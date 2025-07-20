@@ -12,5 +12,9 @@
     "@slidev/theme-default": "latest",
     "@slidev/theme-seriph": "latest",
     "vue": "^3.5.17"
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2",
+    "prettier-plugin-slidev": "^1.0.5"
   }
 }
