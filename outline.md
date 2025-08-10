@@ -29,7 +29,7 @@ I've seen the evolution of data patterns in Ember from the early days, and I'm e
 
 ---
 
-## Chapter 1: "What is WarpDrive?" (8 minutes)
+## Episode 1: "What is WarpDrive?" (8 minutes)
 
 ### WarpDrive is...
 
@@ -78,7 +78,7 @@ This isn't just theory - we can literally share our data layer across multiple a
 
 ---
 
-## Chapter 2: "Engage! - Setting Up Our Mission" (7 minutes)
+## Episode 2: "Engage! - Setting Up Our Mission" (7 minutes)
 
 ### The Mission Brief
 
@@ -157,7 +157,7 @@ interface Todo {
 }
 ```
 
-## Chapter 3: "Request Patterns - Making It So" (10 minutes)
+## Episode 3: "Request Patterns - Making It So" (10 minutes)
 
 ### The RequestManager - Mission Control
 
@@ -274,7 +274,7 @@ These built-in builders automatically:
 
 ---
 
-## Chapter 4: "Schemas - The DNA of Your Data" (10 minutes)
+## Episode 4: "Schemas - The DNA of Your Data" (10 minutes)
 
 ### Schema-Driven Development
 
@@ -403,7 +403,7 @@ store.registerSchema(TodoSchema);
 
 ---
 
-## Chapter 5: "Reactive UI - Ember Integration as Example" (8 minutes)
+## Episode 5: "Reactive UI - Ember Integration as Example" (8 minutes)
 
 ### JSON:API Response Format
 
@@ -542,7 +542,7 @@ The core logic stays the same - only the framework integration changes!
 
 ---
 
-## Chapter 6: "Data Mutations - Quantum Mechanics" (7 minutes)
+## Episode 6: "Data Mutations - Quantum Mechanics" (7 minutes)
 
 ### Controlled Mutation with Checkout
 
@@ -595,7 +595,7 @@ _"Captain, the data has been successfully modified without temporal paradoxes!"_
 
 ---
 
-## Chapter 7: "Universal Deployment - Separate the Data Layer" (5 minutes)
+## Episode 7: "Universal Deployment - Separate the Data Layer" (5 minutes)
 
 ### Framework Agnostic Architecture
 
@@ -637,7 +637,7 @@ The key insight: By building our data layer in a separate package in the monorep
 
 ---
 
-## Chapter 8: "Advanced Patterns - Warp 9.8" (8 minutes)
+## Episode 8: "Advanced Patterns - Warp 9.8" (8 minutes)
 
 ### Real-time with Surgical Updates
 
@@ -689,7 +689,7 @@ Now your entire app can use camelCase while your API uses snake_case!
 
 ---
 
-## Chapter 9: "Performance - Ludicrous Speed" (5 minutes)
+## Episode 9: "Performance - Ludicrous Speed" (5 minutes)
 
 (Spaceballs reference...we're mixing our metaphors here, but it's fine...)
 
@@ -734,7 +734,7 @@ _"She's giving us all she's got, Captain, and she's still got more in reserve!"_
 
 ---
 
-## Chapter 10: "The Future - Final Frontier" (3 minutes)
+## Episode 10: "The Future - Final Frontier" (3 minutes)
 
 ### What's Next for WarpDrive
 
@@ -779,15 +779,15 @@ Today we've built a complete TodoMVC application and seen how WarpDrive delivers
 
 ### Our Journey Recap
 
-🚀 **Chapter 1-2**: Introduced WarpDrive and set up our universal architecture
-🌐 **Chapter 3**: Built request patterns with RequestManager, custom and built-in builders
-📊 **Chapter 4**: Defined schemas with TypeScript for resources
-⚡ **Chapter 5**: Created reactive UI with Ember integration as example
-🔄 **Chapter 6**: Handled mutations with the checkout system
-🌌 **Chapter 7**: Demonstrated universal deployment by separating the data layer
-🚀 **Chapter 8**: Explored advanced patterns and real-time updates
-⚡ **Chapter 9**: Analyzed performance benefits
-🔭 **Chapter 10**: Looked toward the future
+🚀 **Episode 1-2**: Introduced WarpDrive and set up our universal architecture
+🌐 **Episode 3**: Built request patterns with RequestManager, custom and built-in builders
+📊 **Episode 4**: Defined schemas with TypeScript for resources
+⚡ **Episode 5**: Created reactive UI with Ember integration as example
+🔄 **Episode 6**: Handled mutations with the checkout system
+🌌 **Episode 7**: Demonstrated universal deployment by separating the data layer
+🚀 **Episode 8**: Explored advanced patterns and real-time updates
+⚡ **Episode 9**: Analyzed performance benefits
+🔭 **Episode 10**: Looked toward the future
 
 ### Your Mission, Should You Choose to Accept It
 
