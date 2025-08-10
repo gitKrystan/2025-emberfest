@@ -140,7 +140,8 @@ TODO: This is a placeholder for package creation and installation steps.
 # Create a shared data package that any framework can use
 mkdir shared-data-layer
 cd shared-data-layer
-# ...install ember-data core
+pnpm init
+pnpm install @warp-drive/core
 ```
 
 ¹ `npx warp-drive` scaffolding tool: https://github.com/emberjs/data/pull/9471
