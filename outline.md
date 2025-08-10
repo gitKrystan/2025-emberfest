@@ -31,23 +31,13 @@ Before we embark, let me introduce myself - I'm your guide through the WarpDrive
 
 I've seen the evolution of data patterns in Ember from the early days, and I'm excited to show you where we're boldly going next.
 
-### What We'll Build
-
-We'll implement a TodoMVC application step-by-step using:
-
-- **Modern Ember Polaris** (the latest and greatest Ember patterns)
-- **TypeScript** (because we like our data typed and our code safe)
-- **WarpDrive** (our starship for data management)
-
-By the end, you'll see how WarpDrive makes data management feel... _logical_.
-
 ---
 
 ## Chapter 1: "What is WarpDrive?" (8 minutes)
 
-### The Mission Brief
+### WarpDrive is...
 
-WarpDrive is **the lightweight data framework for ambitious web applications** —
+**the lightweight data framework for ambitious web applications**
 
 - 🌌 **Universal** - Works with any framework (Ember, React, Vue, Svelte)
 - ⚡ **Performance** - Committed to best-in-class performance
@@ -92,6 +82,30 @@ This isn't just theory - we can literally share our data layer across multiple a
 ---
 
 ## Chapter 2: "Engage! - Setting Up Our Mission" (7 minutes)
+
+### The Mission Brief
+
+We'll implement a TodoMVC application step-by-step using:
+
+- **WarpDrive** (our starship for data management)
+- **JSON:API** (the gold standard for API communication)
+- **TypeScript** (because we like our data typed and our code safe)
+- **Modern Ember Polaris** (the latest and greatest Ember patterns)
+
+By the end, you'll see how WarpDrive makes data management feel... _logical_.
+
+### JSON:API: The Universal Translator
+
+By default, WarpDrive speaks JSON:API fluently, giving you:
+
+- **Standardized format** for resources, relationships, and errors
+- **Consistent patterns** across all your APIs
+- **Built-in pagination, filtering, and sorting** conventions
+- **Media type negotiation** with `application/vnd.api+json`
+
+_"Universal translator online, Captain. All API communications are now standardized."_
+
+(But, you can configure WarpDrive to use other formats if you prefer!)
 
 ### Getting Started with WarpDrive
 
@@ -151,7 +165,7 @@ Instead of models with complex inheritance, WarpDrive uses simple JSON schemas:
 import { withDefaults } from '@warp-drive/core/reactive';
 
 export const TodoSchema = withDefaults({
-  type: 'todo',
+  type: 'todo', // JSON:API resource type
   fields: [
     { kind: 'field', name: 'id', type: 'string' },
     { kind: 'field', name: 'title', type: 'string' },
@@ -199,6 +213,7 @@ _"Data, are you getting readings on this?"_ - Yes, and they're perfectly structu
 WarpDrive uses a familiar fetch-like API:
 
 FIXME: What is `withBrand`?
+FIXME: Should be shared-data-layer/builders/todo.ts and NOT a service
 
 ```typescript
 // services/todo-repository.ts
@@ -213,6 +228,10 @@ export class TodoRepository extends Service {
     return withBrand<Todo[]>({
       method: 'GET',
       url: '/api/todos',
+      headers: {
+        Accept: 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
+      },
     });
   }
 
@@ -220,16 +239,30 @@ export class TodoRepository extends Service {
     return withBrand<Todo>({
       method: 'POST',
       url: '/api/todos',
-      body: JSON.stringify({ title, completed: false }),
+      headers: {
+        Accept: 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
+      },
+      body: JSON.stringify({
+        data: {
+          type: 'todo',
+          attributes: {
+            title,
+            completed: false,
+          },
+        },
+      }),
     });
   }
 
   async loadTodos() {
-    const { content } = await this.store.request(this.getAllTodos());
-    return content;
+    const future = await this.store.request(this.getAllTodos());
+    return future.content.data;
   }
 }
 ```
+
+FIXME: Make sure we talk about what a future is.
 
 ### The Power of Request Builders
 
@@ -237,7 +270,48 @@ export class TodoRepository extends Service {
 - **Composable** - Build complex requests from simple parts
 - **Cacheable** - WarpDrive handles deduplication automatically
 
+### JSON:API Response Format
+
+WarpDrive works seamlessly with JSON:API responses:
+
+```json
+// GET /api/todos response
+{
+  "data": [
+    {
+      "type": "todos",
+      "id": "1",
+      "attributes": {
+        "title": "Learn WarpDrive",
+        "completed": false,
+        "created": "2025-01-08T10:00:00Z"
+      },
+      "links": {
+        "self": "/api/todos/1"
+      }
+    },
+    {
+      "type": "todos",
+      "id": "2",
+      "attributes": {
+        "title": "Build TodoMVC",
+        "completed": true,
+        "created": "2025-01-08T09:00:00Z"
+      },
+      "links": {
+        "self": "/api/todos/2"
+      }
+    }
+  ],
+  "links": {
+    "self": "/api/todos"
+  }
+}
+```
+
 _"Make it so!" - And WarpDrive makes it typed._
+
+FIXME: Ensure we show built-in JSON:API request builders.
 
 ---
 
@@ -313,11 +387,23 @@ export default class TodoItem extends Component {
     // Make our changes
     editableTodo.completed = !editableTodo.completed;
 
-    // Save to server
+    // Save to server using JSON:API format
     await this.store.request({
       method: 'PATCH',
       url: `/api/todos/${editableTodo.id}`,
-      body: JSON.stringify({ completed: editableTodo.completed }),
+      headers: {
+        Accept: 'application/vnd.api+json',
+        'Content-Type': 'application/vnd.api+json',
+      },
+      body: JSON.stringify({
+        data: {
+          type: 'todo',
+          id: editableTodo.id,
+          attributes: {
+            completed: editableTodo.completed,
+          },
+        },
+      }),
     });
   };
 }
@@ -379,11 +465,19 @@ _"Separate the saucer section! Both parts of the ship continue to function indep
 ### Real-time with Surgical Updates
 
 ```typescript
-// Real-time todo updates via WebSocket
+// Real-time todo updates via WebSocket using JSON:API format
 store.cache.patch({
   op: 'updateRecord',
   record: { type: 'todo', id: '1' },
-  value: { completed: true },
+  value: {
+    data: {
+      type: 'todo',
+      id: '1',
+      attributes: {
+        completed: true,
+      },
+    },
+  },
 });
 ```
 
@@ -403,13 +497,13 @@ const CamelCaseHandler = {
 
 ```typescript
 const TodoSchema = withDefaults({
-  type: 'todo',
+  type: 'todo', // JSON:API resource type
   fields: [
     // ... basic fields
     {
       kind: 'belongsTo',
       name: 'owner',
-      type: 'user',
+      type: 'users', // JSON:API resource type for relationship
     },
     {
       kind: 'derived',
