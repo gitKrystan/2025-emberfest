@@ -1,9 +1,5 @@
 # WarpDrive: Set Data to Stun
 
-## Conference Talk Outline - EmberFest 2025
-
----
-
 ## Introduction (5 minutes)
 
 ### Opening Hook
@@ -161,6 +157,111 @@ interface Todo {
 }
 ```
 
+## Chapter 3: "Request Patterns - Making It So" (10 minutes)
+
+### The RequestManager - Mission Control
+
+Before we build requests, let's understand WarpDrive's request architecture:
+
+```typescript
+// TODO: Example RequestManager setup
+```
+
+The RequestManager handles all HTTP communication:
+
+- **Fetch Handler** - Makes actual network requests
+- **Cache Integration** - Automatically caches responses
+- **Request Pipeline** - Allows custom handlers for data transformation
+
+Think of it as your ship's communications officer - it manages all external contact!
+
+### Making Requests
+
+FIXME: Show a simple example of making a request using the RequestManager. Something like...:
+
+```typescript
+// shared-data-layer/utils/todo-request.ts
+import { Todo } from '../schemas/todo';
+
+export function getAllTodos() {
+  return this.requestManager.get<Todo[]>('/api/todo', {
+    headers: {
+      Accept: 'application/vnd.api+json',
+      'Content-Type': 'application/vnd.api+json',
+    },
+  });
+}
+```
+
+### Request Builders
+
+WarpDrive uses typed request builders in your shared data layer:
+
+```typescript
+// shared-data-layer/builders/todo.ts
+import { withBrand } from '@warp-drive/core/types/request';
+
+// What is `withBrand`? It adds TypeScript type information to requests
+// so WarpDrive knows what type of data to expect back
+
+export function getAllTodos() {
+  return withBrand<Todo[]>({
+    method: 'GET',
+    url: '/api/todo',
+    headers: {
+      Accept: 'application/vnd.api+json',
+      'Content-Type': 'application/vnd.api+json',
+    },
+  });
+}
+
+export function createTodo(title: string) {
+  return withBrand<Todo>({
+    method: 'POST',
+    url: '/api/todo',
+    headers: {
+      Accept: 'application/vnd.api+json',
+      'Content-Type': 'application/vnd.api+json',
+    },
+    body: JSON.stringify({
+      data: {
+        type: 'todo',
+        attributes: {
+          title,
+          completed: false,
+        },
+      },
+    }),
+  });
+}
+```
+
+### Built-in JSON:API Builders
+
+Why write all that boilerplate? WarpDrive includes built-in JSON:API request builders:
+
+```typescript
+// shared-data-layer/builders/todo.ts
+import {
+  findRecord,
+  findAll,
+  createRecord,
+} from '@warp-drive/json-api/request';
+
+// Much simpler with built-in builders!
+export const getAllTodos = () => findAll('todo');
+export const getTodo = (id: string) => findRecord('todo', id);
+export const createTodo = (attributes: NewTodo) =>
+  createRecord('todo', attributes);
+```
+
+These built-in builders automatically:
+
+- Set correct headers (`application/vnd.api+json`)
+- Handle JSON:API document structure
+- Provide proper TypeScript types
+- Work with any JSON:API compliant backend
+
 ### Shared Store Setup
 
 #### What is the WarpDrive Store?
@@ -206,19 +307,7 @@ const store = new AppStore();
 store.registerSchema(TodoSchema);
 ```
 
-We'll see schema registration in detail next!
-
-#### What is the RequestManager?
-
-The RequestManager handles all HTTP communication:
-
-- **Fetch Handler** - Makes actual network requests
-- **Cache Integration** - Automatically caches responses
-- **Request Pipeline** - Allows custom handlers for data transformation
-
-Think of it as your ship's communications officer - it manages all external contact!
-
-_"Number One, our data store is online and ready for action!"_
+#### Recap
 
 **So far we've covered:**
 
@@ -231,7 +320,7 @@ _"Number One, our data store is online and ready for action!"_
 
 ---
 
-## Chapter 3: "Schemas - The DNA of Your Data" (10 minutes)
+## Chapter 4: "Schemas - The DNA of Your Data" (10 minutes)
 
 ### Schema-Driven Development
 
@@ -308,59 +397,16 @@ _"Data, are you getting readings on this?"_ - Yes, and they're perfectly structu
 
 - ✅ Declarative schema definition with `withDefaults`
 - ✅ Derived fields for computed properties
-- ✅ TypeScript integration with automatic types
 - ✅ Schema registration with the store
+- ✅ Type-safe resources
 
 **Next up:** Time to make some requests!
 
 ---
 
-## Chapter 4: "Request Patterns - Making It So" (10 minutes)
+### The Store - Bringing It Together
 
-### Requests Without the Fuss
-
-WarpDrive uses typed request builders in your shared data layer:
-
-```typescript
-// shared-data-layer/builders/todo.ts
-import { withBrand } from '@warp-drive/core/types/request';
-
-// What is `withBrand`? It adds TypeScript type information to requests
-// so WarpDrive knows what type of data to expect back
-
-export function getAllTodos() {
-  return withBrand<Todo[]>({
-    method: 'GET',
-    url: '/api/todo',
-    headers: {
-      Accept: 'application/vnd.api+json',
-      'Content-Type': 'application/vnd.api+json',
-    },
-  });
-}
-
-export function createTodo(title: string) {
-  return withBrand<Todo>({
-    method: 'POST',
-    url: '/api/todo',
-    headers: {
-      Accept: 'application/vnd.api+json',
-      'Content-Type': 'application/vnd.api+json',
-    },
-    body: JSON.stringify({
-      data: {
-        type: 'todo',
-        attributes: {
-          title,
-          completed: false,
-        },
-      },
-    }),
-  });
-}
-```
-
-### Using Request Builders
+Now let's see how the Store coordinates with RequestManager:
 
 ```typescript
 // In any framework - Ember service example
@@ -376,11 +422,12 @@ export class TodoRepository extends Service {
 }
 ```
 
-### The Power of Request Builders
+The Store:
 
-- **Typed responses** - TypeScript knows what's coming back
-- **Composable** - Build complex requests from simple parts
-- **Cacheable** - WarpDrive handles deduplication automatically
+- **Coordinates requests** through the RequestManager
+- **Manages cache** automatically
+- **Provides typed responses** via request builders
+- **Handles deduplication** - same request, same result
 
 ### JSON:API Response Format
 
@@ -423,35 +470,18 @@ WarpDrive works seamlessly with JSON:API responses:
 
 _"Make it so!" - And WarpDrive makes it typed._
 
-### Built-in JSON:API Builders
+**Request patterns and Store checkpoint:**
 
-Why write all that boilerplate? WarpDrive includes built-in JSON:API request builders:
+- ✅ RequestManager handles all HTTP communication
+- ✅ Custom request builders with TypeScript types
+- ✅ Built-in JSON:API builders for common patterns
+- ✅ Store coordinates requests and manages cache
 
-```typescript
-// shared-data-layer/builders/todo.ts
-import {
-  findRecord,
-  findAll,
-  createRecord,
-} from '@warp-drive/json-api/request';
-
-// Much simpler with built-in builders!
-export const getAllTodos = () => findAll('todo');
-export const getTodo = (id: string) => findRecord('todo', id);
-export const createTodo = (attributes: NewTodo) =>
-  createRecord('todo', attributes);
-```
-
-These built-in builders automatically:
-
-- Set correct headers (`application/vnd.api+json`)
-- Handle JSON:API document structure
-- Provide proper TypeScript types
-- Work with any JSON:API compliant backend
+**Next up:** Let's see this in action with Ember UI!
 
 ---
 
-## Chapter 5: "Reactive Control Flow - The Enterprise UI" (8 minutes)
+## Chapter 5: "Reactive UI - Ember Integration as Example" (8 minutes)
 
 ### Ember Integration Setup
 
@@ -591,7 +621,7 @@ _"Captain, the data has been successfully modified without temporal paradoxes!"_
 
 ---
 
-## Chapter 7: "Universal Deployment - Separating the Saucer Section" (5 minutes)
+## Chapter 7: "Universal Deployment - Separate the Data Layer" (5 minutes)
 
 ### Framework Agnostic Architecture
 
@@ -628,6 +658,8 @@ import { AppStore } from 'shared-data/store';
 ```
 
 _"Separate the saucer section! Both parts of the ship continue to function independently."_
+
+The key insight: By building our data layer in a separate package in the monorepo, we achieve true framework independence. Your schemas, request builders, and business logic live outside any specific UI framework.
 
 ---
 
@@ -744,6 +776,17 @@ _"She's giving us all she's got, Captain, and she's still got more in reserve!"_
 - **Growing community** of contributors
 - **Comprehensive documentation** at docs.warp-drive.io
 
+### Roadmap Highlights
+
+WarpDrive is actively evolving with the community. Key areas of development:
+
+- Enhanced TypeScript tooling for better DX
+- Performance optimizations for large datasets
+- More framework integrations beyond the big four
+- Advanced offline synchronization patterns
+
+_"Space: the final frontier. These are the voyages of the starship WarpDrive..."_
+
 ---
 
 ## Conclusion: "Live Long and Prosper" (2 minutes)
@@ -763,11 +806,11 @@ Today we've built a complete TodoMVC application and seen how WarpDrive delivers
 ### Our Journey Recap
 
 🚀 **Chapter 1-2**: Introduced WarpDrive and set up our universal architecture
-📊 **Chapter 3**: Defined schemas as the DNA of our data
-🌐 **Chapter 4**: Built typed request patterns with JSON:API
-⚡ **Chapter 5**: Created reactive UI components
+📊 **Chapter 3**: Defined schemas with TypeScript for resources
+🌐 **Chapter 4**: Built request patterns with custom and built-in builders
+⚡ **Chapter 5**: Created reactive UI with Ember integration as example
 🔄 **Chapter 6**: Handled mutations with the checkout system
-🌌 **Chapter 7**: Demonstrated universal framework deployment
+🌌 **Chapter 7**: Demonstrated universal deployment by separating the data layer
 🚀 **Chapter 8**: Explored advanced patterns and real-time updates
 ⚡ **Chapter 9**: Analyzed performance benefits
 🔭 **Chapter 10**: Looked toward the future
