@@ -262,58 +262,12 @@ These built-in builders automatically:
 - Provide proper TypeScript types
 - Work with any JSON:API compliant backend
 
-### Shared Store Setup
-
-#### What is the WarpDrive Store?
-
-The WarpDrive store is your **mission control center** for data management:
-
-- **Central hub** for managing all your data resources
-- **Handles fetching** - Smart request management with deduplication
-- **Manages caching** - Efficient memory usage with automatic cleanup
-- **Reactive updates** - Components automatically re-render when data changes
-- **Type-safe** - Full TypeScript support throughout
-
-Think of it as the bridge of our starship - everything flows through here!
-
-#### How Do I Make One?
-
-Creating a WarpDrive store starts simple and grows with your needs:
-
-```typescript
-// shared-data-layer/store/index.ts
-import { Cache, Fetch, Store, RequestManager } from '@warp-drive/core';
-
-export class AppStore extends Store {
-  requestManager = new RequestManager().use([Fetch]);
-
-  createCache(storeWrapper) {
-    return new Cache(storeWrapper);
-  }
-}
-```
-
-#### How Do I Set Up the Cache?
-
-The cache automatically handles your data - just register your schemas:
-
-```typescript
-// shared-data-layer/store/index.ts
-import { AppStore } from './app-store';
-import { TodoSchema } from '../schemas/todo';
-
-// Register schemas when creating your store
-const store = new AppStore();
-store.registerSchema(TodoSchema);
-```
-
 #### Recap
 
 **So far we've covered:**
 
 - ✅ WarpDrive's universal architecture
 - ✅ Setting up our shared data layer
-- ✅ Creating and configuring the store
 - ✅ Understanding the RequestManager
 
 **Next up:** Let's define our data structures with schemas!
@@ -392,6 +346,51 @@ type SavedTodo = Todo; // For existing records
 ```
 
 _"Data, are you getting readings on this?"_ - Yes, and they're perfectly structured!
+
+### Shared Store Setup
+
+#### What is the WarpDrive Store?
+
+The WarpDrive store is your **mission control center** for data management:
+
+- **Central hub** for managing all your data resources
+- **Handles fetching** - Smart request management with deduplication
+- **Manages caching** - Efficient memory usage with automatic cleanup
+- **Reactive updates** - Components automatically re-render when data changes
+- **Type-safe** - Full TypeScript support throughout
+
+Think of it as the bridge of our starship - everything flows through here!
+
+#### How Do I Make One?
+
+Creating a WarpDrive store starts simple and grows with your needs:
+
+```typescript
+// shared-data-layer/store/index.ts
+import { Cache, Fetch, Store, RequestManager } from '@warp-drive/core';
+
+export class AppStore extends Store {
+  requestManager = new RequestManager().use([Fetch]);
+
+  createCache(storeWrapper) {
+    return new Cache(storeWrapper);
+  }
+}
+```
+
+#### How Do I Set Up the Cache?
+
+The cache automatically handles your data - just register your schemas:
+
+```typescript
+// shared-data-layer/store/index.ts
+import { AppStore } from './app-store';
+import { TodoSchema } from '../schemas/todo';
+
+// Register schemas when creating your store
+const store = new AppStore();
+store.registerSchema(TodoSchema);
+```
 
 **Schema checkpoint:**
 
