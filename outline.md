@@ -400,34 +400,11 @@ _"Data, are you getting readings on this?"_ - Yes, and they're perfectly structu
 - ✅ Schema registration with the store
 - ✅ Type-safe resources
 
-**Next up:** Time to make some requests!
+**Next up:** Let's see this in action with Ember UI!
 
 ---
 
-### The Store - Bringing It Together
-
-Now let's see how the Store coordinates with RequestManager:
-
-```typescript
-// In any framework - Ember service example
-export class TodoRepository extends Service {
-  @service declare store: Store;
-
-  async loadTodos() {
-    const future = await this.store.request(getAllTodos());
-    // What is a Future? It's a Promise with extra metadata!
-    // future.content contains the response data
-    return future.content.data;
-  }
-}
-```
-
-The Store:
-
-- **Coordinates requests** through the RequestManager
-- **Manages cache** automatically
-- **Provides typed responses** via request builders
-- **Handles deduplication** - same request, same result
+## Chapter 5: "Reactive UI - Ember Integration as Example" (8 minutes)
 
 ### JSON:API Response Format
 
@@ -477,11 +454,7 @@ _"Make it so!" - And WarpDrive makes it typed._
 - ✅ Built-in JSON:API builders for common patterns
 - ✅ Store coordinates requests and manages cache
 
-**Next up:** Let's see this in action with Ember UI!
-
----
-
-## Chapter 5: "Reactive UI - Ember Integration as Example" (8 minutes)
+Now let's integrate our shared data layer with Ember to see reactive patterns in action.
 
 ### Ember Integration Setup
 
@@ -491,6 +464,8 @@ Now let's integrate our shared data layer with Ember:
 # In your ember-app directory
 pnpm install @warp-drive/ember
 ```
+
+FIXME: Set up Store Service for Ember
 
 ### Components with Reactive Magic
 
@@ -806,8 +781,8 @@ Today we've built a complete TodoMVC application and seen how WarpDrive delivers
 ### Our Journey Recap
 
 🚀 **Chapter 1-2**: Introduced WarpDrive and set up our universal architecture
-📊 **Chapter 3**: Defined schemas with TypeScript for resources
-🌐 **Chapter 4**: Built request patterns with custom and built-in builders
+🌐 **Chapter 3**: Built request patterns with RequestManager, custom and built-in builders
+📊 **Chapter 4**: Defined schemas with TypeScript for resources
 ⚡ **Chapter 5**: Created reactive UI with Ember integration as example
 🔄 **Chapter 6**: Handled mutations with the checkout system
 🌌 **Chapter 7**: Demonstrated universal deployment by separating the data layer
