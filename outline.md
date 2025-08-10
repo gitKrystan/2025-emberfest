@@ -331,7 +331,7 @@ import { withBrand } from '@warp-drive/core/types/request';
 export function getAllTodos() {
   return withBrand<Todo[]>({
     method: 'GET',
-    url: '/api/todos',
+    url: '/api/todo',
     headers: {
       Accept: 'application/vnd.api+json',
       'Content-Type': 'application/vnd.api+json',
@@ -342,7 +342,7 @@ export function getAllTodos() {
 export function createTodo(title: string) {
   return withBrand<Todo>({
     method: 'POST',
-    url: '/api/todos',
+    url: '/api/todo',
     headers: {
       Accept: 'application/vnd.api+json',
       'Content-Type': 'application/vnd.api+json',
@@ -387,11 +387,11 @@ export class TodoRepository extends Service {
 WarpDrive works seamlessly with JSON:API responses:
 
 ```json
-// GET /api/todos response
+// GET /api/todo response
 {
   "data": [
     {
-      "type": "todos",
+      "type": "todo",
       "id": "1",
       "attributes": {
         "title": "Learn WarpDrive",
@@ -399,11 +399,11 @@ WarpDrive works seamlessly with JSON:API responses:
         "created": "2025-01-08T10:00:00Z"
       },
       "links": {
-        "self": "/api/todos/1"
+        "self": "/api/todo/1"
       }
     },
     {
-      "type": "todos",
+      "type": "todo",
       "id": "2",
       "attributes": {
         "title": "Build TodoMVC",
@@ -411,12 +411,12 @@ WarpDrive works seamlessly with JSON:API responses:
         "created": "2025-01-08T09:00:00Z"
       },
       "links": {
-        "self": "/api/todos/2"
+        "self": "/api/todo/2"
       }
     }
   ],
   "links": {
-    "self": "/api/todos"
+    "self": "/api/todo"
   }
 }
 ```
@@ -561,7 +561,7 @@ export default class TodoItem extends Component {
     // Save to server using JSON:API format
     await this.store.request({
       method: 'PATCH',
-      url: `/api/todos/${editableTodo.id}`,
+      url: `/api/todo/${editableTodo.id}`,
       headers: {
         Accept: 'application/vnd.api+json',
         'Content-Type': 'application/vnd.api+json',
