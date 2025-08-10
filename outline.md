@@ -110,17 +110,29 @@ _"Universal translator online, Captain. All API communications are now standardi
 
 ### Getting Started with WarpDrive
 
-FIXME: Show shared-data-layer stuff first, THEN show Ember integration
+Let's start with the foundation - our shared data layer:
+
+TODO: This is a placeholder for package creation and installation steps.
 
 ```bash
-# The fastest way to warp into action
-npx warp-drive
-
-# For our Ember mission
-pnpm install @warp-drive/ember
+# Create a shared data package that any framework can use
+mkdir shared-data-layer
+cd shared-data-layer
+pnpm install @warp-drive/core
 ```
 
-¹`npx warp-drive`: https://github.com/emberjs/data/pull/9471
+FIXME: This should move to the ember-specific integration section.
+Then add framework-specific integration:
+
+```bash
+# For our Ember mission
+pnpm install @warp-drive/ember
+
+# The fastest way to warp into action (coming soon!)
+# npx warp-drive
+```
+
+¹ `npx warp-drive` scaffolding tool: https://github.com/emberjs/data/pull/9471
 
 ### TodoMVC: Our Prime Directive
 
@@ -153,13 +165,13 @@ Think of it as the bridge of our starship - everything flows through here!
 
 #### How Do I Make One?
 
-Creating a WarpDrive store is straightforward:
+Creating a WarpDrive store starts simple and grows with your needs:
 
 ```typescript
 // shared-data-layer/store/index.ts
 import { Cache, Fetch, Store, RequestManager } from '@warp-drive/core';
 
-class extends Store {
+export class AppStore extends Store {
   requestManager = new RequestManager().use([Fetch]);
 
   createCache(storeWrapper) {
@@ -170,46 +182,29 @@ class extends Store {
 
 #### How Do I Set Up the Cache?
 
-FIXME: This is probably too much detail to be introductory. Probably should show a high-level overview instead then delve in later if there is time.
-
-FIXME: We shouldn't be importing from `@ember-data/*` anything for any of the stuff living in shared-data-layer.
-
-FIXME: For the EmberData store integration, do we need to set up `instantiateRecord`?
-
-FIXME: This example is full of hallucinations.
-
-The cache is where WarpDrive stores your data and keeps track of changes:
+The cache automatically handles your data - just register your schemas:
 
 ```typescript
 // shared-data-layer/store/index.ts
-import Store from '@ember-data/store';
+import { AppStore } from './app-store';
 import { TodoSchema } from '../schemas/todo';
-import { UserSchema } from '../schemas/user';
 
-export default class AppStore extends Store {
-  constructor() {
-    super();
-
-    // Register schemas with the cache
-    this.cache.registerSchema(TodoSchema);
-    this.cache.registerSchema(UserSchema);
-
-    // Configure cache options
-    this.cache.configure({
-      // How long to keep unused data (in ms)
-      maxAge: 5 * 60 * 1000, // 5 minutes
-
-      // Maximum number of resources to cache
-      maxSize: 1000,
-
-      // Enable optimistic updates
-      enableOptimisticUpdates: true,
-    });
-  }
-}
+// Register schemas when creating your store
+const store = new AppStore();
+store.registerSchema(TodoSchema);
 ```
 
-FIXME: Do we answer "What is the RequestManager?" In fact, maybe we should show the RequestManager usage w/o store first then introduce store and explain why we need store vs request manager (or both!).
+We'll see schema registration in detail next!
+
+#### What is the RequestManager?
+
+The RequestManager handles all HTTP communication:
+
+- **Fetch Handler** - Makes actual network requests
+- **Cache Integration** - Automatically caches responses
+- **Request Pipeline** - Allows custom handlers for data transformation
+
+Think of it as your ship's communications officer - it manages all external contact!
 
 _"Number One, our data store is online and ready for action!"_
 
@@ -219,10 +214,10 @@ _"Number One, our data store is online and ready for action!"_
 
 ### Schema-Driven Development
 
-Instead of models with complex inheritance, WarpDrive uses simple JSON schemas:
+Instead of models with complex inheritance, WarpDrive uses simple, declarative schemas:
 
 ```typescript
-// schemas/todo.ts
+// shared-data-layer/schemas/todo.ts
 import { withDefaults } from '@warp-drive/core/reactive';
 
 export const TodoSchema = withDefaults({
@@ -246,7 +241,7 @@ export const TodoSchema = withDefaults({
 });
 ```
 
-- FIXME: What does `withDefaults` do?
+**What does `withDefaults` do?** It creates a schema with built-in TypeScript types and reactive behaviors. No class inheritance needed!
 
 ### The Magic of Derived Fields
 
@@ -255,15 +250,38 @@ Notice that `status` field? It's **derived** - automatically calculated based on
 ### Schema Registration
 
 ```typescript
-// FIXME: Example, located in shared-data-layer
+// shared-data-layer/store/index.ts
+import { AppStore } from './app-store';
+import { TodoSchema } from '../schemas/todo';
+
+export function createAppStore() {
+  const store = new AppStore();
+
+  // Register our schemas
+  store.registerSchema(TodoSchema);
+
+  return store;
+}
+```
+
+### TypeScript Integration
+
+```typescript
+// Automatically generated types
+interface Todo {
+  id: string;
+  title: string;
+  completed: boolean;
+  created: Date;
+  status: 'Complete' | 'Active'; // Derived field!
+}
+
+// Different states have different requirements
+type NewTodo = Omit<Todo, 'id' | 'created' | 'status'>; // For creating
+type SavedTodo = Todo; // For existing records
 ```
 
 _"Data, are you getting readings on this?"_ - Yes, and they're perfectly structured!
-
-### Resource Types
-
-- "schema" vs "resource" -- resource is specific to the request
-- FIXME: Ensure we show TS types for saved vs unsaved data, etc
 
 ---
 
@@ -271,59 +289,62 @@ _"Data, are you getting readings on this?"_ - Yes, and they're perfectly structu
 
 ### Requests Without the Fuss
 
-WarpDrive uses a familiar fetch-like API:
-
-FIXME: What is `withBrand`?
-FIXME: Should be shared-data-layer/builders/todo.ts and NOT a service (just export type-safe builders)
+WarpDrive uses typed request builders in your shared data layer:
 
 ```typescript
-// services/todo-repository.ts
-import { service } from '@ember/service';
+// shared-data-layer/builders/todo.ts
 import { withBrand } from '@warp-drive/core/types/request';
 
+// What is `withBrand`? It adds TypeScript type information to requests
+// so WarpDrive knows what type of data to expect back
+
+export function getAllTodos() {
+  return withBrand<Todo[]>({
+    method: 'GET',
+    url: '/api/todos',
+    headers: {
+      Accept: 'application/vnd.api+json',
+      'Content-Type': 'application/vnd.api+json',
+    },
+  });
+}
+
+export function createTodo(title: string) {
+  return withBrand<Todo>({
+    method: 'POST',
+    url: '/api/todos',
+    headers: {
+      Accept: 'application/vnd.api+json',
+      'Content-Type': 'application/vnd.api+json',
+    },
+    body: JSON.stringify({
+      data: {
+        type: 'todo',
+        attributes: {
+          title,
+          completed: false,
+        },
+      },
+    }),
+  });
+}
+```
+
+### Using Request Builders
+
+```typescript
+// In any framework - Ember service example
 export class TodoRepository extends Service {
   @service declare store: Store;
 
-  // Typed request builders
-  getAllTodos() {
-    return withBrand<Todo[]>({
-      method: 'GET',
-      url: '/api/todos',
-      headers: {
-        Accept: 'application/vnd.api+json',
-        'Content-Type': 'application/vnd.api+json',
-      },
-    });
-  }
-
-  createTodo(title: string) {
-    return withBrand<Todo>({
-      method: 'POST',
-      url: '/api/todos',
-      headers: {
-        Accept: 'application/vnd.api+json',
-        'Content-Type': 'application/vnd.api+json',
-      },
-      body: JSON.stringify({
-        data: {
-          type: 'todo',
-          attributes: {
-            title,
-            completed: false,
-          },
-        },
-      }),
-    });
-  }
-
   async loadTodos() {
-    const future = await this.store.request(this.getAllTodos());
+    const future = await this.store.request(getAllTodos());
+    // What is a Future? It's a Promise with extra metadata!
+    // future.content contains the response data
     return future.content.data;
   }
 }
 ```
-
-FIXME: Make sure we talk about what a request `Future` is. (with emphasis on the fact that it _is_ a `Promise`)
 
 ### The Power of Request Builders
 
@@ -372,11 +393,37 @@ WarpDrive works seamlessly with JSON:API responses:
 
 _"Make it so!" - And WarpDrive makes it typed._
 
-FIXME: Ensure we show built-in JSON:API request builders. Probably we should show hand-rolled builders first, then show how they can be replaced with the built-in ones.
+### Built-in JSON:API Builders
+
+Why write all that boilerplate? WarpDrive includes built-in JSON:API request builders:
+
+```typescript
+// shared-data-layer/builders/todo.ts
+import {
+  findRecord,
+  findAll,
+  createRecord,
+} from '@warp-drive/json-api/request';
+
+// Much simpler with built-in builders!
+export const getAllTodos = () => findAll('todo');
+export const getTodo = (id: string) => findRecord('todo', id);
+export const createTodo = (attributes: NewTodo) =>
+  createRecord('todo', attributes);
+```
+
+These built-in builders automatically:
+
+- Set correct headers (`application/vnd.api+json`)
+- Handle JSON:API document structure
+- Provide proper TypeScript types
+- Work with any JSON:API compliant backend
 
 ---
 
 ## Chapter 5: "Reactive Control Flow - The Enterprise UI" (8 minutes)
+
+FIXME: This is where we should show install of @ember-data packages in the ember app
 
 ### Components with Reactive Magic
 
@@ -425,6 +472,8 @@ The `Request` component handles:
 - Automatic re-rendering when data changes
 
 _"Counselor Troi senses your loading states are perfectly managed."_
+
+FIXME: Slide about how the `Request` Ember component works under the hood. It's a thin wrapper around WarpDrive's `getRequestState`. We provide similar wrappers for other frameworks like React, Vue, and Svelte.
 
 ---
 
@@ -546,48 +595,30 @@ store.cache.patch({
 
 ### Custom Request Handlers
 
-Let's say our API team has decided to use snake_case for all JSON keys, diverging from the JSON:API standard.
-We can insert a "Handler" to convert the keys back and forth automatically:
+Sometimes your API doesn't follow standards. Handlers let you adapt without changing your application code:
 
 ```typescript
-const CamelCaseHandler = {
+// shared-data-layer/handlers/snake-case-handler.ts
+const SnakeCaseHandler = {
   request(context, next) {
-    return next(context.request).then((result) => {
-      return convertKeysToCamelCase(result.content);
+    // Convert request data to snake_case
+    const modifiedRequest = convertKeysToSnakeCase(context.request);
+
+    return next(modifiedRequest).then((result) => {
+      // Convert response back to camelCase
+      return {
+        ...result,
+        content: convertKeysToCamelCase(result.content),
+      };
     });
   },
 };
+
+// Register the handler
+store.requestManager.use([SnakeCaseHandler, Fetch]);
 ```
 
-### Advanced Schema Features
-
-FIXME: Seems like we're showing derived fields twice.
-
-```typescript
-const TodoSchema = withDefaults({
-  type: 'todo', // JSON:API resource type
-  fields: [
-    // ... basic fields
-    {
-      kind: 'belongsTo',
-      name: 'owner',
-      type: 'users', // JSON:API resource type for relationship
-    },
-    {
-      kind: 'derived',
-      name: 'isOverdue',
-      type: 'computed',
-      options: {
-        compute: (todo) => {
-          return todo.dueDate && todo.dueDate < new Date() && !todo.completed;
-        },
-      },
-    },
-  ],
-});
-```
-
-_"We're approaching maximum warp, Captain!"_
+Now your entire app can use camelCase while your API uses snake_case!
 
 ---
 
@@ -606,6 +637,8 @@ WarpDrive optimizes automatically:
 
 ### Bundle Size Comparison
 
+TODO: Confirm this w/ @runspired. Is this made up? lol
+
 ```
 Traditional approach: ~45kb
 WarpDrive core: ~12kb
@@ -614,6 +647,8 @@ Total: ~15kb (67% smaller!)
 ```
 
 ### Benchmarks
+
+TODO: Confirm this w/ @runspired. Is this made up? lol
 
 _Show performance comparison chart_
 
