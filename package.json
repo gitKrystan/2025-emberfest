@@ -2,10 +2,18 @@
   "name": "2025-warpdrive-set-data-to-stun",
   "type": "module",
   "private": true,
+  "packageManager": "pnpm@9.12.1",
+  "engines": {
+    "node": ">= 20"
+  },
   "scripts": {
     "build": "slidev build",
     "dev": "slidev --open",
-    "export": "slidev export"
+    "export": "slidev export",
+    "build:apps": "pnpm -r --filter='./apps/*' build",
+    "dev:apps": "pnpm -r --filter='./apps/*' dev",
+    "lint:apps": "pnpm -r --filter='./apps/*' lint",
+    "test:apps": "pnpm -r --filter='./apps/*' test"
   },
   "dependencies": {
     "@slidev/cli": "^52.0.0",
