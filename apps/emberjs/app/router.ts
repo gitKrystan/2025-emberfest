@@ -1,5 +1,5 @@
 import EmberRouter from '@embroider/router';
-import config from 'todomvc/config/environment';
+import config from '#env';
 
 export default class Router extends EmberRouter {
   location = config.locationType;

@@ -1,8 +1,8 @@
 import { pageTitle } from 'ember-page-title';
 
-import TodoList from 'todomvc/components/todo-list';
-import type CompletedTodos from 'todomvc/routes/completed';
-import type { RouteComponent } from 'todomvc/types/route-component';
+import TodoList from '#components/todo-list';
+import type CompletedTodos from '#routes/completed';
+import type { RouteComponent } from '#types/route-component';
 
 <template>
   {{pageTitle "Completed"}}

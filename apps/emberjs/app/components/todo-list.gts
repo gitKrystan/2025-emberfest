@@ -3,9 +3,9 @@ import { tracked } from '@glimmer/tracking';
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 
-import Item from 'todomvc/components/todo-item';
-import type { SavedTodo } from 'todomvc/services/repo';
-import type Repo from 'todomvc/services/repo';
+import Item from '#components/todo-item';
+import type { SavedTodo } from '#services/repo';
+import type Repo from '#services/repo';
 
 interface Signature {
   Args: {

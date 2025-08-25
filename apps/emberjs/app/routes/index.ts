@@ -1,7 +1,7 @@
 import Route from '@ember/routing/route';
 import { service } from '@ember/service';
 
-import type Repo from 'todomvc/services/repo';
+import type Repo from '#services/repo';
 
 export default class AllTodos extends Route {
   @service declare repo: Repo;
