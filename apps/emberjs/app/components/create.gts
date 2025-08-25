@@ -3,7 +3,7 @@ import { service } from '@ember/service';
 import { isBlank } from '@ember/utils';
 import Component from '@glimmer/component';
 
-import type Repo from 'todomvc/services/repo';
+import type Repo from '#services/repo';
 
 export default class Create extends Component {
   <template>

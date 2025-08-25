@@ -2,8 +2,8 @@ import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 
-import Filters from 'todomvc/components/filters';
-import type Repo from 'todomvc/services/repo';
+import Filters from '#components/filters';
+import type Repo from '#services/repo';
 
 function itemLabel(count: number) {
   if (count === 0 || count > 1) {

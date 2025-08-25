@@ -1,14 +1,11 @@
 {
   "extends": "@ember/app-tsconfig",
-  "include": ["app", "tests", "types"],
   "glint": {
     "environment": ["ember-loose", "ember-template-imports"]
   },
   "compilerOptions": {
     "allowJs": true,
     "paths": {
-      "todomvc/tests/*": ["./tests/*"],
-      "todomvc/*": ["./app/*"],
       "*": ["./types/*"]
     },
     "types": ["ember-source/types", "@embroider/core/virtual", "vite/client"]

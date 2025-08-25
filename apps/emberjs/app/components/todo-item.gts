@@ -4,8 +4,8 @@ import { isBlank } from '@ember/utils';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 
-import type Repo from 'todomvc/services/repo';
-import type { SavedTodo } from 'todomvc/services/repo';
+import type Repo from '#services/repo';
+import type { SavedTodo } from '#services/repo';
 
 interface Signature {
   Args: {

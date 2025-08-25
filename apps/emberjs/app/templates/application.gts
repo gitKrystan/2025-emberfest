@@ -1,6 +1,6 @@
 import { pageTitle } from 'ember-page-title';
-import Attribution from 'todomvc/components/attribution';
-import Layout from 'todomvc/components/layout';
+import Attribution from '#components/attribution';
+import Layout from '#components/layout';
 
 <template>
   {{pageTitle "TodoMVC"}}

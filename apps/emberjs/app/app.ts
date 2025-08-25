@@ -5,18 +5,10 @@ import 'todomvc-app-css/index.css';
 import Application from '@ember/application';
 import compatModules from '@embroider/virtual/compat-modules';
 import Resolver from 'ember-resolver';
-import loadInitializers from 'ember-load-initializers';
-import config from 'todomvc/config/environment';
-import { importSync, isDevelopingApp, macroCondition } from '@embroider/macros';
-
-if (macroCondition(isDevelopingApp())) {
-  importSync('./deprecation-workflow');
-}
+import config from '#env';
 
 export default class App extends Application {
+  // or: https://github.com/NullVoxPopuli/ember-strict-application-resolver
   modulePrefix = config.modulePrefix;
-  podModulePrefix = config.podModulePrefix;
   Resolver = Resolver.withModules(compatModules);
 }
-
-loadInitializers(App, config.modulePrefix, compatModules);
