@@ -515,7 +515,7 @@ Think of it as the bridge of our starship - everything flows through here!
 
 Creating a WarpDrive store starts simple and grows with your needs:
 
-```typescript twoslash {1,4-10} {lines:true}
+```typescript {1,4-10} {lines:true}
 // shared-data-layer/store/index.ts
 import { Cache, Fetch, Store, RequestManager } from '@warp-drive/core';
 
