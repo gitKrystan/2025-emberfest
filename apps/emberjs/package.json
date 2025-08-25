@@ -99,9 +99,14 @@
     "vite": "^7.1.3"
   },
   "engines": {
-    "node": ">= 22"
+    "node": ">= 22",
+    "npm": "use pnpm",
+    "yarn": "use pnpm"
   },
   "ember": {
     "edition": "octane"
+  },
+  "volta": {
+    "extends": "../../package.json"
   }
 }
