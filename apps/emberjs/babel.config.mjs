@@ -1,14 +1,9 @@
-import { setDefaultBuildConfig } from '@workspace/shared-data';
 import { buildMacros } from '@embroider/macros/babel';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 
-const macros = buildMacros({
-  configure: (config) => {
-    setDefaultBuildConfig(config);
-  },
-});
+const macros = buildMacros();
 
 export default {
   plugins: [
@@ -47,21 +42,6 @@ export default {
         useESModules: true,
         regenerator: false,
       },
-    ],
-    // babel-plugin-debug-macros is temporarily needed
-    // to convert deprecation/warn calls into console.warn
-    [
-      'babel-plugin-debug-macros',
-      {
-        flags: [],
-
-        debugTools: {
-          isDebug: true,
-          source: '@ember/debug',
-          assertPredicateIndex: 1,
-        },
-      },
-      'ember-data-specific-macros-stripping-test',
     ],
     ...macros.babelMacros,
   ],
