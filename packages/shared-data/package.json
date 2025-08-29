@@ -8,6 +8,7 @@
   "repository": "",
   "license": "MIT",
   "author": "",
+  "type": "module",
   "files": [
     "addon-main.cjs",
     "declarations",
@@ -97,8 +98,8 @@
       "default": "./dist/index.js"
     },
     "./builders": {
-      "types": "./declarations/builders/*.d.ts",
-      "default": "./dist/builders/*.js"
+      "types": "./declarations/builders/index.d.ts",
+      "default": "./dist/builders/index.js"
     },
     "./*.css": "./dist/*.css",
     "./*": {

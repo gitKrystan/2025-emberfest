@@ -1,7 +1,7 @@
 import type Store from '#services/store';
 import { uniqueId } from '@ember/helper';
 import Service, { service } from '@ember/service';
-import { getAllTodos } from '@workspace/shared-data/builders/todo';
+import { getAllTodos } from '@workspace/shared-data/builders';
 import { TrackedMap, TrackedObject } from 'tracked-built-ins';
 
 export type UnsavedTodo = {
