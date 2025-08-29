@@ -57,11 +57,11 @@ app.get('/', (req, res) => {
 });
 
 // Todo routes
-app.get('/todos', getTodos);
-app.get('/todos/:id', getTodo);
-app.post('/todos', createTodo);
-app.patch('/todos/:id', updateTodo);
-app.delete('/todos/:id', deleteTodo);
+app.get('/todo', getTodos);
+app.get('/todo/:id', getTodo);
+app.post('/todo', createTodo);
+app.patch('/todo/:id', updateTodo);
+app.delete('/todo/:id', deleteTodo);
 
 // 404 handler
 app.use('*', (req, res) => {

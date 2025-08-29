@@ -1,6 +1,7 @@
+import type Store from '#services/store';
 import { uniqueId } from '@ember/helper';
-import Service from '@ember/service';
-
+import Service, { service } from '@ember/service';
+import { getAllTodos } from '@workspace/shared-data/builders/todo';
 import { TrackedMap, TrackedObject } from 'tracked-built-ins';
 
 export type UnsavedTodo = {
@@ -17,21 +18,6 @@ export type SavedTodo = {
 /** id to Todo */
 type IndexedData = TrackedMap<string, SavedTodo>;
 
-function load() {
-  // localStorage has to be an array (required by the todomvc repo),
-  // so let's convert to an object on id.
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const list: SavedTodo[] = JSON.parse(
-    window.localStorage.getItem('todos') || '[]'
-  );
-
-  return list.reduce((indexed: IndexedData, todo) => {
-    indexed.set(todo.id, new TrackedObject(todo));
-
-    return indexed;
-  }, new TrackedMap<string, SavedTodo>());
-}
-
 function save(indexedData: IndexedData) {
   const data = [...indexedData.values()];
 
@@ -41,15 +27,30 @@ function save(indexedData: IndexedData) {
 export default class Repo extends Service {
   data: IndexedData | null = null;
 
-  load = () => {
-    this.data = load();
+  @service declare store: Store;
+
+  load = async () => {
+    const foo = await this.store.requestManager.request(getAllTodos());
+    console.log(foo);
+    // localStorage has to be an array (required by the todomvc repo),
+    // so let's convert to an object on id.
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const list: SavedTodo[] = JSON.parse(
+      window.localStorage.getItem('todos') || '[]'
+    );
+
+    this.data = list.reduce((indexed: IndexedData, todo) => {
+      indexed.set(todo.id, new TrackedObject(todo));
+
+      return indexed;
+    }, new TrackedMap<string, SavedTodo>());
   };
 
   get all() {
     if (!this.data) {
-      this.load();
+      throw new Error('Data not loaded yet');
     }
-    return [...this.data!.values()];
+    return [...this.data.values()];
   }
 
   get completed() {
@@ -72,24 +73,24 @@ export default class Repo extends Service {
   add = (attrs: UnsavedTodo) => {
     const newId = uniqueId();
     if (!this.data) {
-      this.load();
+      throw new Error('Data not loaded yet');
     }
-    this.data!.set(newId, new TrackedObject({ ...attrs, id: newId }));
+    this.data.set(newId, new TrackedObject({ ...attrs, id: newId }));
     this.persist();
   };
 
   delete = (todo: SavedTodo) => {
     if (!this.data) {
-      this.load();
+      throw new Error('Data not loaded yet');
     }
-    this.data!.delete(todo.id);
+    this.data.delete(todo.id);
     this.persist();
   };
 
   persist = () => {
     if (!this.data) {
-      this.load();
+      throw new Error('Data not loaded yet');
     }
-    save(this.data!);
+    save(this.data);
   };
 }

@@ -7,6 +7,10 @@ import compatModules from '@embroider/virtual/compat-modules';
 import Resolver from 'ember-resolver';
 import config from '#env';
 
+import { setDefaultBuildURLConfig } from '@workspace/shared-data';
+
+setDefaultBuildURLConfig();
+
 export default class App extends Application {
   // or: https://github.com/NullVoxPopuli/ember-strict-application-resolver
   modulePrefix = config.modulePrefix;

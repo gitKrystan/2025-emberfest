@@ -1,4 +1,4 @@
-import { setConfig } from '@warp-drive/core/build-config';
+import { setDefaultBuildConfig } from '@workspace/shared-data';
 import { buildMacros } from '@embroider/macros/babel';
 import { createRequire } from 'node:module';
 
@@ -6,14 +6,7 @@ const require = createRequire(import.meta.url);
 
 const macros = buildMacros({
   configure: (config) => {
-    setConfig(config, {
-      // this should be the most recent <major>.<minor> version for
-      // which all deprecations have been fully resolved
-      // and should be updated when that changes
-      // for new apps it should be the version you installed
-      // for universal apps this MUST be at least 5.6
-      compatWith: '5.6',
-    });
+    setDefaultBuildConfig(config);
   },
 });
 
@@ -54,6 +47,21 @@ export default {
         useESModules: true,
         regenerator: false,
       },
+    ],
+    // babel-plugin-debug-macros is temporarily needed
+    // to convert deprecation/warn calls into console.warn
+    [
+      'babel-plugin-debug-macros',
+      {
+        flags: [],
+
+        debugTools: {
+          isDebug: true,
+          source: '@ember/debug',
+          assertPredicateIndex: 1,
+        },
+      },
+      'ember-data-specific-macros-stripping-test',
     ],
     ...macros.babelMacros,
   ],

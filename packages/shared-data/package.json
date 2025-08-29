@@ -30,6 +30,9 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.8.9",
+    "@warp-drive/core": "5.7.0",
+    "@warp-drive/json-api": "5.7.0",
+    "@warp-drive/utilities": "5.7.0",
     "decorator-transforms": "^2.2.2"
   },
   "devDependencies": {
@@ -37,11 +40,13 @@
     "@babel/eslint-parser": "^7.25.1",
     "@babel/plugin-transform-typescript": "^7.25.2",
     "@babel/runtime": "^7.25.6",
+    "@ember/app-tsconfig": "^1.0.0",
+    "@ember/library-tsconfig": "^1.0.0",
     "@ember/test-helpers": "^5.2.1",
     "@ember/test-waiters": "^4.1.1",
     "@embroider/addon-dev": "^8.1.0",
-    "@embroider/core": "^4.1.0",
     "@embroider/compat": "^4.1.0",
+    "@embroider/core": "^4.1.0",
     "@embroider/macros": "^1.18.0",
     "@embroider/vite": "^1.1.5",
     "@eslint/js": "^9.17.0",
@@ -49,10 +54,8 @@
     "@glint/core": "^2.0.0-alpha.2",
     "@glint/environment-ember-loose": "^2.0.0-alpha.2",
     "@glint/environment-ember-template-imports": "^2.0.0-alpha.2",
-    "@glint/tsserver-plugin": "^2.0.0-alpha.2",
     "@glint/template": "^1.6.0-alpha.1",
-    "@ember/app-tsconfig": "^1.0.0",
-    "@ember/library-tsconfig": "^1.0.0",
+    "@glint/tsserver-plugin": "^2.0.0-alpha.2",
     "@rollup/plugin-babel": "^6.0.4",
     "@types/qunit": "^2.19.12",
     "babel-plugin-ember-template-compilation": "^2.2.5",
@@ -73,8 +76,8 @@
     "qunit-dom": "^3.4.0",
     "rollup": "^4.22.5",
     "testem": "^3.15.1",
-    "typescript-eslint": "^8.19.1",
     "typescript": "~5.8.3",
+    "typescript-eslint": "^8.19.1",
     "vite": "^6.2.4"
   },
   "ember": {
@@ -92,6 +95,10 @@
     ".": {
       "types": "./declarations/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./builders": {
+      "types": "./declarations/builders/*.d.ts",
+      "default": "./dist/builders/*.js"
     },
     "./*.css": "./dist/*.css",
     "./*": {

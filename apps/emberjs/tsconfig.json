@@ -6,8 +6,10 @@
   "compilerOptions": {
     "allowJs": true,
     "paths": {
+      "#services/*": ["./app/services/*"],
       "*": ["./types/*"]
     },
     "types": ["ember-source/types", "@embroider/core/virtual", "vite/client"]
-  }
+  },
+  "references": [{ "path": "../../packages/shared-data" }]
 }

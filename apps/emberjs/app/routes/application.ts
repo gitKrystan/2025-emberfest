@@ -9,10 +9,10 @@ import type Repo from '#services/repo';
 export default class Application extends Route {
   @service declare repo: Repo;
 
-  beforeModel() {
+  async beforeModel() {
     /**
-     * Load from localStorage
+     * Load from API
      */
-    this.repo.load();
+    await this.repo.load();
   }
 }
