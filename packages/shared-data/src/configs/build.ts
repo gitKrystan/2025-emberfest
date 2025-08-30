@@ -17,3 +17,19 @@ export function setDefaultBuildConfig(context: object) {
     },
   });
 }
+
+// babel-plugin-debug-macros is temporarily needed
+// to convert deprecation/warn calls into console.warn
+export const tempStripDebug = [
+  'babel-plugin-debug-macros',
+  {
+    flags: [],
+
+    debugTools: {
+      isDebug: true,
+      source: '@ember/debug',
+      assertPredicateIndex: 1,
+    },
+  },
+  'ember-data-specific-macros-stripping-test',
+];

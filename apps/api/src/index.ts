@@ -26,9 +26,6 @@ app.use(
 // Parse JSON bodies - only accept JSONAPI content type
 app.use(express.json({ type: JSONAPI_CONTENT_TYPE }));
 
-// Validate JSONAPI content type for write operations
-app.use('/todos', validateJsonApiContentType);
-
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({
@@ -47,7 +44,7 @@ app.get('/', (req, res) => {
     },
     links: {
       self: `${req.protocol}://${req.get('host')}/`,
-      todos: `${req.protocol}://${req.get('host')}/todos`,
+      todos: `${req.protocol}://${req.get('host')}/api/todo`,
     },
     meta: {
       description: 'JSONAPI-compliant Todo API',
@@ -56,12 +53,15 @@ app.get('/', (req, res) => {
   });
 });
 
+// Validate JSONAPI content type for write operations
+app.use('/api/todo', validateJsonApiContentType);
+
 // Todo routes
-app.get('/todo', getTodos);
-app.get('/todo/:id', getTodo);
-app.post('/todo', createTodo);
-app.patch('/todo/:id', updateTodo);
-app.delete('/todo/:id', deleteTodo);
+app.get('/api/todo', getTodos);
+app.get('/api/todo/:id', getTodo);
+app.post('/api/todo', createTodo);
+app.patch('/api/todo/:id', updateTodo);
+app.delete('/api/todo/:id', deleteTodo);
 
 // 404 handler
 app.use('*', (req, res) => {
@@ -107,7 +107,7 @@ app.use(
 app.listen(PORT, () => {
   console.log(`🚀 Todo API server running on port ${PORT}`);
   console.log(`📖 API Documentation: http://localhost:${PORT}/`);
-  console.log(`🎯 Todos endpoint: http://localhost:${PORT}/todos`);
+  console.log(`🎯 Todos endpoint: http://localhost:${PORT}/api/todo`);
   console.log(`❤️  Health check: http://localhost:${PORT}/health`);
 });
 

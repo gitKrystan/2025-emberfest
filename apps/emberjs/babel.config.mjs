@@ -1,9 +1,15 @@
 import { buildMacros } from '@embroider/macros/babel';
 import { createRequire } from 'node:module';
+import {
+  setDefaultBuildConfig,
+  tempStripDebug,
+} from '@workspace/shared-data/build-config';
 
 const require = createRequire(import.meta.url);
 
-const macros = buildMacros();
+const macros = buildMacros({
+  configure: setDefaultBuildConfig,
+});
 
 export default {
   plugins: [
@@ -43,6 +49,7 @@ export default {
         regenerator: false,
       },
     ],
+    tempStripDebug,
     ...macros.babelMacros,
   ],
 
