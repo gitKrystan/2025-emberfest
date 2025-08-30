@@ -1,9 +1,10 @@
+import { setApplication } from '@ember/test-helpers';
+import { setupEmberOnerrorValidation,start as qunitStart } from 'ember-qunit';
+import * as QUnit from 'qunit';
+import { setup } from 'qunit-dom';
+
 import Application from '#app/app.ts';
 import config, { enterTestMode } from '#config/environment.ts';
-import * as QUnit from 'qunit';
-import { setApplication } from '@ember/test-helpers';
-import { setup } from 'qunit-dom';
-import { start as qunitStart, setupEmberOnerrorValidation } from 'ember-qunit';
 
 export function start() {
   enterTestMode();

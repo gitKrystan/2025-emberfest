@@ -1,4 +1,4 @@
-import Route from '@ember/routing/route';
+import type Route from '@ember/routing/route';
 
 import type { Resolved } from './resolved';
 

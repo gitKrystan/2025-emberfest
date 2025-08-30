@@ -42,6 +42,6 @@ export default class AppStore extends Store {
   }
 
   teardownRecord(record: unknown): void {
-    return teardownRecord(record);
+    teardownRecord(record);
   }
 }

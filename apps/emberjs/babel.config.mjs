@@ -1,5 +1,7 @@
-import { buildMacros } from '@embroider/macros/babel';
 import { createRequire } from 'node:module';
+
+import { buildMacros } from '@embroider/macros/babel';
+
 import {
   setDefaultBuildConfig,
   tempStripDebug,

@@ -12,18 +12,15 @@
  *     npx eslint --inspect-config
  *
  */
-import globals from 'globals';
-import js from '@eslint/js';
-
-import ts from 'typescript-eslint';
-
-import ember from 'eslint-plugin-ember/recommended';
-
-import eslintConfigPrettier from 'eslint-config-prettier';
-import qunit from 'eslint-plugin-qunit';
-import n from 'eslint-plugin-n';
-
 import babelParser from '@babel/eslint-parser';
+import js from '@eslint/js';
+import eslintConfigPrettier from 'eslint-config-prettier';
+import ember from 'eslint-plugin-ember/recommended';
+import n from 'eslint-plugin-n';
+import qunit from 'eslint-plugin-qunit';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
+import globals from 'globals';
+import ts from 'typescript-eslint';
 
 const parserOptions = {
   esm: {
@@ -60,6 +57,39 @@ export default ts.config(
     },
   },
   {
+    files: ['**/*'],
+    plugins: {
+      'simple-import-sort': simpleImportSort,
+    },
+    rules: {
+      'simple-import-sort/exports': 'error',
+      'simple-import-sort/imports': [
+        'error',
+        {
+          groups: [
+            // Side effect imports.
+            ['^\\u0000'],
+            // Node.js builtins prefixed with `node:`.
+            ['^node:'],
+            // Packages.
+            // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
+            ['^@?\\w'],
+            // Workspace Packages.
+            ['^@workspace/'],
+            // Internal
+            ['^#'],
+            // Absolute imports and other imports such as Vue-style `@/foo`.
+            // Anything not matched in another group.
+            ['^'],
+            // Relative imports.
+            // Anything that starts with a dot.
+            ['^\\.'],
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['**/*.js'],
     languageOptions: {
       parser: babelParser,
@@ -80,7 +110,23 @@ export default ts.config(
       parser: ember.parser,
       parserOptions: parserOptions.esm.ts,
     },
-    extends: [...ts.configs.recommendedTypeChecked, ember.configs.gts],
+    extends: [
+      ...ts.configs.strictTypeChecked,
+      ...ts.configs.stylisticTypeChecked,
+      ember.configs.gts,
+    ],
+    rules: {
+      '@typescript-eslint/consistent-type-exports': 'error',
+      '@typescript-eslint/consistent-type-imports': 'error',
+      '@typescript-eslint/method-signature-style': 'error',
+      '@typescript-eslint/no-import-type-side-effects': 'error',
+      '@typescript-eslint/prefer-readonly': 'error',
+      '@typescript-eslint/prefer-ts-expect-error': 'error',
+      '@typescript-eslint/promise-function-async': 'error',
+
+      'prefer-destructuring': 'off',
+      '@typescript-eslint/prefer-destructuring': 'error',
+    },
   },
   {
     files: ['tests/**/*-test.{js,gjs,ts,gts}'],

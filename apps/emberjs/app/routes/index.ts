@@ -14,7 +14,7 @@ export default class AllTodos extends Route {
    * _minimally required_ data to show the page.
    */
   model() {
-    const repo = this.repo;
+    const {repo} = this;
 
     /**
      * We use a getter so that we make evaluation

@@ -1,19 +1,16 @@
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 
+import type { SavedTodo } from '@workspace/shared-data/builders';
+
 import Create from '#components/create';
 import Footer from '#components/footer';
 import type Repo from '#services/repo';
-import type { SavedTodo } from '#services/repo';
 
 interface Signature {
   Blocks: {
     default: [];
   };
-}
-
-function hasTodos(todos: SavedTodo[]) {
-  return todos.length > 0;
 }
 
 export default class Layout extends Component<Signature> {
@@ -34,4 +31,8 @@ export default class Layout extends Component<Signature> {
       {{/if}}
     </section>
   </template>
+}
+
+function hasTodos(todos: SavedTodo[]) {
+  return todos.length > 0;
 }

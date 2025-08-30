@@ -1,28 +1,14 @@
-import type Store from '#services/store';
 import { uniqueId } from '@ember/helper';
 import Service, { service } from '@ember/service';
-import { getAllTodos } from '@workspace/shared-data/builders';
 import { TrackedMap, TrackedObject } from 'tracked-built-ins';
 
-export type UnsavedTodo = {
-  title: string;
-  completed: boolean;
-};
+import type { SavedTodo, UnsavedTodo } from '@workspace/shared-data/builders';
+import { getAllTodos } from '@workspace/shared-data/builders';
 
-export type SavedTodo = {
-  id: string;
-  title: string;
-  completed: boolean;
-};
+import type Store from '#services/store';
 
 /** id to Todo */
 type IndexedData = TrackedMap<string, SavedTodo>;
-
-function save(indexedData: IndexedData) {
-  const data = [...indexedData.values()];
-
-  window.localStorage.setItem('todos', JSON.stringify(data));
-}
 
 export default class Repo extends Service {
   data: IndexedData | null = null;
@@ -36,11 +22,16 @@ export default class Repo extends Service {
     // so let's convert to an object on id.
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const list: SavedTodo[] = JSON.parse(
-      window.localStorage.getItem('todos') || '[]'
+      window.localStorage.getItem('todos') ?? '[]'
     );
 
     this.data = list.reduce((indexed: IndexedData, todo) => {
-      indexed.set(todo.id, new TrackedObject(todo));
+      indexed.set(
+        todo.id,
+        new TrackedObject(
+          todo as unknown as Record<string, unknown>
+        ) as unknown as SavedTodo
+      );
 
       return indexed;
     }, new TrackedMap<string, SavedTodo>());
@@ -93,4 +84,10 @@ export default class Repo extends Service {
     }
     save(this.data);
   };
+}
+
+function save(indexedData: IndexedData) {
+  const data = [...indexedData.values()];
+
+  window.localStorage.setItem('todos', JSON.stringify(data));
 }

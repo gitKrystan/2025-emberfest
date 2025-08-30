@@ -1,10 +1,10 @@
 import EmberApp from '@ember/application';
-import Resolver from 'ember-resolver';
 import EmberRouter from '@ember/routing/router';
-import * as QUnit from 'qunit';
 import { setApplication } from '@ember/test-helpers';
+import { setupEmberOnerrorValidation, start as qunitStart } from 'ember-qunit';
+import Resolver from 'ember-resolver';
+import * as QUnit from 'qunit';
 import { setup } from 'qunit-dom';
-import { start as qunitStart, setupEmberOnerrorValidation } from 'ember-qunit';
 
 class Router extends EmberRouter {
   location = 'none';
@@ -19,6 +19,7 @@ class TestApp extends EmberApp {
   });
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 Router.map(function () {});
 
 export function start() {

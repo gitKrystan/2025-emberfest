@@ -13,6 +13,6 @@
     "rootDir": ".",
     "types": ["ember-source/types", "vite/client", "@embroider/core/virtual"],
     "composite": true,
-    "noEmit": false
+    "noEmit": true
   }
 }

@@ -5,9 +5,10 @@ import 'todomvc-app-css/index.css';
 import Application from '@ember/application';
 import compatModules from '@embroider/virtual/compat-modules';
 import Resolver from 'ember-resolver';
-import config from '#env';
 
 import { setDefaultBuildURLConfig } from '@workspace/shared-data';
+
+import config from '#env';
 
 setDefaultBuildURLConfig();
 

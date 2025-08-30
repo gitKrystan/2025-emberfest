@@ -5,20 +5,20 @@ import { getGlobalConfig } from '@embroider/macros/src/addon/runtime';
 const ENV = {
   // match package.json#name
   // Alternatively: https://github.com/NullVoxPopuli/ember-strict-application-resolver
-  modulePrefix: 'emberjs-todomvc',
-  environment: import.meta.env.DEV ? 'development' : 'production',
-  rootURL: '/',
-  locationType: 'history',
-  EmberENV: {},
   APP: {},
+  EmberENV: {},
+  environment: import.meta.env.DEV ? 'development' : 'production',
+  locationType: 'history',
+  modulePrefix: 'emberjs-todomvc',
+  rootURL: '/',
 } as {
+  APP: Record<string, unknown>;
+  EmberENV: Record<string, unknown>;
   environment: string;
+  locationType: 'auto' | 'hash' | 'history' | 'none';
   modulePrefix: string;
   podModulePrefix: string;
-  locationType: 'history' | 'hash' | 'none' | 'auto';
   rootURL: string;
-  EmberENV: Record<string, unknown>;
-  APP: Record<string, unknown>;
   SERVICE_WORKER: boolean;
 };
 
@@ -35,7 +35,9 @@ export function enterTestMode() {
   ENV.APP.rootElement = '#ember-testing';
   ENV.APP.autoboot = false;
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   const config = getGlobalConfig()['@embroider/macros'];
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   if (config) config.isTesting = true;
 }

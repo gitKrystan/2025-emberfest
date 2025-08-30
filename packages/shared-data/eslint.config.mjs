@@ -18,6 +18,7 @@ import prettier from 'eslint-config-prettier';
 import ember from 'eslint-plugin-ember/recommended';
 import importPlugin from 'eslint-plugin-import';
 import n from 'eslint-plugin-n';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import globals from 'globals';
 import ts from 'typescript-eslint';
 
@@ -27,8 +28,8 @@ const esmParserOptions = {
 };
 
 const tsParserOptions = {
-  projectService: true,
   project: true,
+  projectService: true,
   tsconfigRootDir: import.meta.dirname,
 };
 
@@ -61,6 +62,39 @@ const config = [
     },
   },
   {
+    files: ['**/*'],
+    plugins: {
+      'simple-import-sort': simpleImportSort,
+    },
+    rules: {
+      'simple-import-sort/exports': 'error',
+      'simple-import-sort/imports': [
+        'error',
+        {
+          groups: [
+            // Side effect imports.
+            ['^\\u0000'],
+            // Node.js builtins prefixed with `node:`.
+            ['^node:'],
+            // Packages.
+            // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
+            ['^@?\\w'],
+            // Workspace Packages.
+            ['^@workspace/'],
+            // Internal
+            ['^#'],
+            // Absolute imports and other imports such as Vue-style `@/foo`.
+            // Anything not matched in another group.
+            ['^'],
+            // Relative imports.
+            // Anything that starts with a dot.
+            ['^\\.'],
+          ],
+        },
+      ],
+    },
+  },
+  {
     files: ['**/*.js'],
     languageOptions: {
       parser: babelParser,
@@ -69,19 +103,35 @@ const config = [
   {
     files: ['**/*.{js,gjs}'],
     languageOptions: {
-      parserOptions: esmParserOptions,
       globals: {
         ...globals.browser,
       },
+      parserOptions: esmParserOptions,
     },
   },
   {
+    extends: [
+      ...ts.configs.strictTypeChecked,
+      ...ts.configs.stylisticTypeChecked,
+      ember.configs.gts,
+    ],
     files: ['**/*.{ts,gts}'],
     languageOptions: {
       parser: ember.parser,
       parserOptions: tsParserOptions,
     },
-    extends: [...ts.configs.recommendedTypeChecked, ember.configs.gts],
+    rules: {
+      '@typescript-eslint/consistent-type-exports': 'error',
+      '@typescript-eslint/consistent-type-imports': 'error',
+      '@typescript-eslint/method-signature-style': 'error',
+      '@typescript-eslint/no-import-type-side-effects': 'error',
+      '@typescript-eslint/prefer-destructuring': 'error',
+      '@typescript-eslint/prefer-readonly': 'error',
+      '@typescript-eslint/prefer-ts-expect-error': 'error',
+
+      '@typescript-eslint/promise-function-async': 'error',
+      'prefer-destructuring': 'off',
+    },
   },
   {
     files: ['src/**/*'],
@@ -103,16 +153,16 @@ const config = [
       '.template-lintrc.cjs',
       'addon-main.cjs',
     ],
-    plugins: {
-      n,
-    },
-
     languageOptions: {
-      sourceType: 'script',
       ecmaVersion: 'latest',
       globals: {
         ...globals.node,
       },
+      sourceType: 'script',
+    },
+
+    plugins: {
+      n,
     },
   },
   /**
@@ -120,17 +170,17 @@ const config = [
    */
   {
     files: ['**/*.mjs'],
-    plugins: {
-      n,
-    },
-
     languageOptions: {
-      sourceType: 'module',
       ecmaVersion: 'latest',
-      parserOptions: esmParserOptions,
       globals: {
         ...globals.node,
       },
+      parserOptions: esmParserOptions,
+      sourceType: 'module',
+    },
+
+    plugins: {
+      n,
     },
   },
 ];

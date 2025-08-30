@@ -4,14 +4,15 @@ import { isBlank } from '@ember/utils';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 
+import type { SavedTodo } from '@workspace/shared-data/builders';
+
 import type Repo from '#services/repo';
-import type { SavedTodo } from '#services/repo';
 
 interface Signature {
   Args: {
-    todo: SavedTodo;
-    onStartEdit: () => void;
     onEndEdit: () => void;
+    onStartEdit: () => void;
+    todo: SavedTodo;
   };
 }
 
@@ -52,7 +53,9 @@ export default class TodoItem extends Component<Signature> {
 
   @tracked editing = false;
 
-  removeTodo = () => this.repo.delete(this.args.todo);
+  removeTodo = () => {
+    this.repo.delete(this.args.todo);
+  };
 
   toggleCompleted = (event: Event) => {
     const target = event.target as HTMLInputElement;
@@ -62,8 +65,10 @@ export default class TodoItem extends Component<Signature> {
 
   handleKeydown = (event: KeyboardEvent) => {
     const target = event.target as HTMLInputElement;
+    // @eslint-disable-next-line @typescript-eslint/no-deprecated
     if (event.keyCode === 13) {
       target.blur();
+      // @eslint-disable-next-line @typescript-eslint/no-deprecated
     } else if (event.keyCode === 27) {
       this.editing = false;
     }

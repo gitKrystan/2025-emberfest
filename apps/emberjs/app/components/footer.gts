@@ -5,14 +5,6 @@ import Component from '@glimmer/component';
 import Filters from '#components/filters';
 import type Repo from '#services/repo';
 
-function itemLabel(count: number) {
-  if (count === 0 || count > 1) {
-    return 'items';
-  }
-
-  return 'item';
-}
-
 export default class Footer extends Component {
   @service declare repo: Repo;
 
@@ -37,4 +29,12 @@ export default class Footer extends Component {
       {{/if}}
     </footer>
   </template>
+}
+
+function itemLabel(count: number) {
+  if (count === 0 || count > 1) {
+    return 'items';
+  }
+
+  return 'item';
 }

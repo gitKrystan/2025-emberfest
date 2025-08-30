@@ -29,7 +29,8 @@ export default class Create extends Component {
     const value = target.value.trim();
 
     if (keyCode === 13 && !isBlank(value)) {
-      this.repo.add({ title: value, completed: false });
+      // @ts-expect-error FIXME
+      this.repo.add({ completed: false, title: value });
       target.value = '';
     }
   };

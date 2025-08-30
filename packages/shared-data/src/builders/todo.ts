@@ -1,27 +1,28 @@
-import { buildBaseURL } from '@warp-drive/utilities';
-import { JSONAPI_CONTENT_TYPE } from '../const/json-api.ts';
 import type { RequestInfo } from '@warp-drive/core/types/request';
+import type { Type } from '@warp-drive/core/types/symbols';
+import { buildBaseURL, buildQueryParams } from '@warp-drive/utilities';
 
-export interface NewTodo {
+import { defaultHeaders as headers } from '../const/json-api.ts';
+
+export interface BaseTodo {
+  [Type]: 'todo';
+}
+
+export interface NewTodo extends BaseTodo {
   title?: string;
   completed?: boolean;
 }
 
-export interface UnsavedTodo {
+export interface UnsavedTodo extends BaseTodo {
   title: string;
   completed: boolean;
 }
 
-export interface SavedTodo {
+export interface SavedTodo extends BaseTodo {
   id: string;
   title: string;
   completed: boolean;
 }
-
-const headers = new Headers({
-  Accept: JSONAPI_CONTENT_TYPE,
-  'Content-Type': JSONAPI_CONTENT_TYPE,
-});
 
 // GET
 export function getAllTodos(): RequestInfo<SavedTodo[]> {
@@ -35,7 +36,7 @@ export function getAllTodos(): RequestInfo<SavedTodo[]> {
 export function getCompletedTodos() {
   return {
     method: 'GET' as const,
-    url: '/todo?completed=true',
+    url: `${buildBaseURL({ resourcePath: 'todo' })}?${buildQueryParams({ completed: true })}`,
     headers,
   };
 }
@@ -43,7 +44,7 @@ export function getCompletedTodos() {
 export function getActiveTodos() {
   return {
     method: 'GET' as const,
-    url: '/todo?completed=false',
+    url: `${buildBaseURL({ resourcePath: 'todo' })}?${buildQueryParams({ completed: false })}`,
     headers,
   };
 }
@@ -51,7 +52,7 @@ export function getActiveTodos() {
 export function getTodoById(id: string) {
   return {
     method: 'GET' as const,
-    url: `/todo/${id}`,
+    url: `${buildBaseURL({ resourcePath: 'todo' })}/${id}`,
     headers,
   };
 }
@@ -60,7 +61,7 @@ export function getTodoById(id: string) {
 export function createTodo(attributes: UnsavedTodo) {
   return {
     method: 'POST' as const,
-    url: '/todo',
+    url: buildBaseURL({ resourcePath: 'todo' }),
     headers,
     body: JSON.stringify({
       data: {
@@ -89,7 +90,7 @@ export function updateTodo(todo: Partial<SavedTodo> & { id: string }) {
 
   return {
     method: 'PATCH' as const,
-    url: `/todo/${todo.id}`,
+    url: `${buildBaseURL({ resourcePath: 'todo' })}/${todo.id}`,
     body: JSON.stringify({
       data: {
         type: 'todo',
@@ -105,7 +106,7 @@ export function updateTodo(todo: Partial<SavedTodo> & { id: string }) {
 export function deleteTodo(todo: SavedTodo) {
   return {
     method: 'DELETE' as const,
-    url: `/todo/${todo.id}`,
+    url: `${buildBaseURL({ resourcePath: 'todo' })}/${todo.id}`,
     headers,
   };
 }
