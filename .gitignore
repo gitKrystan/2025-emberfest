@@ -43,6 +43,7 @@ lerna-debug.log*
 .stylelintcache
 .cache
 .parcel-cache
+*.tsbuildinfo
 
 # Slidev specific
 .vite-inspect
