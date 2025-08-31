@@ -122,15 +122,26 @@ const config = [
     },
     rules: {
       '@typescript-eslint/consistent-type-exports': 'error',
-      '@typescript-eslint/consistent-type-imports': 'error',
+      '@typescript-eslint/consistent-type-imports': [
+        'error',
+        {
+          prefer: 'type-imports',
+          fixStyle: 'separate-type-imports',
+          disallowTypeAnnotations: false,
+        },
+      ],
       '@typescript-eslint/method-signature-style': 'error',
       '@typescript-eslint/no-import-type-side-effects': 'error',
-      '@typescript-eslint/prefer-destructuring': 'error',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { argsIgnorePattern: '^_' },
+      ],
       '@typescript-eslint/prefer-readonly': 'error',
       '@typescript-eslint/prefer-ts-expect-error': 'error',
-
       '@typescript-eslint/promise-function-async': 'error',
+
       'prefer-destructuring': 'off',
+      '@typescript-eslint/prefer-destructuring': 'error',
     },
   },
   {

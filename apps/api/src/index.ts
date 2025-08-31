@@ -8,6 +8,7 @@ import {
   deleteTodo,
   validateJsonApiContentType,
   JSONAPI_CONTENT_TYPE,
+  getFlags,
 } from './controllers';
 
 const app = express();
@@ -62,6 +63,9 @@ app.get('/api/todo/:id', getTodo);
 app.post('/api/todo', createTodo);
 app.patch('/api/todo/:id', updateTodo);
 app.delete('/api/todo/:id', deleteTodo);
+
+// Flag routes
+app.get('/api/flag', getFlags);
 
 // 404 handler
 app.use('*', (req, res) => {

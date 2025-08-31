@@ -12,6 +12,8 @@ import type {
 } from '@warp-drive/core/types';
 import { JSONAPICache } from '@warp-drive/json-api';
 
+import { FlagSchema } from '../schemas/flag.ts';
+
 export default class AppStore extends Store {
   requestManager = new RequestManager().use([Fetch]).useCache(CacheHandler);
 
@@ -29,6 +31,7 @@ export default class AppStore extends Store {
 
   createSchemaService() {
     const schema = new SchemaService();
+    schema.registerResources([FlagSchema]);
     registerDerivations(schema);
     return schema;
   }

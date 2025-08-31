@@ -2,8 +2,8 @@ import { uniqueId } from '@ember/helper';
 import Service, { service } from '@ember/service';
 import { TrackedMap, TrackedObject } from 'tracked-built-ins';
 
-import type { SavedTodo, UnsavedTodo } from '@workspace/shared-data/builders';
 import { getAllTodos } from '@workspace/shared-data/builders';
+import type { SavedTodo, UnsavedTodo } from '@workspace/shared-data/types';
 
 import type Store from '#services/store';
 

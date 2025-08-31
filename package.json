@@ -13,11 +13,14 @@
     "build:apps": "pnpm -r --filter='./apps/*' build",
     "dev:apps": "pnpm -r --filter='./apps/*' dev",
     "lint:apps": "pnpm -r --filter='./apps/*' lint",
-    "lint:packages": "pnpm -r --filter='./packages/*' lint",
-    "lint": "pnpm lint:packages && pnpm lint:apps",
     "lint:fix:apps": "pnpm -r --filter='./apps/*' lint:fix",
     "lint:fix:packages": "pnpm -r --filter='./packages/*' lint:fix",
     "lint:fix": "pnpm lint:fix:packages && pnpm lint:fix:apps",
+    "lint:packages": "pnpm -r --filter='./packages/*' lint",
+    "lint:types:apps": "pnpm -r --filter='./apps/*' lint:types",
+    "lint:types:packages": "pnpm -r --filter='./packages/*' lint:types",
+    "lint:types": "pnpm lint:types:packages && pnpm lint:types:apps",
+    "lint": "pnpm lint:packages && pnpm lint:apps",
     "test:apps": "pnpm -r --filter='./apps/*' test"
   },
   "dependencies": {

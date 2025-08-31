@@ -3,7 +3,7 @@ import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 
-import type { SavedTodo } from '@workspace/shared-data/builders';
+import type { SavedTodo } from '@workspace/shared-data/types';
 
 import Item from '#components/todo-item';
 import type Repo from '#services/repo';

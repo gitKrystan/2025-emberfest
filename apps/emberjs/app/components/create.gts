@@ -3,6 +3,8 @@ import { service } from '@ember/service';
 import { isBlank } from '@ember/utils';
 import Component from '@glimmer/component';
 
+import { asType } from '@workspace/shared-data/types';
+
 import type Repo from '#services/repo';
 
 export default class Create extends Component {
@@ -24,13 +26,13 @@ export default class Create extends Component {
   //       which was Ember 3.2, and todomvc has historically
   //       been not great for a11y
   createTodo = (event: KeyboardEvent) => {
+    // eslint-disable-next-line @typescript-eslint/no-deprecated -- FIXME
     const { keyCode } = event;
     const target = event.target as HTMLInputElement;
     const value = target.value.trim();
 
     if (keyCode === 13 && !isBlank(value)) {
-      // @ts-expect-error FIXME
-      this.repo.add({ completed: false, title: value });
+      this.repo.add(asType({ completed: false, title: value }));
       target.value = '';
     }
   };

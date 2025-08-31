@@ -4,7 +4,7 @@ import { isBlank } from '@ember/utils';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 
-import type { SavedTodo } from '@workspace/shared-data/builders';
+import type { SavedTodo } from '@workspace/shared-data/types';
 
 import type Repo from '#services/repo';
 
@@ -65,10 +65,10 @@ export default class TodoItem extends Component<Signature> {
 
   handleKeydown = (event: KeyboardEvent) => {
     const target = event.target as HTMLInputElement;
-    // @eslint-disable-next-line @typescript-eslint/no-deprecated
+    // eslint-disable-next-line @typescript-eslint/no-deprecated
     if (event.keyCode === 13) {
       target.blur();
-      // @eslint-disable-next-line @typescript-eslint/no-deprecated
+      // eslint-disable-next-line @typescript-eslint/no-deprecated
     } else if (event.keyCode === 27) {
       this.editing = false;
     }

@@ -1,8 +1,8 @@
-export interface Todo {
-  id: string;
-  title: string;
-  completed: boolean;
-}
+import type {
+  ApiFlag,
+  SavedTodo,
+  UnsavedTodo,
+} from '@workspace/shared-data/types';
 
 // JSONAPI Resource Object interface
 export interface JsonApiResource<T = any> {
@@ -72,6 +72,11 @@ export interface JsonApiError {
 }
 
 // Todo-specific JSONAPI types
-export type TodoResource = JsonApiResource<Omit<Todo, 'id'>>;
-export type TodoDocument = JsonApiDocument<Omit<Todo, 'id'>>;
-export type TodoListDocument = JsonApiDocument<Omit<Todo, 'id'>>;
+export type TodoResource = JsonApiResource<Omit<SavedTodo, 'id'>>;
+export type TodoDocument = JsonApiDocument<Omit<SavedTodo, 'id'>>;
+export type TodoListDocument = JsonApiDocument<Omit<SavedTodo, 'id'>>;
+
+// Flag-specific JSONAPI types
+export type FlagResource = JsonApiResource<Omit<ApiFlag, 'id'>>;
+export type FlagDocument = JsonApiDocument<Omit<ApiFlag, 'id'>>;
+export type FlagListDocument = JsonApiDocument<Omit<ApiFlag, 'id'>>;

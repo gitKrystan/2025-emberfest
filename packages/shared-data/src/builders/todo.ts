@@ -1,28 +1,8 @@
 import type { RequestInfo } from '@warp-drive/core/types/request';
-import type { Type } from '@warp-drive/core/types/symbols';
 import { buildBaseURL, buildQueryParams } from '@warp-drive/utilities';
 
-import { defaultHeaders as headers } from '../const/json-api.ts';
-
-export interface BaseTodo {
-  [Type]: 'todo';
-}
-
-export interface NewTodo extends BaseTodo {
-  title?: string;
-  completed?: boolean;
-}
-
-export interface UnsavedTodo extends BaseTodo {
-  title: string;
-  completed: boolean;
-}
-
-export interface SavedTodo extends BaseTodo {
-  id: string;
-  title: string;
-  completed: boolean;
-}
+import type { SavedTodo, UnsavedTodo } from '../types/index.ts';
+import { defaultHeaders as headers } from './default-headers.ts';
 
 // GET
 export function getAllTodos(): RequestInfo<SavedTodo[]> {

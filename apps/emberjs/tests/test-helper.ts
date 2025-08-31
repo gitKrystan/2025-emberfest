@@ -1,5 +1,5 @@
 import { setApplication } from '@ember/test-helpers';
-import { setupEmberOnerrorValidation,start as qunitStart } from 'ember-qunit';
+import { setupEmberOnerrorValidation, start as qunitStart } from 'ember-qunit';
 import * as QUnit from 'qunit';
 import { setup } from 'qunit-dom';
 

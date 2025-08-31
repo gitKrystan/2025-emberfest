@@ -102,6 +102,14 @@
       "types": "./declarations/builders/index.d.ts",
       "default": "./dist/builders/index.js"
     },
+    "./const": {
+      "types": "./declarations/const/index.d.ts",
+      "default": "./dist/const/index.js"
+    },
+    "./types": {
+      "types": "./declarations/types/index.d.ts",
+      "default": "./dist/types/index.js"
+    },
     "./build-config": {
       "types": "./declarations/configs/build.d.ts",
       "default": "./dist/configs/build.js"

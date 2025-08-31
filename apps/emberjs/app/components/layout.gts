@@ -1,7 +1,7 @@
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 
-import type { SavedTodo } from '@workspace/shared-data/builders';
+import type { SavedTodo } from '@workspace/shared-data/types';
 
 import Create from '#components/create';
 import Footer from '#components/footer';

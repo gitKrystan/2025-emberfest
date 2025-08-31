@@ -29,7 +29,9 @@ export default {
     addon.publicEntrypoints([
       'index.js',
       'configs/build.js',
+      'const/index.js',
       'builders/index.js',
+      'types/index.js',
     ]),
 
     // These are the modules that should get reexported into the traditional
