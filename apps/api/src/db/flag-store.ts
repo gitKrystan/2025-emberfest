@@ -7,14 +7,11 @@ import { Store } from './base-store.ts';
  * Flag store implementation
  */
 export class FlagStore extends Store<ApiFlag> {
-  /**
-   * Seed the store with initial data
-   */
-  seed(): ApiFlag[] {
-    return [
+  constructor() {
+    super([
       asType<ApiFlag>({ id: 'shouldError' as const, value: false }),
       asType<ApiFlag>({ id: 'initialTodoCount' as const, value: 3 }),
-    ];
+    ]);
   }
 
   /**

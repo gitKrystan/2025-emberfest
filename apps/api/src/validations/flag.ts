@@ -3,23 +3,14 @@ import { z } from 'zod';
 /**
  * Schema for validating Flag data for updates
  */
-export const flagUpdateSchema = z.object({
-  value: z
-    .union([z.string(), z.number(), z.boolean()])
-    .refine(
-      (val) => {
-        // value cannot be empty string
-        if (typeof val === 'string') {
-          return val.trim().length > 0;
-        }
-        return true;
-      },
-      { message: 'value cannot be empty if provided' },
-    )
-    .optional(),
+export const booleanFlagUpdateSchema = z.object({
+  value: z.boolean(),
 });
+export type BooleanFlagUpdateData = z.infer<typeof booleanFlagUpdateSchema>;
 
-/**
- * Type for Flag update data
- */
-export type FlagUpdateData = z.infer<typeof flagUpdateSchema>;
+export const positiveNumberFlagUpdateSchema = z.object({
+  value: z.number().gte(0),
+});
+export type PositiveNumberFlagUpdateData = z.infer<
+  typeof positiveNumberFlagUpdateSchema
+>;

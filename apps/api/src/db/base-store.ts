@@ -6,16 +6,9 @@ import { NotFoundError } from '../errors.ts';
 export abstract class Store<T extends { id: string }> {
   protected map: Map<string, T>;
 
-  constructor() {
-    // Initialize with some sample data
-    const values = this.seed();
-    this.map = new Map(values.map((item: T) => [item.id, item]));
+  constructor(seed: T[]) {
+    this.map = new Map(seed.map((item) => [item.id, item]));
   }
-
-  /**
-   * Seed the store with initial data
-   */
-  abstract seed(): T[];
 
   /**
    * Get all values

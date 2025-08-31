@@ -3,13 +3,18 @@ import type { Request, Response } from 'express';
 import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
 
 import { flagStore } from '../db/flag-store.ts';
+import { todoStore } from '../db/todo-store.ts';
+import { BadRequestError } from '../errors.ts';
 import { handleError } from '../serializers/error.ts';
 import {
   createFlagDocument,
   createFlagsDocument,
 } from '../serializers/flag.ts';
 import { getBaseUrl } from '../utils/url.ts';
-import { flagUpdateSchema } from '../validations/flag.ts';
+import {
+  booleanFlagUpdateSchema,
+  positiveNumberFlagUpdateSchema,
+} from '../validations/flag.ts';
 import {
   validateRequiredParam,
   validateUpdateRequest,
@@ -38,19 +43,16 @@ export function updateFlag(req: Request, res: Response) {
   try {
     const id = validateRequiredParam('flag id', req.params['id']);
 
-    // Validate the request using Zod
-    const validationResult = validateUpdateRequest(
-      'flag',
-      id,
-      flagUpdateSchema,
-      req.body,
-    );
+    const updatedFlag =
+      id === 'shouldError'
+        ? handleShouldErrorFlag(req, id)
+        : id === 'initialTodoCount'
+          ? handleInitialTodoCountFlag(req, id)
+          : null;
 
-    // Update the flag
-    const updatedFlag = flagStore.update(id, {
-      // @ts-expect-error YOLO oh well
-      value: validationResult.value,
-    });
+    if (!updatedFlag) {
+      throw new BadRequestError({ detail: [`Unknown flag id ${id}`] });
+    }
 
     const baseUrl = getBaseUrl(req);
     const document = createFlagDocument(updatedFlag, baseUrl);
@@ -60,4 +62,36 @@ export function updateFlag(req: Request, res: Response) {
   } catch (error) {
     return handleError(res, error);
   }
+}
+
+function handleShouldErrorFlag(req: Request, id: 'shouldError') {
+  const validationResult = validateUpdateRequest(
+    'flag',
+    id,
+    booleanFlagUpdateSchema,
+    req.body,
+  );
+
+  // @ts-expect-error YOLO oh well
+  return flagStore.update(id, {
+    value: validationResult.value,
+  });
+}
+
+function handleInitialTodoCountFlag(req: Request, id: 'initialTodoCount') {
+  const validationResult = validateUpdateRequest(
+    'flag',
+    id,
+    positiveNumberFlagUpdateSchema,
+    req.body,
+  );
+
+  // Update the todo store with the new count and re-seed
+  const newCount = validationResult.value;
+  todoStore.reseed(newCount);
+
+  // @ts-expect-error YOLO oh well
+  return flagStore.update(id, {
+    value: validationResult.value,
+  });
 }
