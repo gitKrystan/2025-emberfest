@@ -1,6 +1,8 @@
 import type { SavedTodo, UnsavedTodo } from '@workspace/shared-data/types';
 
 import type { JsonApiDocument, JsonApiResource } from '../types.ts';
+import { todoCreationSchema, todoUpdateSchema } from '../validations/todo.ts';
+import { safeValidate } from '../validations/utils.ts';
 import { JSONAPI_VERSION } from './base.ts';
 
 // Todo-specific JSONAPI types
@@ -92,51 +94,15 @@ export function deserializeTodo(resource: TodoResource): Partial<SavedTodo> {
 }
 
 /**
- * Validate Todo data for creation
+ * Validate Todo data for creation using Zod
  */
 export function validateTodoForCreation(data: Partial<UnsavedTodo>): string[] {
-  const errors: string[] = [];
-
-  if (
-    !data.title ||
-    typeof data.title !== 'string' ||
-    data.title.trim() === ''
-  ) {
-    errors.push('title is required and must be a non-empty string');
-  }
-
-  if (data.completed !== undefined && typeof data.completed !== 'boolean') {
-    errors.push('completed must be a boolean');
-  }
-
-  return errors;
+  return safeValidate(todoCreationSchema, data);
 }
 
 /**
- * Validate Todo data for updates
+ * Validate Todo data for updates using Zod
  */
 export function validateTodoForUpdate(data: Partial<SavedTodo>): string[] {
-  const errors: string[] = [];
-
-  if ('title' in data && !data.title) {
-    errors.push('title cannot be empty if provided');
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if ('completed' in data && data.completed === undefined) {
-    errors.push('completed cannot be undefined if provided');
-  }
-
-  if (
-    data.title !== undefined &&
-    (typeof data.title !== 'string' || data.title.trim() === '')
-  ) {
-    errors.push('title must be a non-empty string');
-  }
-
-  if (data.completed !== undefined && typeof data.completed !== 'boolean') {
-    errors.push('completed must be a boolean');
-  }
-
-  return errors;
+  return safeValidate(todoUpdateSchema, data);
 }

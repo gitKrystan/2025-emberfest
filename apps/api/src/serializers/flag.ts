@@ -1,6 +1,8 @@
 import type { ApiFlag } from '@workspace/shared-data/types';
 
 import type { JsonApiDocument, JsonApiResource } from '../types.ts';
+import { flagUpdateSchema } from '../validations/flag.ts';
+import { safeValidate } from '../validations/utils.ts';
 import { JSONAPI_VERSION } from './base.ts';
 
 // Flag-specific JSONAPI types
@@ -79,14 +81,8 @@ export function deserializeFlag(resource: FlagResource): Partial<ApiFlag> {
 }
 
 /**
- * Validate Flag data for updates
+ * Validate Flag data for updates using Zod
  */
 export function validateFlagForUpdate(data: Partial<ApiFlag>): string[] {
-  const errors: string[] = [];
-
-  if ('value' in data && !data.value) {
-    errors.push('value cannot be empty if provided');
-  }
-
-  return errors;
+  return safeValidate(flagUpdateSchema, data);
 }
