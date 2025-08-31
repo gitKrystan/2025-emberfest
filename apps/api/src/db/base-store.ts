@@ -1,3 +1,5 @@
+import { NotFoundError } from '../errors.ts';
+
 /**
  * Abstract base class for in-memory data stores
  */
@@ -25,8 +27,16 @@ export abstract class Store<T extends { id: string }> {
   /**
    * Find a value by ID
    */
-  findById(id: string): T | undefined {
-    return this.map.get(id);
+  findById(id: string): T {
+    const result = this.map.get(id);
+    if (result) {
+      return result;
+    }
+    throw new NotFoundError({ detail: [`No record found for ID ${id}`] });
+  }
+
+  safeFindById(id: string): T | null {
+    return this.map.get(id) ?? null;
   }
 
   /**
@@ -37,11 +47,8 @@ export abstract class Store<T extends { id: string }> {
   /**
    * Update an existing value
    */
-  update(id: string, value: Omit<T, 'id'>): T | undefined {
-    const existing = this.map.get(id);
-    if (!existing) {
-      return undefined;
-    }
+  update(id: string, value: Omit<T, 'id'>): T {
+    const existing = this.findById(id);
 
     const updated = {
       ...existing,
@@ -56,6 +63,7 @@ export abstract class Store<T extends { id: string }> {
    * Delete a value by ID
    */
   delete(id: string): boolean {
+    this.findById(id); // for 404s
     return this.map.delete(id);
   }
 

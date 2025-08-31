@@ -1,41 +1,21 @@
 import { z } from 'zod';
 
+import { BadRequestError, InternalServerError } from '../errors.ts';
+
 /**
  * Utility function to handle Zod validation and return errors in a consistent format
  */
-export function validateWithZod<T>(
-  schema: z.ZodType<T>,
-  data: unknown,
-): {
-  success: boolean;
-  data?: T;
-  errors: string[];
-} {
+export function validateWithZod<T>(schema: z.ZodType<T>, data: unknown): T {
   try {
-    const result = schema.parse(data);
-    return {
-      success: true,
-      data: result,
-      errors: [],
-    };
+    return schema.parse(data);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        errors: error.issues.map((issue) => issue.message),
-      };
+      throw new BadRequestError({
+        detail: error.issues.map((issue) => issue.message),
+      });
     }
-    return {
-      success: false,
-      errors: ['Validation failed'],
-    };
+    throw new InternalServerError({
+      detail: ['Validation failed in an unexpected manner'],
+    });
   }
-}
-
-/**
- * Safe parse that returns errors as strings instead of throwing
- */
-export function safeValidate<T>(schema: z.ZodType<T>, data: unknown): string[] {
-  const result = validateWithZod(schema, data);
-  return result.errors;
 }
