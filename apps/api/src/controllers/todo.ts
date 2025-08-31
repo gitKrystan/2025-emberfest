@@ -4,7 +4,9 @@ import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
 import type { UnsavedTodo } from '@workspace/shared-data/types';
 import { asType } from '@workspace/shared-data/types';
 
+import { flagStore } from '../db/flag-store.ts';
 import { todoStore } from '../db/todo-store.ts';
+import { InternalServerError } from '../errors.ts';
 import { handleError } from '../serializers/error.ts';
 import {
   createTodoDocument,
@@ -19,10 +21,23 @@ import {
 import { todoCreationSchema, todoUpdateSchema } from '../validations/todo.ts';
 
 /**
+ * Check if the shouldError flag is set to true and throw an error if so
+ */
+function checkShouldError() {
+  const shouldErrorFlag = flagStore.safeFindById('shouldError');
+  if (shouldErrorFlag?.value === true) {
+    throw new InternalServerError({
+      detail: ['Todo operations are currently disabled'],
+    });
+  }
+}
+
+/**
  * GET /todos - List all todos
  */
 export function getTodos(req: Request, res: Response) {
   try {
+    checkShouldError();
     const todos = todoStore.findAll();
     const baseUrl = getBaseUrl(req);
     const document = createTodosDocument(todos, baseUrl);
@@ -39,6 +54,7 @@ export function getTodos(req: Request, res: Response) {
  */
 export function getTodo(req: Request, res: Response) {
   try {
+    checkShouldError();
     const id = validateRequiredParam('todo id', req.params['id']);
     const todo = todoStore.findById(id);
 
@@ -57,6 +73,7 @@ export function getTodo(req: Request, res: Response) {
  */
 export function createTodo(req: Request, res: Response) {
   try {
+    checkShouldError();
     const validationResult = validateCreateRequest(
       'todo',
       todoCreationSchema,
@@ -87,6 +104,7 @@ export function createTodo(req: Request, res: Response) {
  */
 export function updateTodo(req: Request, res: Response) {
   try {
+    checkShouldError();
     const id = validateRequiredParam('todo id', req.params['id']);
 
     // Validate the request using Zod
@@ -123,6 +141,7 @@ export function updateTodo(req: Request, res: Response) {
  */
 export function deleteTodo(req: Request, res: Response) {
   try {
+    checkShouldError();
     const id = validateRequiredParam('todo id', req.params['id']);
 
     todoStore.delete(id);
