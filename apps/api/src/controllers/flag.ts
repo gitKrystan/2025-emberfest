@@ -1,18 +1,19 @@
 import type { Request, Response } from 'express';
 
 import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
-import type { ApiFlag } from '@workspace/shared-data/types';
 
 import { flagStore } from '../db/flag-store.ts';
 import { createSingleErrorDocument } from '../serializers/error.ts';
 import {
   createFlagDocument,
   createFlagsDocument,
-  deserializeFlag,
-  type FlagResource,
-  validateFlagForUpdate,
 } from '../serializers/flag.ts';
 import { getBaseUrl } from '../utils/url.ts';
+import { flagUpdateSchema } from '../validations/flag.ts';
+import {
+  validateRequiredParam,
+  validateUpdateRequest,
+} from '../validations/request-helpers.ts';
 
 /**
  * GET /flags - List all flags
@@ -44,45 +45,12 @@ export function getFlags(req: Request, res: Response) {
  */
 export function updateFlag(req: Request, res: Response) {
   try {
-    const { id } = req.params;
-    if (!id) {
-      return res
-        .status(400)
-        .json(
-          createSingleErrorDocument(
-            '400',
-            'Bad Request',
-            'Request must include a flag id',
-          ),
-        );
+    const idValidation = validateRequiredParam('flag id', req.params['id']);
+    if (!idValidation.success) {
+      return res.status(idValidation.status).json(idValidation.error);
     }
 
-    const { data } = req.body as { data?: FlagResource };
-
-    if (!data) {
-      return res
-        .status(400)
-        .json(
-          createSingleErrorDocument(
-            '400',
-            'Bad Request',
-            'Request must include a data object',
-          ),
-        );
-    }
-
-    // Validate the resource type and id match
-    if (data.type !== 'flag') {
-      return res
-        .status(409)
-        .json(
-          createSingleErrorDocument(
-            '409',
-            'Conflict',
-            `Resource type must be 'flag', got '${data.type}'`,
-          ),
-        );
-    }
+    const id = idValidation.data;
 
     if (!flagStore.exists(id)) {
       return res
@@ -96,64 +64,28 @@ export function updateFlag(req: Request, res: Response) {
         );
     }
 
-    if (data.id !== id) {
-      return res
-        .status(409)
-        .json(
-          createSingleErrorDocument(
-            '409',
-            'Conflict',
-            `Resource id must match URL parameter. Expected '${id}', got '${data.id}'`,
-          ),
-        );
-    }
+    // Validate the request using Zod
+    const validationResult = validateUpdateRequest(
+      'flag',
+      id,
+      flagUpdateSchema,
+      req.body,
+    );
 
-    // Deserialize the request data
-    let flagData: Partial<ApiFlag>;
-    try {
-      flagData = deserializeFlag(data);
-    } catch (error) {
-      return res
-        .status(400)
-        .json(
-          createSingleErrorDocument(
-            '400',
-            'Bad Request',
-            error instanceof Error ? error.message : 'Invalid resource data',
-          ),
-        );
-    }
-
-    // Validate the flag data
-    const validationErrors = validateFlagForUpdate(flagData);
-    if (validationErrors.length > 0) {
-      return res
-        .status(400)
-        .json(
-          createSingleErrorDocument(
-            '400',
-            'Validation Error',
-            validationErrors.join(', '),
-          ),
-        );
+    if (!validationResult.success) {
+      return res.status(validationResult.status).json(validationResult.error);
     }
 
     // Update the flag
     const updatedFlag = flagStore.update(id, {
       // @ts-expect-error YOLO oh well
-      value: flagData.value,
+      value: validationResult.data.value,
     });
 
     if (!updatedFlag) {
-      return res
-        .status(404)
-        .json(
-          createSingleErrorDocument(
-            '404',
-            'Not Found',
-            `Flag with id '${id}' not found`,
-          ),
-        );
+      throw new Error(
+        `Flag with id '${id}' not found even though flagStore.exists returned true`,
+      );
     }
 
     const baseUrl = getBaseUrl(req);

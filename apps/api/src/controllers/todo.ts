@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 
 import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
-import type { SavedTodo, UnsavedTodo } from '@workspace/shared-data/types';
+import type { UnsavedTodo } from '@workspace/shared-data/types';
 import { asType } from '@workspace/shared-data/types';
 
 import { todoStore } from '../db/todo-store.ts';
@@ -9,12 +9,14 @@ import { createSingleErrorDocument } from '../serializers/error.ts';
 import {
   createTodoDocument,
   createTodosDocument,
-  deserializeTodo,
-  type TodoResource,
-  validateTodoForCreation,
-  validateTodoForUpdate,
 } from '../serializers/todo.ts';
 import { getBaseUrl } from '../utils/url.ts';
+import {
+  validateCreateRequest,
+  validateRequiredParam,
+  validateUpdateRequest,
+} from '../validations/request-helpers.ts';
+import { todoCreationSchema, todoUpdateSchema } from '../validations/todo.ts';
 
 /**
  * GET /todos - List all todos
@@ -46,19 +48,12 @@ export function getTodos(req: Request, res: Response) {
  */
 export function getTodo(req: Request, res: Response) {
   try {
-    const { id } = req.params;
-    if (!id) {
-      return res
-        .status(400)
-        .json(
-          createSingleErrorDocument(
-            '400',
-            'Bad Request',
-            'Request must include a todo id',
-          ),
-        );
+    const idValidation = validateRequiredParam('todo id', req.params['id']);
+    if (!idValidation.success) {
+      return res.status(idValidation.status).json(idValidation.error);
     }
 
+    const id = idValidation.data;
     const todo = todoStore.findById(id);
 
     if (!todo) {
@@ -97,56 +92,21 @@ export function getTodo(req: Request, res: Response) {
  */
 export function createTodo(req: Request, res: Response) {
   try {
-    const { data } = req.body as { data?: TodoResource };
+    const validationResult = validateCreateRequest(
+      'todo',
+      todoCreationSchema,
+      req.body,
+    );
 
-    if (!data) {
-      return res
-        .status(400)
-        .json(
-          createSingleErrorDocument(
-            '400',
-            'Bad Request',
-            'Request must include a data object',
-          ),
-        );
-    }
-
-    // Deserialize the request data
-    let todoData;
-    try {
-      todoData = deserializeTodo(data);
-    } catch (error) {
-      return res
-        .status(400)
-        .json(
-          createSingleErrorDocument(
-            '400',
-            'Bad Request',
-            error instanceof Error ? error.message : 'Invalid resource data',
-          ),
-        );
-    }
-
-    // Validate the todo data
-    const validationErrors = validateTodoForCreation(todoData);
-    if (validationErrors.length > 0) {
-      return res
-        .status(400)
-        .json(
-          createSingleErrorDocument(
-            '400',
-            'Validation Error',
-            validationErrors.join(', '),
-          ),
-        );
+    if (!validationResult.success) {
+      return res.status(validationResult.status).json(validationResult.error);
     }
 
     // Create the todo
     const newTodo = todoStore.create(
       asType<UnsavedTodo>({
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        title: todoData.title!,
-        completed: todoData.completed ?? false,
+        title: validationResult.data.title,
+        completed: validationResult.data.completed,
       }),
     );
 
@@ -175,45 +135,13 @@ export function createTodo(req: Request, res: Response) {
  */
 export function updateTodo(req: Request, res: Response) {
   try {
-    const { id } = req.params;
-    const { data } = req.body as { data?: TodoResource };
-
-    if (!id) {
-      return res
-        .status(400)
-        .json(
-          createSingleErrorDocument(
-            '400',
-            'Bad Request',
-            'Request must include a todo id',
-          ),
-        );
+    // Validate the id parameter
+    const idValidation = validateRequiredParam('todo id', req.params['id']);
+    if (!idValidation.success) {
+      return res.status(idValidation.status).json(idValidation.error);
     }
 
-    if (!data) {
-      return res
-        .status(400)
-        .json(
-          createSingleErrorDocument(
-            '400',
-            'Bad Request',
-            'Request must include a data object',
-          ),
-        );
-    }
-
-    // Validate the resource type and id match
-    if (data.type !== 'todo') {
-      return res
-        .status(409)
-        .json(
-          createSingleErrorDocument(
-            '409',
-            'Conflict',
-            `Resource type must be 'todo', got '${data.type}'`,
-          ),
-        );
-    }
+    const id = idValidation.data;
 
     // Check if the todo exists
     if (!todoStore.exists(id)) {
@@ -228,54 +156,26 @@ export function updateTodo(req: Request, res: Response) {
         );
     }
 
-    if (data.id !== id) {
-      return res
-        .status(409)
-        .json(
-          createSingleErrorDocument(
-            '409',
-            'Conflict',
-            `Resource id must match URL parameter. Expected '${id}', got '${data.id}'`,
-          ),
-        );
-    }
+    // Validate the request using Zod
+    const validationResult = validateUpdateRequest(
+      'todo',
+      id,
+      todoUpdateSchema,
+      req.body,
+    );
 
-    // Deserialize the request data
-    let todoData: Partial<SavedTodo>;
-    try {
-      todoData = deserializeTodo(data);
-    } catch (error) {
-      return res
-        .status(400)
-        .json(
-          createSingleErrorDocument(
-            '400',
-            'Bad Request',
-            error instanceof Error ? error.message : 'Invalid resource data',
-          ),
-        );
-    }
-
-    // Validate the todo data
-    const validationErrors = validateTodoForUpdate(todoData);
-    if (validationErrors.length > 0) {
-      return res
-        .status(400)
-        .json(
-          createSingleErrorDocument(
-            '400',
-            'Validation Error',
-            validationErrors.join(', '),
-          ),
-        );
+    if (!validationResult.success) {
+      return res.status(validationResult.status).json(validationResult.error);
     }
 
     // Update the todo
     // @ts-expect-error YOLO oh well
     const updatedTodo = todoStore.update(id, {
-      ...(todoData.title !== undefined && { title: todoData.title }),
-      ...(todoData.completed !== undefined && {
-        completed: todoData.completed,
+      ...(validationResult.data.title !== undefined && {
+        title: validationResult.data.title,
+      }),
+      ...(validationResult.data.completed !== undefined && {
+        completed: validationResult.data.completed,
       }),
     });
 
@@ -315,20 +215,13 @@ export function updateTodo(req: Request, res: Response) {
  */
 export function deleteTodo(req: Request, res: Response) {
   try {
-    const { id } = req.params;
-
-    if (!id) {
-      return res
-        .status(400)
-        .json(
-          createSingleErrorDocument(
-            '400',
-            'Bad Request',
-            'Request must include a todo id',
-          ),
-        );
+    // Validate the id parameter
+    const idValidation = validateRequiredParam('todo id', req.params['id']);
+    if (!idValidation.success) {
+      return res.status(idValidation.status).json(idValidation.error);
     }
 
+    const id = idValidation.data;
     const deleted = todoStore.delete(id);
 
     if (!deleted) {
