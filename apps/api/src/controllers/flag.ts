@@ -3,7 +3,13 @@ import type { Request, Response } from 'express';
 import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
 import type { ApiFlag } from '@workspace/shared-data/types';
 
-import { JsonApiSerializer } from '../serializer.ts';
+import { createSingleErrorDocument } from '../serializers/error.ts';
+import {
+  createFlagDocument,
+  createFlagsDocument,
+  deserializeFlag,
+  validateFlagForUpdate,
+} from '../serializers/flag.ts';
 import { flagStore } from '../store.ts';
 import type { FlagResource } from '../types.ts';
 import { getBaseUrl } from '../utils/url.ts';
@@ -15,7 +21,7 @@ export function getFlags(req: Request, res: Response) {
   try {
     const flags = flagStore.findAll();
     const baseUrl = getBaseUrl(req);
-    const document = JsonApiSerializer.createFlagsDocument(flags, baseUrl);
+    const document = createFlagsDocument(flags, baseUrl);
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
     res.json(document);
@@ -24,7 +30,7 @@ export function getFlags(req: Request, res: Response) {
     res
       .status(500)
       .json(
-        JsonApiSerializer.createSingleErrorDocument(
+        createSingleErrorDocument(
           '500',
           'Internal Server Error',
           'An unexpected error occurred while fetching flags',
@@ -43,7 +49,7 @@ export function updateFlag(req: Request, res: Response) {
       return res
         .status(400)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '400',
             'Bad Request',
             'Request must include a flag id',
@@ -57,7 +63,7 @@ export function updateFlag(req: Request, res: Response) {
       return res
         .status(400)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '400',
             'Bad Request',
             'Request must include a data object',
@@ -70,7 +76,7 @@ export function updateFlag(req: Request, res: Response) {
       return res
         .status(409)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '409',
             'Conflict',
             `Resource type must be 'flag', got '${data.type}'`,
@@ -82,7 +88,7 @@ export function updateFlag(req: Request, res: Response) {
       return res
         .status(404)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '404',
             'Not Found',
             `Flag with id '${id}' not found`,
@@ -94,7 +100,7 @@ export function updateFlag(req: Request, res: Response) {
       return res
         .status(409)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '409',
             'Conflict',
             `Resource id must match URL parameter. Expected '${id}', got '${data.id}'`,
@@ -105,12 +111,12 @@ export function updateFlag(req: Request, res: Response) {
     // Deserialize the request data
     let flagData: Partial<ApiFlag>;
     try {
-      flagData = JsonApiSerializer.deserializeFlag(data);
+      flagData = deserializeFlag(data);
     } catch (error) {
       return res
         .status(400)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '400',
             'Bad Request',
             error instanceof Error ? error.message : 'Invalid resource data',
@@ -119,12 +125,12 @@ export function updateFlag(req: Request, res: Response) {
     }
 
     // Validate the flag data
-    const validationErrors = JsonApiSerializer.validateFlagForUpdate(flagData);
+    const validationErrors = validateFlagForUpdate(flagData);
     if (validationErrors.length > 0) {
       return res
         .status(400)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '400',
             'Validation Error',
             validationErrors.join(', '),
@@ -142,7 +148,7 @@ export function updateFlag(req: Request, res: Response) {
       return res
         .status(404)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '404',
             'Not Found',
             `Flag with id '${id}' not found`,
@@ -151,7 +157,7 @@ export function updateFlag(req: Request, res: Response) {
     }
 
     const baseUrl = getBaseUrl(req);
-    const document = JsonApiSerializer.createFlagDocument(updatedFlag, baseUrl);
+    const document = createFlagDocument(updatedFlag, baseUrl);
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
     return res.json(document);
@@ -160,7 +166,7 @@ export function updateFlag(req: Request, res: Response) {
     return res
       .status(500)
       .json(
-        JsonApiSerializer.createSingleErrorDocument(
+        createSingleErrorDocument(
           '500',
           'Internal Server Error',
           'An unexpected error occurred while updating the flag',

@@ -4,7 +4,14 @@ import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
 import type { SavedTodo, UnsavedTodo } from '@workspace/shared-data/types';
 import { asType } from '@workspace/shared-data/types';
 
-import { JsonApiSerializer } from '../serializer.ts';
+import { createSingleErrorDocument } from '../serializers/error.ts';
+import {
+  createTodoDocument,
+  createTodosDocument,
+  deserializeTodo,
+  validateTodoForCreation,
+  validateTodoForUpdate,
+} from '../serializers/todo.ts';
 import { todoStore } from '../store.ts';
 import type { TodoResource } from '../types.ts';
 import { getBaseUrl } from '../utils/url.ts';
@@ -16,7 +23,7 @@ export function getTodos(req: Request, res: Response) {
   try {
     const todos = todoStore.findAll();
     const baseUrl = getBaseUrl(req);
-    const document = JsonApiSerializer.createTodosDocument(todos, baseUrl);
+    const document = createTodosDocument(todos, baseUrl);
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
     res.json(document);
@@ -25,7 +32,7 @@ export function getTodos(req: Request, res: Response) {
     res
       .status(500)
       .json(
-        JsonApiSerializer.createSingleErrorDocument(
+        createSingleErrorDocument(
           '500',
           'Internal Server Error',
           'An unexpected error occurred while fetching todos',
@@ -44,7 +51,7 @@ export function getTodo(req: Request, res: Response) {
       return res
         .status(400)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '400',
             'Bad Request',
             'Request must include a todo id',
@@ -58,7 +65,7 @@ export function getTodo(req: Request, res: Response) {
       return res
         .status(404)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '404',
             'Not Found',
             `Todo with id '${id}' not found`,
@@ -67,7 +74,7 @@ export function getTodo(req: Request, res: Response) {
     }
 
     const baseUrl = getBaseUrl(req);
-    const document = JsonApiSerializer.createTodoDocument(todo, baseUrl);
+    const document = createTodoDocument(todo, baseUrl);
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
     return res.json(document);
@@ -76,7 +83,7 @@ export function getTodo(req: Request, res: Response) {
     return res
       .status(500)
       .json(
-        JsonApiSerializer.createSingleErrorDocument(
+        createSingleErrorDocument(
           '500',
           'Internal Server Error',
           'An unexpected error occurred while fetching the todo',
@@ -96,7 +103,7 @@ export function createTodo(req: Request, res: Response) {
       return res
         .status(400)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '400',
             'Bad Request',
             'Request must include a data object',
@@ -107,12 +114,12 @@ export function createTodo(req: Request, res: Response) {
     // Deserialize the request data
     let todoData;
     try {
-      todoData = JsonApiSerializer.deserializeTodo(data);
+      todoData = deserializeTodo(data);
     } catch (error) {
       return res
         .status(400)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '400',
             'Bad Request',
             error instanceof Error ? error.message : 'Invalid resource data',
@@ -121,13 +128,12 @@ export function createTodo(req: Request, res: Response) {
     }
 
     // Validate the todo data
-    const validationErrors =
-      JsonApiSerializer.validateTodoForCreation(todoData);
+    const validationErrors = validateTodoForCreation(todoData);
     if (validationErrors.length > 0) {
       return res
         .status(400)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '400',
             'Validation Error',
             validationErrors.join(', '),
@@ -145,7 +151,7 @@ export function createTodo(req: Request, res: Response) {
     );
 
     const baseUrl = getBaseUrl(req);
-    const document = JsonApiSerializer.createTodoDocument(newTodo, baseUrl);
+    const document = createTodoDocument(newTodo, baseUrl);
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
     res.setHeader('Location', `${baseUrl}/todos/${newTodo.id}`);
@@ -155,7 +161,7 @@ export function createTodo(req: Request, res: Response) {
     return res
       .status(500)
       .json(
-        JsonApiSerializer.createSingleErrorDocument(
+        createSingleErrorDocument(
           '500',
           'Internal Server Error',
           'An unexpected error occurred while creating the todo',
@@ -176,7 +182,7 @@ export function updateTodo(req: Request, res: Response) {
       return res
         .status(400)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '400',
             'Bad Request',
             'Request must include a todo id',
@@ -188,7 +194,7 @@ export function updateTodo(req: Request, res: Response) {
       return res
         .status(400)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '400',
             'Bad Request',
             'Request must include a data object',
@@ -201,7 +207,7 @@ export function updateTodo(req: Request, res: Response) {
       return res
         .status(409)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '409',
             'Conflict',
             `Resource type must be 'todo', got '${data.type}'`,
@@ -214,7 +220,7 @@ export function updateTodo(req: Request, res: Response) {
       return res
         .status(404)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '404',
             'Not Found',
             `Todo with id '${id}' not found`,
@@ -226,7 +232,7 @@ export function updateTodo(req: Request, res: Response) {
       return res
         .status(409)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '409',
             'Conflict',
             `Resource id must match URL parameter. Expected '${id}', got '${data.id}'`,
@@ -237,12 +243,12 @@ export function updateTodo(req: Request, res: Response) {
     // Deserialize the request data
     let todoData: Partial<SavedTodo>;
     try {
-      todoData = JsonApiSerializer.deserializeTodo(data);
+      todoData = deserializeTodo(data);
     } catch (error) {
       return res
         .status(400)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '400',
             'Bad Request',
             error instanceof Error ? error.message : 'Invalid resource data',
@@ -251,12 +257,12 @@ export function updateTodo(req: Request, res: Response) {
     }
 
     // Validate the todo data
-    const validationErrors = JsonApiSerializer.validateTodoForUpdate(todoData);
+    const validationErrors = validateTodoForUpdate(todoData);
     if (validationErrors.length > 0) {
       return res
         .status(400)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '400',
             'Validation Error',
             validationErrors.join(', '),
@@ -277,7 +283,7 @@ export function updateTodo(req: Request, res: Response) {
       return res
         .status(404)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '404',
             'Not Found',
             `Todo with id '${id}' not found`,
@@ -286,7 +292,7 @@ export function updateTodo(req: Request, res: Response) {
     }
 
     const baseUrl = getBaseUrl(req);
-    const document = JsonApiSerializer.createTodoDocument(updatedTodo, baseUrl);
+    const document = createTodoDocument(updatedTodo, baseUrl);
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
     return res.json(document);
@@ -295,7 +301,7 @@ export function updateTodo(req: Request, res: Response) {
     return res
       .status(500)
       .json(
-        JsonApiSerializer.createSingleErrorDocument(
+        createSingleErrorDocument(
           '500',
           'Internal Server Error',
           'An unexpected error occurred while updating the todo',
@@ -315,7 +321,7 @@ export function deleteTodo(req: Request, res: Response) {
       return res
         .status(400)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '400',
             'Bad Request',
             'Request must include a todo id',
@@ -329,7 +335,7 @@ export function deleteTodo(req: Request, res: Response) {
       return res
         .status(404)
         .json(
-          JsonApiSerializer.createSingleErrorDocument(
+          createSingleErrorDocument(
             '404',
             'Not Found',
             `Todo with id '${id}' not found`,
@@ -343,7 +349,7 @@ export function deleteTodo(req: Request, res: Response) {
     return res
       .status(500)
       .json(
-        JsonApiSerializer.createSingleErrorDocument(
+        createSingleErrorDocument(
           '500',
           'Internal Server Error',
           'An unexpected error occurred while deleting the todo',
