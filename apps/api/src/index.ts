@@ -1,16 +1,15 @@
 import express from 'express';
 import cors from 'cors';
+import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
+import { validateJsonApiContentType } from './middleware/validate-content-type';
 import {
-  getTodos,
-  getTodo,
   createTodo,
-  updateTodo,
   deleteTodo,
-  validateJsonApiContentType,
-  JSONAPI_CONTENT_TYPE,
-  getFlags,
-  updateFlag,
-} from './controllers';
+  getTodo,
+  getTodos,
+  updateTodo,
+} from './controllers/todo';
+import { getFlags, updateFlag } from './controllers/flag';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -28,17 +27,10 @@ app.use(
 app.use(express.json({ type: JSONAPI_CONTENT_TYPE }));
 
 // Debug middleware to log request details
-app.use((req, res, next) => {
-  console.log('Request Details:');
-  console.log(`  Method: ${req.method}`);
-  console.log(`  URL: ${req.url}`);
-  console.log(`  Content-Type: ${req.get('Content-Type') || 'undefined'}`);
-  console.log(`  Content-Length: ${req.get('Content-Length') || 'undefined'}`);
-  console.log(`  Body:`, req.body);
-  console.log(`  Body type:`, typeof req.body);
-  console.log(`  Raw body keys:`, Object.keys(req.body || {}));
+app.use((req, _res, next) => {
+  console.log(`[request] ${req.method} ${req.url}`);
   console.log(`  Headers:`, req.headers);
-  console.log('---');
+  console.log(`  Body:`, req.body);
   next();
 });
 
@@ -103,9 +95,9 @@ app.use('*', (req, res) => {
 app.use(
   (
     err: Error,
-    req: express.Request,
+    _req: express.Request,
     res: express.Response,
-    next: express.NextFunction,
+    _next: express.NextFunction,
   ) => {
     console.error('Unhandled error:', err);
     res.status(500).json({
