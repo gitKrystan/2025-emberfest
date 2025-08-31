@@ -10,6 +10,7 @@ import { queryFlags, updateFlag } from '@workspace/shared-data/builders';
 import type {
   ApiFlag,
   ShouldErrorFlag as ShouldErrorFlagResource,
+  TodoCountFlag as TodoCountFlagResource,
 } from '@workspace/shared-data/types';
 
 import { HandleError } from '#app/components/error.gts';
@@ -49,8 +50,25 @@ class FlagsContent extends Component<{
           </Await>
         </li>
       {{/if}}
+      {{#if this.initialTodoCountFlag}}
+        <li>
+          <Await @promise={{checkout this.initialTodoCountFlag}}>
+            <:pending><Loading /></:pending>
+            {{! @glint-expect-error -- FIXME }}
+            <:success as |flag|><TodoCountFlag @flag={{flag}} /></:success>
+            <:error as |error|><HandleError @error={{error}} /></:error>
+          </Await>
+        </li>
+      {{/if}}
     </ul>
   </template>
+
+  @cached
+  get initialTodoCountFlag(): TodoCountFlagResource | null {
+    return (
+      this.args.data.find((flag) => flag.id === 'initialTodoCount') ?? null
+    );
+  }
 
   @cached
   get shouldErrorFlag(): ShouldErrorFlagResource | null {
@@ -62,11 +80,48 @@ class ShouldErrorFlag extends Component<{
   Args: { flag: ShouldErrorFlagResource };
 }> {
   <template>
-    <Button {{on "click" this.toggle}}>
+    <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}}>
       Should Error:
       {{@flag.value}}
+    </UpdateFlag>
+  </template>
+
+  toggle = (_event: PointerEvent) => {
+    this.args.flag.value = !this.args.flag.value;
+  };
+}
+
+const TodoCountOptions = {
+  small: 3,
+  large: 100_000,
+};
+
+class TodoCountFlag extends Component<{
+  Args: { flag: TodoCountFlagResource };
+}> {
+  <template>
+    <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}}>
+      Initial Todo Count:
+      {{@flag.value}}
+    </UpdateFlag>
+  </template>
+
+  toggle = (_event: PointerEvent) => {
+    this.args.flag.value =
+      this.args.flag.value === TodoCountOptions.small
+        ? TodoCountOptions.large
+        : TodoCountOptions.small;
+  };
+}
+
+class UpdateFlag extends Component<{
+  Args: { flag: ApiFlag; toggle: (_event: PointerEvent) => void };
+  Blocks: { default: [] };
+}> {
+  <template>
+    <Button {{on "click" @toggle}}>
+      {{yield}}
       <Request @request={{this.updateRequest}}>
-        <:idle>{{#if this.initiatedUpdate}}✓{{/if}}</:idle>
         <:loading><Loading /></:loading>
         <:error as |error|><HandleError @error={{error}} /></:error>
       </Request>
@@ -75,24 +130,10 @@ class ShouldErrorFlag extends Component<{
 
   @service declare private readonly store: Store;
 
-  initialValue = this.args.flag.value;
-
-  private get initiatedUpdate() {
-    return this.args.flag.value !== this.initialValue;
-  }
-
   @cached
   private get updateRequest() {
-    if (this.args.flag.value === this.initialValue) {
-      return null;
-    }
-
     return this.store.request(updateFlag(this.args.flag));
   }
-
-  toggle = (_event: PointerEvent) => {
-    this.args.flag.value = !this.args.flag.value;
-  };
 }
 
 const Button = <template>
