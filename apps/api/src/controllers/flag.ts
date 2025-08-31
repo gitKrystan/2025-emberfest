@@ -3,6 +3,7 @@ import type { Request, Response } from 'express';
 import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
 import type { ApiFlag } from '@workspace/shared-data/types';
 
+import { flagStore } from '../db/flag-store.ts';
 import { createSingleErrorDocument } from '../serializers/error.ts';
 import {
   createFlagDocument,
@@ -10,7 +11,6 @@ import {
   deserializeFlag,
   validateFlagForUpdate,
 } from '../serializers/flag.ts';
-import { flagStore } from '../store.ts';
 import type { FlagResource } from '../types.ts';
 import { getBaseUrl } from '../utils/url.ts';
 

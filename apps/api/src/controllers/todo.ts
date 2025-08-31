@@ -4,6 +4,7 @@ import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
 import type { SavedTodo, UnsavedTodo } from '@workspace/shared-data/types';
 import { asType } from '@workspace/shared-data/types';
 
+import { todoStore } from '../db/todo-store.ts';
 import { createSingleErrorDocument } from '../serializers/error.ts';
 import {
   createTodoDocument,
@@ -12,7 +13,6 @@ import {
   validateTodoForCreation,
   validateTodoForUpdate,
 } from '../serializers/todo.ts';
-import { todoStore } from '../store.ts';
 import type { TodoResource } from '../types.ts';
 import { getBaseUrl } from '../utils/url.ts';
 
