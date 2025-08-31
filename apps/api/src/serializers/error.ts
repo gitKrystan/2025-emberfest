@@ -1,10 +1,10 @@
-import type { JsonApiError, TodoDocument } from '../types.ts';
+import type { JsonApiDocument, JsonApiError } from '../types.ts';
 import { JSONAPI_VERSION } from './base.ts';
 
 /**
  * Create a JSONAPI error document
  */
-export function createErrorDocument(errors: JsonApiError[]): TodoDocument {
+export function createErrorDocument(errors: JsonApiError[]): JsonApiDocument {
   return {
     errors,
     jsonapi: JSONAPI_VERSION,
@@ -19,7 +19,7 @@ export function createSingleErrorDocument(
   title: string,
   detail?: string,
   code?: string,
-): TodoDocument {
+): JsonApiDocument {
   return createErrorDocument([
     {
       status,

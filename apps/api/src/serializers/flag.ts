@@ -1,7 +1,11 @@
 import type { ApiFlag } from '@workspace/shared-data/types';
 
-import type { FlagDocument, FlagResource } from '../types.ts';
+import type { JsonApiDocument, JsonApiResource } from '../types.ts';
 import { FLAG_TYPE, JSONAPI_VERSION } from './base.ts';
+
+// Flag-specific JSONAPI types
+export type FlagResource = JsonApiResource<Omit<ApiFlag, 'id'>>;
+export type FlagDocument = JsonApiDocument<Omit<ApiFlag, 'id'>>;
 
 /**
  * Serialize a single Flag to JSONAPI format

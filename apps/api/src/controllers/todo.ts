@@ -10,10 +10,10 @@ import {
   createTodoDocument,
   createTodosDocument,
   deserializeTodo,
+  type TodoResource,
   validateTodoForCreation,
   validateTodoForUpdate,
 } from '../serializers/todo.ts';
-import type { TodoResource } from '../types.ts';
 import { getBaseUrl } from '../utils/url.ts';
 
 /**

@@ -9,9 +9,9 @@ import {
   createFlagDocument,
   createFlagsDocument,
   deserializeFlag,
+  type FlagResource,
   validateFlagForUpdate,
 } from '../serializers/flag.ts';
-import type { FlagResource } from '../types.ts';
 import { getBaseUrl } from '../utils/url.ts';
 
 /**

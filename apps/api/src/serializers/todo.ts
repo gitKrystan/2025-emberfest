@@ -1,7 +1,11 @@
 import type { SavedTodo, UnsavedTodo } from '@workspace/shared-data/types';
 
-import type { TodoDocument, TodoResource } from '../types.ts';
+import type { JsonApiDocument, JsonApiResource } from '../types.ts';
 import { JSONAPI_VERSION, TODO_TYPE } from './base.ts';
+
+// Todo-specific JSONAPI types
+export type TodoResource = JsonApiResource<Omit<SavedTodo, 'id'>>;
+export type TodoDocument = JsonApiDocument<Omit<SavedTodo, 'id'>>;
 
 /**
  * Serialize a single Todo to JSONAPI format

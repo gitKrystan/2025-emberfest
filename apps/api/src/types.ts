@@ -1,5 +1,3 @@
-import type { ApiFlag, SavedTodo } from '@workspace/shared-data/types';
-
 // JSONAPI Resource Object interface
 export interface JsonApiResource<T = unknown> {
   type: string;
@@ -70,13 +68,3 @@ export interface JsonApiError {
     | undefined;
   meta?: Record<string, unknown>;
 }
-
-// Todo-specific JSONAPI types
-export type TodoResource = JsonApiResource<Omit<SavedTodo, 'id'>>;
-export type TodoDocument = JsonApiDocument<Omit<SavedTodo, 'id'>>;
-export type TodoListDocument = JsonApiDocument<Omit<SavedTodo, 'id'>>;
-
-// Flag-specific JSONAPI types
-export type FlagResource = JsonApiResource<Omit<ApiFlag, 'id'>>;
-export type FlagDocument = JsonApiDocument<Omit<ApiFlag, 'id'>>;
-export type FlagListDocument = JsonApiDocument<Omit<ApiFlag, 'id'>>;
