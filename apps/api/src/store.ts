@@ -1,11 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import {
+import type {
   ApiFlag,
-  asType,
   SavedTodo,
   UnsavedTodo,
 } from '@workspace/shared-data/types';
+import { asType } from '@workspace/shared-data/types';
 
 abstract class Store<T extends { id: string }> {
   protected map: Map<string, T>;
@@ -117,7 +117,7 @@ export class TodoStore extends Store<SavedTodo> {
     const todo: SavedTodo = {
       id: uuidv4(),
       ...todoData,
-      completed: todoData.completed ?? false,
+      completed: todoData.completed,
     };
 
     this.map.set(todo.id, todo);

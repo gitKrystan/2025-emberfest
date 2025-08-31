@@ -1,18 +1,21 @@
-import express from 'express';
 import cors from 'cors';
+import express from 'express';
+
 import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
-import { validateJsonApiContentType } from './middleware/validate-content-type';
+
+import { getFlags, updateFlag } from './controllers/flag.ts';
 import {
   createTodo,
   deleteTodo,
   getTodo,
   getTodos,
   updateTodo,
-} from './controllers/todo';
-import { getFlags, updateFlag } from './controllers/flag';
+} from './controllers/todo.ts';
+import { validateJsonApiContentType } from './middleware/validate-content-type.ts';
+import { getBaseUrl } from './utils/url.ts';
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env['PORT'] || 3001;
 
 // Middleware
 app.use(
@@ -35,7 +38,7 @@ app.use((req, _res, next) => {
 });
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.json({
     status: 'ok',
     timestamp: new Date().toISOString(),
@@ -46,13 +49,14 @@ app.get('/health', (req, res) => {
 // API Info endpoint
 app.get('/', (req, res) => {
   res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
+  const baseUrl = getBaseUrl(req);
   res.json({
     jsonapi: {
       version: '1.1',
     },
     links: {
-      self: `${req.protocol}://${req.get('host')}/`,
-      todos: `${req.protocol}://${req.get('host')}/api/todo`,
+      self: `${baseUrl}/api`,
+      todos: `${baseUrl}/api/todo`,
     },
     meta: {
       description: 'JSONAPI-compliant Todo API',

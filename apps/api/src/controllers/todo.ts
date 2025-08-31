@@ -1,16 +1,13 @@
-import { Request, Response } from 'express';
-import { todoStore } from '../store';
-import { JsonApiSerializer } from '../serializer';
-import { TodoResource } from '../types';
-import { asType, SavedTodo, UnsavedTodo } from '@workspace/shared-data/types';
-import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
+import type { Request, Response } from 'express';
 
-/**
- * Get the base URL for generating links
- */
-function getBaseUrl(req: Request): string {
-  return `${req.protocol}://${req.get('host')}`;
-}
+import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
+import type { SavedTodo, UnsavedTodo } from '@workspace/shared-data/types';
+import { asType } from '@workspace/shared-data/types';
+
+import { JsonApiSerializer } from '../serializer.ts';
+import { todoStore } from '../store.ts';
+import type { TodoResource } from '../types.ts';
+import { getBaseUrl } from '../utils/url.ts';
 
 /**
  * GET /todos - List all todos
@@ -43,6 +40,18 @@ export function getTodos(req: Request, res: Response) {
 export function getTodo(req: Request, res: Response) {
   try {
     const { id } = req.params;
+    if (!id) {
+      return res
+        .status(400)
+        .json(
+          JsonApiSerializer.createSingleErrorDocument(
+            '400',
+            'Bad Request',
+            'Request must include a todo id',
+          ),
+        );
+    }
+
     const todo = todoStore.findById(id);
 
     if (!todo) {
@@ -61,10 +70,10 @@ export function getTodo(req: Request, res: Response) {
     const document = JsonApiSerializer.createTodoDocument(todo, baseUrl);
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
-    res.json(document);
+    return res.json(document);
   } catch (error) {
     console.error('Error getting todo:', error);
-    res
+    return res
       .status(500)
       .json(
         JsonApiSerializer.createSingleErrorDocument(
@@ -81,7 +90,7 @@ export function getTodo(req: Request, res: Response) {
  */
 export function createTodo(req: Request, res: Response) {
   try {
-    const { data } = req.body;
+    const { data } = req.body as { data?: TodoResource };
 
     if (!data) {
       return res
@@ -98,7 +107,7 @@ export function createTodo(req: Request, res: Response) {
     // Deserialize the request data
     let todoData;
     try {
-      todoData = JsonApiSerializer.deserializeTodo(data as TodoResource);
+      todoData = JsonApiSerializer.deserializeTodo(data);
     } catch (error) {
       return res
         .status(400)
@@ -129,6 +138,7 @@ export function createTodo(req: Request, res: Response) {
     // Create the todo
     const newTodo = todoStore.create(
       asType<UnsavedTodo>({
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         title: todoData.title!,
         completed: todoData.completed ?? false,
       }),
@@ -139,10 +149,10 @@ export function createTodo(req: Request, res: Response) {
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
     res.setHeader('Location', `${baseUrl}/todos/${newTodo.id}`);
-    res.status(201).json(document);
+    return res.status(201).json(document);
   } catch (error) {
     console.error('Error creating todo:', error);
-    res
+    return res
       .status(500)
       .json(
         JsonApiSerializer.createSingleErrorDocument(
@@ -160,7 +170,19 @@ export function createTodo(req: Request, res: Response) {
 export function updateTodo(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const { data } = req.body;
+    const { data } = req.body as { data?: TodoResource };
+
+    if (!id) {
+      return res
+        .status(400)
+        .json(
+          JsonApiSerializer.createSingleErrorDocument(
+            '400',
+            'Bad Request',
+            'Request must include a todo id',
+          ),
+        );
+    }
 
     if (!data) {
       return res
@@ -215,7 +237,7 @@ export function updateTodo(req: Request, res: Response) {
     // Deserialize the request data
     let todoData: Partial<SavedTodo>;
     try {
-      todoData = JsonApiSerializer.deserializeTodo(data as TodoResource);
+      todoData = JsonApiSerializer.deserializeTodo(data);
     } catch (error) {
       return res
         .status(400)
@@ -243,7 +265,7 @@ export function updateTodo(req: Request, res: Response) {
     }
 
     // Update the todo
-    // @ts-expect-error YOLO
+    // @ts-expect-error YOLO oh well
     const updatedTodo = todoStore.update(id, {
       ...(todoData.title !== undefined && { title: todoData.title }),
       ...(todoData.completed !== undefined && {
@@ -267,10 +289,10 @@ export function updateTodo(req: Request, res: Response) {
     const document = JsonApiSerializer.createTodoDocument(updatedTodo, baseUrl);
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
-    res.json(document);
+    return res.json(document);
   } catch (error) {
     console.error('Error updating todo:', error);
-    res
+    return res
       .status(500)
       .json(
         JsonApiSerializer.createSingleErrorDocument(
@@ -289,6 +311,18 @@ export function deleteTodo(req: Request, res: Response) {
   try {
     const { id } = req.params;
 
+    if (!id) {
+      return res
+        .status(400)
+        .json(
+          JsonApiSerializer.createSingleErrorDocument(
+            '400',
+            'Bad Request',
+            'Request must include a todo id',
+          ),
+        );
+    }
+
     const deleted = todoStore.delete(id);
 
     if (!deleted) {
@@ -303,10 +337,10 @@ export function deleteTodo(req: Request, res: Response) {
         );
     }
 
-    res.status(204).send();
+    return res.status(204).send();
   } catch (error) {
     console.error('Error deleting todo:', error);
-    res
+    return res
       .status(500)
       .json(
         JsonApiSerializer.createSingleErrorDocument(

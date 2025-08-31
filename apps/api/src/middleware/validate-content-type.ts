@@ -1,6 +1,8 @@
-import { Request, Response } from 'express';
-import { JsonApiSerializer } from '../serializer';
+import type { NextFunction, Request, Response } from 'express';
+
 import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
+
+import { JsonApiSerializer } from '../serializer.ts';
 
 /**
  * Middleware to validate JSONAPI content type for POST/PATCH requests
@@ -8,7 +10,7 @@ import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
 export function validateJsonApiContentType(
   req: Request,
   res: Response,
-  next: Function,
+  next: NextFunction,
 ) {
   if (['POST', 'PATCH'].includes(req.method)) {
     const contentType = req.get('Content-Type');

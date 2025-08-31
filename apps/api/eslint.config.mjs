@@ -15,7 +15,6 @@
 import babelParser from '@babel/eslint-parser';
 import js from '@eslint/js';
 import prettier from 'eslint-config-prettier';
-import ember from 'eslint-plugin-ember/recommended';
 import importPlugin from 'eslint-plugin-import';
 import n from 'eslint-plugin-n';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
@@ -36,22 +35,12 @@ const tsParserOptions = {
 const config = [
   js.configs.recommended,
   prettier,
-  ember.configs.base,
-  ember.configs.gjs,
-  ember.configs.gts,
   /**
    * Ignores must be in their own object
    * https://eslint.org/docs/latest/use/configure/ignore
    */
   {
-    ignores: [
-      'dist/',
-      'dist-*/',
-      'declarations/',
-      'node_modules/',
-      'coverage/',
-      '!**/.*',
-    ],
+    ignores: ['dist/', 'dist-*/', 'node_modules/', 'coverage/', '!**/.*'],
   },
   /**
    * https://eslint.org/docs/latest/use/configure/configuration-files#configuring-linter-options
@@ -98,13 +87,8 @@ const config = [
     files: ['**/*.js'],
     languageOptions: {
       parser: babelParser,
-    },
-  },
-  {
-    files: ['**/*.{js,gjs}'],
-    languageOptions: {
       globals: {
-        ...globals.browser,
+        ...globals.node,
       },
       parserOptions: esmParserOptions,
     },
@@ -113,11 +97,12 @@ const config = [
     extends: [
       ...ts.configs.strictTypeChecked,
       ...ts.configs.stylisticTypeChecked,
-      ember.configs.gts,
     ],
-    files: ['**/*.{ts,gts}'],
+    files: ['**/*.ts'],
     languageOptions: {
-      parser: ember.parser,
+      globals: {
+        ...globals.node,
+      },
       parserOptions: tsParserOptions,
     },
     rules: {
@@ -170,12 +155,7 @@ const config = [
    * CJS node files
    */
   {
-    files: [
-      '**/*.cjs',
-      '.prettierrc.cjs',
-      '.template-lintrc.cjs',
-      'addon-main.cjs',
-    ],
+    files: ['**/*.cjs', '.prettierrc.cjs'],
     languageOptions: {
       ecmaVersion: 'latest',
       globals: {

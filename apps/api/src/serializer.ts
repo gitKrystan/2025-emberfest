@@ -1,20 +1,26 @@
-import { ApiFlag, SavedTodo, UnsavedTodo } from '@workspace/shared-data/types';
-import {
-  TodoResource,
-  TodoDocument,
-  JsonApiError,
-  FlagResource,
+import type {
+  ApiFlag,
+  SavedTodo,
+  UnsavedTodo,
+} from '@workspace/shared-data/types';
+
+import type {
   FlagDocument,
-} from './types';
+  FlagResource,
+  JsonApiError,
+  TodoDocument,
+  TodoResource,
+} from './types.ts';
 
 const TODO_TYPE = 'todo'; // Using singular-dasherized as per spec requirements
 const FLAG_TYPE = 'flag'; // Using singular-dasherized as per spec requirements
 
+// eslint-disable-next-line @typescript-eslint/no-extraneous-class
 export class JsonApiSerializer {
   /**
    * Serialize a single Todo to JSONAPI format
    */
-  static serializeTodo(todo: SavedTodo, baseUrl: string = ''): TodoResource {
+  static serializeTodo(todo: SavedTodo, baseUrl = ''): TodoResource {
     const { id, ...attributes } = todo;
 
     return {
@@ -30,7 +36,7 @@ export class JsonApiSerializer {
   /**
    * Serialize a single Flag to JSONAPI format
    */
-  static serializeFlag(flag: ApiFlag, baseUrl: string = ''): FlagResource {
+  static serializeFlag(flag: ApiFlag, baseUrl = ''): FlagResource {
     const { id, ...attributes } = flag;
 
     return {
@@ -46,30 +52,21 @@ export class JsonApiSerializer {
   /**
    * Serialize multiple Todos to JSONAPI format
    */
-  static serializeTodos(
-    todos: SavedTodo[],
-    baseUrl: string = '',
-  ): TodoResource[] {
+  static serializeTodos(todos: SavedTodo[], baseUrl = ''): TodoResource[] {
     return todos.map((todo) => this.serializeTodo(todo, baseUrl));
   }
 
   /**
    * Serialize multiple Flags to JSONAPI format
    */
-  static serializeFlags(
-    flags: ApiFlag[],
-    baseUrl: string = '',
-  ): FlagResource[] {
+  static serializeFlags(flags: ApiFlag[], baseUrl = ''): FlagResource[] {
     return flags.map((flag) => this.serializeFlag(flag, baseUrl));
   }
 
   /**
    * Create a JSONAPI document for a single Todo
    */
-  static createTodoDocument(
-    todo: SavedTodo,
-    baseUrl: string = '',
-  ): TodoDocument {
+  static createTodoDocument(todo: SavedTodo, baseUrl = ''): TodoDocument {
     return {
       data: this.serializeTodo(todo, baseUrl),
       jsonapi: {
@@ -84,7 +81,7 @@ export class JsonApiSerializer {
   /**
    * Create a JSONAPI document for a single Todo
    */
-  static createFlagDocument(flag: ApiFlag, baseUrl: string = ''): FlagDocument {
+  static createFlagDocument(flag: ApiFlag, baseUrl = ''): FlagDocument {
     return {
       data: this.serializeFlag(flag, baseUrl),
       jsonapi: {
@@ -99,10 +96,7 @@ export class JsonApiSerializer {
   /**
    * Create a JSONAPI document for multiple Todos
    */
-  static createTodosDocument(
-    todos: SavedTodo[],
-    baseUrl: string = '',
-  ): TodoDocument {
+  static createTodosDocument(todos: SavedTodo[], baseUrl = ''): TodoDocument {
     return {
       data: this.serializeTodos(todos, baseUrl),
       jsonapi: {
@@ -117,10 +111,7 @@ export class JsonApiSerializer {
   /**
    * Create a JSONAPI document for multiple Flags
    */
-  static createFlagsDocument(
-    flags: ApiFlag[],
-    baseUrl: string = '',
-  ): FlagDocument {
+  static createFlagsDocument(flags: ApiFlag[], baseUrl = ''): FlagDocument {
     return {
       data: this.serializeFlags(flags, baseUrl),
       jsonapi: {
@@ -245,6 +236,7 @@ export class JsonApiSerializer {
       errors.push('title cannot be empty if provided');
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if ('completed' in data && data.completed === undefined) {
       errors.push('completed cannot be undefined if provided');
     }

@@ -131,9 +131,20 @@ export default ts.config(
         'error',
         { argsIgnorePattern: '^_' },
       ],
+      '@typescript-eslint/prefer-nullish-coalescing': [
+        'error',
+        { ignorePrimitives: { string: true, number: true } },
+      ],
       '@typescript-eslint/prefer-readonly': 'error',
       '@typescript-eslint/prefer-ts-expect-error': 'error',
       '@typescript-eslint/promise-function-async': 'error',
+      '@typescript-eslint/restrict-template-expressions': [
+        'error',
+        {
+          allowBoolean: true,
+          allowNumber: true,
+        },
+      ],
 
       'prefer-destructuring': 'off',
       '@typescript-eslint/prefer-destructuring': 'error',

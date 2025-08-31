@@ -1,16 +1,12 @@
-import { Request, Response } from 'express';
-import { flagStore } from '../store';
-import { JsonApiSerializer } from '../serializer';
-import { FlagResource } from '../types';
-import { ApiFlag } from '@workspace/shared-data/types';
-import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
+import type { Request, Response } from 'express';
 
-/**
- * Get the base URL for generating links
- */
-function getBaseUrl(req: Request): string {
-  return `${req.protocol}://${req.get('host')}`;
-}
+import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
+import type { ApiFlag } from '@workspace/shared-data/types';
+
+import { JsonApiSerializer } from '../serializer.ts';
+import { flagStore } from '../store.ts';
+import type { FlagResource } from '../types.ts';
+import { getBaseUrl } from '../utils/url.ts';
 
 /**
  * GET /flags - List all flags
@@ -43,7 +39,19 @@ export function getFlags(req: Request, res: Response) {
 export function updateFlag(req: Request, res: Response) {
   try {
     const { id } = req.params;
-    const { data } = req.body;
+    if (!id) {
+      return res
+        .status(400)
+        .json(
+          JsonApiSerializer.createSingleErrorDocument(
+            '400',
+            'Bad Request',
+            'Request must include a flag id',
+          ),
+        );
+    }
+
+    const { data } = req.body as { data?: FlagResource };
 
     if (!data) {
       return res
@@ -97,7 +105,7 @@ export function updateFlag(req: Request, res: Response) {
     // Deserialize the request data
     let flagData: Partial<ApiFlag>;
     try {
-      flagData = JsonApiSerializer.deserializeFlag(data as FlagResource);
+      flagData = JsonApiSerializer.deserializeFlag(data);
     } catch (error) {
       return res
         .status(400)
@@ -126,7 +134,7 @@ export function updateFlag(req: Request, res: Response) {
 
     // Update the flag
     const updatedFlag = flagStore.update(id, {
-      // @ts-expect-error YOLO
+      // @ts-expect-error YOLO oh well
       value: flagData.value,
     });
 
@@ -146,10 +154,10 @@ export function updateFlag(req: Request, res: Response) {
     const document = JsonApiSerializer.createFlagDocument(updatedFlag, baseUrl);
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
-    res.json(document);
+    return res.json(document);
   } catch (error) {
     console.error('Error updating flag:', error);
-    res
+    return res
       .status(500)
       .json(
         JsonApiSerializer.createSingleErrorDocument(
