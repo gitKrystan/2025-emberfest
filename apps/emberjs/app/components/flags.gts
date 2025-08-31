@@ -3,7 +3,7 @@ import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { cached } from '@glimmer/tracking';
-import { checkout } from '@warp-drive/core/reactive';
+import { checkout, type ReactiveResource } from '@warp-drive/core/reactive';
 import { Await, Request } from '@warp-drive/ember';
 
 import { queryFlags, updateFlag } from '@workspace/shared-data/builders';
@@ -13,7 +13,7 @@ import type {
   TodoCountFlag as TodoCountFlagResource,
 } from '@workspace/shared-data/types';
 
-import { HandleError } from '#app/components/error.gts';
+import { HandleError } from '#components/error.gts';
 import { Loading } from '#components/loading.gts';
 import type Store from '#services/store';
 
@@ -21,7 +21,10 @@ export class Flags extends Component {
   <template>
     <footer class="footer">
       <Request @request={{this.flagRequest}}>
-        <:content as |result|><FlagsContent @data={{result.data}} /></:content>
+        <:loading><Loading /></:loading>
+        <:content as |content|>
+          <FlagsContent @data={{content.data}} />
+        </:content>
         <:error as |error|><HandleError @error={{error}} /></:error>
       </Request>
     </footer>
@@ -42,9 +45,8 @@ class FlagsContent extends Component<{
     <ul class="filters">
       {{#if this.shouldErrorFlag}}
         <li>
-          <Await @promise={{checkout this.shouldErrorFlag}}>
+          <Await @promise={{this.checkout this.shouldErrorFlag}}>
             <:pending><Loading /></:pending>
-            {{! @glint-expect-error -- FIXME }}
             <:success as |flag|><ShouldErrorFlag @flag={{flag}} /></:success>
             <:error as |error|><HandleError @error={{error}} /></:error>
           </Await>
@@ -52,9 +54,8 @@ class FlagsContent extends Component<{
       {{/if}}
       {{#if this.initialTodoCountFlag}}
         <li>
-          <Await @promise={{checkout this.initialTodoCountFlag}}>
+          <Await @promise={{this.checkout this.initialTodoCountFlag}}>
             <:pending><Loading /></:pending>
-            {{! @glint-expect-error -- FIXME }}
             <:success as |flag|><TodoCountFlag @flag={{flag}} /></:success>
             <:error as |error|><HandleError @error={{error}} /></:error>
           </Await>
@@ -70,6 +71,10 @@ class FlagsContent extends Component<{
     );
   }
 
+  checkout<Flag extends ApiFlag>(flag: Flag): Promise<Flag & ReactiveResource> {
+    return checkout<Flag>(flag);
+  }
+
   @cached
   get shouldErrorFlag(): ShouldErrorFlagResource | null {
     return this.args.data.find((flag) => flag.id === 'shouldError') ?? null;
@@ -77,7 +82,7 @@ class FlagsContent extends Component<{
 }
 
 class ShouldErrorFlag extends Component<{
-  Args: { flag: ShouldErrorFlagResource };
+  Args: { flag: ShouldErrorFlagResource & ReactiveResource };
 }> {
   <template>
     <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}}>
@@ -97,7 +102,7 @@ const TodoCountOptions = {
 };
 
 class TodoCountFlag extends Component<{
-  Args: { flag: TodoCountFlagResource };
+  Args: { flag: TodoCountFlagResource & ReactiveResource };
 }> {
   <template>
     <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}}>
@@ -115,7 +120,10 @@ class TodoCountFlag extends Component<{
 }
 
 class UpdateFlag extends Component<{
-  Args: { flag: ApiFlag; toggle: (_event: PointerEvent) => void };
+  Args: {
+    flag: ApiFlag & ReactiveResource;
+    toggle: (_event: PointerEvent) => void;
+  };
   Blocks: { default: [] };
 }> {
   <template>

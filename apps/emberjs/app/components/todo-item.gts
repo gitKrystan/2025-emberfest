@@ -3,10 +3,12 @@ import { service } from '@ember/service';
 import { isBlank } from '@ember/utils';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
+import { checkout } from '@warp-drive/core/reactive';
 
+import { deleteTodo, updateTodo } from '@workspace/shared-data/builders';
 import type { SavedTodo } from '@workspace/shared-data/types';
 
-import type Repo from '#services/repo';
+import type Store from '#services/store';
 
 interface Signature {
   Args: {
@@ -49,18 +51,21 @@ export default class TodoItem extends Component<Signature> {
     </li>
   </template>
 
-  @service declare repo: Repo;
+  @service declare private readonly store: Store;
 
   @tracked editing = false;
 
-  removeTodo = () => {
-    this.repo.delete(this.args.todo);
+  removeTodo = async () => {
+    // FIXME: Handle async-ness
+    await this.store.request(deleteTodo(this.args.todo));
   };
 
-  toggleCompleted = (event: Event) => {
+  toggleCompleted = async (event: Event) => {
     const target = event.target as HTMLInputElement;
-    this.args.todo.completed = target.checked;
-    this.repo.persist();
+    // FIXME: Handle async-ness; make it actually patch
+    const editable = await checkout<SavedTodo>(this.args.todo);
+    editable.completed = target.checked;
+    await this.store.request(updateTodo(editable));
   };
 
   handleKeydown = (event: KeyboardEvent) => {
@@ -86,7 +91,7 @@ export default class TodoItem extends Component<Signature> {
       ?.focus();
   };
 
-  doneEditing = (event: FocusEvent) => {
+  doneEditing = async (event: FocusEvent) => {
     if (!this.editing) {
       return;
     }
@@ -94,7 +99,7 @@ export default class TodoItem extends Component<Signature> {
     const todoTitle = (event.target as HTMLInputElement).value.trim();
 
     if (isBlank(todoTitle)) {
-      this.removeTodo();
+      await this.removeTodo();
     } else {
       this.args.todo.title = todoTitle;
       this.editing = false;

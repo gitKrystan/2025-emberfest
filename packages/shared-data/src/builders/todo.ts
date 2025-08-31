@@ -1,53 +1,56 @@
-import type { RequestInfo } from '@warp-drive/core/types/request';
-import { buildBaseURL, buildQueryParams } from '@warp-drive/utilities';
+import {
+  createRecord,
+  deleteRecord,
+  findRecord,
+  query,
+  updateRecord,
+} from '@warp-drive/utilities/json-api';
 
 import type { SavedTodo, UnsavedTodo } from '../types/index.ts';
 
 // GET
-export function getAllTodos(): RequestInfo<SavedTodo[]> {
-  return {
-    method: 'GET' as const,
-    url: buildBaseURL({ resourcePath: 'todo' }),
-  };
+export function getAllTodos() {
+  return query<SavedTodo>('todo', {}, { resourcePath: 'todo' });
 }
 
 export function getCompletedTodos() {
-  return {
-    method: 'GET' as const,
-    url: `${buildBaseURL({ resourcePath: 'todo' })}?${buildQueryParams({ completed: true })}`,
-  };
+  return query<SavedTodo>(
+    'todo',
+    { completed: true },
+    { resourcePath: 'todo' },
+  );
 }
 
 export function getActiveTodos() {
-  return {
-    method: 'GET' as const,
-    url: `${buildBaseURL({ resourcePath: 'todo' })}?${buildQueryParams({ completed: false })}`,
-  };
+  return query<SavedTodo>(
+    'todo',
+    { completed: false },
+    { resourcePath: 'todo' },
+  );
 }
 
 export function getTodoById(id: string) {
-  return {
-    method: 'GET' as const,
-    url: `${buildBaseURL({ resourcePath: 'todo' })}/${id}`,
-  };
+  return findRecord<SavedTodo>('todo', id, { resourcePath: 'todo' });
 }
 
 // POST
 export function createTodo(attributes: UnsavedTodo) {
-  return {
-    method: 'POST' as const,
-    url: buildBaseURL({ resourcePath: 'todo' }),
-    body: JSON.stringify({
-      data: {
-        type: 'todo',
-        attributes: {
-          title: attributes.title,
-          completed: attributes.completed,
-        },
+  const requestInfo = createRecord<UnsavedTodo>(attributes, {
+    resourcePath: 'todo',
+  });
+  requestInfo.body = JSON.stringify({
+    data: {
+      type: 'todo',
+      attributes: {
+        title: attributes.title,
+        completed: attributes.completed,
       },
-    }),
-  };
+    },
+  });
+  return requestInfo;
 }
+
+// FIXME: Implement bulk delete
 
 // PATCH
 export function updateTodo(todo: Partial<SavedTodo> & { id: string }) {
@@ -62,23 +65,18 @@ export function updateTodo(todo: Partial<SavedTodo> & { id: string }) {
     attributes.completed = todo.completed;
   }
 
-  return {
-    method: 'PATCH' as const,
-    url: `${buildBaseURL({ resourcePath: 'todo' })}/${todo.id}`,
-    body: JSON.stringify({
-      data: {
-        type: 'todo',
-        id: todo.id,
-        attributes,
-      },
-    }),
-  };
+  const requestInfo = updateRecord(todo, { resourcePath: 'todo' });
+  requestInfo.body = JSON.stringify({
+    data: {
+      type: 'todo',
+      id: todo.id,
+      attributes,
+    },
+  });
+  return requestInfo;
 }
 
 // DELETE
 export function deleteTodo(todo: SavedTodo) {
-  return {
-    method: 'DELETE' as const,
-    url: `${buildBaseURL({ resourcePath: 'todo' })}/${todo.id}`,
-  };
+  return deleteRecord(todo, { resourcePath: 'todo' });
 }

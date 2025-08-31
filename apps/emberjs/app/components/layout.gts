@@ -1,11 +1,16 @@
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
+import { cached } from '@glimmer/tracking';
+import { Request } from '@warp-drive/ember';
 
+import { getAllTodos } from '@workspace/shared-data/builders';
 import type { SavedTodo } from '@workspace/shared-data/types';
 
 import Create from '#components/create';
+import { HandleError } from '#components/error.gts';
 import Footer from '#components/footer';
-import type Repo from '#services/repo';
+import { Loading } from '#components/loading.gts';
+import type Store from '#services/store';
 
 interface Signature {
   Blocks: {
@@ -14,7 +19,7 @@ interface Signature {
 }
 
 export default class Layout extends Component<Signature> {
-  @service declare repo: Repo;
+  @service declare private readonly store: Store;
 
   <template>
     <section class="todoapp">
@@ -26,11 +31,21 @@ export default class Layout extends Component<Signature> {
 
       {{yield}}
 
-      {{#if (hasTodos this.repo.all)}}
-        <Footer />
-      {{/if}}
+      <Request @request={{this.getAllTodosRequest}}>
+        <:loading><Loading />footer</:loading>
+        <:content as |content|>
+          {{#if (hasTodos content.data)}}
+            <Footer />
+          {{/if}}
+        </:content>
+        <:error as |error|><HandleError @error={{error}} /></:error>
+      </Request>
     </section>
   </template>
+
+  @cached get getAllTodosRequest() {
+    return this.store.request(getAllTodos());
+  }
 }
 
 function hasTodos(todos: SavedTodo[]) {

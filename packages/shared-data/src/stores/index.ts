@@ -14,6 +14,7 @@ import { JSONAPICache } from '@warp-drive/json-api';
 
 import { ApiHandler } from '../handlers/api.ts';
 import { FlagSchema } from '../schemas/flag.ts';
+import { TodoSchema } from '../schemas/todo.ts';
 
 export default class AppStore extends Store {
   requestManager = new RequestManager()
@@ -34,7 +35,7 @@ export default class AppStore extends Store {
 
   createSchemaService() {
     const schema = new SchemaService();
-    schema.registerResources([FlagSchema]);
+    schema.registerResources([FlagSchema, TodoSchema]);
     registerDerivations(schema);
     return schema;
   }

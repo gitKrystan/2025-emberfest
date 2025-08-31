@@ -1,18 +1,6 @@
 import Route from '@ember/routing/route';
-import { service } from '@ember/service';
-
-import type Repo from '#services/repo';
 
 /**
  * Handles app boot and general app one-time setup things.
  */
-export default class Application extends Route {
-  @service declare repo: Repo;
-
-  async beforeModel() {
-    /**
-     * Load from API
-     */
-    await this.repo.load();
-  }
-}
+export default class Application extends Route {}

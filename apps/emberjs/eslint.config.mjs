@@ -137,7 +137,7 @@ export default ts.config(
       ],
       '@typescript-eslint/prefer-readonly': 'error',
       '@typescript-eslint/prefer-ts-expect-error': 'error',
-      '@typescript-eslint/promise-function-async': 'error',
+      '@typescript-eslint/promise-function-async': 'off',
       '@typescript-eslint/restrict-template-expressions': [
         'error',
         {

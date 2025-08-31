@@ -3,9 +3,10 @@ import { service } from '@ember/service';
 import { isBlank } from '@ember/utils';
 import Component from '@glimmer/component';
 
+import { createTodo } from '@workspace/shared-data/builders';
 import { asType } from '@workspace/shared-data/types';
 
-import type Repo from '#services/repo';
+import type Store from '#services/store';
 
 export default class Create extends Component {
   <template>
@@ -19,20 +20,23 @@ export default class Create extends Component {
     />
   </template>
 
-  @service declare repo: Repo;
+  @service declare store: Store;
 
   // FIXME: we should use a <form> instead of this.
   //       this logic was copied from "the old way"
   //       which was Ember 3.2, and todomvc has historically
   //       been not great for a11y
-  createTodo = (event: KeyboardEvent) => {
+  createTodo = async (event: KeyboardEvent) => {
     // eslint-disable-next-line @typescript-eslint/no-deprecated -- FIXME
     const { keyCode } = event;
     const target = event.target as HTMLInputElement;
     const value = target.value.trim();
 
     if (keyCode === 13 && !isBlank(value)) {
-      this.repo.add(asType({ completed: false, title: value }));
+      // FIXME: Handle Request-ness
+      await this.store.request(
+        createTodo(asType({ completed: false, title: value }))
+      );
       target.value = '';
     }
   };

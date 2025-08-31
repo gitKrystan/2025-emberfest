@@ -2,11 +2,13 @@ import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
+import { checkout } from '@warp-drive/core/reactive';
 
+import { updateTodo } from '@workspace/shared-data/builders';
 import type { SavedTodo } from '@workspace/shared-data/types';
 
 import Item from '#components/todo-item';
-import type Repo from '#services/repo';
+import type Store from '#services/store';
 
 interface Signature {
   Args: {
@@ -41,7 +43,7 @@ export default class TodoList extends Component<Signature> {
     </section>
   </template>
 
-  @service declare repo: Repo;
+  @service declare private readonly store: Store;
 
   @tracked canToggle = true;
 
@@ -52,11 +54,17 @@ export default class TodoList extends Component<Signature> {
     );
   }
 
-  toggleAll = () => {
+  toggleAll = async () => {
     const allCompleted = this.areViewableCompleted;
 
-    this.args.todos.forEach((todo) => (todo.completed = !allCompleted));
-    this.repo.persist();
+    // FIXME: Implement bulk update; handle async UX
+    const futures = [];
+    for (const todo of this.args.todos) {
+      const editable = await checkout<SavedTodo>(todo);
+      editable.completed = !allCompleted;
+      futures.push(this.store.request(updateTodo(editable)));
+    }
+    await Promise.all(futures);
   };
 
   enableToggle = () => (this.canToggle = true);
