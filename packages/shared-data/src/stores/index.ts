@@ -12,10 +12,13 @@ import type {
 } from '@warp-drive/core/types';
 import { JSONAPICache } from '@warp-drive/json-api';
 
+import { ApiHandler } from '../handlers/api.ts';
 import { FlagSchema } from '../schemas/flag.ts';
 
 export default class AppStore extends Store {
-  requestManager = new RequestManager().use([Fetch]).useCache(CacheHandler);
+  requestManager = new RequestManager()
+    .use([new ApiHandler(), Fetch])
+    .useCache(CacheHandler);
 
   lifetimes = new DefaultCachePolicy({
     apiCacheHardExpires: 15 * 60 * 1000, // 15 minutes

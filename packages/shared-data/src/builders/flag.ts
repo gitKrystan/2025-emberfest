@@ -1,5 +1,4 @@
-import { updateRecord } from '@warp-drive/utilities/json-api';
-import { query } from '@warp-drive/utilities/json-api';
+import { query, updateRecord } from '@warp-drive/utilities/json-api';
 
 import type { ApiFlag } from '../types';
 
@@ -8,5 +7,15 @@ export function queryFlags() {
 }
 
 export function updateFlag(flag: ApiFlag) {
-  return updateRecord(flag, { resourcePath: 'flag' });
+  const requestInfo = updateRecord(flag, { resourcePath: 'flag' });
+  requestInfo.body = JSON.stringify({
+    data: {
+      type: 'flag',
+      id: flag.id,
+      attributes: {
+        value: flag.value,
+      },
+    },
+  });
+  return requestInfo;
 }

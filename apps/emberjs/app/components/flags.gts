@@ -2,9 +2,9 @@ import type { TOC } from '@ember/component/template-only';
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import { cached, tracked } from '@glimmer/tracking';
-import { Request, Await } from '@warp-drive/ember';
+import { cached } from '@glimmer/tracking';
 import { checkout } from '@warp-drive/core/reactive';
+import { Await, Request } from '@warp-drive/ember';
 
 import { queryFlags, updateFlag } from '@workspace/shared-data/builders';
 import type {
@@ -15,9 +15,6 @@ import type {
 import { HandleError } from '#app/components/error.gts';
 import { Loading } from '#components/loading.gts';
 import type Store from '#services/store';
-
-const Uninitialized = Symbol('Uninitialized');
-type Uninitialized = typeof Uninitialized;
 
 export class Flags extends Component {
   <template>
@@ -46,7 +43,7 @@ class FlagsContent extends Component<{
         <li>
           <Await @promise={{checkout this.shouldErrorFlag}}>
             <:pending><Loading /></:pending>
-            {{! @glint-expect-error FIXME }}
+            {{! @glint-expect-error -- FIXME }}
             <:success as |flag|><ShouldErrorFlag @flag={{flag}} /></:success>
             <:error as |error|><HandleError @error={{error}} /></:error>
           </Await>
@@ -93,7 +90,7 @@ class ShouldErrorFlag extends Component<{
     return this.store.request(updateFlag(this.args.flag));
   }
 
-  toggle = async (_event: PointerEvent) => {
+  toggle = (_event: PointerEvent) => {
     this.args.flag.value = !this.args.flag.value;
   };
 }

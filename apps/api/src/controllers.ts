@@ -11,6 +11,7 @@ import {
 
 // JSONAPI media type constant
 export const JSONAPI_CONTENT_TYPE = 'application/vnd.api+json';
+export const JSON_CONTENT_TYPE = 'application/json';
 
 /**
  * Get the base URL for generating links

@@ -9,6 +9,7 @@ import {
   validateJsonApiContentType,
   JSONAPI_CONTENT_TYPE,
   getFlags,
+  updateFlag,
 } from './controllers';
 
 const app = express();
@@ -24,8 +25,22 @@ app.use(
   }),
 );
 
-// Parse JSON bodies - only accept JSONAPI content type
 app.use(express.json({ type: JSONAPI_CONTENT_TYPE }));
+
+// Debug middleware to log request details
+app.use((req, res, next) => {
+  console.log('Request Details:');
+  console.log(`  Method: ${req.method}`);
+  console.log(`  URL: ${req.url}`);
+  console.log(`  Content-Type: ${req.get('Content-Type') || 'undefined'}`);
+  console.log(`  Content-Length: ${req.get('Content-Length') || 'undefined'}`);
+  console.log(`  Body:`, req.body);
+  console.log(`  Body type:`, typeof req.body);
+  console.log(`  Raw body keys:`, Object.keys(req.body || {}));
+  console.log(`  Headers:`, req.headers);
+  console.log('---');
+  next();
+});
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -66,6 +81,7 @@ app.delete('/api/todo/:id', deleteTodo);
 
 // Flag routes
 app.get('/api/flag', getFlags);
+app.put('/api/flag/:id', updateFlag);
 
 // 404 handler
 app.use('*', (req, res) => {
