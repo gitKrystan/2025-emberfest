@@ -1,16 +1,18 @@
 // JSONAPI Resource Object interface
-export interface JsonApiResource<T = unknown> {
+export interface JsonApiResource<R extends { id: string } = { id: string }> {
   type: string;
-  id: string;
-  attributes?: T;
+  id: R['id'];
+  attributes?: Omit<R, 'id'>;
   relationships?: Record<string, JsonApiRelationship>;
   links?: JsonApiLinks;
   meta?: Record<string, unknown>;
 }
 
 // JSONAPI Document interface
-export interface JsonApiDocument<T = unknown> {
-  data?: JsonApiResource<T> | JsonApiResource<T>[] | null;
+export interface JsonApiDocument<T extends { id: string } | null> {
+  data?: T extends { id: string }
+    ? JsonApiResource<T> | JsonApiResource<T>[] | null
+    : null;
   errors?: JsonApiError[];
   meta?: Record<string, unknown>;
   jsonapi?: {
@@ -29,9 +31,11 @@ export interface JsonApiRelationship {
 }
 
 // JSONAPI Resource Identifier interface
-export interface JsonApiResourceIdentifier {
+export interface JsonApiResourceIdentifier<
+  R extends { id: string } = { id: string },
+> {
   type: string;
-  id: string;
+  id: R['id'];
   meta?: Record<string, unknown>;
 }
 

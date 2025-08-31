@@ -1,11 +1,11 @@
 import type { SavedTodo, UnsavedTodo } from '@workspace/shared-data/types';
 
 import type { JsonApiDocument, JsonApiResource } from '../types.ts';
-import { JSONAPI_VERSION, TODO_TYPE } from './base.ts';
+import { JSONAPI_VERSION } from './base.ts';
 
 // Todo-specific JSONAPI types
-export type TodoResource = JsonApiResource<Omit<SavedTodo, 'id'>>;
-export type TodoDocument = JsonApiDocument<Omit<SavedTodo, 'id'>>;
+export type TodoResource = JsonApiResource<SavedTodo>;
+export type TodoDocument = JsonApiDocument<SavedTodo>;
 
 /**
  * Serialize a single Todo to JSONAPI format
@@ -14,7 +14,7 @@ export function serializeTodo(todo: SavedTodo, baseUrl = ''): TodoResource {
   const { id, ...attributes } = todo;
 
   return {
-    type: TODO_TYPE,
+    type: 'todo',
     id,
     attributes,
     links: {
@@ -69,10 +69,8 @@ export function createTodosDocument(
  * Deserialize a JSONAPI Todo resource to a Todo object
  */
 export function deserializeTodo(resource: TodoResource): Partial<SavedTodo> {
-  if (resource.type !== TODO_TYPE) {
-    throw new Error(
-      `Expected resource type '${TODO_TYPE}', got '${resource.type}'`,
-    );
+  if (resource.type !== 'todo') {
+    throw new Error(`Expected resource type 'todo', got '${resource.type}'`);
   }
 
   const todo: Partial<SavedTodo> = {};

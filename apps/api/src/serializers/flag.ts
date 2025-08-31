@@ -1,11 +1,11 @@
 import type { ApiFlag } from '@workspace/shared-data/types';
 
 import type { JsonApiDocument, JsonApiResource } from '../types.ts';
-import { FLAG_TYPE, JSONAPI_VERSION } from './base.ts';
+import { JSONAPI_VERSION } from './base.ts';
 
 // Flag-specific JSONAPI types
-export type FlagResource = JsonApiResource<Omit<ApiFlag, 'id'>>;
-export type FlagDocument = JsonApiDocument<Omit<ApiFlag, 'id'>>;
+export type FlagResource = JsonApiResource<ApiFlag>;
+export type FlagDocument = JsonApiDocument<ApiFlag>;
 
 /**
  * Serialize a single Flag to JSONAPI format
@@ -14,7 +14,7 @@ export function serializeFlag(flag: ApiFlag, baseUrl = ''): FlagResource {
   const { id, ...attributes } = flag;
 
   return {
-    type: FLAG_TYPE,
+    type: 'flag',
     id,
     attributes,
     links: {
@@ -40,7 +40,7 @@ export function createFlagDocument(flag: ApiFlag, baseUrl = ''): FlagDocument {
     links: {
       self: `${baseUrl}/flag/${flag.id}`,
     },
-  };
+  } as FlagDocument;
 }
 
 /**
@@ -56,24 +56,20 @@ export function createFlagsDocument(
     links: {
       self: `${baseUrl}/flag`,
     },
-  };
+  } as FlagDocument;
 }
 
 /**
  * Deserialize a JSONAPI Flag resource to a Flag object
  */
 export function deserializeFlag(resource: FlagResource): Partial<ApiFlag> {
-  if (resource.type !== FLAG_TYPE) {
-    throw new Error(
-      `Expected resource type '${FLAG_TYPE}', got '${resource.type}'`,
-    );
+  if (resource.type !== 'flag') {
+    throw new Error(`Expected resource type 'flag', got '${resource.type}'`);
   }
 
   const flag: Partial<ApiFlag> = {};
 
-  if (resource.id) {
-    flag.id = resource.id as ApiFlag['id'];
-  }
+  flag.id = resource.id;
 
   if (resource.attributes) {
     flag.value = resource.attributes.value;

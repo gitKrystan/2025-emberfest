@@ -4,7 +4,9 @@ import { JSONAPI_VERSION } from './base.ts';
 /**
  * Create a JSONAPI error document
  */
-export function createErrorDocument(errors: JsonApiError[]): JsonApiDocument {
+export function createErrorDocument(
+  errors: JsonApiError[],
+): JsonApiDocument<null> {
   return {
     errors,
     jsonapi: JSONAPI_VERSION,
@@ -19,7 +21,7 @@ export function createSingleErrorDocument(
   title: string,
   detail?: string,
   code?: string,
-): JsonApiDocument {
+): JsonApiDocument<null> {
   return createErrorDocument([
     {
       status,
