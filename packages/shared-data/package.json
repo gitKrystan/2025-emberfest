@@ -36,6 +36,9 @@
     "@warp-drive/utilities": "5.7.0",
     "decorator-transforms": "^2.2.2"
   },
+  "peerDependencies": {
+    "@workspace/shared-utils": "workspace:*"
+  },
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/eslint-parser": "^7.25.1",

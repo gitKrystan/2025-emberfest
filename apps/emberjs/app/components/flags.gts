@@ -17,26 +17,15 @@ import { HandleError } from '#components/error.gts';
 import { Loading } from '#components/loading.gts';
 import type Store from '#services/store';
 
-export class Flags extends Component {
-  <template>
-    <footer class="footer">
-      <Request @request={{this.flagRequest}}>
-        <:loading><Loading /></:loading>
-        <:content as |content|>
-          <FlagsContent @data={{content.data}} />
-        </:content>
-        <:error as |error|><HandleError @error={{error}} /></:error>
-      </Request>
-    </footer>
-  </template>
-
-  @service declare private readonly store: Store;
-
-  @cached
-  private get flagRequest() {
-    return this.store.request(queryFlags());
-  }
-}
+export const Flags = <template>
+  <footer class="footer">
+    <Request @query={{(queryFlags)}}>
+      <:loading><Loading /></:loading>
+      <:content as |content|><FlagsContent @data={{content.data}} /></:content>
+      <:error as |error|><HandleError @error={{error}} /></:error>
+    </Request>
+  </footer>
+</template>;
 
 class FlagsContent extends Component<{
   Args: { data: ApiFlag[] };

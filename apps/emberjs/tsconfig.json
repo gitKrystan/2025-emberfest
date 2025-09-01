@@ -17,5 +17,8 @@
     },
     "types": ["ember-source/types", "@embroider/core/virtual", "vite/client"]
   },
-  "references": [{ "path": "../../packages/shared-data/tsconfig.publish.json" }]
+  "references": [
+    { "path": "../../packages/shared-data/tsconfig.publish.json" },
+    { "path": "../../packages/shared-utils/tsconfig.publish.json" }
+  ]
 }

@@ -1,5 +1,5 @@
 import 'todomvc-common/base.css';
-import 'todomvc-common/base.js';
+// import 'todomvc-common/base.js';
 import 'todomvc-app-css/index.css';
 import '@warp-drive/ember/install';
 

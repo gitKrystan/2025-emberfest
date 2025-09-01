@@ -1,3 +1,5 @@
+import type { CreateRequestOptions } from '@warp-drive/core/types/request';
+import type { SingleResourceDataDocument } from '@warp-drive/core/types/spec/document';
 import {
   createRecord,
   deleteRecord,
@@ -6,36 +8,51 @@ import {
   updateRecord,
 } from '@warp-drive/utilities/json-api';
 
+import { mergeOptions } from '@workspace/shared-utils';
+
 import type { SavedTodo, UnsavedTodo } from '../types/index.ts';
 
 // GET
 export function getAllTodos() {
-  return query<SavedTodo>('todo', {}, { resourcePath: 'todo' });
+  const requestInfo = query<SavedTodo>('todo', {}, { resourcePath: 'todo' });
+  requestInfo.cacheOptions = mergeOptions(requestInfo.cacheOptions, {
+    types: ['todo'],
+  });
+  return requestInfo;
 }
 
 export function getCompletedTodos() {
-  return query<SavedTodo>(
+  const requestInfo = query<SavedTodo>(
     'todo',
     { completed: true },
     { resourcePath: 'todo' },
   );
+  requestInfo.cacheOptions = mergeOptions(requestInfo.cacheOptions, {
+    types: ['todo'],
+  });
+  return requestInfo;
 }
 
 export function getActiveTodos() {
-  return query<SavedTodo>(
+  const requestInfo = query<SavedTodo>(
     'todo',
     { completed: false },
     { resourcePath: 'todo' },
   );
+  requestInfo.cacheOptions = mergeOptions(requestInfo.cacheOptions, {
+    types: ['todo'],
+  });
+  return requestInfo;
 }
 
+// FIXME: Unused
 export function getTodoById(id: string) {
   return findRecord<SavedTodo>('todo', id, { resourcePath: 'todo' });
 }
 
 // POST
 export function createTodo(attributes: UnsavedTodo) {
-  const requestInfo = createRecord<UnsavedTodo>(attributes, {
+  const requestInfo = createRecord(attributes, {
     resourcePath: 'todo',
   });
   requestInfo.body = JSON.stringify({
@@ -47,7 +64,10 @@ export function createTodo(attributes: UnsavedTodo) {
       },
     },
   });
-  return requestInfo;
+  // FIXME: Do I need this cast?
+  return requestInfo as unknown as CreateRequestOptions<
+    SingleResourceDataDocument<SavedTodo>
+  >;
 }
 
 // FIXME: Implement bulk delete

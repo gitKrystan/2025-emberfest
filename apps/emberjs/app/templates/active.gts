@@ -9,7 +9,7 @@ import type { RouteComponent } from '#types/route-component';
 <template>
   {{pageTitle "Active"}}
 
-  <Request @request={{@model.todos}}>
+  <Request @request={{@model.todos}} @autorefresh={{true}}>
     <:content as |content|><TodoList @todos={{content.data}} /></:content>
     <:error as |error|><HandleError @error={{error}} /></:error>
   </Request>

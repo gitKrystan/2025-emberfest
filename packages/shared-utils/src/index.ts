@@ -1,1 +1,1 @@
-export {};
+export * from './utils/object.ts';

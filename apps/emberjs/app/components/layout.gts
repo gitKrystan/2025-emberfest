@@ -1,6 +1,5 @@
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import { cached } from '@glimmer/tracking';
 import { Request } from '@warp-drive/ember';
 
 import { getAllTodos } from '@workspace/shared-data/builders';
@@ -31,7 +30,7 @@ export default class Layout extends Component<Signature> {
 
       {{yield}}
 
-      <Request @request={{this.getAllTodosRequest}}>
+      <Request @query={{(getAllTodos)}}>
         <:loading><Loading />footer</:loading>
         <:content as |content|>
           {{#if (hasTodos content.data)}}
@@ -42,10 +41,6 @@ export default class Layout extends Component<Signature> {
       </Request>
     </section>
   </template>
-
-  @cached get getAllTodosRequest() {
-    return this.store.request(getAllTodos());
-  }
 }
 
 function hasTodos(todos: SavedTodo[]) {

@@ -4,7 +4,7 @@ import { isBlank } from '@ember/utils';
 import Component from '@glimmer/component';
 
 import { createTodo } from '@workspace/shared-data/builders';
-import { asType } from '@workspace/shared-data/types';
+import type { UnsavedTodo } from '@workspace/shared-data/types';
 
 import type Store from '#services/store';
 
@@ -33,10 +33,12 @@ export default class Create extends Component {
     const value = target.value.trim();
 
     if (keyCode === 13 && !isBlank(value)) {
+      const todo = this.store.createRecord<UnsavedTodo>('todo', {
+        title: value,
+        completed: false,
+      });
       // FIXME: Handle Request-ness
-      await this.store.request(
-        createTodo(asType({ completed: false, title: value }))
-      );
+      await this.store.request(createTodo(todo));
       target.value = '';
     }
   };

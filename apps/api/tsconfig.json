@@ -19,5 +19,8 @@
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"],
-  "references": [{ "path": "../../packages/shared-data/tsconfig.publish.json" }]
+  "references": [
+    { "path": "../../packages/shared-data/tsconfig.publish.json" },
+    { "path": "../../packages/shared-utils/tsconfig.publish.json" }
+  ]
 }

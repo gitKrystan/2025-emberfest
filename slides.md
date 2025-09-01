@@ -651,7 +651,7 @@ import TodoItem from './todo-item';
 import LoadingSpinner from './loading-spinner';
 
 export default <template>
-  <Request @query={{getAllTodos}}>
+  <Request @query={{(getAllTodos)}}>
     <:loading as |state|>
       <LoadingSpinner @progress={{state.completedRatio}} />
       <button {{on "click" state.abort}}>Cancel</button>

@@ -6,7 +6,7 @@ import type AllTodos from '#routes/index.ts';
 import type { RouteComponent } from '#types/route-component';
 
 <template>
-  <Request @request={{@model.todos}}>
+  <Request @request={{@model.todos}} @autorefresh={{true}}>
     <:content as |content|>
       {{#let content.data as |todos|}}
         {{#if todos.length}}

@@ -1,3 +1,4 @@
+import type { TOC } from '@ember/component/template-only';
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
@@ -8,6 +9,7 @@ import {
   getActiveTodos,
   getCompletedTodos,
 } from '@workspace/shared-data/builders';
+import type { SavedTodo } from '@workspace/shared-data/types';
 
 import { HandleError } from '#components/error.gts';
 import Filters from '#components/filters';
@@ -20,47 +22,49 @@ export default class Footer extends Component {
   <template>
     <footer class="footer">
       <span class="todo-count">
-        <Request @request={{this.activeTodosRequest}}>
+        <Request @query={{(getActiveTodos)}} @autorefresh={{true}}>
           <:content as |content|>
-            {{#let content.data as |remaining|}}
-              <strong>{{remaining.length}}</strong>
-              {{itemLabel remaining.length}}
-              left
-            {{/let}}
+            <Remaining @remaining={{content.data}} />
           </:content>
-          <:loading><Loading />loading active request count</:loading>
+          <:loading><Loading /></:loading>
           <:error as |error|><HandleError @error={{error}} /></:error>
         </Request>
       </span>
 
       <Filters />
 
-      <Request @request={{this.completedTodosRequest}}>
+      <Request @query={{(getCompletedTodos)}} @autorefresh={{true}}>
         <:content as |content|>
-          {{#let content.data as |completed|}}
-            {{#if completed.length}}
-              <button
-                class="clear-completed"
-                type="button"
-                {{on "click" this.clearCompleted}}
-              >
-                Clear completed
-              </button>
-            {{/if}}
-          {{/let}}
+          <Completed @completed={{content.data}} />
         </:content>
         <:error as |error|><HandleError @error={{error}} /></:error>
       </Request>
     </footer>
   </template>
+}
 
-  @cached get activeTodosRequest() {
-    return this.store.request(getActiveTodos());
-  }
+const Remaining = <template>
+  <strong>{{@remaining.length}}</strong>
+  {{itemLabel @remaining.length}}
+  left
+</template> satisfies TOC<{
+  Args: { remaining: SavedTodo[] };
+}>;
 
-  @cached get completedTodosRequest() {
-    return this.store.request(getCompletedTodos());
-  }
+class Completed extends Component<{
+  Args: { completed: SavedTodo[] };
+}> {
+  <template>
+    {{#if @completed.length}}
+      <button
+        class="clear-completed"
+        type="button"
+        {{on "click" this.clearCompleted}}
+      >
+        Clear completed
+      </button>
+    {{/if}}
+  </template>
 
   // eslint-disable-next-line @typescript-eslint/class-literal-property-style
   @cached get clearCompletedRequest() {
