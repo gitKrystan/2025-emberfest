@@ -9,8 +9,8 @@
     "dev": "tsx watch src/index.ts",
     "start": "tsx watch src/index.ts",
     "lint:fix": "pnpm lint:js:fix",
-    "lint:js:fix": "eslint . --fix",
-    "lint:js": "eslint .",
+    "lint:js:fix": "pnpm lint:types && eslint . --fix",
+    "lint:js": "pnpm lint:types && eslint .",
     "lint:types": "tsc --noEmit",
     "lint": "pnpm lint:types && pnpm lint:js"
   },

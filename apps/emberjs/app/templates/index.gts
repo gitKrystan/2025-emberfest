@@ -1,9 +1,9 @@
 import { Request } from '@warp-drive/ember';
 
-import { HandleError } from '#components/error.gts';
-import { Loading } from '#components/loading.gts';
+import { HandleError } from '#components/error';
+import { Loading } from '#components/loading';
 import TodoList from '#components/todo-list';
-import type AllTodos from '#routes/index.ts';
+import type AllTodos from '#routes/index';
 import type { RouteComponent } from '#types/route-component';
 
 <template>

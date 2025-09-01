@@ -1,8 +1,8 @@
 import { Request } from '@warp-drive/ember';
 import { pageTitle } from 'ember-page-title';
 
-import { HandleError } from '#components/error.gts';
-import { Loading } from '#components/loading.gts';
+import { HandleError } from '#components/error';
+import { Loading } from '#components/loading';
 import TodoList from '#components/todo-list';
 import type CompletedTodos from '#routes/completed';
 import type { RouteComponent } from '#types/route-component';

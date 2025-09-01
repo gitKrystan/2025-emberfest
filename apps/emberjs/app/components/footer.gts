@@ -11,9 +11,9 @@ import {
 } from '@workspace/shared-data/builders';
 import type { SavedTodo } from '@workspace/shared-data/types';
 
-import { HandleError } from '#components/error.gts';
+import { HandleError } from '#components/error';
 import Filters from '#components/filters';
-import { Loading } from '#components/loading.gts';
+import { Loading } from '#components/loading';
 import type Store from '#services/store';
 
 export default class Footer extends Component {

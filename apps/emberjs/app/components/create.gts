@@ -2,10 +2,12 @@ import { assert } from '@ember/debug';
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
+import { Request } from '@warp-drive/ember';
 
 import { createTodo } from '@workspace/shared-data/builders';
 import type { UnsavedTodo } from '@workspace/shared-data/types';
 
+import { Loading } from '#components/loading';
 import type Store from '#services/store';
 
 export default class Create extends Component {
@@ -20,6 +22,7 @@ export default class Create extends Component {
         required
         pattern=".*\S.*"
         title="Todo cannot be empty"
+        {{! This is a legitimate case for autofocus }}
         {{! template-lint-disable no-autofocus-attribute }}
         autofocus
       />

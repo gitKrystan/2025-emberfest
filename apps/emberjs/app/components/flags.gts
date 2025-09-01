@@ -13,8 +13,8 @@ import type {
   TodoCountFlag as TodoCountFlagResource,
 } from '@workspace/shared-data/types';
 
-import { HandleError } from '#components/error.gts';
-import { Loading } from '#components/loading.gts';
+import { HandleError } from '#components/error';
+import { Loading } from '#components/loading';
 import type Store from '#services/store';
 
 export const Flags = <template>

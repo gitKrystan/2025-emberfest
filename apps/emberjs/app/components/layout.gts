@@ -6,9 +6,9 @@ import { getAllTodos } from '@workspace/shared-data/builders';
 import type { SavedTodo } from '@workspace/shared-data/types';
 
 import Create from '#components/create';
-import { HandleError } from '#components/error.gts';
+import { HandleError } from '#components/error';
 import Footer from '#components/footer';
-import { Loading } from '#components/loading.gts';
+import { Loading } from '#components/loading';
 import type Store from '#services/store';
 
 interface Signature {
