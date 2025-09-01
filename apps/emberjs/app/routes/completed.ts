@@ -1,5 +1,6 @@
 import Route from '@ember/routing/route';
 import { service } from '@ember/service';
+
 import type { Future } from '@warp-drive/core/request';
 import type { CollectionResourceDataDocument } from '@warp-drive/core/types/spec/document';
 

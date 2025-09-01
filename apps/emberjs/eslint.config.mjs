@@ -74,6 +74,8 @@ export default ts.config(
             // Packages.
             // Things that start with a letter (or digit or underscore), or `@` followed by a letter.
             ['^@?\\w'],
+            // WarpDrive Packages.
+            ['^@warp-drive/'],
             // Workspace Packages.
             ['^@workspace/'],
             // Internal

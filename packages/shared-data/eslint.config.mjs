@@ -81,6 +81,8 @@ const config = [
             ['^@?\\w'],
             // Workspace Packages.
             ['^@workspace/'],
+            // WarpDrive Packages.
+            ['^@warp-drive/'],
             // Internal
             ['^#'],
             // Absolute imports and other imports such as Vue-style `@/foo`.

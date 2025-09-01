@@ -1,3 +1,5 @@
+import { mergeOptions } from '@workspace/shared-utils';
+
 import type { CreateRequestOptions } from '@warp-drive/core/types/request';
 import type { SingleResourceDataDocument } from '@warp-drive/core/types/spec/document';
 import {
@@ -7,8 +9,6 @@ import {
   query,
   updateRecord,
 } from '@warp-drive/utilities/json-api';
-
-import { mergeOptions } from '@workspace/shared-utils';
 
 import type { SavedTodo, UnsavedTodo } from '../types/index.ts';
 

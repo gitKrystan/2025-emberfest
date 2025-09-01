@@ -2,6 +2,7 @@ import { assert } from '@ember/debug';
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
+
 import { Request } from '@warp-drive/ember';
 
 import { createTodo } from '@workspace/shared-data/builders';
@@ -26,10 +27,17 @@ export default class Create extends Component {
         {{! template-lint-disable no-autofocus-attribute }}
         autofocus
       />
+      <Request @request={{this.createTodoRequest}}>
+        <:loading><Loading /></:loading>
+      </Request>
     </form>
   </template>
 
   @service declare store: Store;
+
+  get createTodoRequest() {
+    return null;
+  }
 
   createTodo = async (event: SubmitEvent) => {
     event.preventDefault();

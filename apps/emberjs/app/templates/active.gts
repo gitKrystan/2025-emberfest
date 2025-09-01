@@ -1,5 +1,6 @@
-import { Request } from '@warp-drive/ember';
 import { pageTitle } from 'ember-page-title';
+
+import { Request } from '@warp-drive/ember';
 
 import { HandleError } from '#components/error';
 import { Loading } from '#components/loading';
