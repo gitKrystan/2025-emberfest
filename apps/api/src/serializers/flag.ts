@@ -1,16 +1,20 @@
+import type {
+  ExistingResourceObject,
+  JsonApiDocument,
+} from '@warp-drive/core/types/spec/json-api-raw';
+
 import type { ApiFlag } from '@workspace/shared-data/types';
 
-import type { JsonApiDocument, JsonApiResource } from '../types.ts';
 import { JSONAPI_VERSION } from './base.ts';
 
 // Flag-specific JSONAPI types
-export type FlagResource = JsonApiResource<ApiFlag>;
-export type FlagDocument = JsonApiDocument<ApiFlag>;
+type FlagResource = ExistingResourceObject<'flag'>;
+export type FlagDocument = JsonApiDocument<'flag'>;
 
 /**
  * Serialize a single Flag to JSONAPI format
  */
-export function serializeFlag(flag: ApiFlag, baseUrl = ''): FlagResource {
+function serializeFlag(flag: ApiFlag, baseUrl = ''): FlagResource {
   const { id, ...attributes } = flag;
 
   return {
@@ -26,7 +30,7 @@ export function serializeFlag(flag: ApiFlag, baseUrl = ''): FlagResource {
 /**
  * Serialize multiple Flags to JSONAPI format
  */
-export function serializeFlags(flags: ApiFlag[], baseUrl = ''): FlagResource[] {
+function serializeFlags(flags: ApiFlag[], baseUrl = ''): FlagResource[] {
   return flags.map((flag) => serializeFlag(flag, baseUrl));
 }
 
@@ -57,23 +61,4 @@ export function createFlagsDocument(
       self: `${baseUrl}/flag`,
     },
   } as FlagDocument;
-}
-
-/**
- * Deserialize a JSONAPI Flag resource to a Flag object
- */
-export function deserializeFlag(resource: FlagResource): Partial<ApiFlag> {
-  if (resource.type !== 'flag') {
-    throw new Error(`Expected resource type 'flag', got '${resource.type}'`);
-  }
-
-  const flag: Partial<ApiFlag> = {};
-
-  flag.id = resource.id;
-
-  if (resource.attributes) {
-    flag.value = resource.attributes.value;
-  }
-
-  return flag;
 }

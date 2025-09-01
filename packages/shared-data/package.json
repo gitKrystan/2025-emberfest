@@ -59,6 +59,7 @@
     "@glint/tsserver-plugin": "^2.0.0-alpha.2",
     "@rollup/plugin-babel": "^6.0.4",
     "@types/qunit": "^2.19.12",
+    "@warp-drive/core": "5.7.0",
     "babel-plugin-ember-template-compilation": "^2.2.5",
     "concurrently": "^9.0.1",
     "ember-qunit": "^9.0.2",

@@ -1,8 +1,8 @@
+import type { ResourceErrorDocument } from '@warp-drive/core/types/spec/document';
+import type { ApiError } from '@warp-drive/core/types/spec/error';
 import type { Response } from 'express';
 
 import { BaseApiError, type ErrorStatusCode } from '../errors.js';
-import type { JsonApiDocument, JsonApiError } from '../types.ts';
-import { JSONAPI_VERSION } from './base.ts';
 
 export function handleError(res: Response, error: unknown) {
   if (error instanceof BaseApiError) {
@@ -24,7 +24,7 @@ export function handleError(res: Response, error: unknown) {
 /**
  * Create a single error document
  */
-function createSingleErrorDocument(error: BaseApiError): JsonApiDocument<null> {
+function createSingleErrorDocument(error: BaseApiError): ResourceErrorDocument {
   return createErrorDocument([
     {
       status: error.status.toString(),
@@ -38,9 +38,8 @@ function createSingleErrorDocument(error: BaseApiError): JsonApiDocument<null> {
 /**
  * Create a JSONAPI error document
  */
-function createErrorDocument(errors: JsonApiError[]): JsonApiDocument<null> {
+function createErrorDocument(errors: ApiError[]): ResourceErrorDocument {
   return {
     errors,
-    jsonapi: JSONAPI_VERSION,
   };
 }
