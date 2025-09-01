@@ -19,7 +19,7 @@ interface Signature {
   };
 }
 
-export default class TodoItem extends Component<Signature> {
+export class TodoItem extends Component<Signature> {
   <template>
     <li
       class="{{if @todo.completed 'completed'}} {{if this.editing 'editing'}}"

@@ -2,6 +2,7 @@ import 'todomvc-common/base.css';
 // import 'todomvc-common/base.js';
 import 'todomvc-app-css/index.css';
 import '@warp-drive/ember/install';
+import '#app/styles/app.css';
 
 import Application from '@ember/application';
 import compatModules from '@embroider/virtual/compat-modules';

@@ -4,7 +4,7 @@ import { Request } from '@warp-drive/ember';
 
 import { HandleError } from '#components/error';
 import { Loading } from '#components/loading';
-import TodoList from '#components/todo-list';
+import { TodoList } from '#components/todo-list';
 import type CompletedTodos from '#routes/completed';
 import type { RouteComponent } from '#types/route-component';
 

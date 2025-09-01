@@ -1,1 +1,3 @@
-export const Loading = <template>…</template>;
+export const Loading = <template>
+  <span class="loader"></span>
+</template>;

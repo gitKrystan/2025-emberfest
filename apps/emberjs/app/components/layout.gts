@@ -1,15 +1,10 @@
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 
-import { Request } from '@warp-drive/ember';
-
-import { getAllTodos } from '@workspace/shared-data/builders';
-import type { SavedTodo } from '@workspace/shared-data/types';
-
-import Create from '#components/create';
-import { HandleError } from '#components/error';
-import Footer from '#components/footer';
-import { Loading } from '#components/loading';
+import { Attribution } from '#components/attribution';
+import { Create } from '#components/create';
+import { Flags } from '#components/flags';
+import { Footer } from '#components/footer';
 import type Store from '#services/store';
 
 interface Signature {
@@ -18,36 +13,21 @@ interface Signature {
   };
 }
 
-export default class Layout extends Component<Signature> {
+export class Layout extends Component<Signature> {
   @service declare private readonly store: Store;
 
   <template>
-    <section class="todoapp">
-      <header class="header">
-        <h1>todos</h1>
+    <section><Flags /></section>
 
-        <Create />
-      </header>
+    <main class="todoapp">
+      <header class="header"><h1>todos</h1></header>
+      <section><Create /></section>
 
       {{yield}}
 
-      <Request
-        @query={{(getAllTodos)}}
-        @autorefresh={{true}}
-        @autorefreshBehavior="refresh"
-      >
-        <:loading><Loading />footer</:loading>
-        <:content as |content|>
-          {{#if (hasTodos content.data)}}
-            <Footer />
-          {{/if}}
-        </:content>
-        <:error as |error|><HandleError @error={{error}} /></:error>
-      </Request>
-    </section>
-  </template>
-}
+      <Footer />
+    </main>
 
-function hasTodos(todos: SavedTodo[]) {
-  return todos.length > 0;
+    <footer class="info"><Attribution /></footer>
+  </template>
 }

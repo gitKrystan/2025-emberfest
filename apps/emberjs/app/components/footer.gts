@@ -1,11 +1,11 @@
 import type { TOC } from '@ember/component/template-only';
 import { on } from '@ember/modifier';
-import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { cached } from '@glimmer/tracking';
 
 import { Request } from '@warp-drive/ember';
 
+import { getAllTodos } from '@workspace/shared-data/builders';
 import {
   getActiveTodos,
   getCompletedTodos,
@@ -15,42 +15,53 @@ import type { SavedTodo } from '@workspace/shared-data/types';
 import { HandleError } from '#components/error';
 import Filters from '#components/filters';
 import { Loading } from '#components/loading';
-import type Store from '#services/store';
 
-export default class Footer extends Component {
-  @service declare store: Store;
+export const Footer = <template>
+  <Request
+    @query={{(getAllTodos)}}
+    @autorefresh={{true}}
+    @autorefreshBehavior="refresh"
+  >
+    <:content as |content|>
+      {{#if (hasTodos content.data)}}
+        <footer class="footer">
+          <span class="todo-count">
+            <Request
+              @query={{(getActiveTodos)}}
+              @autorefresh={{true}}
+              @autorefreshBehavior="refresh"
+            >
+              <:content as |content|>
+                <Remaining @remaining={{content.data}} />
+              </:content>
+              <:loading><Loading /></:loading>
+              <:error as |error|><HandleError @error={{error}} /></:error>
+            </Request>
+          </span>
 
-  <template>
-    <footer class="footer">
-      <span class="todo-count">
-        <Request
-          @query={{(getActiveTodos)}}
-          @autorefresh={{true}}
-          @autorefreshBehavior="refresh"
-        >
-          <:content as |content|>
-            <Remaining @remaining={{content.data}} />
-          </:content>
-          <:loading><Loading /></:loading>
-          <:error as |error|><HandleError @error={{error}} /></:error>
-        </Request>
-      </span>
+          <Filters />
 
-      <Filters />
+          <Request
+            @query={{(getCompletedTodos)}}
+            @autorefresh={{true}}
+            @autorefreshBehavior="refresh"
+          >
+            <:content as |content|>
+              <Completed @completed={{content.data}} />
+            </:content>
+            <:loading><Loading /></:loading>
+            <:error as |error|><HandleError @error={{error}} /></:error>
+          </Request>
+        </footer>
+      {{/if}}
+    </:content>
+    <:loading><Loading /></:loading>
+    <:error as |error|><HandleError @error={{error}} /></:error>
+  </Request>
+</template>;
 
-      <Request
-        @query={{(getCompletedTodos)}}
-        @autorefresh={{true}}
-        @autorefreshBehavior="refresh"
-      >
-        <:content as |content|>
-          <Completed @completed={{content.data}} />
-        </:content>
-        <:loading><Loading /></:loading>
-        <:error as |error|><HandleError @error={{error}} /></:error>
-      </Request>
-    </footer>
-  </template>
+function hasTodos(todos: SavedTodo[]) {
+  return todos.length > 0;
 }
 
 const Remaining = <template>

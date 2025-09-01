@@ -8,7 +8,7 @@ import { checkout } from '@warp-drive/core/reactive';
 import { updateTodo } from '@workspace/shared-data/builders';
 import type { SavedTodo } from '@workspace/shared-data/types';
 
-import Item from '#components/todo-item';
+import { TodoItem } from '#components/todo-item';
 import type Store from '#services/store';
 
 interface Signature {
@@ -17,7 +17,7 @@ interface Signature {
   };
 }
 
-export default class TodoList extends Component<Signature> {
+export class TodoList extends Component<Signature> {
   <template>
     <section class="main">
       {{#if @todos.length}}
@@ -33,7 +33,7 @@ export default class TodoList extends Component<Signature> {
         {{/if}}
         <ul class="todo-list">
           {{#each @todos as |todo|}}
-            <Item
+            <TodoItem
               @todo={{todo}}
               @onStartEdit={{this.disableToggle}}
               @onEndEdit={{this.enableToggle}}
