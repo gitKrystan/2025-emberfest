@@ -1,20 +1,16 @@
 import type {
-  ExistingResourceObject,
-  JsonApiDocument,
-} from '@warp-drive/core/types/spec/json-api-raw';
-
-import type { SavedTodo } from '@workspace/shared-data/types';
+  CollectionTodoDocument,
+  ExistingTodoResource,
+  SavedTodo,
+  SingleTodoDocument,
+} from '@workspace/shared-data/types';
 
 import { JSONAPI_VERSION } from './base.ts';
-
-// Todo-specific JSONAPI types
-type TodoResource = ExistingResourceObject<'todo'>;
-export type TodoDocument = JsonApiDocument<'todo'>;
 
 /**
  * Serialize a single Todo to JSONAPI format
  */
-function serializeTodo(todo: SavedTodo, baseUrl = ''): TodoResource {
+function serializeTodo(todo: SavedTodo, baseUrl = ''): ExistingTodoResource {
   const { id, ...attributes } = todo;
 
   return {
@@ -30,7 +26,10 @@ function serializeTodo(todo: SavedTodo, baseUrl = ''): TodoResource {
 /**
  * Serialize multiple Todos to JSONAPI format
  */
-function serializeTodos(todos: SavedTodo[], baseUrl = ''): TodoResource[] {
+function serializeTodos(
+  todos: SavedTodo[],
+  baseUrl = '',
+): ExistingTodoResource[] {
   return todos.map((todo) => serializeTodo(todo, baseUrl));
 }
 
@@ -40,7 +39,7 @@ function serializeTodos(todos: SavedTodo[], baseUrl = ''): TodoResource[] {
 export function createTodoDocument(
   todo: SavedTodo,
   baseUrl = '',
-): TodoDocument {
+): SingleTodoDocument {
   return {
     data: serializeTodo(todo, baseUrl),
     jsonapi: JSONAPI_VERSION,
@@ -56,7 +55,7 @@ export function createTodoDocument(
 export function createTodosDocument(
   todos: SavedTodo[],
   baseUrl = '',
-): TodoDocument {
+): CollectionTodoDocument {
   return {
     data: serializeTodos(todos, baseUrl),
     jsonapi: JSONAPI_VERSION,

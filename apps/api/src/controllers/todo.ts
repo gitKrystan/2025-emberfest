@@ -1,7 +1,12 @@
 import type { Request, Response } from 'express';
 
 import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
-import type { UnsavedTodo } from '@workspace/shared-data/types';
+import type {
+  CollectionTodoDocument,
+  ResourceErrorDocument,
+  SingleTodoDocument,
+  UnsavedTodo,
+} from '@workspace/shared-data/types';
 import { asType } from '@workspace/shared-data/types';
 
 import { flagStore } from '../db/flag-store.ts';
@@ -40,7 +45,10 @@ function checkShouldError() {
 /**
  * GET /todo - List all todos
  */
-export function getTodos(req: Request, res: Response) {
+export function getTodos(
+  req: Request,
+  res: Response,
+): Response<CollectionTodoDocument> | Response<ResourceErrorDocument> {
   try {
     checkShouldError();
 
@@ -61,7 +69,7 @@ export function getTodos(req: Request, res: Response) {
     const document = createTodosDocument(todos, baseUrl);
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
-    res.json(document);
+    return res.json(document);
   } catch (error) {
     return handleError(res, error);
   }
@@ -70,7 +78,10 @@ export function getTodos(req: Request, res: Response) {
 /**
  * GET /todo/:id - Get a specific todo
  */
-export function getTodo(req: Request, res: Response) {
+export function getTodo(
+  req: Request,
+  res: Response,
+): Response<SingleTodoDocument> | Response<ResourceErrorDocument> {
   try {
     checkShouldError();
     const id = validateRequiredParam('todo id', req.params['id']);
@@ -89,7 +100,10 @@ export function getTodo(req: Request, res: Response) {
 /**
  * POST /todos - Create a new todo
  */
-export function createTodo(req: Request, res: Response) {
+export function createTodo(
+  req: Request,
+  res: Response,
+): Response<SingleTodoDocument> | Response<ResourceErrorDocument> {
   try {
     checkShouldError();
     const validationResult = validateCreateRequest(
@@ -120,7 +134,10 @@ export function createTodo(req: Request, res: Response) {
 /**
  * PATCH /todos/:id - Update an existing todo
  */
-export function updateTodo(req: Request, res: Response) {
+export function updateTodo(
+  req: Request,
+  res: Response,
+): Response<SingleTodoDocument> | Response<ResourceErrorDocument> {
   try {
     checkShouldError();
     const id = validateRequiredParam('todo id', req.params['id']);
@@ -157,13 +174,14 @@ export function updateTodo(req: Request, res: Response) {
 /**
  * DELETE /todos/:id - Delete a todo
  */
-export function deleteTodo(req: Request, res: Response) {
+export function deleteTodo(
+  req: Request,
+  res: Response,
+): Response<void> | Response<ResourceErrorDocument> {
   try {
     checkShouldError();
     const id = validateRequiredParam('todo id', req.params['id']);
-
     todoStore.delete(id);
-
     return res.status(204).send();
   } catch (error) {
     return handleError(res, error);

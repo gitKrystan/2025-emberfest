@@ -1,10 +1,16 @@
-import type { ResourceErrorDocument } from '@warp-drive/core/types/spec/document';
-import type { ApiError } from '@warp-drive/core/types/spec/error';
 import type { Response } from 'express';
+
+import type {
+  ApiError,
+  ResourceErrorDocument,
+} from '@workspace/shared-data/types';
 
 import { BaseApiError, type ErrorStatusCode } from '../errors.js';
 
-export function handleError(res: Response, error: unknown) {
+export function handleError(
+  res: Response<unknown>,
+  error: unknown,
+): Response<ResourceErrorDocument> {
   if (error instanceof BaseApiError) {
     console.error('Error:', error);
     return res.status(error.status).json(createSingleErrorDocument(error));

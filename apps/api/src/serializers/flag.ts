@@ -1,20 +1,16 @@
 import type {
-  ExistingResourceObject,
-  JsonApiDocument,
-} from '@warp-drive/core/types/spec/json-api-raw';
-
-import type { ApiFlag } from '@workspace/shared-data/types';
+  ApiFlag,
+  CollectionFlagDocument,
+  ExistingFlagResource,
+  SingleFlagDocument,
+} from '@workspace/shared-data/types';
 
 import { JSONAPI_VERSION } from './base.ts';
-
-// Flag-specific JSONAPI types
-type FlagResource = ExistingResourceObject<'flag'>;
-export type FlagDocument = JsonApiDocument<'flag'>;
 
 /**
  * Serialize a single Flag to JSONAPI format
  */
-function serializeFlag(flag: ApiFlag, baseUrl = ''): FlagResource {
+function serializeFlag(flag: ApiFlag, baseUrl = ''): ExistingFlagResource {
   const { id, ...attributes } = flag;
 
   return {
@@ -30,21 +26,27 @@ function serializeFlag(flag: ApiFlag, baseUrl = ''): FlagResource {
 /**
  * Serialize multiple Flags to JSONAPI format
  */
-function serializeFlags(flags: ApiFlag[], baseUrl = ''): FlagResource[] {
+function serializeFlags(
+  flags: ApiFlag[],
+  baseUrl = '',
+): ExistingFlagResource[] {
   return flags.map((flag) => serializeFlag(flag, baseUrl));
 }
 
 /**
  * Create a JSONAPI document for a single Flag
  */
-export function createFlagDocument(flag: ApiFlag, baseUrl = ''): FlagDocument {
+export function createFlagDocument(
+  flag: ApiFlag,
+  baseUrl = '',
+): SingleFlagDocument {
   return {
     data: serializeFlag(flag, baseUrl),
     jsonapi: JSONAPI_VERSION,
     links: {
       self: `${baseUrl}/flag/${flag.id}`,
     },
-  } as FlagDocument;
+  };
 }
 
 /**
@@ -53,12 +55,12 @@ export function createFlagDocument(flag: ApiFlag, baseUrl = ''): FlagDocument {
 export function createFlagsDocument(
   flags: ApiFlag[],
   baseUrl = '',
-): FlagDocument {
+): CollectionFlagDocument {
   return {
     data: serializeFlags(flags, baseUrl),
     jsonapi: JSONAPI_VERSION,
     links: {
       self: `${baseUrl}/flag`,
     },
-  } as FlagDocument;
+  };
 }

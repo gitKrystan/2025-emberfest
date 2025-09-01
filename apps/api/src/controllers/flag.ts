@@ -1,6 +1,12 @@
 import type { Request, Response } from 'express';
 
 import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
+import type {
+  ApiFlag,
+  CollectionFlagDocument,
+  ResourceErrorDocument,
+  SingleTodoDocument,
+} from '@workspace/shared-data/types';
 
 import { flagStore } from '../db/flag-store.ts';
 import { todoStore } from '../db/todo-store.ts';
@@ -23,14 +29,17 @@ import {
 /**
  * GET /flag - List all flags
  */
-export function getFlags(req: Request, res: Response) {
+export function getFlags(
+  req: Request,
+  res: Response,
+): Response<CollectionFlagDocument> | Response<ResourceErrorDocument> {
   try {
     const flags = flagStore.findAll();
     const baseUrl = getBaseUrl(req);
     const document = createFlagsDocument(flags, baseUrl);
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
-    res.json(document);
+    return res.json(document);
   } catch (error) {
     return handleError(res, error);
   }
@@ -39,7 +48,10 @@ export function getFlags(req: Request, res: Response) {
 /**
  * PUT /flag/:id - Update an existing flag
  */
-export function updateFlag(req: Request, res: Response) {
+export function updateFlag(
+  req: Request,
+  res: Response,
+): Response<SingleTodoDocument> | Response<ResourceErrorDocument> {
   try {
     const id = validateRequiredParam('flag id', req.params['id']);
 
@@ -64,7 +76,7 @@ export function updateFlag(req: Request, res: Response) {
   }
 }
 
-function handleShouldErrorFlag(req: Request, id: 'shouldError') {
+function handleShouldErrorFlag(req: Request, id: 'shouldError'): ApiFlag {
   const validationResult = validateUpdateRequest(
     'flag',
     id,
@@ -78,7 +90,10 @@ function handleShouldErrorFlag(req: Request, id: 'shouldError') {
   });
 }
 
-function handleInitialTodoCountFlag(req: Request, id: 'initialTodoCount') {
+function handleInitialTodoCountFlag(
+  req: Request,
+  id: 'initialTodoCount',
+): ApiFlag {
   const validationResult = validateUpdateRequest(
     'flag',
     id,
