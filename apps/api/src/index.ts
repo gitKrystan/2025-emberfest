@@ -73,6 +73,7 @@ app.get('/api/todo', getTodos);
 app.get('/api/todo/:id', getTodo);
 app.post('/api/todo', createTodo);
 app.patch('/api/todo/:id', updateTodo);
+app.put('/api/todo/:id', updateTodo);
 app.delete('/api/todo/:id', deleteTodo);
 
 // Flag routes
