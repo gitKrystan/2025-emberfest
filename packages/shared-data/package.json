@@ -1,7 +1,7 @@
 {
   "name": "@workspace/shared-data",
   "version": "0.0.0",
-  "description": "The default blueprint for Embroider v2 addons.",
+  "description": "Shared Data Utilities for this Monorepo.",
   "keywords": [
     "ember-addon"
   ],
@@ -59,6 +59,7 @@
     "@glint/tsserver-plugin": "^2.0.0-alpha.2",
     "@rollup/plugin-babel": "^6.0.4",
     "@types/qunit": "^2.19.12",
+    "@workspace/shared-utils": "workspace:*",
     "babel-plugin-ember-template-compilation": "^2.2.5",
     "concurrently": "^9.0.1",
     "ember-qunit": "^9.0.2",
