@@ -22,7 +22,11 @@ export default class Footer extends Component {
   <template>
     <footer class="footer">
       <span class="todo-count">
-        <Request @query={{(getActiveTodos)}} @autorefresh={{true}}>
+        <Request
+          @query={{(getActiveTodos)}}
+          @autorefresh={{true}}
+          @autorefreshBehavior="refresh"
+        >
           <:content as |content|>
             <Remaining @remaining={{content.data}} />
           </:content>
@@ -33,10 +37,15 @@ export default class Footer extends Component {
 
       <Filters />
 
-      <Request @query={{(getCompletedTodos)}} @autorefresh={{true}}>
+      <Request
+        @query={{(getCompletedTodos)}}
+        @autorefresh={{true}}
+        @autorefreshBehavior="refresh"
+      >
         <:content as |content|>
           <Completed @completed={{content.data}} />
         </:content>
+        <:loading><Loading /></:loading>
         <:error as |error|><HandleError @error={{error}} /></:error>
       </Request>
     </footer>

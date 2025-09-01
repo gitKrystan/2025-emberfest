@@ -30,7 +30,11 @@ export default class Layout extends Component<Signature> {
 
       {{yield}}
 
-      <Request @query={{(getAllTodos)}}>
+      <Request
+        @query={{(getAllTodos)}}
+        @autorefresh={{true}}
+        @autorefreshBehavior="refresh"
+      >
         <:loading><Loading />footer</:loading>
         <:content as |content|>
           {{#if (hasTodos content.data)}}
