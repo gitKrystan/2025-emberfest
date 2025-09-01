@@ -2,7 +2,7 @@ import type { TOC } from '@ember/component/template-only';
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import { cached } from '@glimmer/tracking';
+import { cached, tracked } from '@glimmer/tracking';
 import { checkout, type ReactiveResource } from '@warp-drive/core/reactive';
 import { Await, Request } from '@warp-drive/ember';
 
@@ -91,7 +91,7 @@ class ShouldErrorFlag extends Component<{
     </UpdateFlag>
   </template>
 
-  toggle = (_event: PointerEvent) => {
+  toggle = () => {
     this.args.flag.value = !this.args.flag.value;
   };
 }
@@ -111,7 +111,7 @@ class TodoCountFlag extends Component<{
     </UpdateFlag>
   </template>
 
-  toggle = (_event: PointerEvent) => {
+  toggle = () => {
     this.args.flag.value =
       this.args.flag.value === TodoCountOptions.small
         ? TodoCountOptions.large
@@ -122,14 +122,15 @@ class TodoCountFlag extends Component<{
 class UpdateFlag extends Component<{
   Args: {
     flag: ApiFlag & ReactiveResource;
-    toggle: (_event: PointerEvent) => void;
+    toggle: () => void;
   };
   Blocks: { default: [] };
 }> {
   <template>
-    <Button {{on "click" @toggle}}>
+    <Button {{on "click" this.doUpdate}}>
       {{yield}}
       <Request @request={{this.updateRequest}}>
+        <:idle></:idle>
         <:loading><Loading /></:loading>
         <:error as |error|><HandleError @error={{error}} /></:error>
       </Request>
@@ -138,8 +139,17 @@ class UpdateFlag extends Component<{
 
   @service declare private readonly store: Store;
 
+  @tracked didUpdate = false;
+  doUpdate = (_event: PointerEvent) => {
+    this.args.toggle();
+    this.didUpdate = true;
+  };
+
   @cached
   private get updateRequest() {
+    if (!this.didUpdate) {
+      return null;
+    }
     return this.store.request(updateFlag(this.args.flag));
   }
 }
