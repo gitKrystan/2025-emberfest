@@ -6,7 +6,7 @@ import { asType } from '@workspace/shared-data/types';
 
 import { flagStore } from '../db/flag-store.ts';
 import { todoStore } from '../db/todo-store.ts';
-import { BadRequestError, InternalServerError } from '../errors.ts';
+import { InternalServerError } from '../errors.ts';
 import { handleError } from '../serializers/error.ts';
 import {
   createTodoDocument,
