@@ -1,11 +1,8 @@
-import { service } from '@ember/service';
-import Component from '@glimmer/component';
+import type { TOC } from '@ember/component/template-only';
 
 import { Attribution } from '#components/attribution';
-import { Create } from '#components/create';
 import { Flags } from '#components/flags';
 import { Footer } from '#components/footer';
-import type Store from '#services/store';
 
 interface Signature {
   Blocks: {
@@ -13,21 +10,16 @@ interface Signature {
   };
 }
 
-export class Layout extends Component<Signature> {
-  @service declare private readonly store: Store;
+export const Layout = <template>
+  <section><Flags /></section>
 
-  <template>
-    <section><Flags /></section>
+  <main class="todoapp">
+    <header class="header"><h1>todos</h1></header>
 
-    <main class="todoapp">
-      <header class="header"><h1>todos</h1></header>
-      <section><Create /></section>
+    {{yield}}
 
-      {{yield}}
+    <Footer />
+  </main>
 
-      <Footer />
-    </main>
-
-    <footer class="info"><Attribution /></footer>
-  </template>
-}
+  <footer class="info"><Attribution /></footer>
+</template> satisfies TOC<Signature>;
