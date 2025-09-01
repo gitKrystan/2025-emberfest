@@ -6,7 +6,7 @@ import { asType } from '@workspace/shared-data/types';
 
 import { flagStore } from '../db/flag-store.ts';
 import { todoStore } from '../db/todo-store.ts';
-import { InternalServerError } from '../errors.ts';
+import { BadRequestError, InternalServerError } from '../errors.ts';
 import { handleError } from '../serializers/error.ts';
 import {
   createTodoDocument,
@@ -18,7 +18,12 @@ import {
   validateRequiredParam,
   validateUpdateRequest,
 } from '../validations/request-helpers.ts';
-import { todoCreationSchema, todoUpdateSchema } from '../validations/todo.ts';
+import {
+  todoCreationSchema,
+  todoQuerySchema,
+  todoUpdateSchema,
+} from '../validations/todo.ts';
+import { validateWithZod } from '../validations/utils.ts';
 
 /**
  * Check if the shouldError flag is set to true and throw an error if so
@@ -33,12 +38,25 @@ function checkShouldError() {
 }
 
 /**
- * GET /todos - List all todos
+ * GET /todo - List all todos
  */
 export function getTodos(req: Request, res: Response) {
   try {
     checkShouldError();
-    const todos = todoStore.findAll();
+
+    const queryParams = validateWithZod(todoQuerySchema, req.query);
+
+    // Filter out undefined values to create a clean query object
+    const cleanQuery: Record<string, unknown> = {};
+    if (queryParams.completed !== undefined) {
+      cleanQuery['completed'] = queryParams.completed;
+    }
+
+    const hasQueryParams = Object.keys(cleanQuery).length > 0;
+    const todos = hasQueryParams
+      ? todoStore.query(cleanQuery)
+      : todoStore.findAll();
+
     const baseUrl = getBaseUrl(req);
     const document = createTodosDocument(todos, baseUrl);
 
@@ -50,7 +68,7 @@ export function getTodos(req: Request, res: Response) {
 }
 
 /**
- * GET /todos/:id - Get a specific todo
+ * GET /todo/:id - Get a specific todo
  */
 export function getTodo(req: Request, res: Response) {
   try {

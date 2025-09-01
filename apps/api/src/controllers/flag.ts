@@ -21,7 +21,7 @@ import {
 } from '../validations/request-helpers.ts';
 
 /**
- * GET /flags - List all flags
+ * GET /flag - List all flags
  */
 export function getFlags(req: Request, res: Response) {
   try {

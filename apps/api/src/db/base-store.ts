@@ -32,6 +32,18 @@ export abstract class Store<T extends { id: string }> {
     return this.map.get(id) ?? null;
   }
 
+  query(query: Partial<T>): T[] {
+    return Array.from(
+      this.map
+        .values()
+        .filter((item) =>
+          Object.entries(query).every(
+            ([key, value]) => item[key as keyof T] === value,
+          ),
+        ),
+    );
+  }
+
   /**
    * Create a new value
    */
