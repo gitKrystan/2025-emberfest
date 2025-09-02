@@ -15,12 +15,18 @@ export interface NewTodo extends BaseTodo {
 }
 
 export interface UnsavedTodo extends BaseTodo {
-  title: string;
-  completed: boolean;
+  readonly title: string;
+  readonly completed: boolean;
 }
 
 export interface SavedTodo extends BaseTodo {
-  id: string;
+  readonly id: string;
+  readonly title: string;
+  readonly completed: boolean;
+}
+
+export interface EditableSavedTodo extends BaseTodo {
+  readonly id: string;
   title: string;
   completed: boolean;
 }

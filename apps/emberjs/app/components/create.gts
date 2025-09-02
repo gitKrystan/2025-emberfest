@@ -13,20 +13,21 @@ import { HandleError } from '#components/error';
 import { Loading } from '#components/loading';
 import type Store from '#services/store';
 
+const NameForTitle = 'title';
+type NameForTitle = typeof NameForTitle;
+
 export class Create extends Component {
   <template>
-    <form {{on "submit" this.createTodo}} class="new-todo-form">
+    <form {{on "submit" this.onSubmit}} class="new-todo-form">
       <input
         class="new-todo"
         aria-label="What needs to be done?"
         placeholder="What needs to be done?"
         type="text"
-        name="title"
+        name={{NameForTitle}}
         required
         pattern=".*\S.*"
         title="Todo cannot be empty"
-        {{! This is a legitimate case for autofocus }}
-        {{! template-lint-disable no-autofocus-attribute }}
         autofocus
       />
     </form>
@@ -58,26 +59,37 @@ export class Create extends Component {
     return state.isPending;
   }
 
-  createTodo = (event: SubmitEvent) => {
+  onSubmit = (event: SubmitEvent) => {
     event.preventDefault();
 
-    const form = event.target;
-    assert(
-      'Expected event target to be an HTMLFormElement',
-      form instanceof HTMLFormElement
-    );
-
-    const formData = new FormData(form);
-    const rawTitle = formData.get('title');
-    assert('Expected title to be a string', typeof rawTitle === 'string');
-
-    const title = rawTitle.trim();
-    assert('Expected title to have a length', title.length > 0);
+    const { attributes, form } = processSubmitEvent(event);
 
     this.newestTodo = this.store.createRecord<UnsavedTodo>('todo', {
-      title,
+      title: attributes.title,
       completed: false,
     });
+
     form.reset();
   };
+}
+
+function processSubmitEvent(event: SubmitEvent): {
+  attributes: {
+    title: string;
+  };
+  form: HTMLFormElement;
+} {
+  const form = event.target;
+  assert(
+    'Expected event target to be an HTMLFormElement',
+    form instanceof HTMLFormElement
+  );
+
+  const formData = new FormData(form);
+  const rawTitle = formData.get(NameForTitle);
+  assert('Expected title to be a string', typeof rawTitle === 'string');
+
+  const title = rawTitle.trim();
+  assert('Expected title to have a length', title.length > 0);
+  return { attributes: { title }, form };
 }

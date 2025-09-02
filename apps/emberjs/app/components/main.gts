@@ -7,10 +7,13 @@ import { cached, tracked } from '@glimmer/tracking';
 import { checkout } from '@warp-drive/core/reactive';
 import type { Future } from '@warp-drive/core/request';
 import type { CollectionResourceDataDocument } from '@warp-drive/core/types/spec/document';
-import { getRequestState, Request } from '@warp-drive/ember';
+import { Request } from '@warp-drive/ember';
 
 import { updateTodo } from '@workspace/shared-data/builders';
-import type { SavedTodo } from '@workspace/shared-data/types';
+import type {
+  EditableSavedTodo,
+  SavedTodo,
+} from '@workspace/shared-data/types';
 
 import { Create } from '#components/create';
 import { HandleError } from '#components/error';
@@ -49,14 +52,10 @@ export class Main extends Component<Signature> {
     </section>
   </template>
 
-  @tracked canToggle = true;
+  @tracked private canToggle = true;
 
-  @cached get requestState() {
-    return getRequestState(this.args.todoFuture);
-  }
-
-  enableToggle = () => (this.canToggle = true);
-  disableToggle = () => (this.canToggle = false);
+  private readonly enableToggle = () => (this.canToggle = true);
+  private readonly disableToggle = () => (this.canToggle = false);
 }
 
 class Toggle extends Component<{
@@ -78,18 +77,18 @@ class Toggle extends Component<{
   @service declare private readonly store: Store;
 
   @cached
-  get areViewableCompleted(): boolean {
+  private get areViewableCompleted(): boolean {
     const { todos } = this.args;
     return todos.filter((todo) => todo.completed).length === todos.length;
   }
 
-  toggleAll = async () => {
+  private readonly toggleAll = async () => {
     const allCompleted = this.areViewableCompleted;
 
     // FIXME: Implement bulk update; handle async UX
     const futures = [];
     for (const todo of this.args.todos) {
-      const editable = await checkout<SavedTodo>(todo);
+      const editable = await checkout<EditableSavedTodo>(todo);
       editable.completed = !allCompleted;
       futures.push(this.store.request(updateTodo(editable)));
     }
