@@ -31,12 +31,12 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.8.9",
-    "@warp-drive/core": "5.7.0",
-    "@warp-drive/json-api": "5.7.0",
-    "@warp-drive/utilities": "5.7.0",
     "decorator-transforms": "^2.2.2"
   },
   "peerDependencies": {
+    "@warp-drive/core": "5.7.0",
+    "@warp-drive/json-api": "5.7.0",
+    "@warp-drive/utilities": "5.7.0",
     "@workspace/shared-utils": "workspace:*"
   },
   "devDependencies": {
@@ -62,6 +62,9 @@
     "@glint/tsserver-plugin": "^2.0.0-alpha.2",
     "@rollup/plugin-babel": "^6.0.4",
     "@types/qunit": "^2.19.12",
+    "@warp-drive/core": "5.7.0",
+    "@warp-drive/json-api": "5.7.0",
+    "@warp-drive/utilities": "5.7.0",
     "@workspace/shared-utils": "workspace:*",
     "babel-plugin-ember-template-compilation": "^2.2.5",
     "concurrently": "^9.0.1",

@@ -70,6 +70,15 @@ importers:
       '@types/uuid':
         specifier: ^9.0.7
         version: 9.0.8
+      '@warp-drive/core':
+        specifier: 5.7.0
+        version: 5.7.0(@glint/template@1.6.0-alpha.2)
+      '@warp-drive/json-api':
+        specifier: 5.7.0
+        version: 5.7.0(@glint/template@1.6.0-alpha.2)(@warp-drive/core@5.7.0(@glint/template@1.6.0-alpha.2))
+      '@warp-drive/utilities':
+        specifier: 5.7.0
+        version: 5.7.0(@glint/template@1.6.0-alpha.2)(@warp-drive/core@5.7.0(@glint/template@1.6.0-alpha.2))
       '@workspace/shared-data':
         specifier: workspace:*
         version: link:../../packages/shared-data
@@ -184,6 +193,12 @@ importers:
       '@warp-drive/ember':
         specifier: 5.7.0
         version: 5.7.0(@ember/test-waiters@4.1.1(@glint/template@1.6.0-alpha.2))(@glint/template@1.6.0-alpha.2)
+      '@warp-drive/json-api':
+        specifier: 5.7.0
+        version: 5.7.0(@glint/template@1.6.0-alpha.2)(@warp-drive/core@5.7.0(@glint/template@1.6.0-alpha.2))
+      '@warp-drive/utilities':
+        specifier: 5.7.0
+        version: 5.7.0(@glint/template@1.6.0-alpha.2)(@warp-drive/core@5.7.0(@glint/template@1.6.0-alpha.2))
       '@workspace/shared-data':
         specifier: workspace:*
         version: link:../../packages/shared-data
@@ -292,15 +307,6 @@ importers:
       '@embroider/addon-shim':
         specifier: ^1.8.9
         version: 1.10.0
-      '@warp-drive/core':
-        specifier: 5.7.0
-        version: 5.7.0(@glint/template@1.6.0-alpha.2)
-      '@warp-drive/json-api':
-        specifier: 5.7.0
-        version: 5.7.0(@glint/template@1.6.0-alpha.2)(@warp-drive/core@5.7.0(@glint/template@1.6.0-alpha.2))
-      '@warp-drive/utilities':
-        specifier: 5.7.0
-        version: 5.7.0(@glint/template@1.6.0-alpha.2)(@warp-drive/core@5.7.0(@glint/template@1.6.0-alpha.2))
       decorator-transforms:
         specifier: ^2.2.2
         version: 2.3.0(@babel/core@7.28.3)
@@ -371,6 +377,15 @@ importers:
       '@types/qunit':
         specifier: ^2.19.12
         version: 2.19.13
+      '@warp-drive/core':
+        specifier: 5.7.0
+        version: 5.7.0(@glint/template@1.6.0-alpha.2)
+      '@warp-drive/json-api':
+        specifier: 5.7.0
+        version: 5.7.0(@glint/template@1.6.0-alpha.2)(@warp-drive/core@5.7.0(@glint/template@1.6.0-alpha.2))
+      '@warp-drive/utilities':
+        specifier: 5.7.0
+        version: 5.7.0(@glint/template@1.6.0-alpha.2)(@warp-drive/core@5.7.0(@glint/template@1.6.0-alpha.2))
       '@workspace/shared-utils':
         specifier: workspace:*
         version: link:../shared-utils

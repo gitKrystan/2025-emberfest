@@ -67,6 +67,8 @@
     "@types/rsvp": "^4.0.9",
     "@warp-drive/core": "5.7.0",
     "@warp-drive/ember": "5.7.0",
+    "@warp-drive/json-api": "5.7.0",
+    "@warp-drive/utilities": "5.7.0",
     "@workspace/shared-data": "workspace:*",
     "@workspace/shared-utils": "workspace:*",
     "babel-plugin-ember-template-compilation": "^3.0.1",
