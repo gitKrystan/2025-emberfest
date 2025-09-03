@@ -12,6 +12,7 @@
     "test": "tests"
   },
   "scripts": {
+    "demo": "NODE_ENV=production pnpm start -m production",
     "build": "vite build",
     "format": "prettier . --cache --write",
     "lint": "concurrently \"pnpm:lint:*(!fix)\" --names \"lint:\" --prefixColors auto",
