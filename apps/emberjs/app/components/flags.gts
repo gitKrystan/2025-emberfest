@@ -10,8 +10,10 @@ import { Await, Request } from '@warp-drive/ember';
 import { queryFlags, updateFlag } from '@workspace/shared-data/builders';
 import type {
   ApiFlag,
-  ShouldErrorFlag as ShouldErrorFlagResource,
-  TodoCountFlag as TodoCountFlagResource,
+  EditableShouldErrorFlag,
+  EditableTodoCountFlag,
+  ShouldErrorFlag,
+  TodoCountFlag,
 } from '@workspace/shared-data/types';
 
 import { HandleError } from '#components/error';
@@ -35,8 +37,10 @@ class FlagsContent extends Component<{
     <ul class="filters">
       {{#if this.shouldErrorFlag}}
         <li>
-          <Await @promise={{this.checkout this.shouldErrorFlag}}>
-            <:success as |flag|><ShouldErrorFlag @flag={{flag}} /></:success>
+          <Await @promise={{this.checkoutShouldErrorFlag this.shouldErrorFlag}}>
+            <:success as |flag|><UpdateShouldErrorFlag
+                @flag={{flag}}
+              /></:success>
             <:pending><Loading /></:pending>
             <:error as |error|><HandleError @error={{error}} /></:error>
           </Await>
@@ -44,8 +48,14 @@ class FlagsContent extends Component<{
       {{/if}}
       {{#if this.initialTodoCountFlag}}
         <li>
-          <Await @promise={{this.checkout this.initialTodoCountFlag}}>
-            <:success as |flag|><TodoCountFlag @flag={{flag}} /></:success>
+          <Await
+            @promise={{this.checkoutInitialTodoCountFlag
+              this.initialTodoCountFlag
+            }}
+          >
+            <:success as |flag|><UpdateTodoCountFlag
+                @flag={{flag}}
+              /></:success>
             <:pending><Loading /></:pending>
             <:error as |error|><HandleError @error={{error}} /></:error>
           </Await>
@@ -55,24 +65,32 @@ class FlagsContent extends Component<{
   </template>
 
   @cached
-  get initialTodoCountFlag(): TodoCountFlagResource | null {
+  get initialTodoCountFlag(): TodoCountFlag | null {
     return (
       this.args.data.find((flag) => flag.id === 'initialTodoCount') ?? null
     );
   }
 
-  checkout<Flag extends ApiFlag>(flag: Flag): Promise<Flag & ReactiveResource> {
-    return checkout<Flag>(flag);
+  checkoutInitialTodoCountFlag(
+    flag: TodoCountFlag
+  ): Promise<EditableTodoCountFlag & ReactiveResource> {
+    return checkout<EditableTodoCountFlag>(flag);
   }
 
   @cached
-  get shouldErrorFlag(): ShouldErrorFlagResource | null {
+  get shouldErrorFlag(): ShouldErrorFlag | null {
     return this.args.data.find((flag) => flag.id === 'shouldError') ?? null;
+  }
+
+  checkoutShouldErrorFlag(
+    flag: ShouldErrorFlag
+  ): Promise<EditableShouldErrorFlag & ReactiveResource> {
+    return checkout<EditableShouldErrorFlag>(flag);
   }
 }
 
-class ShouldErrorFlag extends Component<{
-  Args: { flag: ShouldErrorFlagResource & ReactiveResource };
+class UpdateShouldErrorFlag extends Component<{
+  Args: { flag: EditableShouldErrorFlag & ReactiveResource };
 }> {
   <template>
     <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}}>
@@ -91,8 +109,8 @@ const TodoCountOptions = {
   large: 100_000,
 };
 
-class TodoCountFlag extends Component<{
-  Args: { flag: TodoCountFlagResource & ReactiveResource };
+class UpdateTodoCountFlag extends Component<{
+  Args: { flag: EditableTodoCountFlag & ReactiveResource };
 }> {
   <template>
     <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}}>

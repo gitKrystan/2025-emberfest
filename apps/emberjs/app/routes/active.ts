@@ -2,17 +2,16 @@ import Route from '@ember/routing/route';
 import { service } from '@ember/service';
 
 import type { Future } from '@warp-drive/core/request';
-import type { CollectionResourceDataDocument } from '@warp-drive/core/types/spec/document';
 
+import type { GetTodosResult } from '@workspace/shared-data/builders';
 import { getActiveTodos } from '@workspace/shared-data/builders';
-import type { SavedTodo } from '@workspace/shared-data/types';
 
 import type Store from '#services/store';
 
 export default class ActiveTodos extends Route {
   @service declare store: Store;
 
-  model(): { todos: Future<CollectionResourceDataDocument<SavedTodo>> } {
+  model(): { todos: Future<GetTodosResult> } {
     return { todos: this.store.request(getActiveTodos()) };
   }
 }

@@ -5,30 +5,22 @@ import type {
 } from '@warp-drive/core/types/spec/json-api-raw';
 import type { Type } from '@warp-drive/core/types/symbols';
 
+/** Base type extended by all Todo resource instances */
 export interface BaseTodo {
-  [Type]: 'todo';
+  /** Type-only brand */
+  readonly [Type]: 'todo';
+  /** $type attribute managed by the store */
+  readonly $type: 'todo';
 }
 
-export interface NewTodo extends BaseTodo {
-  title?: string;
-  completed?: boolean;
-}
-
-export interface UnsavedTodo extends BaseTodo {
-  readonly title: string;
-  readonly completed: boolean;
-}
-
-export interface SavedTodo extends BaseTodo {
-  readonly id: string;
-  readonly title: string;
-  readonly completed: boolean;
-}
-
-export interface EditableSavedTodo extends BaseTodo {
-  readonly id: string;
+/** Valid attributes for Todo creation */
+export interface TodoAttributes {
   title: string;
   completed: boolean;
+}
+
+export interface SavedTodo extends BaseTodo, Readonly<TodoAttributes> {
+  readonly id: string;
 }
 
 export type ExistingTodoResource = ExistingResourceObject<'todo'>;

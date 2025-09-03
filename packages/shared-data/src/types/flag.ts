@@ -6,18 +6,48 @@ import type {
 import type { Type } from '@warp-drive/core/types/symbols';
 
 export interface BaseApiFlag {
-  [Type]: 'flag';
+  /** Type-only brand */
+  readonly [Type]: 'flag';
+  /** $type attribute managed by the store */
+  readonly $type: 'flag';
 }
 
-export interface ShouldErrorFlag extends BaseApiFlag {
+interface HasShouldErrorFlagId {
   id: 'shouldError';
+}
+
+export interface ShouldErrorFlagAttributes {
   value: boolean;
 }
 
-export interface TodoCountFlag extends BaseApiFlag {
+export interface ShouldErrorFlag
+  extends BaseApiFlag,
+    HasShouldErrorFlagId,
+    Readonly<ShouldErrorFlagAttributes> {}
+
+export interface EditableShouldErrorFlag
+  extends BaseApiFlag,
+    HasShouldErrorFlagId,
+    ShouldErrorFlagAttributes {}
+
+interface HasTodoCountFlagId {
   id: 'initialTodoCount';
+}
+
+export interface TodoCountFlagAttributes {
+  /** Must be positive */
   value: number;
 }
+
+export interface TodoCountFlag
+  extends BaseApiFlag,
+    HasTodoCountFlagId,
+    Readonly<TodoCountFlagAttributes> {}
+
+export interface EditableTodoCountFlag
+  extends BaseApiFlag,
+    HasTodoCountFlagId,
+    TodoCountFlagAttributes {}
 
 export type ApiFlag = ShouldErrorFlag | TodoCountFlag;
 

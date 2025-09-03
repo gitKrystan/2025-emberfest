@@ -1,13 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import type { SavedTodo, UnsavedTodo } from '@workspace/shared-data/types';
+import type { SavedTodo, TodoAttributes } from '@workspace/shared-data/types';
 import { asType } from '@workspace/shared-data/types';
 
 import { InternalServerError } from '../errors.ts';
 import { Store } from './base-store.ts';
 import { flagStore } from './flag-store.ts';
 
-const sampleTodos = [
+const sampleTodos: TodoAttributes[] = [
   { title: 'Learn JSONAPI specification', completed: true },
   { title: 'Implement Todo API', completed: false },
   { title: 'Write tests', completed: false },
@@ -27,6 +27,7 @@ function seed(count: number): SavedTodo[] {
       throw new Error('this should be impossible');
     }
     return asType<SavedTodo>({
+      $type: 'todo',
       id: uuidv4(),
       title: i > sampleTodos.length - 1 ? `${sample.title} ${i}` : sample.title,
       completed: sample.completed,
@@ -58,12 +59,13 @@ export class TodoStore extends Store<SavedTodo> {
   /**
    * Create a new todo
    */
-  create(todoData: UnsavedTodo): SavedTodo {
-    const todo: SavedTodo = {
+  create(todoData: TodoAttributes): SavedTodo {
+    const todo = asType<SavedTodo>({
+      $type: 'todo',
       id: uuidv4(),
       ...todoData,
       completed: todoData.completed,
-    };
+    });
 
     this.map.set(todo.id, todo);
     return todo;

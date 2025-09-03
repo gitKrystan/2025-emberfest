@@ -1,7 +1,13 @@
 import { mergeOptions } from '@workspace/shared-utils';
 
-import type { CreateRequestOptions } from '@warp-drive/core/types/request';
-import type { SingleResourceDataDocument } from '@warp-drive/core/types/spec/document';
+import type {
+  CreateRequestOptions,
+  QueryRequestOptions,
+} from '@warp-drive/core/types/request';
+import type {
+  CollectionResourceDataDocument,
+  SingleResourceDataDocument,
+} from '@warp-drive/core/types/spec/document';
 import {
   createRecord,
   deleteRecord,
@@ -10,10 +16,12 @@ import {
   updateRecord,
 } from '@warp-drive/utilities/json-api';
 
-import type { SavedTodo, UnsavedTodo } from '../types/index.ts';
+import type { SavedTodo, TodoAttributes } from '../types/index.ts';
 
 // GET
-export function getAllTodos() {
+export type GetTodosResult = CollectionResourceDataDocument<SavedTodo>;
+
+export function getAllTodos(): QueryRequestOptions<GetTodosResult> {
   const requestInfo = query<SavedTodo>('todo', {}, { resourcePath: 'todo' });
   requestInfo.cacheOptions = mergeOptions(requestInfo.cacheOptions, {
     types: ['todo'],
@@ -21,7 +29,7 @@ export function getAllTodos() {
   return requestInfo;
 }
 
-export function getCompletedTodos() {
+export function getCompletedTodos(): QueryRequestOptions<GetTodosResult> {
   const requestInfo = query<SavedTodo>(
     'todo',
     { completed: true },
@@ -33,7 +41,7 @@ export function getCompletedTodos() {
   return requestInfo;
 }
 
-export function getActiveTodos() {
+export function getActiveTodos(): QueryRequestOptions<GetTodosResult> {
   const requestInfo = query<SavedTodo>(
     'todo',
     { completed: false },
@@ -51,7 +59,7 @@ export function getTodoById(id: string) {
 }
 
 // POST
-export function createTodo(attributes: UnsavedTodo) {
+export function createTodo(attributes: TodoAttributes) {
   const requestInfo = createRecord(attributes, {
     resourcePath: 'todo',
   });

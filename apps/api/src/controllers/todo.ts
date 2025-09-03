@@ -5,9 +5,9 @@ import type {
   CollectionTodoDocument,
   ResourceErrorDocument,
   SingleTodoDocument,
-  UnsavedTodo,
+  TodoAttributes,
 } from '@workspace/shared-data/types';
-import { asType } from '@workspace/shared-data/types';
+import type { ExactPartial } from '@workspace/shared-utils/types';
 
 import { flagStore } from '../db/flag-store.ts';
 import { todoStore } from '../db/todo-store.ts';
@@ -106,19 +106,17 @@ export function createTodo(
 ): Response<SingleTodoDocument> | Response<ResourceErrorDocument> {
   try {
     checkShouldError();
-    const validationResult = validateCreateRequest(
+    const attributes: TodoAttributes = validateCreateRequest(
       'todo',
       todoCreationSchema,
       req.body,
     );
 
     // Create the todo
-    const newTodo = todoStore.create(
-      asType<UnsavedTodo>({
-        title: validationResult.title,
-        completed: validationResult.completed,
-      }),
-    );
+    const newTodo = todoStore.create({
+      title: attributes.title,
+      completed: attributes.completed,
+    });
 
     const baseUrl = getBaseUrl(req);
     const document = createTodoDocument(newTodo, baseUrl);
@@ -142,24 +140,11 @@ export function updateTodo(
     checkShouldError();
     const id = validateRequiredParam('todo id', req.params['id']);
 
-    // Validate the request using Zod
-    const validationResult = validateUpdateRequest(
-      'todo',
-      id,
-      todoUpdateSchema,
-      req.body,
+    const patchAttributes: Partial<TodoAttributes> = extractTodoPatchAttributes(
+      validateUpdateRequest('todo', id, todoUpdateSchema, req.body),
     );
 
-    // Update the todo
-    // @ts-expect-error YOLO oh well
-    const updatedTodo = todoStore.update(id, {
-      ...(validationResult.title !== undefined && {
-        title: validationResult.title,
-      }),
-      ...(validationResult.completed !== undefined && {
-        completed: validationResult.completed,
-      }),
-    });
+    const updatedTodo = todoStore.update(id, patchAttributes);
 
     const baseUrl = getBaseUrl(req);
     const document = createTodoDocument(updatedTodo, baseUrl);
@@ -186,4 +171,17 @@ export function deleteTodo(
   } catch (error) {
     return handleError(res, error);
   }
+}
+
+function extractTodoPatchAttributes(
+  partialAttributes: ExactPartial<TodoAttributes>,
+): Partial<TodoAttributes> {
+  return {
+    ...(partialAttributes.title !== undefined && {
+      title: partialAttributes.title,
+    }),
+    ...(partialAttributes.completed !== undefined && {
+      completed: partialAttributes.completed,
+    }),
+  };
 }

@@ -5,7 +5,9 @@ import type {
   ApiFlag,
   CollectionFlagDocument,
   ResourceErrorDocument,
+  ShouldErrorFlagAttributes,
   SingleTodoDocument,
+  TodoCountFlagAttributes,
 } from '@workspace/shared-data/types';
 
 import { flagStore } from '../db/flag-store.ts';
@@ -77,16 +79,15 @@ export function updateFlag(
 }
 
 function handleShouldErrorFlag(req: Request, id: 'shouldError'): ApiFlag {
-  const validationResult = validateUpdateRequest(
+  const attributes: ShouldErrorFlagAttributes = validateUpdateRequest(
     'flag',
     id,
     booleanFlagUpdateSchema,
     req.body,
   );
 
-  // @ts-expect-error YOLO oh well
   return flagStore.update(id, {
-    value: validationResult.value,
+    value: attributes.value,
   });
 }
 
@@ -94,7 +95,7 @@ function handleInitialTodoCountFlag(
   req: Request,
   id: 'initialTodoCount',
 ): ApiFlag {
-  const validationResult = validateUpdateRequest(
+  const attributes: TodoCountFlagAttributes = validateUpdateRequest(
     'flag',
     id,
     positiveNumberFlagUpdateSchema,
@@ -102,11 +103,10 @@ function handleInitialTodoCountFlag(
   );
 
   // Update the todo store with the new count and re-seed
-  const newCount = validationResult.value;
+  const newCount = attributes.value;
   todoStore.reseed(newCount);
 
-  // @ts-expect-error YOLO oh well
   return flagStore.update(id, {
-    value: validationResult.value,
+    value: attributes.value,
   });
 }

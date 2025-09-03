@@ -103,5 +103,9 @@ const TodoList = <template>
     {{/each}}
   </ul>
 </template> satisfies TOC<{
-  Args: { todos: SavedTodo[]; onEndEdit: () => void; onStartEdit: () => void };
+  Args: {
+    todos: SavedTodo[];
+    onEndEdit: () => void;
+    onStartEdit: () => void;
+  };
 }>;

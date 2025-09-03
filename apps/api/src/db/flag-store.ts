@@ -9,8 +9,16 @@ import { Store } from './base-store.ts';
 export class FlagStore extends Store<ApiFlag> {
   constructor() {
     super([
-      asType<ApiFlag>({ id: 'shouldError' as const, value: false }),
-      asType<ApiFlag>({ id: 'initialTodoCount' as const, value: 3 }),
+      asType<ApiFlag>({
+        $type: 'flag',
+        id: 'shouldError' as const,
+        value: false,
+      }),
+      asType<ApiFlag>({
+        $type: 'flag',
+        id: 'initialTodoCount' as const,
+        value: 3,
+      }),
     ]);
   }
 

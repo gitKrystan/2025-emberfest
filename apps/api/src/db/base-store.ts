@@ -47,12 +47,12 @@ export abstract class Store<T extends { id: string }> {
   /**
    * Create a new value
    */
-  abstract create(attributes: Omit<T, 'id'>): T;
+  abstract create(attributes: Omit<T, 'id' | '$type'>): T;
 
   /**
    * Update an existing value
    */
-  update(id: string, value: Omit<T, 'id'>): T {
+  update(id: string, value: Partial<Omit<T, 'id' | '$type'>>): T {
     const existing = this.findById(id);
 
     const updated = {

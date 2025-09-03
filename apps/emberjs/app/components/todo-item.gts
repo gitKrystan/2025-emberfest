@@ -5,6 +5,10 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { modifier } from 'ember-modifier';
 
+import { recordIdentifierFor } from '@warp-drive/core';
+import type { PersistedResourceKey } from '@warp-drive/core/types/identifier';
+import type { ImmutableRequestInfo } from '@warp-drive/core/types/request';
+
 import {
   deleteTodo,
   getActiveTodos,
@@ -14,12 +18,6 @@ import {
 import type { SavedTodo } from '@workspace/shared-data/types';
 
 import type Store from '#services/store';
-import type { ImmutableRequestInfo } from '@warp-drive/core/types/request';
-import { recordIdentifierFor } from '@warp-drive/core';
-import type {
-  PersistedResourceKey,
-  StableExistingRecordIdentifier,
-} from '@warp-drive/core/types/identifier';
 
 interface Signature {
   Args: {

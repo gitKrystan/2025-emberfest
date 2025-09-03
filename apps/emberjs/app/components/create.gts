@@ -7,7 +7,7 @@ import { cached, tracked } from '@glimmer/tracking';
 import { getRequestState, Request } from '@warp-drive/ember';
 
 import { createTodo } from '@workspace/shared-data/builders';
-import type { UnsavedTodo } from '@workspace/shared-data/types';
+import type { TodoAttributes } from '@workspace/shared-data/types';
 
 import { HandleError } from '#components/error';
 import { Loading } from '#components/loading';
@@ -40,7 +40,7 @@ export class Create extends Component {
 
   @service declare store: Store;
 
-  @tracked newestTodo: UnsavedTodo | null = null;
+  @tracked newestTodo: TodoAttributes | null = null;
 
   @cached
   get createTodoRequest() {
@@ -64,7 +64,8 @@ export class Create extends Component {
 
     const { attributes, form } = processSubmitEvent(event);
 
-    this.newestTodo = this.store.createRecord<UnsavedTodo>('todo', {
+    // @ts-expect-error -- FIXME: Don't need to do this
+    this.newestTodo = this.store.createRecord<TodoAttributes>('todo', {
       title: attributes.title,
       completed: false,
     });
