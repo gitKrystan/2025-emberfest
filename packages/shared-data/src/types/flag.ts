@@ -1,8 +1,3 @@
-import type {
-  CollectionResourceDocument,
-  ExistingResourceObject,
-  SingleResourceDocument,
-} from '@warp-drive/core/types/spec/json-api-raw';
 import type { Type } from '@warp-drive/core/types/symbols';
 
 export interface BaseApiFlag {
@@ -50,7 +45,3 @@ export interface EditableTodoCountFlag
     TodoCountFlagAttributes {}
 
 export type ApiFlag = ShouldErrorFlag | TodoCountFlag;
-
-export type ExistingFlagResource = ExistingResourceObject<'flag'>;
-export type SingleFlagDocument = SingleResourceDocument<'flag'>;
-export type CollectionFlagDocument = CollectionResourceDocument<'flag'>;

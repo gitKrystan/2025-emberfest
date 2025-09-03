@@ -13,11 +13,11 @@ import type {
 import { flagStore } from '../db/flag-store.ts';
 import { todoStore } from '../db/todo-store.ts';
 import { BadRequestError } from '../errors.ts';
-import { handleError } from '../serializers/error.ts';
 import {
-  createFlagDocument,
-  createFlagsDocument,
-} from '../serializers/flag.ts';
+  serializeCollectionResourceDocument,
+  serializeSingleResourceDocument,
+} from '../serializers/base.ts';
+import { handleError } from '../serializers/error.ts';
 import { getBaseUrl } from '../utils/url.ts';
 import {
   booleanFlagUpdateSchema,
@@ -38,7 +38,11 @@ export function getFlags(
   try {
     const flags = flagStore.findAll();
     const baseUrl = getBaseUrl(req);
-    const document = createFlagsDocument(flags, baseUrl);
+    const document = serializeCollectionResourceDocument(
+      'flag',
+      flags,
+      baseUrl,
+    );
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
     return res.json(document);
@@ -69,7 +73,11 @@ export function updateFlag(
     }
 
     const baseUrl = getBaseUrl(req);
-    const document = createFlagDocument(updatedFlag, baseUrl);
+    const document = serializeSingleResourceDocument(
+      'flag',
+      updatedFlag,
+      baseUrl,
+    );
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
     return res.json(document);

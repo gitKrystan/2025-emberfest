@@ -12,11 +12,11 @@ import type { ExactPartial } from '@workspace/shared-utils/types';
 import { flagStore } from '../db/flag-store.ts';
 import { todoStore } from '../db/todo-store.ts';
 import { InternalServerError } from '../errors.ts';
-import { handleError } from '../serializers/error.ts';
 import {
-  createTodoDocument,
-  createTodosDocument,
-} from '../serializers/todo.ts';
+  serializeCollectionResourceDocument,
+  serializeSingleResourceDocument,
+} from '../serializers/base.ts';
+import { handleError } from '../serializers/error.ts';
 import { getBaseUrl } from '../utils/url.ts';
 import {
   validateCreateRequest,
@@ -66,7 +66,11 @@ export function getTodos(
       : todoStore.findAll();
 
     const baseUrl = getBaseUrl(req);
-    const document = createTodosDocument(todos, baseUrl);
+    const document = serializeCollectionResourceDocument(
+      'todo',
+      todos,
+      baseUrl,
+    );
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
     return res.json(document);
@@ -88,7 +92,7 @@ export function getTodo(
     const todo = todoStore.findById(id);
 
     const baseUrl = getBaseUrl(req);
-    const document = createTodoDocument(todo, baseUrl);
+    const document = serializeSingleResourceDocument('todo', todo, baseUrl);
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
     return res.json(document);
@@ -119,7 +123,7 @@ export function createTodo(
     });
 
     const baseUrl = getBaseUrl(req);
-    const document = createTodoDocument(newTodo, baseUrl);
+    const document = serializeSingleResourceDocument('todo', newTodo, baseUrl);
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
     res.setHeader('Location', `${baseUrl}/todos/${newTodo.id}`);
@@ -147,7 +151,11 @@ export function updateTodo(
     const updatedTodo = todoStore.update(id, patchAttributes);
 
     const baseUrl = getBaseUrl(req);
-    const document = createTodoDocument(updatedTodo, baseUrl);
+    const document = serializeSingleResourceDocument(
+      'todo',
+      updatedTodo,
+      baseUrl,
+    );
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
     return res.json(document);
