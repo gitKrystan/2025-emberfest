@@ -4,16 +4,12 @@ import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { cached, tracked } from '@glimmer/tracking';
 
-import { checkout } from '@warp-drive/core/reactive';
 import type { Future } from '@warp-drive/core/request';
 import type { CollectionResourceDataDocument } from '@warp-drive/core/types/spec/document';
 import { Request } from '@warp-drive/ember';
 
 import { updateTodo } from '@workspace/shared-data/builders';
-import type {
-  EditableSavedTodo,
-  SavedTodo,
-} from '@workspace/shared-data/types';
+import type { SavedTodo } from '@workspace/shared-data/types';
 
 import { Create } from '#components/create';
 import { HandleError } from '#components/error';
@@ -88,9 +84,9 @@ class Toggle extends Component<{
     // FIXME: Implement bulk update; handle async UX
     const futures = [];
     for (const todo of this.args.todos) {
-      const editable = await checkout<EditableSavedTodo>(todo);
-      editable.completed = !allCompleted;
-      futures.push(this.store.request(updateTodo(editable)));
+      futures.push(
+        this.store.request(updateTodo(todo, { completed: !allCompleted }))
+      );
     }
     await Promise.all(futures);
   };

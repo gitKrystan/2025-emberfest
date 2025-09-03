@@ -36,8 +36,8 @@ class FlagsContent extends Component<{
       {{#if this.shouldErrorFlag}}
         <li>
           <Await @promise={{this.checkout this.shouldErrorFlag}}>
-            <:pending><Loading /></:pending>
             <:success as |flag|><ShouldErrorFlag @flag={{flag}} /></:success>
+            <:pending><Loading /></:pending>
             <:error as |error|><HandleError @error={{error}} /></:error>
           </Await>
         </li>
@@ -45,8 +45,8 @@ class FlagsContent extends Component<{
       {{#if this.initialTodoCountFlag}}
         <li>
           <Await @promise={{this.checkout this.initialTodoCountFlag}}>
-            <:pending><Loading /></:pending>
             <:success as |flag|><TodoCountFlag @flag={{flag}} /></:success>
+            <:pending><Loading /></:pending>
             <:error as |error|><HandleError @error={{error}} /></:error>
           </Await>
         </li>

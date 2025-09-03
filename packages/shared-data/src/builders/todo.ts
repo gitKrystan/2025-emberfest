@@ -73,18 +73,10 @@ export function createTodo(attributes: UnsavedTodo) {
 // FIXME: Implement bulk delete
 
 // PATCH
-export function updateTodo(todo: Partial<SavedTodo> & { id: string }) {
-  const attributes: {
-    title?: string;
-    completed?: boolean;
-  } = {};
-  if (todo.title !== undefined) {
-    attributes.title = todo.title;
-  }
-  if (todo.completed !== undefined) {
-    attributes.completed = todo.completed;
-  }
-
+export function updateTodo(
+  todo: SavedTodo,
+  attributes: Partial<Omit<SavedTodo, 'id'>>,
+) {
   const requestInfo = updateRecord(todo, { resourcePath: 'todo' });
   requestInfo.body = JSON.stringify({
     data: {
