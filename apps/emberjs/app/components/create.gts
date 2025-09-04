@@ -40,14 +40,14 @@ export class Create extends Component {
 
   @service declare store: Store;
 
-  @tracked newestTodo: TodoAttributes | null = null;
+  @tracked attributes: TodoAttributes | null = null;
 
   @cached
   get createTodoRequest() {
-    if (!this.newestTodo) {
+    if (!this.attributes) {
       return null;
     }
-    return this.store.request(createTodo(this.newestTodo));
+    return this.store.request(createTodo(this.attributes));
   }
 
   @cached
@@ -64,20 +64,14 @@ export class Create extends Component {
 
     const { attributes, form } = processSubmitEvent(event);
 
-    // @ts-expect-error -- FIXME: Don't need to do this
-    this.newestTodo = this.store.createRecord<TodoAttributes>('todo', {
-      title: attributes.title,
-      completed: false,
-    });
+    this.attributes = attributes;
 
     form.reset();
   };
 }
 
 function processSubmitEvent(event: SubmitEvent): {
-  attributes: {
-    title: string;
-  };
+  attributes: TodoAttributes;
   form: HTMLFormElement;
 } {
   const form = event.target;
@@ -92,5 +86,5 @@ function processSubmitEvent(event: SubmitEvent): {
 
   const title = rawTitle.trim();
   assert('Expected title to have a length', title.length > 0);
-  return { attributes: { title }, form };
+  return { attributes: { title, completed: false }, form };
 }
