@@ -6,8 +6,11 @@ import { tracked } from '@glimmer/tracking';
 import { modifier } from 'ember-modifier';
 
 import { recordIdentifierFor } from '@warp-drive/core';
-import type { PersistedResourceKey } from '@warp-drive/core/types/identifier';
-import type { ImmutableRequestInfo } from '@warp-drive/core/types/request';
+import type {
+  PersistedResourceKey,
+  RequestKey,
+} from '@warp-drive/core/types/identifier';
+import type { RequestInfo } from '@warp-drive/core/types/request';
 
 import {
   deleteTodo,
@@ -30,7 +33,8 @@ interface Signature {
 export class TodoItem extends Component<Signature> {
   <template>
     <li
-      class="{{if @todo.completed 'completed'}} {{if this.editing 'editing'}}"
+      class="{{if @todo.completed 'completed'}}
+        {{if this.isEditingTitle 'editing'}}"
     >
       <form {{this.registerForm}} {{on "submit" this.onSubmit}}>
         <div class="view">
@@ -71,10 +75,11 @@ export class TodoItem extends Component<Signature> {
 
   @service declare private readonly store: Store;
 
-  @tracked editing = false;
+  /** Whether we are in title-editing mode */
+  @tracked private isEditingTitle = false;
 
   _form: HTMLFormElement | null = null;
-  get form() {
+  private get form(): HTMLFormElement {
     assert('Cannot access form before registered', this._form);
     return this._form;
   }
@@ -82,22 +87,26 @@ export class TodoItem extends Component<Signature> {
     this._form = element;
   });
 
-  startEditing = () => {
+  /** Start title-editing mode */
+  private startEditing = (): void => {
     this.args.onStartEdit();
-    this.editing = true;
+    this.isEditingTitle = true;
   };
 
-  endEditing = () => {
+  /** End title-editing mode */
+  private endEditing = (): void => {
     this.args.onEndEdit();
-    this.editing = false;
+    this.isEditingTitle = false;
   };
 
-  onTitleDblClick = (event: MouseEvent) => {
+  /** Start editing on double-click */
+  private onTitleDblClick = (event: MouseEvent): void => {
     event.preventDefault();
     this.startEditing();
   };
 
-  onTitleKeydown = (event: KeyboardEvent) => {
+  /** Reset on Escape */
+  private onTitleKeydown = (event: KeyboardEvent) => {
     assert(
       'Expected event target to be an HTMLInputElement',
       event.target instanceof HTMLInputElement
@@ -108,7 +117,8 @@ export class TodoItem extends Component<Signature> {
     }
   };
 
-  dispatchSubmit = (event: Event) => {
+  /** Submit the form with the relevant Element set as the submitter. */
+  private dispatchSubmit = (event: Event) => {
     assert(
       'Cannot put autoSubmit on non-HTMLElement',
       event.target instanceof HTMLElement
@@ -117,13 +127,13 @@ export class TodoItem extends Component<Signature> {
     this.form.dispatchEvent(submitEvent);
   };
 
-  onSubmit = async (event: SubmitEvent) => {
+  private onSubmit = async (event: SubmitEvent) => {
     event.preventDefault();
 
     // FIXME: Ensure we disable upstream async during saves that occur when
     // `this.editing` is false, which happens due to requirements of TodoMVC CSS.
     // Will need custom CSS to resolve.
-    if (!this.editing) {
+    if (!this.isEditingTitle) {
       this.args.onStartEdit();
     }
 
@@ -136,64 +146,71 @@ export class TodoItem extends Component<Signature> {
     await this.updateTodo(attributes);
   };
 
-  deleteTodo = async () => {
+  private deleteTodo = async () => {
     await this.store.request(deleteTodo(this.args.todo));
     this.endEditing();
   };
 
-  updateTodo = async (attributes: { title: string; completed: boolean }) => {
+  private updateTodo = async (attributes: {
+    title: string;
+    completed: boolean;
+  }) => {
     await this.store.request(updateTodo(this.args.todo, attributes));
 
-    // FIXME @runspired to fix the type bc Krystan is too lazy to do it
-    const completedKey =
-      this.store.cacheKeyManager.getOrCreateDocumentIdentifier(
-        getCompletedTodos() as ImmutableRequestInfo
-      );
-    assert(
-      'Expected key to be defined for query getCompletedTodos',
-      completedKey
-    );
-    const activeKey = this.store.cacheKeyManager.getOrCreateDocumentIdentifier(
-      getActiveTodos() as ImmutableRequestInfo
-    );
-    assert('Expected key to be defined for query getActiveTodos', activeKey);
+    const resourceKey = this.keyForResource(this.args.todo);
+    const completedRequestKey = this.keyForRequest(getCompletedTodos());
+    const activeRequestKey = this.keyForRequest(getActiveTodos());
 
     // We need this because while these queries are subscribed to notifications
     // for the records they return, they explicitly do not subscribe to changes
     // in the records they don't return. Thus, we need to manually patch the
     // request documents stored in the cache to ensure they update.
-    const resourceKey = recordIdentifierFor(this.args.todo);
     if (attributes.completed) {
       this.store.cache.patch({
-        record: completedKey,
+        record: completedRequestKey,
         op: 'add',
-        value: resourceKey as PersistedResourceKey,
+        value: resourceKey,
         field: 'data',
         index: 0,
       });
       this.store.cache.patch({
-        record: activeKey,
+        record: activeRequestKey,
         op: 'remove',
-        value: resourceKey as PersistedResourceKey,
+        value: resourceKey,
         field: 'data',
       });
     } else {
       this.store.cache.patch({
-        record: activeKey,
+        record: activeRequestKey,
         op: 'add',
-        value: resourceKey as PersistedResourceKey,
+        value: resourceKey,
         field: 'data',
         index: 0,
       });
       this.store.cache.patch({
-        record: completedKey,
+        record: completedRequestKey,
         op: 'remove',
-        value: resourceKey as PersistedResourceKey,
+        value: resourceKey,
         field: 'data',
       });
     }
 
     this.endEditing();
+  };
+
+  private keyForResource = (
+    resource: SavedTodo
+  ): PersistedResourceKey<'todo'> => {
+    const key = recordIdentifierFor(resource);
+    assert('Expected key have id', key.id);
+    return key as PersistedResourceKey<'todo'>;
+  };
+
+  private keyForRequest = (request: RequestInfo): RequestKey => {
+    const key =
+      this.store.cacheKeyManager.getOrCreateDocumentIdentifier(request);
+    assert('Expected key to be defined', key);
+    return key;
   };
 }
 
