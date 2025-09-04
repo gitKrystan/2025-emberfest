@@ -755,7 +755,7 @@ WarpDrive handles mutations through a "checkout" system:
 import { Checkout } from '@warp-drive/core/reactive';
 
 export default class TodoItem extends Component {
-  @service declare store: Store;
+  @service declare private readonly store: Store;
 
   toggleCompleted = async () => {
     // Check out the todo for editing

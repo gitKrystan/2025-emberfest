@@ -9,7 +9,7 @@ import { getActiveTodos } from '@workspace/shared-data/builders';
 import type Store from '#services/store';
 
 export default class ActiveTodos extends Route {
-  @service declare store: Store;
+  @service declare private readonly store: Store;
 
   model(): { todos: Future<GetTodosResult> } {
     return { todos: this.store.request(getActiveTodos()) };

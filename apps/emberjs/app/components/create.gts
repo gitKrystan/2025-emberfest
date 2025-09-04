@@ -38,7 +38,7 @@ export class Create extends Component {
     </Request>
   </template>
 
-  @service declare store: Store;
+  @service declare private readonly store: Store;
 
   @tracked attributes: TodoAttributes | null = null;
 
