@@ -1,11 +1,8 @@
 import { mergeOptions } from '@workspace/shared-utils';
 
+import { withReactiveResponse } from '@warp-drive/core/request';
 import type { QueryRequestOptions } from '@warp-drive/core/types/request';
-import type {
-  CollectionResourceDataDocument,
-  SingleResourceDataDocument,
-} from '@warp-drive/core/types/spec/document';
-import type { RequestSignature } from '@warp-drive/core/types/symbols';
+import type { CollectionResourceDataDocument } from '@warp-drive/core/types/spec/document';
 import { buildBaseURL } from '@warp-drive/utilities';
 import {
   deleteRecord,
@@ -58,30 +55,25 @@ export function getTodoById(id: string) {
 
 // POST
 export function createTodo(attributes: TodoAttributes) {
-  const urlOptions = {
-    op: 'createRecord',
-    resourcePath: 'todo',
-  };
+  const url = buildBaseURL({ resourcePath: 'todo' });
 
-  const url = buildBaseURL(urlOptions);
-
-  const requestInfo = {
+  return withReactiveResponse<SavedTodo>({
     url,
-    method: 'POST' as const,
-    op: 'createRecord' as const,
+    method: 'POST',
+
+    // This op plus cacheOptions -> will invalidate any op: 'query' requests for 'todo'
+    op: 'createRecord',
+    cacheOptions: {
+      types: ['todo'],
+    },
+
     body: JSON.stringify({
       data: {
         type: 'todo',
-        attributes: {
-          title: attributes.title,
-          completed: attributes.completed,
-        },
+        attributes,
       },
     }),
-  };
-  return requestInfo as typeof requestInfo & {
-    [RequestSignature]: SingleResourceDataDocument<SavedTodo>;
-  };
+  });
 }
 
 // FIXME: Implement bulk delete

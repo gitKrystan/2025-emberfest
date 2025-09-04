@@ -25,7 +25,7 @@
     "lint:hbs:fix": "ember-template-lint . --fix --no-error-on-unmatched-pattern",
     "lint:js:fix": "pnpm lint:types && eslint . --fix",
     "lint:types": "glint",
-    "start": "vite dev",
+    "start": "pnpm build --watch",
     "test": "vite build --mode=development --out-dir dist-tests && testem --file testem.cjs ci --port 0",
     "prepack": "rollup --config"
   },
@@ -34,9 +34,9 @@
     "decorator-transforms": "^2.2.2"
   },
   "peerDependencies": {
-    "@warp-drive/core": "5.7.0",
-    "@warp-drive/json-api": "5.7.0",
-    "@warp-drive/utilities": "5.7.0",
+    "@warp-drive/core": "5.8.0-alpha.9",
+    "@warp-drive/json-api": "5.8.0-alpha.9",
+    "@warp-drive/utilities": "5.8.0-alpha.9",
     "@workspace/shared-utils": "workspace:*"
   },
   "devDependencies": {
@@ -62,9 +62,9 @@
     "@glint/tsserver-plugin": "^2.0.0-alpha.2",
     "@rollup/plugin-babel": "^6.0.4",
     "@types/qunit": "^2.19.12",
-    "@warp-drive/core": "5.7.0",
-    "@warp-drive/json-api": "5.7.0",
-    "@warp-drive/utilities": "5.7.0",
+    "@warp-drive/core": "5.8.0-alpha.9",
+    "@warp-drive/json-api": "5.8.0-alpha.9",
+    "@warp-drive/utilities": "5.8.0-alpha.9",
     "@workspace/shared-utils": "workspace:*",
     "babel-plugin-ember-template-compilation": "^2.2.5",
     "concurrently": "^9.0.1",
