@@ -1,9 +1,7 @@
 import type { Response } from 'express';
 
-import type {
-  ApiError,
-  ResourceErrorDocument,
-} from '@workspace/shared-data/types';
+import type { ResourceErrorDocument } from '@warp-drive/core/types/spec/document';
+import type { ApiError } from '@warp-drive/core/types/spec/error';
 
 import { BaseApiError, type ErrorStatusCode } from '../errors.js';
 

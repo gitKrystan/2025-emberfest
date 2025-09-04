@@ -1,13 +1,14 @@
 import type { Request, Response } from 'express';
 
 import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
-import type {
-  CollectionTodoDocument,
-  ResourceErrorDocument,
-  SingleTodoDocument,
-  TodoAttributes,
-} from '@workspace/shared-data/types';
+import type { TodoAttributes } from '@workspace/shared-data/types';
 import type { ExactPartial } from '@workspace/shared-utils/types';
+
+import type {
+  CollectionResourceDataDocument,
+  ResourceErrorDocument,
+} from '@warp-drive/core/types/spec/document';
+import type { SingleResourceDocument } from '@warp-drive/core/types/spec/json-api-raw';
 
 import { flagStore } from '../db/flag-store.ts';
 import { todoStore } from '../db/todo-store.ts';
@@ -48,7 +49,9 @@ function checkShouldError() {
 export function getTodos(
   req: Request,
   res: Response,
-): Response<CollectionTodoDocument> | Response<ResourceErrorDocument> {
+):
+  | Response<CollectionResourceDataDocument<'todo'>>
+  | Response<ResourceErrorDocument> {
   try {
     checkShouldError();
 
@@ -85,7 +88,7 @@ export function getTodos(
 export function getTodo(
   req: Request,
   res: Response,
-): Response<SingleTodoDocument> | Response<ResourceErrorDocument> {
+): Response<SingleResourceDocument<'todo'>> | Response<ResourceErrorDocument> {
   try {
     checkShouldError();
     const id = validateRequiredParam('todo id', req.params['id']);
@@ -107,7 +110,7 @@ export function getTodo(
 export function createTodo(
   req: Request,
   res: Response,
-): Response<SingleTodoDocument> | Response<ResourceErrorDocument> {
+): Response<SingleResourceDocument<'todo'>> | Response<ResourceErrorDocument> {
   try {
     checkShouldError();
     const attributes: TodoAttributes = validateCreateRequest(
@@ -139,7 +142,7 @@ export function createTodo(
 export function updateTodo(
   req: Request,
   res: Response,
-): Response<SingleTodoDocument> | Response<ResourceErrorDocument> {
+): Response<SingleResourceDocument<'todo'>> | Response<ResourceErrorDocument> {
   try {
     checkShouldError();
     const id = validateRequiredParam('todo id', req.params['id']);

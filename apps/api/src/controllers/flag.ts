@@ -3,12 +3,15 @@ import type { Request, Response } from 'express';
 import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
 import type {
   ApiFlag,
-  CollectionFlagDocument,
-  ResourceErrorDocument,
   ShouldErrorFlagAttributes,
-  SingleTodoDocument,
   TodoCountFlagAttributes,
 } from '@workspace/shared-data/types';
+
+import type {
+  CollectionResourceDataDocument,
+  ResourceErrorDocument,
+  SingleResourceDataDocument,
+} from '@warp-drive/core/types/spec/document';
 
 import { flagStore } from '../db/flag-store.ts';
 import { todoStore } from '../db/todo-store.ts';
@@ -34,7 +37,9 @@ import {
 export function getFlags(
   req: Request,
   res: Response,
-): Response<CollectionFlagDocument> | Response<ResourceErrorDocument> {
+):
+  | Response<CollectionResourceDataDocument<'flag'>>
+  | Response<ResourceErrorDocument> {
   try {
     const flags = flagStore.findAll();
     const baseUrl = getBaseUrl(req);
@@ -57,7 +62,9 @@ export function getFlags(
 export function updateFlag(
   req: Request,
   res: Response,
-): Response<SingleTodoDocument> | Response<ResourceErrorDocument> {
+):
+  | Response<SingleResourceDataDocument<'flag'>>
+  | Response<ResourceErrorDocument> {
   try {
     const id = validateRequiredParam('flag id', req.params['id']);
 
