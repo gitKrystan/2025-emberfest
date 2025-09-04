@@ -11,14 +11,15 @@ import type {
   ResourceKey,
 } from '@warp-drive/core/types';
 import { JSONAPICache } from '@warp-drive/json-api';
+import { Gate } from '@warp-drive/utilities/handlers';
 
-import { ApiHandler } from '../handlers/api.ts';
+import { ApiHandler, useApiHandler } from '../handlers/api.ts';
 import { FlagSchema } from '../schemas/flag.ts';
 import { TodoSchema } from '../schemas/todo.ts';
 
 export default class AppStore extends Store {
   requestManager = new RequestManager()
-    .use([new ApiHandler(), Fetch])
+    .use([new Gate(ApiHandler, useApiHandler), Fetch])
     .useCache(CacheHandler);
 
   lifetimes = new DefaultCachePolicy({
