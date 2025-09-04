@@ -8,7 +8,7 @@ import type { Future } from '@warp-drive/core/request';
 import type { CollectionResourceDataDocument } from '@warp-drive/core/types/spec/document';
 import { Request } from '@warp-drive/ember';
 
-import { updateTodo } from '@workspace/shared-data/builders';
+import { patchTodo } from '@workspace/shared-data/builders';
 import type { SavedTodo } from '@workspace/shared-data/types';
 
 import { Create } from '#components/create';
@@ -85,7 +85,7 @@ class Toggle extends Component<{
     const futures = [];
     for (const todo of this.args.todos) {
       futures.push(
-        this.store.request(updateTodo(todo, { completed: !allCompleted }))
+        this.store.request(patchTodo(todo, { completed: !allCompleted }))
       );
     }
     await Promise.all(futures);

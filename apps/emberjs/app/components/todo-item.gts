@@ -3,23 +3,17 @@ import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { modifier } from 'ember-modifier';
-
-import { recordIdentifierFor } from '@warp-drive/core';
-import type {
-  PersistedResourceKey,
-  RequestKey,
-} from '@warp-drive/core/types/identifier';
-import type { RequestInfo } from '@warp-drive/core/types/request';
 
 import {
   deleteTodo,
-  getActiveTodos,
-  getCompletedTodos,
-  updateTodo,
+  patchTodo,
+  patchCacheTodoActivated,
+  patchCacheTodoCompleted,
+  patchCacheTodoDeleted,
 } from '@workspace/shared-data/builders';
-import type { SavedTodo } from '@workspace/shared-data/types';
+import type { SavedTodo, TodoAttributes } from '@workspace/shared-data/types';
 
+import { Form } from '#components/form';
 import type Store from '#services/store';
 
 interface Signature {
@@ -33,80 +27,79 @@ interface Signature {
 export class TodoItem extends Component<Signature> {
   <template>
     <li
-      class="{{if @todo.completed 'completed'}}
-        {{if this.isEditingTitle 'editing'}}"
+      class="{{if @todo.completed 'completed'}} {{if this.isEditing 'editing'}}"
     >
-      <form {{this.registerForm}} {{on "submit" this.onSubmit}}>
-        <div class="view">
-          <input
-            class="toggle"
-            aria-label="Toggle the completion state of this todo"
-            name="completed"
-            type="checkbox"
-            checked={{@todo.completed}}
-            {{on "change" this.dispatchSubmit}}
-          />
-
+      <div class="view">
+        <CompletedForm
+          class="toggle"
+          @todo={{@todo}}
+          @onSaveStart={{this.onSaveStart}}
+          @onSaveEnd={{this.onSaveEnd}}
+        >
+          {{! This must live within the "completed" form for compat with TodoMVC CSS }}
           <label class="view" {{on "dblclick" this.onTitleDblClick}}>
             {{@todo.title}}
           </label>
+        </CompletedForm>
 
-          <button
-            class="destroy"
-            aria-label="Delete this todo"
-            name="destroy"
-            type="button"
-            {{on "click" this.dispatchSubmit}}
-          />
-        </div>
-        <input
-          class="edit"
-          aria-label="Edit this todo"
-          name="title"
-          type="text"
-          value={{@todo.title}}
-          {{on "blur" this.dispatchSubmit}}
-          {{on "keydown" this.onTitleKeydown}}
-          autofocus
+        {{! This must live in the view div for compat with TodoMVC CSS }}
+        <DestroyForm
+          class="destroy"
+          @todo={{@todo}}
+          @onSaveStart={{this.onSaveStart}}
+          @onSaveEnd={{this.onSaveEnd}}
         />
-      </form>
+      </div>
+
+      <TitleForm
+        class="edit"
+        @todo={{@todo}}
+        @onSaveStart={{this.onSaveStart}}
+        @onSaveEnd={{this.onSaveEnd}}
+        {{on "keydown" this.onTitleKeydown}}
+        autofocus
+      />
     </li>
   </template>
 
-  @service declare private readonly store: Store;
-
   /** Whether we are in title-editing mode */
-  @tracked private isEditingTitle = false;
-
-  _form: HTMLFormElement | null = null;
-  private get form(): HTMLFormElement {
-    assert('Cannot access form before registered', this._form);
-    return this._form;
-  }
-  registerForm = modifier((element: HTMLFormElement) => {
-    this._form = element;
-  });
+  @tracked private isEditing = false;
 
   /** Start title-editing mode */
-  private startEditing = (): void => {
+  private readonly startEditing = (): void => {
     this.args.onStartEdit();
-    this.isEditingTitle = true;
+    this.isEditing = true;
   };
 
   /** End title-editing mode */
-  private endEditing = (): void => {
+  private readonly endEditing = (): void => {
     this.args.onEndEdit();
-    this.isEditingTitle = false;
+    this.isEditing = false;
+  };
+
+  /** Start title-editing mode */
+  private readonly onSaveStart = (): void => {
+    // FIXME: Ensure we disable upstream async during saves that occur when
+    // `this.editing` is false, which happens due to requirements of TodoMVC CSS.
+    // Will need custom CSS to resolve.
+    if (!this.isEditing) {
+      this.args.onStartEdit();
+    }
+  };
+
+  /** End title-editing mode */
+  private readonly onSaveEnd = (): void => {
+    this.endEditing();
   };
 
   /** Start editing on double-click */
-  private onTitleDblClick = (event: MouseEvent): void => {
+  private readonly onTitleDblClick = (event: MouseEvent): void => {
     event.preventDefault();
     this.startEditing();
   };
 
   /** Reset on Escape */
-  private onTitleKeydown = (event: KeyboardEvent) => {
+  private readonly onTitleKeydown = (event: KeyboardEvent) => {
     assert(
       'Expected event target to be an HTMLInputElement',
       event.target instanceof HTMLInputElement
@@ -116,110 +109,165 @@ export class TodoItem extends Component<Signature> {
       this.endEditing();
     }
   };
+}
 
-  /** Submit the form with the relevant Element set as the submitter. */
-  private dispatchSubmit = (event: Event) => {
-    assert(
-      'Cannot put autoSubmit on non-HTMLElement',
-      event.target instanceof HTMLElement
-    );
-    const submitEvent = new SubmitEvent('submit', { submitter: event.target });
-    this.form.dispatchEvent(submitEvent);
+class CompletedForm extends Component<{
+  Element: HTMLInputElement;
+  Args: {
+    todo: SavedTodo;
+    onSaveStart: () => void;
+    onSaveEnd: () => void;
   };
+  Blocks: { default: [] };
+}> {
+  <template>
+    <Form {{on "submit" this.onSubmit}} as |form|>
+      <input
+        ...attributes
+        aria-label="Toggle the completion state of this todo"
+        name="completed"
+        type="checkbox"
+        checked={{@todo.completed}}
+        {{on "change" form.dispatchSubmit}}
+      />
 
-  private onSubmit = async (event: SubmitEvent) => {
+      {{yield}}
+    </Form>
+  </template>
+
+  @service declare private readonly store: Store;
+
+  private readonly onSubmit = (event: SubmitEvent) => {
     event.preventDefault();
 
-    // FIXME: Ensure we disable upstream async during saves that occur when
-    // `this.editing` is false, which happens due to requirements of TodoMVC CSS.
-    // Will need custom CSS to resolve.
-    if (!this.isEditingTitle) {
-      this.args.onStartEdit();
-    }
-
     const { attributes, submitType } = processSubmitEvent(event);
-    if (submitType === 'destroy' || attributes.title.length === 0) {
-      await this.deleteTodo();
-      return;
-    }
+    assert('Expected submit type to be completed', submitType === 'completed');
+    assert(
+      'Expected attributes to have completed',
+      typeof attributes.completed === 'boolean'
+    );
 
-    await this.updateTodo(attributes);
+    return this.updateCompleted(attributes.completed);
   };
 
-  private deleteTodo = async () => {
-    await this.store.request(deleteTodo(this.args.todo));
-    this.endEditing();
-  };
+  private readonly updateCompleted = async (completed: boolean) => {
+    this.args.onSaveStart();
 
-  private updateTodo = async (attributes: {
-    title: string;
-    completed: boolean;
-  }) => {
-    await this.store.request(updateTodo(this.args.todo, attributes));
+    await this.store.request(patchTodo(this.args.todo, { completed }));
 
-    const resourceKey = this.keyForResource(this.args.todo);
-    const completedRequestKey = this.keyForRequest(getCompletedTodos());
-    const activeRequestKey = this.keyForRequest(getActiveTodos());
-
-    // We need this because while these queries are subscribed to notifications
-    // for the records they return, they explicitly do not subscribe to changes
-    // in the records they don't return. Thus, we need to manually patch the
-    // request documents stored in the cache to ensure they update.
-    if (attributes.completed) {
-      this.store.cache.patch({
-        record: completedRequestKey,
-        op: 'add',
-        value: resourceKey,
-        field: 'data',
-        index: 0,
-      });
-      this.store.cache.patch({
-        record: activeRequestKey,
-        op: 'remove',
-        value: resourceKey,
-        field: 'data',
-      });
+    if (completed) {
+      patchCacheTodoCompleted(this.store, this.args.todo);
     } else {
-      this.store.cache.patch({
-        record: activeRequestKey,
-        op: 'add',
-        value: resourceKey,
-        field: 'data',
-        index: 0,
-      });
-      this.store.cache.patch({
-        record: completedRequestKey,
-        op: 'remove',
-        value: resourceKey,
-        field: 'data',
-      });
+      patchCacheTodoActivated(this.store, this.args.todo);
     }
 
-    this.endEditing();
-  };
-
-  private keyForResource = (
-    resource: SavedTodo
-  ): PersistedResourceKey<'todo'> => {
-    const key = recordIdentifierFor(resource);
-    assert('Expected key have id', key.id);
-    return key as PersistedResourceKey<'todo'>;
-  };
-
-  private keyForRequest = (request: RequestInfo): RequestKey => {
-    const key =
-      this.store.cacheKeyManager.getOrCreateDocumentIdentifier(request);
-    assert('Expected key to be defined', key);
-    return key;
+    this.args.onSaveEnd();
   };
 }
 
-function processSubmitEvent(event: SubmitEvent): {
-  attributes: {
-    title: string;
-    completed: boolean;
+class DestroyForm extends Component<{
+  Element: HTMLButtonElement;
+  Args: {
+    todo: SavedTodo;
+    onSaveStart: () => void;
+    onSaveEnd: () => void;
   };
-  submitType: 'completed' | 'destroy' | 'title' | null;
+}> {
+  <template>
+    <Form {{on "submit" this.onSubmit}} as |form|>
+      <button
+        ...attributes
+        aria-label="Delete this todo"
+        name="destroy"
+        type="button"
+        {{on "click" form.dispatchSubmit}}
+      />
+    </Form>
+  </template>
+
+  @service declare private readonly store: Store;
+
+  private readonly onSubmit = (event: SubmitEvent) => {
+    event.preventDefault();
+
+    const { submitType } = processSubmitEvent(event);
+    assert('Expected submit type to be destroy', submitType !== 'destroy');
+
+    return this.deleteTodo();
+  };
+
+  private deleteTodo = async () => {
+    this.args.onSaveStart();
+
+    await this.store.request(deleteTodo(this.args.todo));
+
+    patchCacheTodoDeleted(this.store, this.args.todo);
+
+    this.args.onSaveEnd();
+  };
+}
+
+class TitleForm extends Component<{
+  Args: {
+    todo: SavedTodo;
+    onSaveStart: () => void;
+    onSaveEnd: () => void;
+  };
+}> {
+  <template>
+    <Form {{on "submit" this.onSubmit}} as |form|>
+      <input
+        ...attributes
+        aria-label="Edit this todo"
+        name="title"
+        type="text"
+        value={{@todo.title}}
+        {{on "blur" form.dispatchSubmit}}
+      />
+    </Form>
+  </template>
+
+  @service declare private readonly store: Store;
+
+  private readonly onSubmit = async (event: SubmitEvent) => {
+    event.preventDefault();
+
+    const { submitType, attributes } = processSubmitEvent(event);
+    assert(
+      'Expected attributes to have title',
+      typeof attributes.title === 'string'
+    );
+
+    if (attributes.title.length === 0) {
+      return this.deleteTodo();
+    } else {
+      return this.patchTodoTitle(attributes.title);
+    }
+  };
+
+  private deleteTodo = async () => {
+    this.args.onSaveStart();
+
+    await this.store.request(deleteTodo(this.args.todo));
+
+    patchCacheTodoDeleted(this.store, this.args.todo);
+
+    this.args.onSaveEnd();
+  };
+
+  private patchTodoTitle = async (title: string) => {
+    this.args.onSaveStart();
+
+    await this.store.request(patchTodo(this.args.todo, { title }));
+
+    this.args.onSaveEnd();
+  };
+}
+
+/** Hacks to avoid building a form library */
+function processSubmitEvent(event: SubmitEvent): {
+  attributes: Partial<TodoAttributes>;
+  submitType: 'completed' | 'destroy' | 'submit';
   form: HTMLFormElement;
 } {
   const form = event.target;
@@ -227,21 +275,38 @@ function processSubmitEvent(event: SubmitEvent): {
     'Expected event target to be an HTMLFormElement',
     form instanceof HTMLFormElement
   );
-
   const formData = new FormData(form);
+
+  if (event.submitter) {
+    if (isDestroyButton(event.submitter)) {
+      return { attributes: {}, submitType: 'destroy', form };
+    }
+
+    if (isCompleteButton(event.submitter)) {
+      const completed = event.submitter.checked;
+      return { attributes: { completed }, submitType: 'completed', form };
+    }
+  }
+
+  const attributes: Partial<TodoAttributes> = {};
+
   const rawTitle = formData.get('title');
-  assert('Expected title to be a string', typeof rawTitle === 'string');
-  const title = rawTitle.trim();
+  if (rawTitle !== null) {
+    assert('Expected title to be a string', typeof rawTitle === 'string');
+    attributes.title = rawTitle.trim();
+  }
 
-  const rawCompleted = formData.get('completed');
-  assert('Expected completed to be a string', typeof rawCompleted === 'string');
-  const completed = rawCompleted === 'on';
+  return { attributes, submitType: 'submit', form };
+}
 
-  const submitType = event.submitter
-    ? 'name' in event.submitter
-      ? (event.submitter.name as 'completed' | 'destroy' | 'title' | null)
-      : null
-    : null;
+function isDestroyButton(element: HTMLElement): element is HTMLButtonElement {
+  return element instanceof HTMLButtonElement && element.name === 'destroy';
+}
 
-  return { attributes: { title, completed }, submitType, form };
+function isCompleteButton(element: HTMLElement): element is HTMLInputElement {
+  return (
+    element instanceof HTMLInputElement &&
+    element.type === 'checkbox' &&
+    element.name === 'completed'
+  );
 }

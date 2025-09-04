@@ -139,7 +139,7 @@ export function createTodo(
 /**
  * PATCH /todos/:id - Update an existing todo
  */
-export function updateTodo(
+export function patchTodo(
   req: Request,
   res: Response,
 ): Response<SingleResourceDocument<'todo'>> | Response<ResourceErrorDocument> {
@@ -158,6 +158,7 @@ export function updateTodo(
       'todo',
       updatedTodo,
       baseUrl,
+      patchAttributes,
     );
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);

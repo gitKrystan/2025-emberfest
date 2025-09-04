@@ -17,9 +17,10 @@ export function serializeSingleResourceDocument<T extends string>(
   type: T,
   record: ExistingRecord<T>,
   baseUrl: string,
+  patchAttrs?: Partial<Omit<ExistingRecord<T>, 'id' | '$type'>>,
 ): SingleResourceDocument<T> {
   return {
-    data: serializeExistingResourceObject(type, record, baseUrl),
+    data: serializeExistingResourceObject(type, record, baseUrl, patchAttrs),
     jsonapi: JSONAPI_VERSION,
     links: {
       self: `${baseUrl}/${type}/${record.id}`,
@@ -31,13 +32,14 @@ function serializeExistingResourceObject<T extends string>(
   type: T,
   record: ExistingRecord<T>,
   baseUrl: string,
+  patchAttrs?: Partial<Omit<ExistingRecord<T>, 'id' | '$type'>>,
 ): ExistingResourceObject<T> {
   const { id, $type, ...attributes } = record;
 
   return {
     type: $type,
     id,
-    attributes,
+    attributes: patchAttrs ?? attributes,
     links: {
       self: `${baseUrl}/${type}/${id}`,
     },

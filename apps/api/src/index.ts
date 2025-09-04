@@ -9,7 +9,7 @@ import {
   deleteTodo,
   getTodo,
   getTodos,
-  updateTodo,
+  patchTodo,
 } from './controllers/todo.ts';
 import { validateJsonApiContentType } from './middleware/validate-content-type.ts';
 import { getBaseUrl } from './utils/url.ts';
@@ -72,13 +72,12 @@ app.use('/api/todo', validateJsonApiContentType);
 app.get('/api/todo', getTodos);
 app.get('/api/todo/:id', getTodo);
 app.post('/api/todo', createTodo);
-app.patch('/api/todo/:id', updateTodo);
-app.put('/api/todo/:id', updateTodo);
+app.patch('/api/todo/:id', patchTodo);
 app.delete('/api/todo/:id', deleteTodo);
 
 // Flag routes
 app.get('/api/flag', getFlags);
-app.put('/api/flag/:id', updateFlag);
+app.patch('/api/flag/:id', updateFlag);
 
 // 404 handler
 app.use('*', (req, res) => {
