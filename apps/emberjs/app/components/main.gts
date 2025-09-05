@@ -50,8 +50,13 @@ export class Main extends Component<Signature> {
 
   @tracked private canToggle = true;
 
-  private readonly enableToggle = () => (this.canToggle = true);
-  private readonly disableToggle = () => (this.canToggle = false);
+  private readonly enableToggle = () => {
+    this.canToggle = true;
+  };
+
+  private readonly disableToggle = () => {
+    this.canToggle = false;
+  };
 }
 
 class Toggle extends Component<{

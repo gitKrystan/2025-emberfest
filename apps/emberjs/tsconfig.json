@@ -11,6 +11,7 @@
       "#components/*": ["./app/components/*"],
       "#env/*": ["./app/config/environment.ts"],
       "#routes/*": ["./app/routes/*"],
+      "#modifiers/*": ["./app/modifiers/*"],
       "#services/*": ["./app/services/*"],
       "#types/*": ["./app/types/*"],
       "*": ["./types/*"]

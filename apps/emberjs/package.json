@@ -33,6 +33,7 @@
     "#config/*": "./app/config/*",
     "#components/*": "./app/components/*",
     "#env": "./app/config/environment.ts",
+    "#modifiers/*": "./app/modifiers/*",
     "#routes/*": "./app/routes/*",
     "#services/*": "./app/services/*",
     "#types/*": "./app/types/*"

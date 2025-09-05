@@ -6,14 +6,15 @@ import { tracked } from '@glimmer/tracking';
 
 import {
   deleteTodo,
-  patchTodo,
   patchCacheTodoActivated,
   patchCacheTodoCompleted,
   patchCacheTodoDeleted,
+  patchTodo,
 } from '@workspace/shared-data/builders';
 import type { SavedTodo, TodoAttributes } from '@workspace/shared-data/types';
 
 import { Form } from '#components/form';
+import { autofocus } from '#modifiers/autofocus';
 import type Store from '#services/store';
 
 interface Signature {
@@ -27,54 +28,62 @@ interface Signature {
 export class TodoItem extends Component<Signature> {
   <template>
     <li
-      class="{{if @todo.completed 'completed'}} {{if this.isEditing 'editing'}}"
+      class="{{if @todo.completed 'completed'}}
+        {{if this.isEditingTitle 'editing'}}"
     >
-      <div class="view">
-        <CompletedForm
-          class="toggle"
+      {{#if this.isEditingTitle}}
+        <TitleForm
+          class="edit"
           @todo={{@todo}}
           @onSaveStart={{this.onSaveStart}}
           @onSaveEnd={{this.onSaveEnd}}
-        >
-          {{! This must live within the "completed" form for compat with TodoMVC CSS }}
-          <label class="view" {{on "dblclick" this.onTitleDblClick}}>
-            {{@todo.title}}
-          </label>
-        </CompletedForm>
-
-        {{! This must live in the view div for compat with TodoMVC CSS }}
-        <DestroyForm
-          class="destroy"
-          @todo={{@todo}}
-          @onSaveStart={{this.onSaveStart}}
-          @onSaveEnd={{this.onSaveEnd}}
+          @isSaving={{this.isSaving}}
+          {{on "keyup" this.onTitleKeyup}}
+          {{autofocus}}
         />
-      </div>
+      {{else}}
+        <div class="view">
+          <CompletedForm
+            class="toggle"
+            @todo={{@todo}}
+            @onSaveStart={{this.onSaveStart}}
+            @onSaveEnd={{this.onSaveEnd}}
+            @isSaving={{this.isSaving}}
+            {{on "keyup" this.onToggleKeyup}}
+          >
+            {{! This must live within the "completed" form for compat with TodoMVC CSS }}
+            <label class="view" {{on "dblclick" this.onTitleDblClick}}>
+              {{@todo.title}}
+            </label>
+          </CompletedForm>
 
-      <TitleForm
-        class="edit"
-        @todo={{@todo}}
-        @onSaveStart={{this.onSaveStart}}
-        @onSaveEnd={{this.onSaveEnd}}
-        {{on "keydown" this.onTitleKeydown}}
-        autofocus
-      />
+          {{! This must live in the view div for compat with TodoMVC CSS }}
+          <DestroyForm
+            class="destroy"
+            @todo={{@todo}}
+            @onSaveStart={{this.onSaveStart}}
+            @onSaveEnd={{this.onSaveEnd}}
+            @isSaving={{this.isSaving}}
+          />
+        </div>
+      {{/if}}
     </li>
   </template>
 
   /** Whether we are in title-editing mode */
-  @tracked private isEditing = false;
+  @tracked private isEditingTitle = false;
+  @tracked private isSaving = false;
 
   /** Start title-editing mode */
   private readonly startEditing = (): void => {
     this.args.onStartEdit();
-    this.isEditing = true;
+    this.isEditingTitle = true;
   };
 
   /** End title-editing mode */
   private readonly endEditing = (): void => {
     this.args.onEndEdit();
-    this.isEditing = false;
+    this.isEditingTitle = false;
   };
 
   /** Start title-editing mode */
@@ -82,13 +91,15 @@ export class TodoItem extends Component<Signature> {
     // FIXME: Ensure we disable upstream async during saves that occur when
     // `this.editing` is false, which happens due to requirements of TodoMVC CSS.
     // Will need custom CSS to resolve.
-    if (!this.isEditing) {
+    if (!this.isEditingTitle) {
       this.args.onStartEdit();
     }
+    this.isSaving = true;
   };
 
   /** End title-editing mode */
   private readonly onSaveEnd = (): void => {
+    this.isSaving = false;
     this.endEditing();
   };
 
@@ -99,7 +110,7 @@ export class TodoItem extends Component<Signature> {
   };
 
   /** Reset on Escape */
-  private readonly onTitleKeydown = (event: KeyboardEvent) => {
+  private readonly onTitleKeyup = (event: KeyboardEvent) => {
     assert(
       'Expected event target to be an HTMLInputElement',
       event.target instanceof HTMLInputElement
@@ -107,6 +118,17 @@ export class TodoItem extends Component<Signature> {
     if (event.key === 'Escape') {
       event.target.value = this.args.todo.title;
       this.endEditing();
+    }
+  };
+
+  /** Start Editing on Enter */
+  private readonly onToggleKeyup = (event: KeyboardEvent) => {
+    assert(
+      'Expected event target to be an HTMLInputElement',
+      event.target instanceof HTMLInputElement
+    );
+    if (event.key === 'Enter') {
+      this.startEditing();
     }
   };
 }
@@ -117,6 +139,7 @@ class CompletedForm extends Component<{
     todo: SavedTodo;
     onSaveStart: () => void;
     onSaveEnd: () => void;
+    isSaving: boolean;
   };
   Blocks: { default: [] };
 }> {
@@ -139,6 +162,10 @@ class CompletedForm extends Component<{
 
   private readonly onSubmit = (event: SubmitEvent) => {
     event.preventDefault();
+
+    if (this.args.isSaving) {
+      return;
+    }
 
     const { attributes, submitType } = processSubmitEvent(event);
     assert('Expected submit type to be completed', submitType === 'completed');
@@ -171,6 +198,7 @@ class DestroyForm extends Component<{
     todo: SavedTodo;
     onSaveStart: () => void;
     onSaveEnd: () => void;
+    isSaving: boolean;
   };
 }> {
   <template>
@@ -190,13 +218,17 @@ class DestroyForm extends Component<{
   private readonly onSubmit = (event: SubmitEvent) => {
     event.preventDefault();
 
+    if (this.args.isSaving) {
+      return;
+    }
+
     const { submitType } = processSubmitEvent(event);
     assert('Expected submit type to be destroy', submitType !== 'destroy');
 
     return this.deleteTodo();
   };
 
-  private deleteTodo = async () => {
+  private readonly deleteTodo = async () => {
     this.args.onSaveStart();
 
     await this.store.request(deleteTodo(this.args.todo));
@@ -212,16 +244,17 @@ class TitleForm extends Component<{
     todo: SavedTodo;
     onSaveStart: () => void;
     onSaveEnd: () => void;
+    isSaving: boolean;
   };
 }> {
   <template>
     <Form {{on "submit" this.onSubmit}} as |form|>
       <input
-        ...attributes
         aria-label="Edit this todo"
         name="title"
         type="text"
         value={{@todo.title}}
+        ...attributes
         {{on "blur" form.dispatchSubmit}}
       />
     </Form>
@@ -232,7 +265,11 @@ class TitleForm extends Component<{
   private readonly onSubmit = async (event: SubmitEvent) => {
     event.preventDefault();
 
-    const { submitType, attributes } = processSubmitEvent(event);
+    if (this.args.isSaving) {
+      return;
+    }
+
+    const { attributes } = processSubmitEvent(event);
     assert(
       'Expected attributes to have title',
       typeof attributes.title === 'string'
@@ -240,12 +277,12 @@ class TitleForm extends Component<{
 
     if (attributes.title.length === 0) {
       return this.deleteTodo();
-    } else {
+    } else if (attributes.title !== this.args.todo.title) {
       return this.patchTodoTitle(attributes.title);
     }
   };
 
-  private deleteTodo = async () => {
+  private readonly deleteTodo = async () => {
     this.args.onSaveStart();
 
     await this.store.request(deleteTodo(this.args.todo));
@@ -255,7 +292,7 @@ class TitleForm extends Component<{
     this.args.onSaveEnd();
   };
 
-  private patchTodoTitle = async (title: string) => {
+  private readonly patchTodoTitle = async (title: string) => {
     this.args.onSaveStart();
 
     await this.store.request(patchTodo(this.args.todo, { title }));
