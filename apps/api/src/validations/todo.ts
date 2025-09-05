@@ -37,3 +37,19 @@ export const todoQuerySchema = z.object({
     }),
 });
 export type TodoQuery = z.infer<typeof todoQuerySchema>;
+
+/**
+ * Schema for validating bulk delete request
+ */
+export const todoBulkDeleteSchema = z.object({
+  data: z
+    .array(
+      z.object({
+        type: z.literal('todo'),
+        id: z.string().min(1, 'id is required and must be a non-empty string'),
+        lid: z.string().optional(), // Local ID, present but ignored
+      }),
+    )
+    .min(1, 'At least one todo must be provided for bulk delete'),
+});
+export type TodoBulkDelete = z.infer<typeof todoBulkDeleteSchema>;

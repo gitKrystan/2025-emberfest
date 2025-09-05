@@ -25,6 +25,7 @@ import {
   validateUpdateRequest,
 } from '../validations/request-helpers.ts';
 import {
+  todoBulkDeleteSchema,
   todoCreationSchema,
   todoQuerySchema,
   todoUpdateSchema,
@@ -194,19 +195,20 @@ export function bulkDeleteTodos(
 ): Response<void> | Response<ResourceErrorDocument> {
   try {
     checkShouldError();
-    // FIXME: Implement bulk delete logic
-    // Body will look like:
-    // {
-    //     "data": [
-    //         {
-    //             "type": "todo",
-    //             "id": "eb2e869a-6bcb-412c-aa92-949942f2160c",
-    //             // Don't use lids for deletion, but they may be present
-    //             "lid": "@lid:todo-eb2e869a-6bcb-412c-aa92-949942f2160c"
-    //         }
-    //         ...
-    //     ]
-    // }
+
+    const requestData = validateWithZod(todoBulkDeleteSchema, req.body);
+
+    const todoIds = requestData.data.map((resource) => resource.id);
+
+    // HACK to ensure we 404 if any todo doesn't exist before we start deleting
+    for (const id of todoIds) {
+      todoStore.findById(id);
+    }
+
+    for (const id of todoIds) {
+      todoStore.delete(id);
+    }
+
     return res.status(204).send();
   } catch (error) {
     return handleError(res, error);
