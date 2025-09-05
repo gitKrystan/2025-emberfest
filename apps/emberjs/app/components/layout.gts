@@ -2,7 +2,6 @@ import type { TOC } from '@ember/component/template-only';
 
 import { Attribution } from '#components/attribution';
 import { Flags } from '#components/flags';
-import { Footer } from '#components/footer';
 
 interface Signature {
   Blocks: {
@@ -17,8 +16,6 @@ export const Layout = <template>
     <header class="header"><h1>todos</h1></header>
 
     {{yield}}
-
-    <Footer />
   </main>
 
   <footer class="info"><Attribution /></footer>

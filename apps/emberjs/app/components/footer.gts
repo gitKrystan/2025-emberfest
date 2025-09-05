@@ -1,11 +1,10 @@
 import type { TOC } from '@ember/component/template-only';
 import { on } from '@ember/modifier';
 import Component from '@glimmer/component';
-import { cached } from '@glimmer/tracking';
 
 import { Request } from '@warp-drive/ember';
 
-import { getAllTodos } from '@workspace/shared-data/builders';
+import { bulkDeleteTodos, getAllTodos } from '@workspace/shared-data/builders';
 import {
   getActiveTodos,
   getCompletedTodos,
@@ -15,6 +14,8 @@ import type { SavedTodo } from '@workspace/shared-data/types';
 import { HandleError } from '#components/error';
 import Filters from '#components/filters';
 import { Loading } from '#components/loading';
+import Store from '#services/store';
+import { service } from '@ember/service';
 
 export const Footer = <template>
   <Request
@@ -47,7 +48,7 @@ export const Footer = <template>
             @autorefreshBehavior="refresh"
           >
             <:content as |content|>
-              <Completed @completed={{content.data}} />
+              <ClearCompleted @completed={{content.data}} />
             </:content>
             <:loading><Loading /></:loading>
             <:error as |error|><HandleError @error={{error}} /></:error>
@@ -72,7 +73,7 @@ const Remaining = <template>
   Args: { remaining: SavedTodo[] };
 }>;
 
-class Completed extends Component<{
+class ClearCompleted extends Component<{
   Args: { completed: SavedTodo[] };
 }> {
   <template>
@@ -87,14 +88,10 @@ class Completed extends Component<{
     {{/if}}
   </template>
 
-  // eslint-disable-next-line @typescript-eslint/class-literal-property-style
-  @cached get clearCompletedRequest() {
-    // FIXME: implement
-    return null;
-  }
+  @service declare private readonly store: Store;
 
-  clearCompleted = () => {
-    throw new Error('unimplemented');
+  clearCompleted = async () => {
+    await this.store.request(bulkDeleteTodos(this.args.completed));
   };
 }
 

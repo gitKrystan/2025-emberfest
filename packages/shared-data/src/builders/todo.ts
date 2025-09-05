@@ -9,7 +9,6 @@ import type {
 } from '@warp-drive/core/types/identifier';
 import type { RequestInfo } from '@warp-drive/core/types/request';
 import { buildBaseURL, buildQueryParams } from '@warp-drive/utilities';
-import { deleteRecord } from '@warp-drive/utilities/json-api';
 
 import { isExisting } from '../index.ts';
 import type { SavedTodo, TodoAttributes } from '../types/index.ts';
@@ -49,6 +48,7 @@ export function getCompletedTodos(): RequestInfo<ReactiveSavedTodosDocument> {
     cacheOptions: { types: ['todo'] },
   });
 }
+
 /**
  * GET /todo?completed=false
  */
@@ -90,25 +90,22 @@ export function createTodo(
   });
 }
 
-// FIXME: Implement bulk delete
-
 /**
  * PATCH /todo/:id
+ *
+ * @param todo - The todo to update
+ * @param attributes - The attributes to patch
  */
 export function patchTodo(
   todo: SavedTodo,
   attributes: Partial<TodoAttributes>,
 ): RequestInfo<ReactiveSavedTodoDocument> {
-  const key = recordIdentifierFor(todo);
-  assert(
-    `Cannot update a todo that is not already a SavedTodo.`,
-    isExisting(key),
-  );
+  const key = keyForSavedResource(todo);
 
   const url = buildBaseURL({
-    identifier: key,
     op: 'updateRecord',
     resourcePath: 'todo',
+    identifier: key,
   });
 
   return withReactiveResponse<SavedTodo>({
@@ -150,10 +147,10 @@ export function patchTodo(
  * to ensure they update.
  *
  * @param store - The store instance
- * @param todo - The todo that was marked completed
+ * @param todo - The todo to mark as completed
  */
 export function patchCacheTodoCompleted(store: Store, todo: SavedTodo) {
-  const resourceKey = keyForResource(todo);
+  const resourceKey = keyForSavedResource(todo);
   const completedRequestKey = keyForRequest(store, getCompletedTodos());
   const activeRequestKey = keyForRequest(store, getActiveTodos());
 
@@ -191,13 +188,14 @@ export function patchCacheTodoCompleted(store: Store, todo: SavedTodo) {
  * to ensure they update.
  *
  * @param store - The store instance
- * @param todo - The todo that was marked completed
+ * @param todo - The todo that to mark as activated
  */
 export function patchCacheTodoActivated(store: Store, todo: SavedTodo) {
-  const resourceKey = keyForResource(todo);
+  const resourceKey = keyForSavedResource(todo);
   const completedRequestKey = keyForRequest(store, getCompletedTodos());
   const activeRequestKey = keyForRequest(store, getActiveTodos());
 
+  // FIXME: Set a real index on these.
   // Add to "active"
   store.cache.patch({
     record: activeRequestKey,
@@ -215,60 +213,67 @@ export function patchCacheTodoActivated(store: Store, todo: SavedTodo) {
   });
 }
 
-// DELETE
-export function deleteTodo(todo: SavedTodo) {
-  return deleteRecord(todo, { resourcePath: 'todo' });
-}
-
-// FIXME: Is this actually necessary?
 /**
- * Removes a deleted todo from both the "active" list and "completed" lists.
+ * DELETE /todo/:id
  *
- * While the `DefaultCachePolicy` in our store will automatically patch
- * the updated _attributes_ for any requests with the 'query' OpCode that
- * include this record in their results, it cannot automatically move the
- * record between different queries (e.g. active vs completed todos).
- *
- * This is because while these queries are subscribed to notifications for
- * the records they return, they explicitly do not subscribe to changes in
- * the records they don't return.
- *
- * Thus, we need to manually patch the request documents stored in the cache
- * to ensure they update.
- *
- * @param store - The store instance
- * @param todo - The todo that was marked completed
+ * @param todo - The todo to delete
  */
-export function patchCacheTodoDeleted(store: Store, todo: SavedTodo) {
-  const resourceKey = keyForResource(todo);
-  const allRequestKey = keyForRequest(store, getAllTodos());
-  const completedRequestKey = keyForRequest(store, getCompletedTodos());
-  const activeRequestKey = keyForRequest(store, getActiveTodos());
+export function deleteTodo(todo: SavedTodo) {
+  const key = keyForSavedResource(todo);
 
-  // Remove from "all"
-  store.cache.patch({
-    record: allRequestKey,
-    op: 'remove',
-    value: resourceKey,
-    field: 'data',
+  const url = buildBaseURL({
+    op: 'deleteRecord',
+    resourcePath: 'todo',
+    identifier: key,
   });
-  // Remove from "active"
-  store.cache.patch({
-    record: activeRequestKey,
-    op: 'remove',
-    value: resourceKey,
-    field: 'data',
-  });
-  // Remove from "completed"
-  store.cache.patch({
-    record: completedRequestKey,
-    op: 'remove',
-    value: resourceKey,
-    field: 'data',
+
+  return withReactiveResponse<SavedTodo>({
+    url,
+    method: 'DELETE',
+
+    // Adding the 'deleteRecord' OpCode and specifying the `ResourceKey` for
+    // this todo in the `records` array tells the cache that when this
+    // request succeeds it should automatically remove any matching resources
+    // from any cached documents for any requests that include this record
+    // in their results.
+    op: 'deleteRecord',
+    records: [key],
   });
 }
 
-function keyForResource(resource: SavedTodo): PersistedResourceKey<'todo'> {
+/**
+ * DELETE /todo/ops.bulk.delete
+ *
+ * @param todos - The todos to delete
+ */
+export function bulkDeleteTodos(
+  todos: SavedTodo[],
+): RequestInfo<ReactiveSavedTodosDocument> {
+  assert('No todos passed to bulk delete', todos.length > 0);
+  const keys = todos.map(keyForSavedResource);
+
+  const url = buildBaseURL({ resourcePath: 'todo' });
+
+  return withReactiveResponse<SavedTodo[]>({
+    method: 'DELETE',
+    url: `${url}/ops.bulk.delete`,
+    body: JSON.stringify({
+      data: keys,
+    }),
+
+    // Adding the 'deleteRecord' OpCode and specifying the `ResourceKey`s for
+    // these todos in the `records` array tells the cache that when this
+    // request succeeds it should automatically remove any matching resources
+    // from any cached documents for any requests that include these records
+    // in their results.
+    op: 'deleteRecord',
+    records: keys,
+  });
+}
+
+function keyForSavedResource(
+  resource: SavedTodo,
+): PersistedResourceKey<'todo'> {
   const key = recordIdentifierFor(resource);
   assert('Expected key to have type and id', isExisting(key));
   return key;

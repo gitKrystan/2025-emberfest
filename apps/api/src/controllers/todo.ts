@@ -185,6 +185,34 @@ export function deleteTodo(
   }
 }
 
+/**
+ * DELETE /todo/ops.bulk.delete - Bulk delete todos by identifier
+ */
+export function bulkDeleteTodos(
+  req: Request,
+  res: Response,
+): Response<void> | Response<ResourceErrorDocument> {
+  try {
+    checkShouldError();
+    // FIXME: Implement bulk delete logic
+    // Body will look like:
+    // {
+    //     "data": [
+    //         {
+    //             "type": "todo",
+    //             "id": "eb2e869a-6bcb-412c-aa92-949942f2160c",
+    //             // Don't use lids for deletion, but they may be present
+    //             "lid": "@lid:todo-eb2e869a-6bcb-412c-aa92-949942f2160c"
+    //         }
+    //         ...
+    //     ]
+    // }
+    return res.status(204).send();
+  } catch (error) {
+    return handleError(res, error);
+  }
+}
+
 function extractTodoPatchAttributes(
   partialAttributes: ExactPartial<TodoAttributes>,
 ): Partial<TodoAttributes> {

@@ -8,7 +8,6 @@ import {
   deleteTodo,
   patchCacheTodoActivated,
   patchCacheTodoCompleted,
-  patchCacheTodoDeleted,
   patchTodo,
 } from '@workspace/shared-data/builders';
 import type { SavedTodo, TodoAttributes } from '@workspace/shared-data/types';
@@ -233,8 +232,6 @@ class DestroyForm extends Component<{
 
     await this.store.request(deleteTodo(this.args.todo));
 
-    patchCacheTodoDeleted(this.store, this.args.todo);
-
     this.args.onSaveEnd();
   };
 }
@@ -286,8 +283,6 @@ class TitleForm extends Component<{
     this.args.onSaveStart();
 
     await this.store.request(deleteTodo(this.args.todo));
-
-    patchCacheTodoDeleted(this.store, this.args.todo);
 
     this.args.onSaveEnd();
   };

@@ -16,6 +16,7 @@ import { HandleError } from '#components/error';
 import { Loading } from '#components/loading';
 import { TodoItem } from '#components/todo-item';
 import type Store from '#services/store';
+import { Footer } from '#components/footer';
 
 interface Signature {
   Args: {
@@ -34,7 +35,9 @@ export class Main extends Component<Signature> {
       >
         <:content as |content|>
           {{#if content.data.length}}
-            <Toggle @todos={{content.data}} @canToggle={{this.canToggle}} />
+            {{#if this.canToggle}}
+              <ToggleAll @todos={{content.data}} />
+            {{/if}}
             <TodoList
               @todos={{content.data}}
               @onStartEdit={{this.disableToggle}}
@@ -46,6 +49,7 @@ export class Main extends Component<Signature> {
         <:error as |error|><HandleError @error={{error}} /></:error>
       </Request>
     </section>
+    <Footer />
   </template>
 
   @tracked private canToggle = true;
@@ -59,20 +63,18 @@ export class Main extends Component<Signature> {
   };
 }
 
-class Toggle extends Component<{
-  Args: { todos: SavedTodo[]; canToggle: boolean };
+class ToggleAll extends Component<{
+  Args: { todos: SavedTodo[] };
 }> {
   <template>
-    {{#if @canToggle}}
-      <input
-        id="toggle-all"
-        class="toggle-all"
-        type="checkbox"
-        checked={{this.areViewableCompleted}}
-        {{on "change" this.toggleAll}}
-      />
-      <label for="toggle-all">Mark all as complete</label>
-    {{/if}}
+    <input
+      id="toggle-all"
+      class="toggle-all"
+      type="checkbox"
+      checked={{this.areViewableCompleted}}
+      {{on "change" this.toggleAll}}
+    />
+    <label for="toggle-all">Mark all as complete</label>
   </template>
 
   @service declare private readonly store: Store;

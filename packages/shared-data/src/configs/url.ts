@@ -1,4 +1,4 @@
-import { setBuildURLConfig } from '@warp-drive/utilities';
+import { setBuildURLConfig } from '@warp-drive/utilities/json-api';
 
 export function setDefaultBuildURLConfig() {
   setBuildURLConfig({
