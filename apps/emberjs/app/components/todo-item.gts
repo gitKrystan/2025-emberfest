@@ -87,9 +87,8 @@ export class TodoItem extends Component<Signature> {
 
   /** Start title-editing mode */
   private readonly onSaveStart = (): void => {
-    // FIXME: Ensure we disable upstream async during saves that occur when
+    // Ensure we disable upstream async during saves that occur when
     // `this.editing` is false, which happens due to requirements of TodoMVC CSS.
-    // Will need custom CSS to resolve.
     if (!this.isEditingTitle) {
       this.args.onStartEdit();
     }

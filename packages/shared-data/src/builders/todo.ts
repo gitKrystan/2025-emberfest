@@ -250,7 +250,7 @@ export function bulkPatchCacheTodos(
   todos: SavedTodo[],
   attributes: Partial<TodoAttributes>,
 ) {
-  for (const todo of todos) {
+  for (const todo of todos.toReversed()) {
     const resourceKey = keyForSavedResource(todo);
 
     store.cache.upsert(resourceKey, { ...resourceKey, attributes }, true);
