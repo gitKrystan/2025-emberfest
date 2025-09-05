@@ -8,7 +8,10 @@ import type { Future } from '@warp-drive/core/request';
 import type { CollectionResourceDataDocument } from '@warp-drive/core/types/spec/document';
 import { Request } from '@warp-drive/ember';
 
-import { patchTodo } from '@workspace/shared-data/builders';
+import {
+  bulkPatchCacheTodos,
+  bulkPatchTodos,
+} from '@workspace/shared-data/builders';
 import type { SavedTodo } from '@workspace/shared-data/types';
 
 import { Create } from '#components/create';
@@ -86,16 +89,11 @@ class ToggleAll extends Component<{
   }
 
   private readonly toggleAll = async () => {
-    const allCompleted = this.areViewableCompleted;
+    const attributes = { completed: !this.areViewableCompleted };
 
-    // FIXME: Implement bulk update; handle async UX
-    const futures = [];
-    for (const todo of this.args.todos) {
-      futures.push(
-        this.store.request(patchTodo(todo, { completed: !allCompleted }))
-      );
-    }
-    await Promise.all(futures);
+    await this.store.request(bulkPatchTodos(this.args.todos, attributes));
+
+    bulkPatchCacheTodos(this.store, this.args.todos, attributes);
   };
 }
 

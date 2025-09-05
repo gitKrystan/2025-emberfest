@@ -6,6 +6,7 @@ import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
 import { getFlags, updateFlag } from './controllers/flag.ts';
 import {
   bulkDeleteTodos,
+  bulkPatchTodos,
   createTodo,
   deleteTodo,
   getTodo,
@@ -73,6 +74,7 @@ app.use('/api/todo', validateJsonApiContentType);
 app.get('/api/todo', getTodos);
 app.get('/api/todo/:id', getTodo);
 app.post('/api/todo', createTodo);
+app.patch('/api/todo/ops.bulk.patch', bulkPatchTodos);
 app.patch('/api/todo/:id', patchTodo);
 app.delete('/api/todo/ops.bulk.delete', bulkDeleteTodos);
 app.delete('/api/todo/:id', deleteTodo);

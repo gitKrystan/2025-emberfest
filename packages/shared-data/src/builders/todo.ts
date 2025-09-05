@@ -213,6 +213,60 @@ export function patchCacheTodoActivated(store: Store, todo: SavedTodo) {
   });
 }
 
+export function bulkPatchTodos(
+  todos: SavedTodo[],
+  attributes: Partial<TodoAttributes>,
+): RequestInfo<ReactiveSavedTodosDocument> {
+  assert('No todos passed to bulk patch', todos.length > 0);
+  const keys = todos.map((todo) => keyForSavedResource(todo));
+
+  const url = buildBaseURL({ resourcePath: 'todo' });
+
+  return withReactiveResponse<SavedTodo[]>({
+    method: 'PATCH',
+    url: `${url}/ops.bulk.patch`,
+    body: JSON.stringify({
+      data: keys.map((key) => ({
+        type: key.type,
+        id: key.id,
+      })),
+      attributes,
+    }),
+
+    // Adding the 'updateRecord' OpCode and specifying the `ResourceKey`s for
+    // these todos in the `records` array tells the `DefaultCachePolicy` in our
+    // store that when this request succeeds it should automatically patch
+    // the returned attributes into any matching resources in any cached
+    // documents for requests with the 'query' OpCode that include these
+    // records in their results when this request succeeds.
+    op: 'updateRecord',
+    records: keys,
+  });
+}
+
+// FIXME: Check w/ @runspired that this isn't totally ridiculous
+export function bulkPatchCacheTodos(
+  store: Store,
+  todos: SavedTodo[],
+  attributes: Partial<TodoAttributes>,
+) {
+  for (const todo of todos) {
+    const resourceKey = keyForSavedResource(todo);
+
+    store.cache.upsert(resourceKey, { ...resourceKey, attributes }, true);
+
+    if ('completed' in attributes) {
+      const isCompleted = attributes.completed;
+
+      if (isCompleted) {
+        patchCacheTodoCompleted(store, todo);
+      } else {
+        patchCacheTodoActivated(store, todo);
+      }
+    }
+  }
+}
+
 /**
  * DELETE /todo/:id
  *
@@ -258,7 +312,10 @@ export function bulkDeleteTodos(
     method: 'DELETE',
     url: `${url}/ops.bulk.delete`,
     body: JSON.stringify({
-      data: keys,
+      data: keys.map((key) => ({
+        type: key.type,
+        id: key.id,
+      })),
     }),
 
     // Adding the 'deleteRecord' OpCode and specifying the `ResourceKey`s for

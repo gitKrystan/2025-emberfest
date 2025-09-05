@@ -47,9 +47,24 @@ export const todoBulkDeleteSchema = z.object({
       z.object({
         type: z.literal('todo'),
         id: z.string().min(1, 'id is required and must be a non-empty string'),
-        lid: z.string().optional(), // Local ID, present but ignored
       }),
     )
     .min(1, 'At least one todo must be provided for bulk delete'),
 });
 export type TodoBulkDelete = z.infer<typeof todoBulkDeleteSchema>;
+
+/**
+ * Schema for validating bulk patch request
+ */
+export const todoBulkPatchSchema = z.object({
+  data: z
+    .array(
+      z.object({
+        type: z.literal('todo'),
+        id: z.string().min(1, 'id is required and must be a non-empty string'),
+      }),
+    )
+    .min(1, 'At least one todo must be provided for bulk delete'),
+  attributes: todoUpdateSchema,
+});
+export type TodoBulkPatch = z.infer<typeof todoBulkPatchSchema>;

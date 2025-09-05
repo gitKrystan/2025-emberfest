@@ -26,6 +26,7 @@ import {
 } from '../validations/request-helpers.ts';
 import {
   todoBulkDeleteSchema,
+  todoBulkPatchSchema,
   todoCreationSchema,
   todoQuerySchema,
   todoUpdateSchema,
@@ -164,6 +165,39 @@ export function patchTodo(
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
     return res.json(document);
+  } catch (error) {
+    return handleError(res, error);
+  }
+}
+
+/**
+ * PATCH /todo/ops.bulk.patch - Bulk patch todos by identifier
+ */
+export function bulkPatchTodos(
+  req: Request,
+  res: Response,
+): Response<void> | Response<ResourceErrorDocument> {
+  try {
+    checkShouldError();
+
+    const requestData = validateWithZod(todoBulkPatchSchema, req.body);
+
+    const todoIds = requestData.data.map((resource) => resource.id);
+
+    // HACK to ensure we 404 if any todo doesn't exist before we start patching
+    for (const id of todoIds) {
+      todoStore.findById(id);
+    }
+
+    const patchAttributes: Partial<TodoAttributes> = extractTodoPatchAttributes(
+      requestData.attributes,
+    );
+
+    for (const id of todoIds) {
+      todoStore.update(id, patchAttributes);
+    }
+
+    return res.status(204).send();
   } catch (error) {
     return handleError(res, error);
   }
