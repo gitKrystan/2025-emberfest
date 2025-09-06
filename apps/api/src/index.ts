@@ -19,6 +19,9 @@ import { getBaseUrl } from './utils/url.ts';
 const app = express();
 const PORT = process.env['PORT'] || 3001;
 
+// Configure query parser to handle nested objects like filter[completed]=true
+app.set('query parser', 'extended');
+
 // Middleware
 app.use(
   cors({
@@ -84,7 +87,7 @@ app.get('/api/flag', getFlags);
 app.put('/api/flag/:id', updateFlag);
 
 // 404 handler
-app.use('*', (req, res) => {
+app.use((req, res) => {
   res.status(404).json({
     errors: [
       {
