@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import type { SavedTodo, TodoAttributes } from '@workspace/shared-data/types';
+import type { Todo, TodoAttributes } from '@workspace/shared-data/types';
 import { asType } from '@workspace/shared-data/types';
 
 import { InternalServerError } from '../errors.ts';
@@ -20,13 +20,13 @@ const sampleTodos: TodoAttributes[] = [
   { title: 'Scale infrastructure', completed: false },
 ];
 
-function seed(count: number): SavedTodo[] {
+function seed(count: number): Todo[] {
   return new Array(count).fill(null).map((_, i) => {
     const sample = sampleTodos[i % sampleTodos.length];
     if (!sample) {
       throw new Error('this should be impossible');
     }
-    return asType<SavedTodo>({
+    return asType<Todo>({
       $type: 'todo',
       id: uuidv4(),
       title: i > sampleTodos.length - 1 ? `${sample.title} ${i}` : sample.title,
@@ -38,7 +38,7 @@ function seed(count: number): SavedTodo[] {
 /**
  * Todo store implementation
  */
-export class TodoStore extends Store<SavedTodo> {
+export class TodoStore extends Store<Todo> {
   constructor(initialTodoCount: number) {
     super(seed(initialTodoCount));
   }
@@ -59,8 +59,8 @@ export class TodoStore extends Store<SavedTodo> {
   /**
    * Create a new todo
    */
-  create(todoData: TodoAttributes): SavedTodo {
-    const todo = asType<SavedTodo>({
+  create(todoData: TodoAttributes): Todo {
+    const todo = asType<Todo>({
       $type: 'todo',
       id: uuidv4(),
       ...todoData,

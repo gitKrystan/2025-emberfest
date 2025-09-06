@@ -557,7 +557,7 @@ interface Todo {
 
 // Different states have different requirements
 type NewTodo = Omit<Todo, 'id' | 'created' | 'status'>; // For creating
-type SavedTodo = Todo; // For existing records
+type Todo = Todo; // For existing records
 ```
 
 <v-click>
