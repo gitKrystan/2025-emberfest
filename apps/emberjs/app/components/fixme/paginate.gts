@@ -1,10 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/no-redundant-type-constituents */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable ember/no-side-effects */
 /* eslint-disable ember/require-super-in-lifecycle-hooks */
@@ -19,10 +14,11 @@ import { assert } from '@warp-drive/core/build-config/macros';
 import type { Future } from '@warp-drive/core/request';
 import type { RequestLoadingState } from '@warp-drive/core/store/-private';
 import { DISPOSE } from '@warp-drive/core/store/-private';
+import type { RequestCacheRequestState } from '@warp-drive/core/store/-private/new-core-tmp/request-state';
 import type { StructuredErrorDocument } from '@warp-drive/core/types/request';
 import { and, Throw } from '@warp-drive/ember/-private/await';
 
-import type { PaginationState } from './paginate/-private/pagination-state';
+import type { PageState, PaginationState } from './paginate/-private/pagination-state';
 import type { PaginationSubscription } from './paginate/-private/pagination-subscription';
 import { createPaginationSubscription } from './paginate/-private/pagination-subscription';
 
@@ -61,7 +57,7 @@ type ContentFeatures<RT> = {
   latestRequest?: Future<RT>;
 };
 
-interface PaginateSignature<RT, T, E> {
+interface PaginateSignature<RT, E> {
   Args: {
     /**
      * The request to monitor. This should be a `Future` instance returned
@@ -76,8 +72,7 @@ interface PaginateSignature<RT, T, E> {
      * like the component to also initiate the request.
      *
      */
-    // @ts-expect-error FIXME: Generic type 'StoreRequestInput' requires between 0 and 1 type arguments.
-    query?: StoreRequestInput<RT, T>;
+    query?: StoreRequestInput<RT>;
 
     /**
      * The store instance to use for making requests. If contexts are available,
@@ -177,13 +172,8 @@ interface PaginateSignature<RT, T, E> {
      * The block to render when the request succeeded.
      *
      */
-    content: [
-      // @ts-expect-error FIXME: Generic type 'PaginationState<RT, E>' requires between 0 and 2 type arguments.
-      state: PaginationState<RT, T, StructuredErrorDocument<E>>,
-      features: ContentFeatures<RT>,
-    ];
-    // @ts-expect-error FIXME: Generic type 'PaginationState<RT, E>' requires between 0 and 2 type arguments.
-    always: [state: PaginationState<RT, T, StructuredErrorDocument<E>>];
+    content: [state: PaginationState<RT, E>, features: ContentFeatures<RT>];
+    always: [state: PaginationState<RT, E>];
   };
 }
 
@@ -404,7 +394,7 @@ interface PaginateSignature<RT, T, E> {
  * @class <Request />
  * @public
  */
-export class Paginate<RT, T, E> extends Component<PaginateSignature<RT, T, E>> {
+export class Paginate<RT, E> extends Component<PaginateSignature<RT, E>> {
   /**
    * The store instance to use for making requests. If contexts are available, this
    * will be the `store` on the context, else it will be the store service.
@@ -424,10 +414,8 @@ export class Paginate<RT, T, E> extends Component<PaginateSignature<RT, T, E>> {
     return store;
   }
 
-  // @ts-expect-error FIXME: Generic type 'PaginationSubscription<RT, E>' requires 2 type argument(s).
-  _state: PaginationSubscription<RT, T, E> | null = null;
-  // @ts-expect-error FIXME: Generic type 'PaginationSubscription<RT, E>' requires 2 type argument(s).
-  get state(): PaginationSubscription<RT, T, E> {
+  _state: PaginationSubscription<RT, E> | null = null;
+  get state(): PaginationSubscription<RT, E> {
     let { _state } = this;
     const { store } = this;
     if (_state && _state.store !== store) {
@@ -447,44 +435,42 @@ export class Paginate<RT, T, E> extends Component<PaginateSignature<RT, T, E>> {
     this._state = null;
   }
 
-  // @ts-expect-error FIXME: Generic type 'PaginationState<RT, E>' requires between 0 and 2 type arguments.
-  get initialState(): Readonly<PaginationState<RT, T, E>> {
-    return this.state.initialPage.state;
+  get initialState(): Readonly<RequestCacheRequestState<RT, StructuredErrorDocument<E>>> {
+    return this.state.paginationState.initialPage.state;
   }
 
   get activePageRequest(): Future<RT> | null {
-    return this.state.activePage?.request || null;
+    return this.state.paginationState.activePage.request || null;
   }
 
   @cached
-  // @ts-expect-error FIXME: Cannot find name 'Page'.
-  get pages(): Page<RT, T, E>[] {
-    return this.state.pages;
+  get pages(): readonly PageState<RT, E>[] {
+    return this.state.paginationState.pages;
   }
 
   @cached
-  get data(): T[] {
-    return this.state.data;
+  get data(): RT[] {
+    return this.state.paginationState.data;
   }
 
   @cached
   get hasPrev(): boolean {
-    return Boolean(this.state.prev);
+    return Boolean(this.state.paginationState.prev);
   }
 
   @cached
   get hasNext(): boolean {
-    return Boolean(this.state.next);
+    return Boolean(this.state.paginationState.next);
   }
 
   @cached
   get prevRequest(): Future<RT> | null {
-    return this.state.prevRequest;
+    return this.state.paginationState.prevRequest;
   }
 
   @cached
   get nextRequest(): Future<RT> | null {
-    return this.state.nextRequest;
+    return this.state.paginationState.nextRequest;
   }
 
   <template>

@@ -1,14 +1,9 @@
 /* eslint-disable @typescript-eslint/array-type */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 /* eslint-disable @typescript-eslint/no-base-to-string */
-/* eslint-disable @typescript-eslint/no-deprecated */
-/* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 /* eslint-disable @typescript-eslint/no-unnecessary-type-arguments */
-/* eslint-disable @typescript-eslint/no-unnecessary-type-conversion */
-/* eslint-disable @typescript-eslint/prefer-optional-chain */
-/* eslint-disable @typescript-eslint/prefer-reduce-type-parameter */
-/* eslint-disable prefer-const */
+
 /**
  * @module @warp-drive/ember
  */
@@ -16,7 +11,10 @@ import { assert } from '@warp-drive/core/build-config/macros';
 import type { ReactiveDocument } from '@warp-drive/core/reactive';
 import type { Future } from '@warp-drive/core/request';
 import { defineSignal, memoized } from '@warp-drive/core/store/-private';
-import type { RequestCacheRequestState } from '@warp-drive/core/store/-private/new-core-tmp/request-state';
+import type {
+  RequestCacheRequestState,
+  RequestLoadingState,
+} from '@warp-drive/core/store/-private/new-core-tmp/request-state';
 import { getRequestState } from '@warp-drive/core/store/-private/new-core-tmp/request-state';
 import type { StructuredErrorDocument } from '@warp-drive/core/types/request';
 import type { Link } from '@warp-drive/core/types/spec/json-api-raw';
@@ -59,8 +57,8 @@ export class PageState<RT = unknown, E = unknown> {
     if (typeof options.self === 'string') {
       this.selfLink = options.self;
     } else {
-      this.load(options.self as Future<RT>);
-      options.self.then((value) => {
+      void this.load(options.self as Future<RT>);
+      void options.self.then((value) => {
         const content = value.content as ReactiveDocument<RT[]>;
         const url = getHref(content?.links?.self);
         assert('Expected the page to have a self link', url);
@@ -77,22 +75,22 @@ export class PageState<RT = unknown, E = unknown> {
 
   @memoized
   get isLoading(): boolean {
-    return Boolean(this.state?.isLoading);
+    return this.state.isPending;
   }
 
   @memoized
   get isSuccess(): boolean {
-    return Boolean(this.state?.isSuccess);
+    return this.state.isSuccess;
   }
 
   @memoized
   get isCancelled(): boolean {
-    return Boolean(this.state?.isCancelled);
+    return this.state.isCancelled;
   }
 
   @memoized
   get isError(): boolean {
-    return Boolean(this.state?.isError);
+    return this.state.isError;
   }
 
   @memoized
@@ -153,9 +151,18 @@ export class PaginationState<RT = unknown, E = unknown> {
     return this.initialPage.isLoading;
   }
 
+  get loadingState(): RequestLoadingState {
+    throw new Error('Not implemented yet');
+  }
+
   @memoized
   get isSuccess(): boolean {
     return this.initialPage.isSuccess;
+  }
+
+  @memoized
+  get isCancelled(): boolean {
+    return this.initialPage.isCancelled;
   }
 
   @memoized
@@ -164,9 +171,14 @@ export class PaginationState<RT = unknown, E = unknown> {
   }
 
   @memoized
+  get reason(): StructuredErrorDocument<E> | null {
+    return this.initialPage.reason;
+  }
+
+  @memoized
   get firstPage(): Readonly<PageState<RT, E>> {
     let page = this.activePage;
-    while (page && page.prev) {
+    while (page.prev) {
       page = page.prev;
     }
     return page;
@@ -175,7 +187,7 @@ export class PaginationState<RT = unknown, E = unknown> {
   @memoized
   get lastPage(): Readonly<PageState<RT, E>> {
     let page = this.activePage;
-    while (page && page.next) {
+    while (page.next) {
       page = page.next;
     }
     return page;
@@ -183,7 +195,7 @@ export class PaginationState<RT = unknown, E = unknown> {
 
   @memoized
   get prevPages(): Readonly<PageState<RT, E>[]> {
-    let pages = [];
+    const pages = [];
     let page = this.activePage?.prev;
     while (page) {
       pages.unshift(page);
@@ -194,7 +206,7 @@ export class PaginationState<RT = unknown, E = unknown> {
 
   @memoized
   get nextPages(): Readonly<PageState<RT, E>[]> {
-    let pages = [];
+    const pages = [];
     let page = this.activePage?.next;
     while (page) {
       pages.push(page);
@@ -214,13 +226,13 @@ export class PaginationState<RT = unknown, E = unknown> {
   get data(): RT[] {
     if (!this.pages) return [];
 
-    return this.pages.reduce((acc, page) => {
+    return this.pages.reduce((acc: RT[], page) => {
       const content = page.value;
       if (content?.data) {
         return [...acc, ...content.data];
       }
       return acc;
-    }, [] as RT[]);
+    }, []);
   }
 
   @memoized
@@ -295,7 +307,7 @@ defineSignal(PaginationState.prototype, 'activePage', undefined);
  */
 export function getPaginationState<RT, E>(
   future: Future<RT>
-): Readonly<PaginationState<RT, StructuredErrorDocument<E>>> {
+): Readonly<PaginationState<RT, E>> {
   let state = PaginationCache.get(future);
 
   if (!state) {
@@ -303,5 +315,5 @@ export function getPaginationState<RT, E>(
     PaginationCache.set(future, state);
   }
 
-  return state as Readonly<PaginationState<RT, StructuredErrorDocument<E>>>;
+  return state as Readonly<PaginationState<RT, E>>;
 }

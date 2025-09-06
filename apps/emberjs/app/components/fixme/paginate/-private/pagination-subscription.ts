@@ -1,7 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 /* eslint-disable @typescript-eslint/method-signature-style */
-/* eslint-disable @typescript-eslint/no-unnecessary-condition */
-/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 /* eslint-disable @typescript-eslint/prefer-destructuring */
 /* eslint-disable @typescript-eslint/prefer-readonly */
 import type { RequestManager, Store } from '@warp-drive/core';
@@ -15,7 +14,6 @@ import {
   DISPOSE,
   memoized,
 } from '@warp-drive/core/store/-private';
-import type { StructuredErrorDocument } from '@warp-drive/core/types/request';
 
 import { getPaginationState, type PaginationState } from './pagination-state';
 
@@ -171,7 +169,7 @@ export class PaginationSubscription<RT, E> {
   }
 
   @memoized
-  get paginationState(): PaginationState<RT, StructuredErrorDocument<E>> {
+  get paginationState(): PaginationState<RT, E> {
     return getPaginationState<RT, E>(this.request);
   }
 }
@@ -195,5 +193,5 @@ function upgradeSubscription(sub: unknown): PrivatePaginationSubscription {
 function _DISPOSE<RT, E>(this: PaginationSubscription<RT, E>) {
   const self = upgradeSubscription(this);
   self.isDestroyed = true;
-  self._requestSubscription?.[DISPOSE]?.();
+  self._requestSubscription[DISPOSE]();
 }
