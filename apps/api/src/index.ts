@@ -81,7 +81,7 @@ app.delete('/api/todo/:id', deleteTodo);
 
 // Flag routes
 app.get('/api/flag', getFlags);
-app.patch('/api/flag/:id', updateFlag);
+app.put('/api/flag/:id', updateFlag);
 
 // 404 handler
 app.use('*', (req, res) => {
