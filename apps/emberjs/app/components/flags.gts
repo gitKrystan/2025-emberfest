@@ -38,9 +38,7 @@ class FlagsContent extends Component<{
       {{#if this.shouldErrorFlag}}
         <li>
           <Await @promise={{this.checkoutShouldErrorFlag this.shouldErrorFlag}}>
-            <:success as |flag|><UpdateShouldErrorFlag
-                @flag={{flag}}
-              /></:success>
+            <:success as |flag|><UpdateShouldErrorFlag @flag={{flag}} /></:success>
             <:pending><Loading /></:pending>
             <:error as |error|><HandleError @error={{error}} /></:error>
           </Await>
@@ -48,14 +46,8 @@ class FlagsContent extends Component<{
       {{/if}}
       {{#if this.initialTodoCountFlag}}
         <li>
-          <Await
-            @promise={{this.checkoutInitialTodoCountFlag
-              this.initialTodoCountFlag
-            }}
-          >
-            <:success as |flag|><UpdateTodoCountFlag
-                @flag={{flag}}
-              /></:success>
+          <Await @promise={{this.checkoutInitialTodoCountFlag this.initialTodoCountFlag}}>
+            <:success as |flag|><UpdateTodoCountFlag @flag={{flag}} /></:success>
             <:pending><Loading /></:pending>
             <:error as |error|><HandleError @error={{error}} /></:error>
           </Await>
@@ -66,14 +58,10 @@ class FlagsContent extends Component<{
 
   @cached
   get initialTodoCountFlag(): TodoCountFlag | null {
-    return (
-      this.args.data.find((flag) => flag.id === 'initialTodoCount') ?? null
-    );
+    return this.args.data.find((flag) => flag.id === 'initialTodoCount') ?? null;
   }
 
-  checkoutInitialTodoCountFlag(
-    flag: TodoCountFlag
-  ): Promise<EditableTodoCountFlag & ReactiveResource> {
+  checkoutInitialTodoCountFlag(flag: TodoCountFlag): Promise<EditableTodoCountFlag & ReactiveResource> {
     return checkout<EditableTodoCountFlag>(flag);
   }
 
@@ -82,9 +70,7 @@ class FlagsContent extends Component<{
     return this.args.data.find((flag) => flag.id === 'shouldError') ?? null;
   }
 
-  checkoutShouldErrorFlag(
-    flag: ShouldErrorFlag
-  ): Promise<EditableShouldErrorFlag & ReactiveResource> {
+  checkoutShouldErrorFlag(flag: ShouldErrorFlag): Promise<EditableShouldErrorFlag & ReactiveResource> {
     return checkout<EditableShouldErrorFlag>(flag);
   }
 }
@@ -121,9 +107,7 @@ class UpdateTodoCountFlag extends Component<{
 
   toggle = () => {
     this.args.flag.value =
-      this.args.flag.value === TodoCountOptions.small
-        ? TodoCountOptions.large
-        : TodoCountOptions.small;
+      this.args.flag.value === TodoCountOptions.small ? TodoCountOptions.large : TodoCountOptions.small;
   };
 }
 
