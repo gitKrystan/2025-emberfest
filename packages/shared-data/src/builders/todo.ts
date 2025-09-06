@@ -20,9 +20,15 @@ export type ReactiveTodosDocument = ReactiveDataDocument<Todo[]>;
  * GET /todo
  */
 export function getAllTodos(): RequestInfo<ReactiveTodosDocument> {
+  const url = buildBaseURL({ resourcePath: 'todo' });
+  const queryString = buildQueryParams({
+    'page[limit]': 25,
+    'page[offset]': 0,
+  });
+
   return withReactiveResponse<Todo[]>({
     method: 'GET',
-    url: buildBaseURL({ resourcePath: 'todo' }),
+    url: `${url}?${queryString}`,
 
     // Adding the 'query' OpCode and specifying the 'todo' type in
     // `cacheOptions` tells the `DefaultCachePolicy` in our store to
@@ -38,7 +44,11 @@ export function getAllTodos(): RequestInfo<ReactiveTodosDocument> {
  */
 export function getCompletedTodos(): RequestInfo<ReactiveTodosDocument> {
   const url = buildBaseURL({ resourcePath: 'todo' });
-  const queryString = buildQueryParams({ completed: true });
+  const queryString = buildQueryParams({
+    'filter[completed]': true,
+    'page[limit]': 25,
+    'page[offset]': 0,
+  });
 
   return withReactiveResponse<Todo[]>({
     method: 'GET',
@@ -54,7 +64,11 @@ export function getCompletedTodos(): RequestInfo<ReactiveTodosDocument> {
  */
 export function getActiveTodos(): RequestInfo<ReactiveTodosDocument> {
   const url = buildBaseURL({ resourcePath: 'todo' });
-  const queryString = buildQueryParams({ completed: false });
+  const queryString = buildQueryParams({
+    'filter[completed]': false,
+    'page[limit]': 25,
+    'page[offset]': 0,
+  });
 
   return withReactiveResponse<Todo[]>({
     method: 'GET',

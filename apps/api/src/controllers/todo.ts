@@ -61,8 +61,8 @@ export function getTodos(
 
     // Filter out undefined values to create a clean query object
     const cleanQuery: Record<string, unknown> = {};
-    if (queryParams.completed !== undefined) {
-      cleanQuery['completed'] = queryParams.completed;
+    if (queryParams.filter?.completed !== undefined) {
+      cleanQuery['completed'] = queryParams.filter.completed;
     }
 
     const hasQueryParams = Object.keys(cleanQuery).length > 0;

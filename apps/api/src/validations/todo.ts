@@ -20,21 +20,25 @@ export const todoUpdateSchema = z.object({
  * Schema for validating query parameters for getTodos
  */
 export const todoQuerySchema = z.object({
-  completed: z
-    .string()
-    .optional()
-    .transform((val) => {
-      if (val === undefined) return undefined;
-      if (val === 'true') return true;
-      if (val === 'false') return false;
-      throw new z.ZodError([
-        {
-          code: 'custom',
-          message: 'completed must be "true" or "false"',
-          path: ['completed'],
-        },
-      ]);
-    }),
+  filter: z
+    .object({
+      completed: z
+        .string()
+        .optional()
+        .transform((val) => {
+          if (val === undefined) return undefined;
+          if (val === 'true') return true;
+          if (val === 'false') return false;
+          throw new z.ZodError([
+            {
+              code: 'custom',
+              message: 'filter.completed must be "true" or "false"',
+              path: ['filter', 'completed'],
+            },
+          ]);
+        }),
+    })
+    .optional(),
 });
 export type TodoQuery = z.infer<typeof todoQuerySchema>;
 
