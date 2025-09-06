@@ -11,10 +11,10 @@ import { cached } from '@glimmer/tracking';
 
 import type { Store, StoreRequestInput } from '@warp-drive/core';
 import { assert } from '@warp-drive/core/build-config/macros';
+import type { RequestState } from '@warp-drive/core/reactive';
 import type { Future } from '@warp-drive/core/request';
 import type { RequestLoadingState } from '@warp-drive/core/store/-private';
 import { DISPOSE } from '@warp-drive/core/store/-private';
-import type { RequestCacheRequestState } from '@warp-drive/core/store/-private/new-core-tmp/request-state';
 import type { StructuredErrorDocument } from '@warp-drive/core/types/request';
 import { and, Throw } from '@warp-drive/ember/-private/await';
 
@@ -173,7 +173,7 @@ interface PaginateSignature<RT, E> {
      *
      */
     content: [state: PaginationState<RT, E>, features: ContentFeatures<RT>];
-    always: [state: PaginationState<RT, E>];
+    always: [state: PaginationState<RT, E>, features: ContentFeatures<RT>];
   };
 }
 
@@ -435,7 +435,7 @@ export class Paginate<RT, E> extends Component<PaginateSignature<RT, E>> {
     this._state = null;
   }
 
-  get initialState(): Readonly<RequestCacheRequestState<RT, StructuredErrorDocument<E>>> {
+  get initialState(): Readonly<RequestState<RT, StructuredErrorDocument<E>>> {
     return this.state.paginationState.initialPage.state;
   }
 
@@ -474,8 +474,6 @@ export class Paginate<RT, E> extends Component<PaginateSignature<RT, E>> {
   }
 
   <template>
-    {{! FIXME: }}
-    {{! template-lint-disable no-unnecessary-curly-parens }}
     {{#if (and this.state.isIdle (has-block "idle"))}}
       {{yield to="idle"}}
 
@@ -495,10 +493,9 @@ export class Paginate<RT, E> extends Component<PaginateSignature<RT, E>> {
       {{yield this.state.paginationState this.state.contentFeatures to="content"}}
 
     {{else if (not this.state.paginationState.isCancelled)}}
-      <Throw @error={{(notNull this.state.paginationState.reason)}} />
+      <Throw @error={{notNull this.state.paginationState.reason}} />
     {{/if}}
 
-    {{! @glint-expect-error FIXME: Expected 1 arguments, but got 2. }}
     {{yield this.state.paginationState this.state.contentFeatures to="always"}}
   </template>
 }

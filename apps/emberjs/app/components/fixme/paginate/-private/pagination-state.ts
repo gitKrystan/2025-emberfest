@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/array-type */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
-/* eslint-disable @typescript-eslint/no-base-to-string */
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
 /* eslint-disable @typescript-eslint/no-unnecessary-type-arguments */
 
@@ -9,12 +8,10 @@
  */
 import { assert } from '@warp-drive/core/build-config/macros';
 import type { ReactiveDocument } from '@warp-drive/core/reactive';
+import type { RequestState } from '@warp-drive/core/reactive';
 import type { Future } from '@warp-drive/core/request';
 import { defineSignal, memoized } from '@warp-drive/core/store/-private';
-import type {
-  RequestCacheRequestState,
-  RequestLoadingState,
-} from '@warp-drive/core/store/-private/new-core-tmp/request-state';
+import type { RequestLoadingState } from '@warp-drive/core/store/-private/new-core-tmp/request-state';
 import { getRequestState } from '@warp-drive/core/store/-private/new-core-tmp/request-state';
 import type { StructuredErrorDocument } from '@warp-drive/core/types/request';
 import type { Link } from '@warp-drive/core/types/spec/json-api-raw';
@@ -40,9 +37,7 @@ type PageStateCreateOptions = {
 export class PageState<RT = unknown, E = unknown> {
   declare manager: PaginationState<RT, E>;
   declare request: Future<RT> | null;
-  declare state: Readonly<
-    RequestCacheRequestState<RT, StructuredErrorDocument<E>>
-  >;
+  declare state: Readonly<RequestState<RT, StructuredErrorDocument<E>>>;
   declare selfLink: string | null;
   declare _prevLink: string | null;
   declare _nextLink: string | null;
@@ -269,10 +264,9 @@ export class PaginationState<RT = unknown, E = unknown> {
   };
 
   getPageState = (
-    options: PageStateCreateOptions
+    options: PageStateCreateOptions & { self: string }
   ): Readonly<PageState<RT, E>> => {
-    const url =
-      typeof options.self === 'string' ? options.self : options.self.toString();
+    const url = options.self;
     let state = this.pagesCache.get(url);
 
     if (!state) {
