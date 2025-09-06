@@ -30,11 +30,7 @@ export class TodoApp extends Component<Signature> {
   <template>
     <section><CreateTodo /></section>
     <section class="main">
-      <Request
-        @request={{@todoFuture}}
-        @autorefresh={{true}}
-        @autorefreshBehavior="reload"
-      >
+      <Request @request={{@todoFuture}} @autorefresh={{true}} @autorefreshBehavior="reload">
         <:content as |content|>
           {{#if content.data.length}}
             {{#if this.appState.isSaving}}
@@ -45,11 +41,7 @@ export class TodoApp extends Component<Signature> {
             {{/if}}
 
             <TodoList @todos={{content.data}} as |todo|>
-              <TodoItem
-                @todo={{todo}}
-                @onEditStart={{this.onEditStart}}
-                @onEditEnd={{this.onEditEnd}}
-              />
+              <TodoItem @todo={{todo}} @onEditStart={{this.onEditStart}} @onEditEnd={{this.onEditEnd}} />
             </TodoList>
           {{/if}}
         </:content>
@@ -60,11 +52,7 @@ export class TodoApp extends Component<Signature> {
       </Request>
     </section>
 
-    <Request
-      @query={{(getAllTodos)}}
-      @autorefresh={{true}}
-      @autorefreshBehavior="refresh"
-    >
+    <Request @query={{(getAllTodos)}} @autorefresh={{true}} @autorefreshBehavior="refresh">
       <:content as |content|>
         <Footer @todos={{content.data}}>
           <TodoCount />
@@ -72,10 +60,7 @@ export class TodoApp extends Component<Signature> {
           <ClearCompletedTodos />
         </Footer>
       </:content>
-      <:error as |error|><HandleError
-          @error={{error}}
-          @display={{false}}
-        /></:error>
+      <:error as |error|><HandleError @error={{error}} @display={{false}} /></:error>
     </Request>
   </template>
 

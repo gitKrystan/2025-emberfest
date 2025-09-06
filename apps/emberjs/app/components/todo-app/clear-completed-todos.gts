@@ -13,11 +13,7 @@ import { Loading } from '#/components/design-system/loading';
 import type Store from '#/services/store';
 
 export const ClearCompletedTodos = <template>
-  <Request
-    @query={{(getCompletedTodos)}}
-    @autorefresh={{true}}
-    @autorefreshBehavior="refresh"
-  >
+  <Request @query={{(getCompletedTodos)}} @autorefresh={{true}} @autorefreshBehavior="refresh">
     <:content as |content|>
       <ClearCompleted @completed={{content.data}} />
     </:content>
@@ -31,11 +27,7 @@ class ClearCompleted extends Component<{
 }> {
   <template>
     {{#if @completed.length}}
-      <button
-        class="clear-completed"
-        type="button"
-        {{on "click" this.clearCompleted}}
-      >
+      <button class="clear-completed" type="button" {{on "click" this.clearCompleted}}>
         Clear completed
       </button>
     {{/if}}

@@ -9,11 +9,7 @@ import { HandleError } from '#/components/design-system/error';
 
 export const TodoCount = <template>
   <span class="todo-count">
-    <Request
-      @query={{(getActiveTodos)}}
-      @autorefresh={{true}}
-      @autorefreshBehavior="refresh"
-    >
+    <Request @query={{(getActiveTodos)}} @autorefresh={{true}} @autorefreshBehavior="refresh">
       <:content as |content|>
         <Remaining @remaining={{content.data}} />
       </:content>

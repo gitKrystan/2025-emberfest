@@ -253,17 +253,21 @@ export function bulkPatchCacheTodos(
   for (const todo of todos.toReversed()) {
     const resourceKey = keyForSavedResource(todo);
 
-    store.cache.upsert(resourceKey, { ...resourceKey, attributes }, true);
-
+    // If the `completed` attribute is being changed, we need to move the
+    // todo between the "active" and "completed" lists as needed.
     if ('completed' in attributes) {
+      const wasCompleted = todo.completed;
       const isCompleted = attributes.completed;
 
-      if (isCompleted) {
+      if (isCompleted && !wasCompleted) {
         patchCacheTodoCompleted(store, todo);
-      } else {
+      } else if (!isCompleted && wasCompleted) {
         patchCacheTodoActivated(store, todo);
       }
     }
+
+    // Finally, patch the attributes into the cached resource
+    store.cache.upsert(resourceKey, { ...resourceKey, attributes }, true);
   }
 }
 
