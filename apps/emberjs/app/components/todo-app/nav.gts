@@ -1,6 +1,6 @@
 import { LinkTo } from '@ember/routing';
 
-<template>
+export const Nav = <template>
   <ul class="filters">
     <li>
       <LinkTo @route="index" @activeClass="selected">
@@ -18,4 +18,4 @@ import { LinkTo } from '@ember/routing';
       </LinkTo>
     </li>
   </ul>
-</template>
+</template>;

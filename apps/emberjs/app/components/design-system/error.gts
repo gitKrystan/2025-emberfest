@@ -1,13 +1,15 @@
 import type { TOC } from '@ember/component/template-only';
 
-export const HandleError = <template>
+export const Error = <template>
   <div class="error">
-    <h2>Something went wrong</h2>
+    {{#if @display}}
+      <h2>Something went wrong</h2>
+    {{/if}}
     {{throwError @error}}
   </div>
 </template> satisfies TOC<{
   Element: HTMLDivElement;
-  Args: { error: unknown };
+  Args: { error: unknown; display?: boolean };
 }>;
 
 function throwError(error: unknown): never {

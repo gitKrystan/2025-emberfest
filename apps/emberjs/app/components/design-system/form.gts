@@ -32,10 +32,7 @@ export class Form extends Component<{
 
   /** Submit the form with the relevant Element set as the submitter. */
   private readonly dispatchSubmit = (event: Event): void => {
-    assert(
-      'Cannot put autoSubmit on non-HTMLElement',
-      event.target instanceof HTMLElement
-    );
+    assert('Cannot put autoSubmit on non-HTMLElement', event.target instanceof HTMLElement);
     const submitEvent = new SubmitEvent('submit', { submitter: event.target });
     this.form.dispatchEvent(submitEvent);
   };

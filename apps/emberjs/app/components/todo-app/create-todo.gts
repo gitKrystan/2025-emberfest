@@ -2,21 +2,17 @@ import { assert } from '@ember/debug';
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import { cached, tracked } from '@glimmer/tracking';
-
-import { getRequestState, Request } from '@warp-drive/ember';
 
 import { createTodo } from '@workspace/shared-data/builders';
 import type { TodoAttributes } from '@workspace/shared-data/types';
 
-import { HandleError } from '#components/error';
-import { Loading } from '#components/loading';
-import type Store from '#services/store';
+import type AppState from '#/services/app-state';
+import type Store from '#/services/store';
 
 const NameForTitle = 'title';
 type NameForTitle = typeof NameForTitle;
 
-export class Create extends Component {
+export class CreateTodo extends Component {
   <template>
     <form {{on "submit" this.onSubmit}} class="new-todo-form">
       <input
@@ -31,42 +27,23 @@ export class Create extends Component {
         autofocus
       />
     </form>
-    <Request @request={{this.createTodoRequest}}>
-      <:idle></:idle>
-      <:loading><Loading /></:loading>
-      <:error as |error|><HandleError @error={{error}} /></:error>
-    </Request>
   </template>
 
   @service declare private readonly store: Store;
+  @service declare private readonly appState: AppState;
 
-  @tracked attributes: TodoAttributes | null = null;
+  private readonly onSubmit = async (event: SubmitEvent) => {
+    this.appState.onSaveStart();
 
-  @cached
-  get createTodoRequest() {
-    if (!this.attributes) {
-      return null;
-    }
-    return this.store.request(createTodo(this.attributes));
-  }
-
-  @cached
-  get isSaving() {
-    if (!this.createTodoRequest) {
-      return false;
-    }
-    const state = getRequestState(this.createTodoRequest);
-    return state.isPending;
-  }
-
-  onSubmit = (event: SubmitEvent) => {
     event.preventDefault();
 
     const { attributes, form } = processSubmitEvent(event);
 
-    this.attributes = attributes;
+    await this.store.request(createTodo(attributes));
 
     form.reset();
+
+    this.appState.onSaveEnd();
   };
 }
 
@@ -75,10 +52,7 @@ function processSubmitEvent(event: SubmitEvent): {
   form: HTMLFormElement;
 } {
   const form = event.target;
-  assert(
-    'Expected event target to be an HTMLFormElement',
-    form instanceof HTMLFormElement
-  );
+  assert('Expected event target to be an HTMLFormElement', form instanceof HTMLFormElement);
 
   const formData = new FormData(form);
   const rawTitle = formData.get(NameForTitle);

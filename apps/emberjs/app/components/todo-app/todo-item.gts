@@ -10,33 +10,31 @@ import {
   patchCacheTodoCompleted,
   patchTodo,
 } from '@workspace/shared-data/builders';
-import type { SavedTodo, TodoAttributes } from '@workspace/shared-data/types';
+import type { Todo, TodoAttributes } from '@workspace/shared-data/types';
 
-import { Form } from '#components/form';
-import { autofocus } from '#modifiers/autofocus';
-import type Store from '#services/store';
+import { Form } from '#/components/design-system/form';
+import { autofocus } from '#/modifiers/autofocus';
+import type AppState from '#/services/app-state';
+import type Store from '#/services/store';
 
 interface Signature {
   Args: {
-    onEndEdit: () => void;
-    onStartEdit: () => void;
-    todo: SavedTodo;
+    todo: Todo;
+    onEditStart: () => void;
+    onEditEnd: () => void;
   };
 }
 
 export class TodoItem extends Component<Signature> {
   <template>
-    <li
-      class="{{if @todo.completed 'completed'}}
-        {{if this.isEditingTitle 'editing'}}"
-    >
+    <li class="{{if @todo.completed 'completed'}} {{if this.isEditingTitle 'editing'}}">
       {{#if this.isEditingTitle}}
         <TitleForm
           class="edit"
           @todo={{@todo}}
           @onSaveStart={{this.onSaveStart}}
           @onSaveEnd={{this.onSaveEnd}}
-          @isSaving={{this.isSaving}}
+          @isSaving={{this.appState.isSaving}}
           {{on "keyup" this.onTitleKeyup}}
           {{autofocus}}
         />
@@ -47,7 +45,7 @@ export class TodoItem extends Component<Signature> {
             @todo={{@todo}}
             @onSaveStart={{this.onSaveStart}}
             @onSaveEnd={{this.onSaveEnd}}
-            @isSaving={{this.isSaving}}
+            @isSaving={{this.appState.isSaving}}
             {{on "keyup" this.onToggleKeyup}}
           >
             {{! This must live within the "completed" form for compat with TodoMVC CSS }}
@@ -62,26 +60,27 @@ export class TodoItem extends Component<Signature> {
             @todo={{@todo}}
             @onSaveStart={{this.onSaveStart}}
             @onSaveEnd={{this.onSaveEnd}}
-            @isSaving={{this.isSaving}}
+            @isSaving={{this.appState.isSaving}}
           />
         </div>
       {{/if}}
     </li>
   </template>
 
+  @service declare private readonly appState: AppState;
+
   /** Whether we are in title-editing mode */
   @tracked private isEditingTitle = false;
-  @tracked private isSaving = false;
 
   /** Start title-editing mode */
   private readonly startEditing = (): void => {
-    this.args.onStartEdit();
+    this.args.onEditStart();
     this.isEditingTitle = true;
   };
 
   /** End title-editing mode */
   private readonly endEditing = (): void => {
-    this.args.onEndEdit();
+    this.args.onEditEnd();
     this.isEditingTitle = false;
   };
 
@@ -90,14 +89,14 @@ export class TodoItem extends Component<Signature> {
     // Ensure we disable upstream async during saves that occur when
     // `this.editing` is false, which happens due to requirements of TodoMVC CSS.
     if (!this.isEditingTitle) {
-      this.args.onStartEdit();
+      this.args.onEditStart();
     }
-    this.isSaving = true;
+    this.appState.onSaveStart();
   };
 
   /** End title-editing mode */
   private readonly onSaveEnd = (): void => {
-    this.isSaving = false;
+    this.appState.onSaveEnd();
     this.endEditing();
   };
 
@@ -109,10 +108,7 @@ export class TodoItem extends Component<Signature> {
 
   /** Reset on Escape */
   private readonly onTitleKeyup = (event: KeyboardEvent) => {
-    assert(
-      'Expected event target to be an HTMLInputElement',
-      event.target instanceof HTMLInputElement
-    );
+    assert('Expected event target to be an HTMLInputElement', event.target instanceof HTMLInputElement);
     if (event.key === 'Escape') {
       event.target.value = this.args.todo.title;
       this.endEditing();
@@ -121,10 +117,7 @@ export class TodoItem extends Component<Signature> {
 
   /** Start Editing on Enter */
   private readonly onToggleKeyup = (event: KeyboardEvent) => {
-    assert(
-      'Expected event target to be an HTMLInputElement',
-      event.target instanceof HTMLInputElement
-    );
+    assert('Expected event target to be an HTMLInputElement', event.target instanceof HTMLInputElement);
     if (event.key === 'Enter') {
       this.startEditing();
     }
@@ -134,10 +127,10 @@ export class TodoItem extends Component<Signature> {
 class CompletedForm extends Component<{
   Element: HTMLInputElement;
   Args: {
-    todo: SavedTodo;
+    todo: Todo;
+    isSaving: boolean;
     onSaveStart: () => void;
     onSaveEnd: () => void;
-    isSaving: boolean;
   };
   Blocks: { default: [] };
 }> {
@@ -167,10 +160,7 @@ class CompletedForm extends Component<{
 
     const { attributes, submitType } = processSubmitEvent(event);
     assert('Expected submit type to be completed', submitType === 'completed');
-    assert(
-      'Expected attributes to have completed',
-      typeof attributes.completed === 'boolean'
-    );
+    assert('Expected attributes to have completed', typeof attributes.completed === 'boolean');
 
     return this.updateCompleted(attributes.completed);
   };
@@ -193,10 +183,10 @@ class CompletedForm extends Component<{
 class DestroyForm extends Component<{
   Element: HTMLButtonElement;
   Args: {
-    todo: SavedTodo;
+    todo: Todo;
+    isSaving: boolean;
     onSaveStart: () => void;
     onSaveEnd: () => void;
-    isSaving: boolean;
   };
 }> {
   <template>
@@ -237,10 +227,10 @@ class DestroyForm extends Component<{
 
 class TitleForm extends Component<{
   Args: {
-    todo: SavedTodo;
+    todo: Todo;
+    isSaving: boolean;
     onSaveStart: () => void;
     onSaveEnd: () => void;
-    isSaving: boolean;
   };
 }> {
   <template>
@@ -266,10 +256,7 @@ class TitleForm extends Component<{
     }
 
     const { attributes } = processSubmitEvent(event);
-    assert(
-      'Expected attributes to have title',
-      typeof attributes.title === 'string'
-    );
+    assert('Expected attributes to have title', typeof attributes.title === 'string');
 
     if (attributes.title.length === 0) {
       return this.deleteTodo();
@@ -302,10 +289,7 @@ function processSubmitEvent(event: SubmitEvent): {
   form: HTMLFormElement;
 } {
   const form = event.target;
-  assert(
-    'Expected event target to be an HTMLFormElement',
-    form instanceof HTMLFormElement
-  );
+  assert('Expected event target to be an HTMLFormElement', form instanceof HTMLFormElement);
   const formData = new FormData(form);
 
   if (event.submitter) {
@@ -335,9 +319,5 @@ function isDestroyButton(element: HTMLElement): element is HTMLButtonElement {
 }
 
 function isCompleteButton(element: HTMLElement): element is HTMLInputElement {
-  return (
-    element instanceof HTMLInputElement &&
-    element.type === 'checkbox' &&
-    element.name === 'completed'
-  );
+  return element instanceof HTMLInputElement && element.type === 'checkbox' && element.name === 'completed';
 }

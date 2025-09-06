@@ -14,6 +14,6 @@ export interface TodoAttributes {
   completed: boolean;
 }
 
-export interface SavedTodo extends BaseTodo, Readonly<TodoAttributes> {
+export interface Todo extends BaseTodo, Readonly<TodoAttributes> {
   readonly id: string;
 }

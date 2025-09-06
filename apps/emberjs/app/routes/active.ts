@@ -6,7 +6,7 @@ import type { Future } from '@warp-drive/core/request';
 import type { ReactiveSavedTodosDocument } from '@workspace/shared-data/builders';
 import { getActiveTodos } from '@workspace/shared-data/builders';
 
-import type Store from '#services/store';
+import type Store from '#/services/store';
 
 export default class ActiveTodos extends Route {
   @service declare private readonly store: Store;

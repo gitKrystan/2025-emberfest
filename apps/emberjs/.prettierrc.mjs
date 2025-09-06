@@ -31,6 +31,7 @@ export default {
       options: {
         templateSingleQuote: false,
         trailingComma: 'es5',
+        printWidth: 120,
       },
     },
   ],

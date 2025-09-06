@@ -29,14 +29,8 @@
     "test": "vite build --mode development && testem ci"
   },
   "imports": {
-    "#app/*": "./app/*",
-    "#config/*": "./app/config/*",
-    "#components/*": "./app/components/*",
-    "#env": "./app/config/environment.ts",
-    "#modifiers/*": "./app/modifiers/*",
-    "#routes/*": "./app/routes/*",
-    "#services/*": "./app/services/*",
-    "#types/*": "./app/types/*"
+    "#/*": "./app/*",
+    "#env": "./app/config/environment.ts"
   },
   "exports": {
     "./tests/*": "./tests/*",

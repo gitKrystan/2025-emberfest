@@ -1,11 +1,11 @@
 import { pageTitle } from 'ember-page-title';
 
-import { Main } from '#app/components/main.gts';
-import type ActiveTodos from '#routes/active';
-import type { RouteComponent } from '#types/route-component';
+import { TodoApp } from '#/components/todo-app/index';
+import type ActiveTodos from '#/routes/active';
+import type { RouteComponent } from '#/types/route-component';
 
 <template>
   {{pageTitle "Active"}}
 
-  <Main @todoFuture={{@model.todos}} />
+  <TodoApp @todoFuture={{@model.todos}} />
 </template> satisfies RouteComponent<ActiveTodos>;

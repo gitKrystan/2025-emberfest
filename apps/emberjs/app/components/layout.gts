@@ -1,7 +1,7 @@
 import type { TOC } from '@ember/component/template-only';
 
-import { Attribution } from '#components/attribution';
-import { Flags } from '#components/flags';
+import { Attribution } from '#/components/attribution';
+import { Flags } from '#/components/flags';
 
 interface Signature {
   Blocks: {

@@ -11,16 +11,16 @@ import type { RequestInfo } from '@warp-drive/core/types/request';
 import { buildBaseURL, buildQueryParams } from '@warp-drive/utilities';
 
 import { isExisting } from '../index.ts';
-import type { SavedTodo, TodoAttributes } from '../types/index.ts';
+import type { Todo, TodoAttributes } from '../types/index.ts';
 
-export type ReactiveSavedTodoDocument = ReactiveDataDocument<SavedTodo>;
-export type ReactiveSavedTodosDocument = ReactiveDataDocument<SavedTodo[]>;
+export type ReactiveSavedTodoDocument = ReactiveDataDocument<Todo>;
+export type ReactiveSavedTodosDocument = ReactiveDataDocument<Todo[]>;
 
 /**
  * GET /todo
  */
 export function getAllTodos(): RequestInfo<ReactiveSavedTodosDocument> {
-  return withReactiveResponse<SavedTodo[]>({
+  return withReactiveResponse<Todo[]>({
     method: 'GET',
     url: buildBaseURL({ resourcePath: 'todo' }),
 
@@ -40,7 +40,7 @@ export function getCompletedTodos(): RequestInfo<ReactiveSavedTodosDocument> {
   const url = buildBaseURL({ resourcePath: 'todo' });
   const queryString = buildQueryParams({ completed: true });
 
-  return withReactiveResponse<SavedTodo[]>({
+  return withReactiveResponse<Todo[]>({
     method: 'GET',
     url: `${url}?${queryString}`,
 
@@ -56,7 +56,7 @@ export function getActiveTodos(): RequestInfo<ReactiveSavedTodosDocument> {
   const url = buildBaseURL({ resourcePath: 'todo' });
   const queryString = buildQueryParams({ completed: false });
 
-  return withReactiveResponse<SavedTodo[]>({
+  return withReactiveResponse<Todo[]>({
     method: 'GET',
     url: `${url}?${queryString}`,
 
@@ -71,7 +71,7 @@ export function getActiveTodos(): RequestInfo<ReactiveSavedTodosDocument> {
 export function createTodo(
   attributes: TodoAttributes,
 ): RequestInfo<ReactiveSavedTodoDocument> {
-  return withReactiveResponse<SavedTodo>({
+  return withReactiveResponse<Todo>({
     method: 'POST',
     url: buildBaseURL({ resourcePath: 'todo' }),
     body: JSON.stringify({
@@ -97,7 +97,7 @@ export function createTodo(
  * @param attributes - The attributes to patch
  */
 export function patchTodo(
-  todo: SavedTodo,
+  todo: Todo,
   attributes: Partial<TodoAttributes>,
 ): RequestInfo<ReactiveSavedTodoDocument> {
   const key = keyForSavedResource(todo);
@@ -108,7 +108,7 @@ export function patchTodo(
     identifier: key,
   });
 
-  return withReactiveResponse<SavedTodo>({
+  return withReactiveResponse<Todo>({
     url,
     method: 'PATCH',
     body: JSON.stringify({
@@ -149,7 +149,7 @@ export function patchTodo(
  * @param store - The store instance
  * @param todo - The todo to mark as completed
  */
-export function patchCacheTodoCompleted(store: Store, todo: SavedTodo) {
+export function patchCacheTodoCompleted(store: Store, todo: Todo) {
   const resourceKey = keyForSavedResource(todo);
   const completedRequestKey = keyForRequest(store, getCompletedTodos());
   const activeRequestKey = keyForRequest(store, getActiveTodos());
@@ -190,7 +190,7 @@ export function patchCacheTodoCompleted(store: Store, todo: SavedTodo) {
  * @param store - The store instance
  * @param todo - The todo that to mark as activated
  */
-export function patchCacheTodoActivated(store: Store, todo: SavedTodo) {
+export function patchCacheTodoActivated(store: Store, todo: Todo) {
   const resourceKey = keyForSavedResource(todo);
   const completedRequestKey = keyForRequest(store, getCompletedTodos());
   const activeRequestKey = keyForRequest(store, getActiveTodos());
@@ -214,7 +214,7 @@ export function patchCacheTodoActivated(store: Store, todo: SavedTodo) {
 }
 
 export function bulkPatchTodos(
-  todos: SavedTodo[],
+  todos: Todo[],
   attributes: Partial<TodoAttributes>,
 ): RequestInfo<ReactiveSavedTodosDocument> {
   assert('No todos passed to bulk patch', todos.length > 0);
@@ -222,7 +222,7 @@ export function bulkPatchTodos(
 
   const url = buildBaseURL({ resourcePath: 'todo' });
 
-  return withReactiveResponse<SavedTodo[]>({
+  return withReactiveResponse<Todo[]>({
     method: 'PATCH',
     url: `${url}/ops.bulk.patch`,
     body: JSON.stringify({
@@ -247,7 +247,7 @@ export function bulkPatchTodos(
 // FIXME: Check w/ @runspired that this isn't totally ridiculous
 export function bulkPatchCacheTodos(
   store: Store,
-  todos: SavedTodo[],
+  todos: Todo[],
   attributes: Partial<TodoAttributes>,
 ) {
   for (const todo of todos.toReversed()) {
@@ -272,7 +272,7 @@ export function bulkPatchCacheTodos(
  *
  * @param todo - The todo to delete
  */
-export function deleteTodo(todo: SavedTodo) {
+export function deleteTodo(todo: Todo) {
   const key = keyForSavedResource(todo);
 
   const url = buildBaseURL({
@@ -281,7 +281,7 @@ export function deleteTodo(todo: SavedTodo) {
     identifier: key,
   });
 
-  return withReactiveResponse<SavedTodo>({
+  return withReactiveResponse<Todo>({
     url,
     method: 'DELETE',
 
@@ -301,14 +301,14 @@ export function deleteTodo(todo: SavedTodo) {
  * @param todos - The todos to delete
  */
 export function bulkDeleteTodos(
-  todos: SavedTodo[],
+  todos: Todo[],
 ): RequestInfo<ReactiveSavedTodosDocument> {
   assert('No todos passed to bulk delete', todos.length > 0);
   const keys = todos.map(keyForSavedResource);
 
   const url = buildBaseURL({ resourcePath: 'todo' });
 
-  return withReactiveResponse<SavedTodo[]>({
+  return withReactiveResponse<Todo[]>({
     method: 'DELETE',
     url: `${url}/ops.bulk.delete`,
     body: JSON.stringify({
@@ -328,9 +328,7 @@ export function bulkDeleteTodos(
   });
 }
 
-function keyForSavedResource(
-  resource: SavedTodo,
-): PersistedResourceKey<'todo'> {
+function keyForSavedResource(resource: Todo): PersistedResourceKey<'todo'> {
   const key = recordIdentifierFor(resource);
   assert('Expected key to have type and id', isExisting(key));
   return key;
