@@ -1,6 +1,6 @@
 import type { TOC } from '@ember/component/template-only';
 
-export const Error = <template>
+export const HandleError = <template>
   <div class="error">
     {{#if @display}}
       <h2>Something went wrong</h2>

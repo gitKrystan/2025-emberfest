@@ -5,16 +5,20 @@ import { Request } from '@warp-drive/ember';
 import { getActiveTodos } from '@workspace/shared-data/builders';
 import type { Todo } from '@workspace/shared-data/types';
 
-import { Error } from '#/components/design-system/error';
+import { HandleError } from '#/components/design-system/error';
 
 export const TodoCount = <template>
   <span class="todo-count">
-    <Request @query={{(getActiveTodos)}} @autorefresh={{true}} @autorefreshBehavior="refresh">
+    <Request
+      @query={{(getActiveTodos)}}
+      @autorefresh={{true}}
+      @autorefreshBehavior="refresh"
+    >
       <:content as |content|>
         <Remaining @remaining={{content.data}} />
       </:content>
       <:error as |error|>
-        <Error @error={{error}} @display={{false}} />
+        <HandleError @error={{error}} @display={{false}} />
       </:error>
     </Request>
   </span>

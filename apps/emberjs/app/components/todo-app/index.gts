@@ -10,7 +10,7 @@ import { Request } from '@warp-drive/ember';
 import { getAllTodos } from '@workspace/shared-data/builders';
 import type { Todo } from '@workspace/shared-data/types';
 
-import { Error } from '#/components/design-system/error';
+import { HandleError } from '#/components/design-system/error';
 import { Loading } from '#/components/design-system/loading';
 import { ClearCompletedTodos } from '#/components/todo-app/clear-completed-todos';
 import { CreateTodo } from '#/components/todo-app/create-todo';
@@ -30,7 +30,11 @@ export class TodoApp extends Component<Signature> {
   <template>
     <section><CreateTodo /></section>
     <section class="main">
-      <Request @request={{@todoFuture}} @autorefresh={{true}} @autorefreshBehavior="reload">
+      <Request
+        @request={{@todoFuture}}
+        @autorefresh={{true}}
+        @autorefreshBehavior="reload"
+      >
         <:content as |content|>
           {{#if content.data.length}}
             {{#if this.appState.isSaving}}
@@ -41,18 +45,26 @@ export class TodoApp extends Component<Signature> {
             {{/if}}
 
             <TodoList @todos={{content.data}} as |todo|>
-              <TodoItem @todo={{todo}} @onEditStart={{this.onEditStart}} @onEditEnd={{this.onEditEnd}} />
+              <TodoItem
+                @todo={{todo}}
+                @onEditStart={{this.onEditStart}}
+                @onEditEnd={{this.onEditEnd}}
+              />
             </TodoList>
           {{/if}}
         </:content>
 
         <:loading><Loading /></:loading>
 
-        <:error as |error|><Error @error={{error}} /></:error>
+        <:error as |error|><HandleError @error={{error}} /></:error>
       </Request>
     </section>
 
-    <Request @query={{(getAllTodos)}} @autorefresh={{true}} @autorefreshBehavior="refresh">
+    <Request
+      @query={{(getAllTodos)}}
+      @autorefresh={{true}}
+      @autorefreshBehavior="refresh"
+    >
       <:content as |content|>
         <Footer @todos={{content.data}}>
           <TodoCount />
@@ -60,7 +72,10 @@ export class TodoApp extends Component<Signature> {
           <ClearCompletedTodos />
         </Footer>
       </:content>
-      <:error as |error|><Error @error={{error}} @display={{false}} /></:error>
+      <:error as |error|><HandleError
+          @error={{error}}
+          @display={{false}}
+        /></:error>
     </Request>
   </template>
 

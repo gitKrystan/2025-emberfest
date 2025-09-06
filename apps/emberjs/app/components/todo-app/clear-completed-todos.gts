@@ -8,17 +8,21 @@ import { bulkDeleteTodos } from '@workspace/shared-data/builders';
 import { getCompletedTodos } from '@workspace/shared-data/builders';
 import type { Todo } from '@workspace/shared-data/types';
 
-import { Error } from '#/components/design-system/error';
+import { HandleError } from '#/components/design-system/error';
 import { Loading } from '#/components/design-system/loading';
 import type Store from '#/services/store';
 
 export const ClearCompletedTodos = <template>
-  <Request @query={{(getCompletedTodos)}} @autorefresh={{true}} @autorefreshBehavior="refresh">
+  <Request
+    @query={{(getCompletedTodos)}}
+    @autorefresh={{true}}
+    @autorefreshBehavior="refresh"
+  >
     <:content as |content|>
       <ClearCompleted @completed={{content.data}} />
     </:content>
     <:loading><Loading /></:loading>
-    <:error as |error|><Error @error={{error}} /></:error>
+    <:error as |error|><HandleError @error={{error}} /></:error>
   </Request>
 </template>;
 
@@ -27,7 +31,11 @@ class ClearCompleted extends Component<{
 }> {
   <template>
     {{#if @completed.length}}
-      <button class="clear-completed" type="button" {{on "click" this.clearCompleted}}>
+      <button
+        class="clear-completed"
+        type="button"
+        {{on "click" this.clearCompleted}}
+      >
         Clear completed
       </button>
     {{/if}}
