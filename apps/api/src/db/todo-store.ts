@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import uuid from 'short-uuid';
 
 import type { Todo, TodoAttributes } from '@workspace/shared-data/types';
 import { asType } from '@workspace/shared-data/types';
@@ -28,7 +28,7 @@ function seed(count: number): Todo[] {
     }
     return asType<Todo>({
       $type: 'todo',
-      id: uuidv4(),
+      id: uuid.generate(),
       title: i > sampleTodos.length - 1 ? `${sample.title} ${i}` : sample.title,
       completed: sample.completed,
     });
@@ -62,7 +62,7 @@ export class TodoStore extends Store<Todo> {
   create(todoData: TodoAttributes): Todo {
     const todo = asType<Todo>({
       $type: 'todo',
-      id: uuidv4(),
+      id: uuid.generate(),
       ...todoData,
       completed: todoData.completed,
     });
