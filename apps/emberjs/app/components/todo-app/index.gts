@@ -11,7 +11,7 @@ import { getAllTodos } from '@workspace/shared-data/builders';
 import type { Todo } from '@workspace/shared-data/types';
 
 import { HandleError } from '#/components/design-system/error';
-import { Loading } from '#/components/design-system/loading';
+import { LoadingSpinner } from '#/components/design-system/loading.gts';
 import { ClearCompletedTodos } from '#/components/todo-app/clear-completed-todos';
 import { CreateTodo } from '#/components/todo-app/create-todo';
 import { Nav } from '#/components/todo-app/nav.gts';
@@ -30,12 +30,11 @@ export class TodoApp extends Component<Signature> {
   <template>
     <section><CreateTodo /></section>
     <section class="main">
-      <Request @request={{@todoFuture}} @autorefresh={{true}} @autorefreshBehavior="reload">
+      <Request @request={{@todoFuture}} @autorefresh={{true}} @autorefreshBehavior="refresh">
         <:content as |content|>
           {{#if content.data.length}}
             {{#if this.appState.isSaving}}
-              is saving
-              <Loading />
+              <LoadingSpinner />
             {{else if this.canToggle}}
               <ToggleAllTodos @todos={{content.data}} />
             {{/if}}
@@ -46,7 +45,7 @@ export class TodoApp extends Component<Signature> {
           {{/if}}
         </:content>
 
-        <:loading><Loading /></:loading>
+        <:loading><LoadingSpinner /></:loading>
 
         <:error as |error|><HandleError @error={{error}} /></:error>
       </Request>

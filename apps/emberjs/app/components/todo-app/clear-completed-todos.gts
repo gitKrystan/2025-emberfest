@@ -9,7 +9,6 @@ import { getCompletedTodos } from '@workspace/shared-data/builders';
 import type { Todo } from '@workspace/shared-data/types';
 
 import { HandleError } from '#/components/design-system/error';
-import { Loading } from '#/components/design-system/loading';
 import type Store from '#/services/store';
 
 export const ClearCompletedTodos = <template>
@@ -17,8 +16,7 @@ export const ClearCompletedTodos = <template>
     <:content as |content|>
       <ClearCompleted @completed={{content.data}} />
     </:content>
-    <:loading><Loading /></:loading>
-    <:error as |error|><HandleError @error={{error}} /></:error>
+    <:error as |error|><HandleError @error={{error}} @display={{false}} /></:error>
   </Request>
 </template>;
 

@@ -17,13 +17,13 @@ import type {
 } from '@workspace/shared-data/types';
 
 import { HandleError } from '#/components/design-system/error';
-import { Loading } from '#/components/design-system/loading';
+import { LoadingDots, LoadingSpinner } from '#/components/design-system/loading.gts';
 import type Store from '#/services/store';
 
 export const Flags = <template>
   <footer class="footer">
     <Request @query={{(queryFlags)}}>
-      <:loading><Loading /></:loading>
+      <:loading><LoadingSpinner /></:loading>
       <:content as |content|><FlagsContent @data={{content.data}} /></:content>
       <:error as |error|><HandleError @error={{error}} /></:error>
     </Request>
@@ -39,7 +39,6 @@ class FlagsContent extends Component<{
         <li>
           <Await @promise={{this.checkoutShouldErrorFlag this.shouldErrorFlag}}>
             <:success as |flag|><UpdateShouldErrorFlag @flag={{flag}} /></:success>
-            <:pending><Loading /></:pending>
             <:error as |error|><HandleError @error={{error}} /></:error>
           </Await>
         </li>
@@ -48,7 +47,6 @@ class FlagsContent extends Component<{
         <li>
           <Await @promise={{this.checkoutInitialTodoCountFlag this.initialTodoCountFlag}}>
             <:success as |flag|><UpdateTodoCountFlag @flag={{flag}} /></:success>
-            <:pending><Loading /></:pending>
             <:error as |error|><HandleError @error={{error}} /></:error>
           </Await>
         </li>
@@ -123,7 +121,7 @@ class UpdateFlag extends Component<{
       {{yield}}
       <Request @request={{this.updateRequest}}>
         <:idle></:idle>
-        <:loading><Loading /></:loading>
+        <:loading><LoadingDots /></:loading>
         <:error as |error|><HandleError @error={{error}} /></:error>
       </Request>
     </Button>
