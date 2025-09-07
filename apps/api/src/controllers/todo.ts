@@ -281,6 +281,35 @@ export function bulkDeleteTodos(
   }
 }
 
+/**
+ * DELETE /todo/ops.bulk.deleteAll - Delete all todos (or filtered todos)
+ */
+export function bulkDeleteAllTodos(
+  req: Request,
+  res: Response,
+): Response<void> | Response<ResourceErrorDocument> {
+  try {
+    checkShouldError();
+
+    const { filter, hasFilter } = validateQueryParams(req);
+
+    if (hasFilter) {
+      // Delete only filtered todos
+      const todosToDelete = todoStore.query(filter);
+      for (const todo of todosToDelete) {
+        todoStore.delete(todo.id);
+      }
+    } else {
+      // Delete all todos if no filter is provided
+      todoStore.clear();
+    }
+
+    return res.status(204).send();
+  } catch (error) {
+    return handleError(res, error);
+  }
+}
+
 function extractTodoPatchAttributes(
   partialAttributes: ExactPartial<TodoAttributes>,
 ): Partial<TodoAttributes> {

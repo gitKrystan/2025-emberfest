@@ -6,6 +6,7 @@ import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
 
 import { getFlags, updateFlag } from './controllers/flag.ts';
 import {
+  bulkDeleteAllTodos,
   bulkDeleteTodos,
   bulkPatchTodos,
   createTodo,
@@ -83,6 +84,7 @@ app.post('/api/todo', createTodo);
 app.patch('/api/todo/ops.bulk.patch', bulkPatchTodos);
 app.patch('/api/todo/:id', patchTodo);
 app.delete('/api/todo/ops.bulk.delete', bulkDeleteTodos);
+app.delete('/api/todo/ops.bulk.deleteAll', bulkDeleteAllTodos);
 app.delete('/api/todo/:id', deleteTodo);
 
 // Flag routes

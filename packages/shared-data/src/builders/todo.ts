@@ -421,6 +421,30 @@ export function bulkDeleteTodos(
   });
 }
 
+/**
+ * DELETE /todo/ops.bulk.deleteAll?filter[completed]=true
+ */
+export function bulkDeleteCompletedTodos(): RequestInfo<ReactiveTodosDocument> {
+  const url = buildBaseURL({ resourcePath: 'todo' });
+  const queryString = buildQueryParams({
+    'filter[completed]': true,
+  });
+
+  return withReactiveResponse<Todo[]>({
+    method: 'DELETE',
+    url: `${url}/ops.bulk.deleteAll?${queryString}`,
+
+    // FIXME: Note
+    // Adding the 'deleteRecord' OpCode and specifying the `ResourceKey`s for
+    // these todos in the `records` array tells the cache that when this
+    // request succeeds it should automatically remove any matching resources
+    // from any cached documents for any requests that include these records
+    // in their results.
+    op: 'deleteRecord',
+    cacheOptions: { types: ['todo'] },
+  });
+}
+
 function keyForSavedResource(resource: Todo): PersistedResourceKey<'todo'> {
   const key = recordIdentifierFor(resource);
   assert('Expected key to have type and id', isExisting(key));
