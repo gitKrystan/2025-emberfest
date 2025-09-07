@@ -18,7 +18,7 @@ import {
   serializeSingleResourceDocument,
 } from '../serializers/base.ts';
 import { handleError } from '../serializers/error.ts';
-import { getBaseUrl } from '../utils/url.ts';
+import { getResourceUrl } from '../utils/url.ts';
 import {
   validateCreateRequest,
   validateRequiredParam,
@@ -70,12 +70,7 @@ export function getTodos(
       ? todoStore.query(cleanQuery)
       : todoStore.findAll();
 
-    const baseUrl = getBaseUrl(req);
-    const document = serializeCollectionResourceDocument(
-      'todo',
-      todos,
-      baseUrl,
-    );
+    const document = serializeCollectionResourceDocument(req, 'todo', todos);
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
     return res.json(document);
@@ -96,8 +91,7 @@ export function getTodo(
     const id = validateRequiredParam('todo id', req.params['id']);
     const todo = todoStore.findById(id);
 
-    const baseUrl = getBaseUrl(req);
-    const document = serializeSingleResourceDocument('todo', todo, baseUrl);
+    const document = serializeSingleResourceDocument(req, 'todo', todo);
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
     return res.json(document);
@@ -127,11 +121,10 @@ export function createTodo(
       completed: attributes.completed,
     });
 
-    const baseUrl = getBaseUrl(req);
-    const document = serializeSingleResourceDocument('todo', newTodo, baseUrl);
+    const document = serializeSingleResourceDocument(req, 'todo', newTodo);
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
-    res.setHeader('Location', `${baseUrl}/todos/${newTodo.id}`);
+    res.setHeader('Location', getResourceUrl(req, 'todo', newTodo));
     return res.status(201).json(document);
   } catch (error) {
     return handleError(res, error);
@@ -155,11 +148,10 @@ export function patchTodo(
 
     const updatedTodo = todoStore.update(id, patchAttributes);
 
-    const baseUrl = getBaseUrl(req);
     const document = serializeSingleResourceDocument(
+      req,
       'todo',
       updatedTodo,
-      baseUrl,
       patchAttributes,
     );
 

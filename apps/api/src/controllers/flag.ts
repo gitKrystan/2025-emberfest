@@ -21,7 +21,6 @@ import {
   serializeSingleResourceDocument,
 } from '../serializers/base.ts';
 import { handleError } from '../serializers/error.ts';
-import { getBaseUrl } from '../utils/url.ts';
 import {
   booleanFlagUpdateSchema,
   positiveNumberFlagUpdateSchema,
@@ -42,12 +41,7 @@ export function getFlags(
   | Response<ResourceErrorDocument> {
   try {
     const flags = flagStore.findAll();
-    const baseUrl = getBaseUrl(req);
-    const document = serializeCollectionResourceDocument(
-      'flag',
-      flags,
-      baseUrl,
-    );
+    const document = serializeCollectionResourceDocument(req, 'flag', flags);
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
     return res.json(document);
@@ -79,12 +73,7 @@ export function updateFlag(
       throw new BadRequestError({ detail: [`Unknown flag id ${id}`] });
     }
 
-    const baseUrl = getBaseUrl(req);
-    const document = serializeSingleResourceDocument(
-      'flag',
-      updatedFlag,
-      baseUrl,
-    );
+    const document = serializeSingleResourceDocument(req, 'flag', updatedFlag);
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
     return res.json(document);

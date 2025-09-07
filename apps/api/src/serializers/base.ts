@@ -1,8 +1,12 @@
+import type { Request } from 'express';
+
 import type {
   CollectionResourceDocument,
   ExistingResourceObject,
   SingleResourceDocument,
 } from '@warp-drive/core/types/spec/json-api-raw';
+
+import { getRequestUrl, getResourceUrl } from '../utils/url.ts';
 
 const JSONAPI_VERSION = {
   version: '1.1',
@@ -14,24 +18,24 @@ interface ExistingRecord<T extends string> {
 }
 
 export function serializeSingleResourceDocument<T extends string>(
+  req: Request,
   type: T,
   record: ExistingRecord<T>,
-  baseUrl: string,
   patchAttrs?: Partial<Omit<ExistingRecord<T>, 'id' | '$type'>>,
 ): SingleResourceDocument<T> {
   return {
-    data: serializeExistingResourceObject(type, record, baseUrl, patchAttrs),
+    data: serializeExistingResourceObject(req, type, record, patchAttrs),
     jsonapi: JSONAPI_VERSION,
     links: {
-      self: `${baseUrl}/${type}/${record.id}`,
+      self: getRequestUrl(req),
     },
   };
 }
 
 function serializeExistingResourceObject<T extends string>(
+  req: Request,
   type: T,
   record: ExistingRecord<T>,
-  baseUrl: string,
   patchAttrs?: Partial<Omit<ExistingRecord<T>, 'id' | '$type'>>,
 ): ExistingResourceObject<T> {
   const { id, $type, ...attributes } = record;
@@ -41,31 +45,31 @@ function serializeExistingResourceObject<T extends string>(
     id,
     attributes: patchAttrs ?? attributes,
     links: {
-      self: `${baseUrl}/${type}/${id}`,
+      self: getResourceUrl(req, type, record),
     },
   };
 }
 
 export function serializeCollectionResourceDocument<T extends string>(
+  req: Request,
   type: T,
   records: ExistingRecord<T>[],
-  baseUrl: string,
 ): CollectionResourceDocument<T> {
   return {
-    data: serializeExistingResourceCollection(type, records, baseUrl),
+    data: serializeExistingResourceCollection(req, type, records),
     jsonapi: JSONAPI_VERSION,
     links: {
-      self: `${baseUrl}/${type}`,
+      self: getRequestUrl(req),
     },
   };
 }
 
 function serializeExistingResourceCollection<T extends string>(
+  req: Request,
   type: T,
   records: ExistingRecord<T>[],
-  baseUrl: string,
 ): ExistingResourceObject<T>[] {
   return records.map((record) =>
-    serializeExistingResourceObject(type, record, baseUrl),
+    serializeExistingResourceObject(req, type, record),
   );
 }
