@@ -1,25 +1,18 @@
-import type { TOC } from '@ember/component/template-only';
-import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import { tracked } from '@glimmer/tracking';
+import { provide } from 'ember-provide-consume-context';
 
 import type { Future } from '@warp-drive/core/request';
-import { Await, Request } from '@warp-drive/ember';
+import { Request } from '@warp-drive/ember';
 
-import { getAllTodos, type ReactiveTodosDocument } from '@workspace/shared-data/builders';
-import type { EditableTodo, Todo } from '@workspace/shared-data/types';
+import type { ReactiveTodosDocument } from '@workspace/shared-data/builders';
 
-import { HandleError } from '#/components/design-system/error';
 import { LoadingSpinner } from '#/components/design-system/loading.gts';
-import { ClearCompletedTodos } from '#/components/todo-app/clear-completed-todos';
-import { CreateTodo } from '#/components/todo-app/create-todo';
-import { Nav } from '#/components/todo-app/nav.gts';
-import { TodoCount } from '#/components/todo-app/todo-count';
-import { TodoItem } from '#/components/todo-app/todo-item';
-import { ToggleAllTodos } from '#/components/todo-app/toggle-all-todos';
-import type AppState from '#/services/app-state';
 import { AppError } from '#/components/todo-app/app-error';
-import { checkout } from '@warp-drive/core/reactive';
+import { CreateTodo } from '#/components/todo-app/create-todo';
+import { Footer } from '#/components/todo-app/footer';
+import { TodoList } from '#/components/todo-app/todo-list';
+import { ToggleAllTodos } from '#/components/todo-app/toggle-all-todos';
+import AppState from '#/util/app-state';
 
 interface Signature {
   Args: {
@@ -45,14 +38,12 @@ export class TodoApp extends Component<Signature> {
             {{#if content.data.length}}
               {{#if this.appState.isSaving}}
                 <LoadingSpinner />
-              {{else if this.canToggle}}
+              {{else if this.appState.canToggle}}
                 <ToggleAllTodos @todos={{content.data}} />
               {{/if}}
 
               {{#unless this.appState.error}}
-                <TodoList @todos={{content.data}} as |todo|>
-                  <TodoItem @todo={{todo}} @onEditStart={{this.onEditStart}} @onEditEnd={{this.onEditEnd}} />
-                </TodoList>
+                <TodoList @todos={{content.data}} />
               {{/unless}}
             {{/if}}
           </:content>
@@ -64,55 +55,10 @@ export class TodoApp extends Component<Signature> {
     </section>
 
     {{#unless this.appState.error}}
-      <Request @query={{(getAllTodos)}} @autorefresh={{true}} @autorefreshBehavior="refresh">
-        <:content as |content|>
-          <Footer @todos={{content.data}}>
-            <TodoCount />
-            <Nav />
-            <ClearCompletedTodos />
-          </Footer>
-        </:content>
-        <:error as |error|>
-          <HandleError @error={{error}} @toast="Could not get all todos for Footer." />
-        </:error>
-      </Request>
+      <Footer />
     {{/unless}}
   </template>
 
-  @service declare private readonly appState: AppState;
-
-  @tracked canToggle = true;
-  readonly onEditStart = () => Promise.resolve().then(() => (this.canToggle = false));
-  readonly onEditEnd = () => Promise.resolve().then(() => (this.canToggle = false));
+  @provide('app-state')
+  private readonly appState = new AppState();
 }
-
-class TodoList extends Component<{
-  Args: { todos: Todo[] };
-  Blocks: { default: [mutableTodoCopy: EditableTodo] };
-}> {
-  <template>
-    <ul class="todo-list">
-      {{#each @todos as |immutableTodo|}}
-        <Await @promise={{this.checkout immutableTodo}}>
-          <:success as |mutableTodoCopy|>{{yield mutableTodoCopy}}</:success>
-          <:error as |error|><HandleError @error={{error}} /></:error>
-        </Await>
-      {{/each}}
-    </ul>
-  </template>
-
-  checkout(todo: Todo): Promise<EditableTodo> {
-    return checkout<EditableTodo>(todo);
-  }
-}
-
-const Footer = <template>
-  {{#if @todos.length}}
-    <footer class="footer">
-      {{yield}}
-    </footer>
-  {{/if}}
-</template> satisfies TOC<{
-  Args: { todos: Todo[] };
-  Blocks: { default: [] };
-}>;

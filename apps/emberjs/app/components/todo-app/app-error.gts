@@ -1,7 +1,8 @@
-import { HandleError } from '#/components/design-system/error';
-import type AppState from '#/services/app-state';
-import { service } from '@ember/service';
 import Component from '@glimmer/component';
+import { consume } from 'ember-provide-consume-context';
+
+import { HandleError } from '#/components/design-system/error';
+import type AppState from '#/util/app-state';
 
 export class AppError extends Component {
   <template>
@@ -12,5 +13,6 @@ export class AppError extends Component {
     </HandleError>
   </template>
 
-  @service declare private readonly appState: AppState;
+  @consume('app-state')
+  declare private readonly appState: AppState;
 }

@@ -2,13 +2,14 @@ import { assert } from '@ember/debug';
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
+import { consume } from 'ember-provide-consume-context';
 
 import { createTodo } from '@workspace/shared-data/builders';
 import type { TodoAttributes } from '@workspace/shared-data/types';
 
-import type AppState from '#/services/app-state';
-import type Store from '#/services/store';
 import { reportError } from '#/helpers/error';
+import type Store from '#/services/store';
+import type AppState from '#/util/app-state';
 
 const NameForTitle = 'title';
 type NameForTitle = typeof NameForTitle;
@@ -31,7 +32,9 @@ export class CreateTodo extends Component {
   </template>
 
   @service declare private readonly store: Store;
-  @service declare private readonly appState: AppState;
+
+  @consume('app-state')
+  declare private readonly appState: AppState;
 
   private readonly onSubmit = async (event: SubmitEvent) => {
     this.appState.onSaveStart();

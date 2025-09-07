@@ -1,7 +1,7 @@
 import Component from '@glimmer/component';
 
-import { toast } from '#/helpers/toast';
 import { reportError } from '#/helpers/error';
+import { toast } from '#/helpers/toast';
 
 interface Signature<E> {
   Element: HTMLDivElement;

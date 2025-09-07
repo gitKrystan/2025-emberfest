@@ -1,6 +1,7 @@
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
+import { consume } from 'ember-provide-consume-context';
 
 import { Request } from '@warp-drive/ember';
 
@@ -9,10 +10,9 @@ import { getCompletedTodos } from '@workspace/shared-data/builders';
 import type { Todo } from '@workspace/shared-data/types';
 
 import { HandleError } from '#/components/design-system/error';
-import type Store from '#/services/store';
-import type AppState from '#/services/app-state';
-import { toast } from '#/helpers/toast';
 import { reportError } from '#/helpers/error';
+import type Store from '#/services/store';
+import type AppState from '#/util/app-state';
 
 export const ClearCompletedTodos = <template>
   <Request @query={{(getCompletedTodos)}} @autorefresh={{true}} @autorefreshBehavior="refresh">
@@ -37,7 +37,9 @@ class ClearCompleted extends Component<{
   </template>
 
   @service declare private readonly store: Store;
-  @service declare private readonly appState: AppState;
+
+  @consume('app-state')
+  declare private readonly appState: AppState;
 
   clearCompleted = async () => {
     try {

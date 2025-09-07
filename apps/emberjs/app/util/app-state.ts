@@ -1,7 +1,6 @@
-import Service from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
-export default class AppState extends Service {
+export default class AppState {
   @tracked private _error: unknown = null;
   get error() {
     return this._error;
@@ -15,6 +14,16 @@ export default class AppState extends Service {
       this.onSaveEnd();
     });
   };
+
+  @tracked private _isEditing = true;
+  get isEditing() {
+    return this._isEditing;
+  }
+
+  readonly onEditStart = () =>
+    Promise.resolve().then(() => (this._isEditing = true));
+  readonly onEditEnd = () =>
+    Promise.resolve().then(() => (this._isEditing = false));
 
   @tracked private _isSaving = false;
   get isSaving() {
@@ -32,4 +41,8 @@ export default class AppState extends Service {
       this._isSaving = false;
     }
   };
+
+  get canToggle() {
+    return !this._isEditing;
+  }
 }

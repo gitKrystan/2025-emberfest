@@ -2,13 +2,14 @@ import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { cached } from '@glimmer/tracking';
+import { consume } from 'ember-provide-consume-context';
 
 import { bulkPatchCacheTodos, bulkPatchTodos } from '@workspace/shared-data/builders';
 import type { Todo } from '@workspace/shared-data/types';
 
-import type AppState from '#/services/app-state';
-import type Store from '#/services/store';
 import { reportError } from '#/helpers/error';
+import type Store from '#/services/store';
+import type AppState from '#/util/app-state';
 
 export class ToggleAllTodos extends Component<{
   Args: {
@@ -27,7 +28,9 @@ export class ToggleAllTodos extends Component<{
   </template>
 
   @service declare private readonly store: Store;
-  @service declare private readonly appState: AppState;
+
+  @consume('app-state')
+  declare private readonly appState: AppState;
 
   @cached
   private get areViewableCompleted(): boolean {

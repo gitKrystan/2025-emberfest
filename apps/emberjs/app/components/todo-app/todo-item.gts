@@ -1,8 +1,10 @@
 import { assert } from '@ember/debug';
+import { fn } from '@ember/helper';
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
+import { consume } from 'ember-provide-consume-context';
 
 import {
   deleteTodo,
@@ -13,11 +15,10 @@ import {
 import type { EditableTodo } from '@workspace/shared-data/types';
 
 import { Form } from '#/components/design-system/form';
-import { autofocus } from '#/modifiers/autofocus';
-import type AppState from '#/services/app-state';
-import type Store from '#/services/store';
 import { reportError } from '#/helpers/error';
-import { fn } from '@ember/helper';
+import { autofocus } from '#/modifiers/autofocus';
+import type Store from '#/services/store';
+import type AppState from '#/util/app-state';
 
 interface Signature {
   Args: {
@@ -69,7 +70,8 @@ export class TodoItem extends Component<Signature> {
     </li>
   </template>
 
-  @service declare private readonly appState: AppState;
+  @consume('app-state')
+  declare private readonly appState: AppState;
 
   /** Whether we are in title-editing mode */
   @tracked private isEditingTitle = false;
