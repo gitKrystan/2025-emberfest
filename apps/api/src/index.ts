@@ -12,6 +12,7 @@ import {
   deleteTodo,
   getTodo,
   getTodos,
+  getTodosCount,
   patchTodo,
 } from './controllers/todo.ts';
 import { validateJsonApiContentType } from './middleware/validate-content-type.ts';
@@ -76,6 +77,7 @@ app.use('/api/todo', validateJsonApiContentType);
 
 // Todo routes
 app.get('/api/todo', getTodos);
+app.get('/api/todo/ops.count', getTodosCount);
 app.get('/api/todo/:id', getTodo);
 app.post('/api/todo', createTodo);
 app.patch('/api/todo/ops.bulk.patch', bulkPatchTodos);

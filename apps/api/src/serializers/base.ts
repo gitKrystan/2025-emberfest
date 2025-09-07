@@ -1,5 +1,7 @@
 import type { Request } from 'express';
 
+import type { ResourceCountDocument } from '@workspace/shared-data/builders';
+
 import type {
   CollectionResourceDocument,
   ExistingResourceObject,
@@ -145,6 +147,20 @@ export function serializePaginatedCollectionResourceDocument<T extends string>(
       ...paginationLinks,
     },
     jsonapi: JSONAPI_VERSION,
+  };
+}
+
+export function serializeCountDocument(
+  req: Request,
+  count: number,
+): ResourceCountDocument {
+  return {
+    meta: {
+      count: count,
+    },
+    links: {
+      self: getRequestUrl(req),
+    },
   };
 }
 

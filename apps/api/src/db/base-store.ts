@@ -23,6 +23,13 @@ export abstract class Store<T extends { id: string }> {
   }
 
   /**
+   * Get the count of values
+   */
+  get count(): number {
+    return this.map.size;
+  }
+
+  /**
    * Get all values
    */
   findAll(): T[] {
@@ -134,13 +141,6 @@ export abstract class Store<T extends { id: string }> {
    */
   exists(id: string): boolean {
     return this.map.has(id);
-  }
-
-  /**
-   * Get the count of values
-   */
-  count(): number {
-    return this.map.size;
   }
 
   /**

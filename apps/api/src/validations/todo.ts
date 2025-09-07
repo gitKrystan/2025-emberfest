@@ -1,4 +1,9 @@
+import type { Request } from 'express';
 import { z } from 'zod';
+
+import type { TodoAttributes } from '@workspace/shared-data/types';
+
+import { validateWithZod } from './utils.ts';
 
 /**
  * Schema for validating Todo data for creation
@@ -79,6 +84,29 @@ export const todoQuerySchema = z.object({
     .optional(),
 });
 export type TodoQuery = z.infer<typeof todoQuerySchema>;
+
+export function validateQueryParams(req: Request): {
+  query: TodoQuery;
+  filter: Partial<TodoAttributes>;
+  hasFilter: boolean;
+  hasPageParams: boolean;
+} {
+  const query = validateWithZod(todoQuerySchema, req.query);
+
+  // Filter out undefined values to create a clean query object
+  const cleanFilter: Partial<TodoAttributes> = {};
+  if (query.filter?.completed !== undefined) {
+    cleanFilter.completed = query.filter.completed;
+  }
+
+  return {
+    query,
+    filter: cleanFilter,
+    hasFilter: Object.keys(cleanFilter).length > 0,
+    hasPageParams:
+      query.page?.limit !== undefined || query.page?.offset !== undefined,
+  };
+}
 
 /**
  * Schema for validating bulk delete request

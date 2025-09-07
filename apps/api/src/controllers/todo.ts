@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 
+import type { ResourceCountDocument } from '@workspace/shared-data/builders';
 import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
 import type { TodoAttributes } from '@workspace/shared-data/types';
 import type { ExactPartial } from '@workspace/shared-utils/types';
@@ -15,6 +16,7 @@ import { todoStore } from '../db/todo-store.ts';
 import { InternalServerError } from '../errors.ts';
 import {
   serializeCollectionResourceDocument,
+  serializeCountDocument,
   serializePaginatedCollectionResourceDocument,
   serializeSingleResourceDocument,
 } from '../serializers/base.ts';
@@ -29,8 +31,8 @@ import {
   todoBulkDeleteSchema,
   todoBulkPatchSchema,
   todoCreationSchema,
-  todoQuerySchema,
   todoUpdateSchema,
+  validateQueryParams,
 } from '../validations/todo.ts';
 import { validateWithZod } from '../validations/utils.ts';
 
@@ -58,26 +60,15 @@ export function getTodos(
   try {
     checkShouldError();
 
-    const queryParams = validateWithZod(todoQuerySchema, req.query);
-
-    // Filter out undefined values to create a clean query object
-    const cleanQuery: Record<string, unknown> = {};
-    if (queryParams.filter?.completed !== undefined) {
-      cleanQuery['completed'] = queryParams.filter.completed;
-    }
-
-    // Use pagination if page parameters are provided
-    const hasPageParams =
-      queryParams.page?.limit !== undefined ||
-      queryParams.page?.offset !== undefined;
+    const { query, filter, hasFilter, hasPageParams } =
+      validateQueryParams(req);
 
     if (hasPageParams) {
-      const limit = queryParams.page?.limit ?? 25;
-      const offset = queryParams.page?.offset ?? 0;
+      const limit = query.page?.limit ?? 25;
+      const offset = query.page?.offset ?? 0;
 
-      const hasQueryParams = Object.keys(cleanQuery).length > 0;
-      const paginatedResult = hasQueryParams
-        ? todoStore.queryPaginated(cleanQuery, { limit, offset })
+      const paginatedResult = hasFilter
+        ? todoStore.queryPaginated(filter, { limit, offset })
         : todoStore.findAllPaginated({ limit, offset });
 
       const document = serializePaginatedCollectionResourceDocument(
@@ -90,9 +81,9 @@ export function getTodos(
       return res.json(document);
     } else {
       // Legacy behavior when no pagination is requested
-      const hasQueryParams = Object.keys(cleanQuery).length > 0;
+      const hasQueryParams = Object.keys(filter).length > 0;
       const todos = hasQueryParams
-        ? todoStore.query(cleanQuery)
+        ? todoStore.query(filter)
         : todoStore.findAll();
 
       const document = serializeCollectionResourceDocument(req, 'todo', todos);
@@ -100,6 +91,29 @@ export function getTodos(
       res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
       return res.json(document);
     }
+  } catch (error) {
+    return handleError(res, error);
+  }
+}
+
+/**
+ * GET /todo/ops.count - Get count of todos
+ */
+export function getTodosCount(
+  req: Request,
+  res: Response,
+): Response<ResourceCountDocument> | Response<ResourceErrorDocument> {
+  try {
+    checkShouldError();
+
+    const { filter, hasFilter } = validateQueryParams(req);
+
+    const count = hasFilter ? todoStore.query(filter).length : todoStore.count;
+
+    const document = serializeCountDocument(req, count);
+
+    res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
+    return res.json(document);
   } catch (error) {
     return handleError(res, error);
   }

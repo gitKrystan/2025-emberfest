@@ -2,8 +2,7 @@ import type { TOC } from '@ember/component/template-only';
 
 import { Request } from '@warp-drive/ember';
 
-import { getActiveTodos } from '@workspace/shared-data/builders';
-import type { Todo } from '@workspace/shared-data/types';
+import { getActiveTodosCount } from '@workspace/shared-data/builders';
 
 import { HandleError } from '#/components/design-system/error';
 
@@ -17,9 +16,9 @@ import { HandleError } from '#/components/design-system/error';
  */
 export const TodoCount = <template>
   <span class="todo-count">
-    <Request @query={{(getActiveTodos)}} @autorefresh={{true}} @autorefreshBehavior="refresh">
+    <Request @query={{(getActiveTodosCount)}} @autorefresh={{true}} @autorefreshBehavior="refresh">
       <:content as |content|>
-        <Remaining @remaining={{content.data}} />
+        <Remaining @remaining={{content.meta.count}} />
       </:content>
       <:error as |error|>
         <HandleError @error={{error}} @toast="Could not get active todos for Todo Remaining Count." />
@@ -29,11 +28,9 @@ export const TodoCount = <template>
 </template>;
 
 const Remaining = <template>
-  <strong>{{@remaining.length}}</strong>
-  {{itemLabel @remaining.length}}
-  left
+  <strong>{{@remaining}}</strong> {{itemLabel @remaining}} left
 </template> satisfies TOC<{
-  Args: { remaining: Todo[] };
+  Args: { remaining: number };
 }>;
 
 function itemLabel(count: number) {

@@ -2,12 +2,16 @@ import type { Store } from '@warp-drive/core';
 import { recordIdentifierFor } from '@warp-drive/core';
 import { assert } from '@warp-drive/core/build-config/macros';
 import type { ReactiveDataDocument } from '@warp-drive/core/reactive';
-import { withReactiveResponse } from '@warp-drive/core/request';
+import {
+  withReactiveResponse,
+  withResponseType,
+} from '@warp-drive/core/request';
 import type {
   PersistedResourceKey,
   RequestKey,
 } from '@warp-drive/core/types/identifier';
 import type { RequestInfo } from '@warp-drive/core/types/request';
+import type { ResourceMetaDocument } from '@warp-drive/core/types/spec/document';
 import { buildBaseURL, buildQueryParams } from '@warp-drive/utilities';
 
 import { isExisting } from '../index.ts';
@@ -16,8 +20,15 @@ import type { Todo, TodoAttributes } from '../types/index.ts';
 export type ReactiveTodoDocument = ReactiveDataDocument<Todo>;
 export type ReactiveTodosDocument = ReactiveDataDocument<Todo[]>;
 
+export interface ResourceCountDocument extends ResourceMetaDocument {
+  meta: {
+    count: number;
+  };
+}
+
 /**
  * GET /todo
+ * (plus pagination params)
  */
 export function getAllTodos(): RequestInfo<ReactiveTodosDocument> {
   const url = buildBaseURL({ resourcePath: 'todo' });
@@ -40,7 +51,27 @@ export function getAllTodos(): RequestInfo<ReactiveTodosDocument> {
 }
 
 /**
- * GET /todo?completed=true
+ * GET /todo/ops.count
+ */
+export function getAllTodosCount(): RequestInfo<ResourceCountDocument> {
+  const url = buildBaseURL({ resourcePath: 'todo' });
+
+  return withResponseType<ResourceCountDocument>({
+    method: 'GET',
+    url: `${url}/ops.count`,
+
+    // Adding the 'query' OpCode and specifying the 'todo' type in
+    // `cacheOptions` tells the `DefaultCachePolicy` in our store to
+    // automatically invalidate this request when any request with the
+    // 'createRecord' OpCode + 'todo' in `cacheOptions.type` succeeds.
+    op: 'query',
+    cacheOptions: { types: ['todo'] },
+  });
+}
+
+/**
+ * GET /todo?filter[completed]=true
+ * (plus pagination params)
  */
 export function getCompletedTodos(): RequestInfo<ReactiveTodosDocument> {
   const url = buildBaseURL({ resourcePath: 'todo' });
@@ -54,6 +85,28 @@ export function getCompletedTodos(): RequestInfo<ReactiveTodosDocument> {
     method: 'GET',
     url: `${url}?${queryString}`,
 
+    op: 'query',
+    cacheOptions: { types: ['todo'] },
+  });
+}
+
+/**
+ * GET /todo/ops.count?filter[completed]=true
+ */
+export function getCompletedTodosCount(): RequestInfo<ResourceCountDocument> {
+  const url = buildBaseURL({ resourcePath: 'todo' });
+  const queryString = buildQueryParams({
+    'filter[completed]': true,
+  });
+
+  return withResponseType<ResourceCountDocument>({
+    method: 'GET',
+    url: `${url}/ops.count?${queryString}`,
+
+    // Adding the 'query' OpCode and specifying the 'todo' type in
+    // `cacheOptions` tells the `DefaultCachePolicy` in our store to
+    // automatically invalidate this request when any request with the
+    // 'createRecord' OpCode + 'todo' in `cacheOptions.type` succeeds.
     op: 'query',
     cacheOptions: { types: ['todo'] },
   });
@@ -74,6 +127,28 @@ export function getActiveTodos(): RequestInfo<ReactiveTodosDocument> {
     method: 'GET',
     url: `${url}?${queryString}`,
 
+    op: 'query',
+    cacheOptions: { types: ['todo'] },
+  });
+}
+
+/**
+ * GET /todo/ops.count?filter[completed]=false
+ */
+export function getActiveTodosCount(): RequestInfo<ResourceCountDocument> {
+  const url = buildBaseURL({ resourcePath: 'todo' });
+  const queryString = buildQueryParams({
+    'filter[completed]': false,
+  });
+
+  return withResponseType<ResourceCountDocument>({
+    method: 'GET',
+    url: `${url}/ops.count?${queryString}`,
+
+    // Adding the 'query' OpCode and specifying the 'todo' type in
+    // `cacheOptions` tells the `DefaultCachePolicy` in our store to
+    // automatically invalidate this request when any request with the
+    // 'createRecord' OpCode + 'todo' in `cacheOptions.type` succeeds.
     op: 'query',
     cacheOptions: { types: ['todo'] },
   });
