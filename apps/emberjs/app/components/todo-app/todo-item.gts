@@ -10,17 +10,18 @@ import {
   patchCacheTodoCompleted,
   patchTodo,
 } from '@workspace/shared-data/builders';
-import type { Todo, TodoAttributes } from '@workspace/shared-data/types';
+import type { EditableTodo } from '@workspace/shared-data/types';
 
 import { Form } from '#/components/design-system/form';
 import { autofocus } from '#/modifiers/autofocus';
 import type AppState from '#/services/app-state';
 import type Store from '#/services/store';
 import { reportError } from '#/helpers/error';
+import { fn } from '@ember/helper';
 
 interface Signature {
   Args: {
-    todo: Todo;
+    todo: EditableTodo;
     onEditStart: () => void;
     onEditEnd: () => void;
   };
@@ -36,7 +37,7 @@ export class TodoItem extends Component<Signature> {
           @isSaving={{this.appState.isSaving}}
           @onSaveStart={{this.onSaveStart}}
           @onSaveEnd={{this.onSaveEnd}}
-          {{on "keyup" this.onTitleKeyup}}
+          @onCancel={{this.endEditing}}
           {{autofocus}}
         />
       {{else}}
@@ -107,15 +108,6 @@ export class TodoItem extends Component<Signature> {
     this.startEditing();
   };
 
-  /** Reset on Escape */
-  private readonly onTitleKeyup = (event: KeyboardEvent) => {
-    assert('Expected event target to be an HTMLInputElement', event.target instanceof HTMLInputElement);
-    if (event.key === 'Escape') {
-      event.target.value = this.args.todo.title;
-      this.endEditing();
-    }
-  };
-
   /** Start Editing on Enter */
   private readonly onToggleKeyup = (event: KeyboardEvent) => {
     assert('Expected event target to be an HTMLInputElement', event.target instanceof HTMLInputElement);
@@ -125,10 +117,19 @@ export class TodoItem extends Component<Signature> {
   };
 }
 
+/**
+ * Provides a checkbox that toggles the "completed" state of a todo.
+ *
+ * The update is optimistically applied, but only to the checked out
+ * mutable copy of the todo, not the cache or backend. This ensures
+ * that the UI in the TodoItem components share the same reactive state,
+ * (e.g. the checkbox and the label's strike-through),
+ * but this state is _not_ shared with the rest of the app.
+ */
 class CompletedForm extends Component<{
   Element: HTMLInputElement;
   Args: {
-    todo: Todo;
+    todo: EditableTodo;
     isSaving: boolean;
     onSaveStart: () => void;
     onSaveEnd: () => void;
@@ -136,96 +137,80 @@ class CompletedForm extends Component<{
   Blocks: { default: [] };
 }> {
   <template>
-    <Form {{on "submit" this.onSubmit}} as |form|>
-      <input
-        ...attributes
-        aria-label="Toggle the completion state of this todo"
-        name="completed"
-        type="checkbox"
-        checked={{@todo.completed}}
-        {{on "change" form.dispatchSubmit}}
-      />
+    <input
+      ...attributes
+      aria-label="Toggle the completion state of this todo"
+      name="completed"
+      type="checkbox"
+      checked={{@todo.completed}}
+      {{on "change" (fn this.updateCompleted @todo)}}
+    />
 
-      {{yield}}
-    </Form>
+    {{yield}}
   </template>
 
   @service declare private readonly store: Store;
 
-  private readonly onSubmit = (event: SubmitEvent) => {
-    event.preventDefault();
-
+  private readonly updateCompleted = async (todo: EditableTodo, event: Event) => {
     if (this.args.isSaving) {
       return;
     }
-
-    const { attributes, submitType } = processSubmitEvent(event);
-    assert('Expected submit type to be completed', submitType === 'completed');
-    assert('Expected attributes to have completed', typeof attributes.completed === 'boolean');
-
-    return this.updateCompleted(attributes.completed);
-  };
-
-  private readonly updateCompleted = async (completed: boolean) => {
     this.args.onSaveStart();
 
+    const wasCompleted = todo.completed;
+    const completed = !wasCompleted;
+
+    assert('Expected event target to be an HTMLInputElement', event.target instanceof HTMLInputElement);
+    assert(`Expected target.checked to match completed ${completed}`, event.target.checked === completed);
+
     try {
-      await this.store.request(patchTodo(this.args.todo, { completed }));
+      todo.completed = completed;
+      await this.store.request(patchTodo(todo, { completed }));
 
       if (completed) {
-        patchCacheTodoCompleted(this.store, this.args.todo);
+        patchCacheTodoCompleted(this.store, todo);
       } else {
-        patchCacheTodoActivated(this.store, this.args.todo);
+        patchCacheTodoActivated(this.store, todo);
       }
     } catch (e) {
       reportError(new Error('Could not update todo completion state', { cause: e }), { toast: true });
+      todo.completed = wasCompleted;
     }
 
     this.args.onSaveEnd();
   };
 }
 
+/** Provides a button that deletes the Todo using "pessimistic" deletion. */
 class DestroyForm extends Component<{
   Element: HTMLButtonElement;
   Args: {
-    todo: Todo;
+    todo: EditableTodo;
     isSaving: boolean;
     onSaveStart: () => void;
     onSaveEnd: () => void;
   };
 }> {
   <template>
-    <Form {{on "submit" this.onSubmit}} as |form|>
-      <button
-        ...attributes
-        aria-label="Delete this todo"
-        name="destroy"
-        type="button"
-        {{on "click" form.dispatchSubmit}}
-      />
-    </Form>
+    <button
+      ...attributes
+      aria-label="Delete this todo"
+      name="destroy"
+      type="button"
+      {{on "click" (fn this.deleteTodo @todo)}}
+    />
   </template>
 
   @service declare private readonly store: Store;
 
-  private readonly onSubmit = (event: SubmitEvent) => {
-    event.preventDefault();
-
+  private readonly deleteTodo = async (todo: EditableTodo) => {
     if (this.args.isSaving) {
       return;
     }
-
-    const { submitType } = processSubmitEvent(event);
-    assert('Expected submit type to be destroy', submitType !== 'destroy');
-
-    return this.deleteTodo();
-  };
-
-  private readonly deleteTodo = async () => {
     this.args.onSaveStart();
 
     try {
-      await this.store.request(deleteTodo(this.args.todo));
+      await this.store.request(deleteTodo(todo));
     } catch (e) {
       reportError(new Error('Could not delete todo', { cause: e }), { toast: true });
     }
@@ -236,20 +221,22 @@ class DestroyForm extends Component<{
 
 class TitleForm extends Component<{
   Args: {
-    todo: Todo;
+    todo: EditableTodo;
     isSaving: boolean;
     onSaveStart: () => void;
     onSaveEnd: () => void;
+    onCancel: () => void;
   };
 }> {
   <template>
-    <Form {{on "submit" this.onSubmit}} as |form|>
+    <Form {{on "submit" (fn this.onSubmit @todo)}} as |form|>
       <input
         aria-label="Edit this todo"
         name="title"
         type="text"
         value={{@todo.title}}
         ...attributes
+        {{on "keydown" this.onTitleKeydown}}
         {{on "blur" form.dispatchSubmit}}
       />
     </Form>
@@ -257,84 +244,60 @@ class TitleForm extends Component<{
 
   @service declare private readonly store: Store;
 
-  private readonly onSubmit = async (event: SubmitEvent) => {
-    event.preventDefault();
+  @tracked private submitDisabled = false;
 
-    if (this.args.isSaving) {
-      return;
-    }
-
-    const { attributes } = processSubmitEvent(event);
-    assert('Expected attributes to have title', typeof attributes.title === 'string');
-
-    if (attributes.title.length === 0) {
-      return this.deleteTodo();
-    } else if (attributes.title !== this.args.todo.title) {
-      return this.patchTodoTitle(attributes.title);
+  /** Cancel on Escape */
+  private readonly onTitleKeydown = (event: KeyboardEvent) => {
+    assert('Expected event target to be an HTMLInputElement', event.target instanceof HTMLInputElement);
+    if (event.key === 'Escape') {
+      this.submitDisabled = true;
+      this.args.onCancel();
     }
   };
 
-  private readonly deleteTodo = async () => {
+  private readonly onSubmit = async (todo: EditableTodo, event: SubmitEvent) => {
+    event.preventDefault();
+
+    if (this.args.isSaving || this.submitDisabled) {
+      return;
+    }
+    // Prevent double-submission
+    this.submitDisabled = true;
     this.args.onSaveStart();
 
+    const title = processTitleSubmitEvent(event);
+    if (title.length === 0) {
+      await this.deleteTodo(todo);
+    } else if (title !== todo.title) {
+      await this.patchTodoTitle(todo, title);
+    }
+
+    this.args.onSaveEnd();
+  };
+
+  private readonly deleteTodo = async (todo: EditableTodo) => {
     try {
-      await this.store.request(deleteTodo(this.args.todo));
+      await this.store.request(deleteTodo(todo));
     } catch (e) {
       reportError(new Error('Could not delete todo', { cause: e }), { toast: true });
     }
-
-    this.args.onSaveEnd();
   };
 
-  private readonly patchTodoTitle = async (title: string) => {
-    this.args.onSaveStart();
-
+  private readonly patchTodoTitle = async (todo: EditableTodo, title: string) => {
     try {
-      await this.store.request(patchTodo(this.args.todo, { title }));
+      await this.store.request(patchTodo(todo, { title }));
     } catch (e) {
       reportError(new Error('Could not update todo title', { cause: e }), { toast: true });
     }
-
-    this.args.onSaveEnd();
   };
 }
 
-/** Hacks to avoid building a form library */
-function processSubmitEvent(event: SubmitEvent): {
-  attributes: Partial<TodoAttributes>;
-  submitType: 'completed' | 'destroy' | 'submit';
-  form: HTMLFormElement;
-} {
+function processTitleSubmitEvent(event: SubmitEvent): string {
   const form = event.target;
   assert('Expected event target to be an HTMLFormElement', form instanceof HTMLFormElement);
   const formData = new FormData(form);
 
-  if (event.submitter) {
-    if (isDestroyButton(event.submitter)) {
-      return { attributes: {}, submitType: 'destroy', form };
-    }
-
-    if (isCompleteButton(event.submitter)) {
-      const completed = event.submitter.checked;
-      return { attributes: { completed }, submitType: 'completed', form };
-    }
-  }
-
-  const attributes: Partial<TodoAttributes> = {};
-
   const rawTitle = formData.get('title');
-  if (rawTitle !== null) {
-    assert('Expected title to be a string', typeof rawTitle === 'string');
-    attributes.title = rawTitle.trim();
-  }
-
-  return { attributes, submitType: 'submit', form };
-}
-
-function isDestroyButton(element: HTMLElement): element is HTMLButtonElement {
-  return element instanceof HTMLButtonElement && element.name === 'destroy';
-}
-
-function isCompleteButton(element: HTMLElement): element is HTMLInputElement {
-  return element instanceof HTMLInputElement && element.type === 'checkbox' && element.name === 'completed';
+  assert('Expected title to be a string', typeof rawTitle === 'string');
+  return rawTitle.trim();
 }

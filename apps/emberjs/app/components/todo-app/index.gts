@@ -4,10 +4,10 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 
 import type { Future } from '@warp-drive/core/request';
-import { Request } from '@warp-drive/ember';
+import { Await, Request } from '@warp-drive/ember';
 
 import { getAllTodos, type ReactiveTodosDocument } from '@workspace/shared-data/builders';
-import type { Todo } from '@workspace/shared-data/types';
+import type { EditableTodo, Todo } from '@workspace/shared-data/types';
 
 import { HandleError } from '#/components/design-system/error';
 import { LoadingSpinner } from '#/components/design-system/loading.gts';
@@ -19,6 +19,7 @@ import { TodoItem } from '#/components/todo-app/todo-item';
 import { ToggleAllTodos } from '#/components/todo-app/toggle-all-todos';
 import type AppState from '#/services/app-state';
 import { AppError } from '#/components/todo-app/app-error';
+import { checkout } from '@warp-drive/core/reactive';
 
 interface Signature {
   Args: {
@@ -81,20 +82,29 @@ export class TodoApp extends Component<Signature> {
   @service declare private readonly appState: AppState;
 
   @tracked canToggle = true;
-  readonly onEditStart = () => (this.canToggle = false);
-  readonly onEditEnd = () => (this.canToggle = true);
+  readonly onEditStart = () => Promise.resolve().then(() => (this.canToggle = false));
+  readonly onEditEnd = () => Promise.resolve().then(() => (this.canToggle = false));
 }
 
-const TodoList = <template>
-  <ul class="todo-list">
-    {{#each @todos as |todo|}}
-      {{yield todo}}
-    {{/each}}
-  </ul>
-</template> satisfies TOC<{
+class TodoList extends Component<{
   Args: { todos: Todo[] };
-  Blocks: { default: [todo: Todo] };
-}>;
+  Blocks: { default: [mutableTodoCopy: EditableTodo] };
+}> {
+  <template>
+    <ul class="todo-list">
+      {{#each @todos as |immutableTodo|}}
+        <Await @promise={{this.checkout immutableTodo}}>
+          <:success as |mutableTodoCopy|>{{yield mutableTodoCopy}}</:success>
+          <:error as |error|><HandleError @error={{error}} /></:error>
+        </Await>
+      {{/each}}
+    </ul>
+  </template>
+
+  checkout(todo: Todo): Promise<EditableTodo> {
+    return checkout<EditableTodo>(todo);
+  }
+}
 
 const Footer = <template>
   {{#if @todos.length}}

@@ -17,3 +17,7 @@ export interface TodoAttributes {
 export interface Todo extends BaseTodo, Readonly<TodoAttributes> {
   readonly id: string;
 }
+
+export interface EditableTodo extends BaseTodo, TodoAttributes {
+  id: string;
+}
