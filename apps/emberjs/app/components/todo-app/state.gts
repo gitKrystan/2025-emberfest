@@ -1,9 +1,8 @@
 import Component from '@glimmer/component';
-import { provide } from 'ember-provide-consume-context';
+import { consume } from 'ember-provide-consume-context';
 
 import { AppError } from '#/components/todo-app/app-error';
-import { Footer } from '#/components/todo-app/footer';
-import AppState from '#/util/app-state';
+import type AppState from '#/util/app-state';
 
 interface Signature {
   Blocks: {
@@ -12,6 +11,15 @@ interface Signature {
   };
 }
 
+/**
+ * The overall state container for the Todo App.
+ *
+ * This component is responsible for displaying:
+ * - unrecoverable errors,
+ * - the main app,
+ * - the header,
+ * - and the footer.
+ */
 export class TodoAppState extends Component<Signature> {
   <template>
     <section>
@@ -30,10 +38,10 @@ export class TodoAppState extends Component<Signature> {
     </section>
 
     {{#unless this.appState.error}}
-      <Footer />
+      {{yield to="footer"}}
     {{/unless}}
   </template>
 
-  @provide('app-state')
-  private readonly appState = new AppState();
+  @consume('app-state')
+  declare private readonly appState: AppState;
 }

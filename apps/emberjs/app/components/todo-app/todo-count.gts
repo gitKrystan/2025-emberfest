@@ -7,6 +7,14 @@ import type { Todo } from '@workspace/shared-data/types';
 
 import { HandleError } from '#/components/design-system/error';
 
+/**
+ * Displays the count of active (not completed) todos.
+ * It fetches the active todos and displays the count.
+ * If there are no active todos, it displays "0 items left".
+ * If there is an error fetching the active todos,
+ *   it displays a toast error message.
+ * It automatically refreshes when the active todos change.
+ */
 export const TodoCount = <template>
   <span class="todo-count">
     <Request @query={{(getActiveTodos)}} @autorefresh={{true}} @autorefreshBehavior="refresh">

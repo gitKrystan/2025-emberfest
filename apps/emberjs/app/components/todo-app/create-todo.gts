@@ -14,6 +14,12 @@ import type AppState from '#/util/app-state';
 const NameForTitle = 'title';
 type NameForTitle = typeof NameForTitle;
 
+/**
+ * Renders a form to create a new todo.
+ * On submit, it will create a new todo with the given title.
+ * While the todo is being created, the app state is updated to reflect that
+ * a save is in progress.
+ */
 export class CreateTodo extends Component {
   <template>
     <form {{on "submit" this.onSubmit}} class="new-todo-form">

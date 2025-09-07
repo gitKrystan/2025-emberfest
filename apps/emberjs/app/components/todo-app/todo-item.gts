@@ -28,6 +28,21 @@ interface Signature {
   };
 }
 
+/**
+ * Renders a single todo item, including:
+ * - a checkbox to toggle completion,
+ * - the todo title (which can be edited on double-click),
+ * - and a button to delete the todo.
+ *
+ * The component manages its own "editing" state for the title,
+ * and uses the provided AppState to manage async save state.
+ *
+ * The component uses optimistic updates for toggling completion,
+ * but pessimistic updates for editing the title and deleting the todo.
+ *
+ * The component ensures that only one todo can be in editing mode at a time
+ * by calling the provided `onEditStart` and `onEditEnd` callbacks.
+ */
 export class TodoItem extends Component<Signature> {
   <template>
     <li class="{{if @todo.completed 'completed'}} {{if this.isEditingTitle 'editing'}}">

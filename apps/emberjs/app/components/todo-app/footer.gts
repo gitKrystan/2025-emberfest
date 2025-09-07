@@ -1,23 +1,20 @@
+import type { TOC } from '@ember/component/template-only';
+
 import { Request } from '@warp-drive/ember';
 
 import { getAllTodos } from '@workspace/shared-data/builders';
 
 import { HandleError } from '#/components/design-system/error';
-import { ClearCompletedTodos } from '#/components/todo-app/clear-completed-todos';
-import { Nav } from '#/components/todo-app/nav';
-import { TodoCount } from '#/components/todo-app/todo-count';
 
 /** Ensures all Todos are loaded before displaying the footer elements. */
-export const Footer = <template>
+export const MaybeFooter = <template>
   <Request @query={{(getAllTodos)}} @autorefresh={{true}} @autorefreshBehavior="refresh">
 
     {{! On success, render the footer content }}
     <:content as |content|>
       {{#if content.data.length}}
         <footer class="footer">
-          <TodoCount />
-          <Nav />
-          <ClearCompletedTodos />
+          {{yield}}
         </footer>
       {{/if}}
     </:content>
@@ -28,4 +25,4 @@ export const Footer = <template>
     </:error>
 
   </Request>
-</template>;
+</template> satisfies TOC<{ Blocks: { default: [] } }>;

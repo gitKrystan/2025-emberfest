@@ -14,6 +14,11 @@ import { reportError } from '#/helpers/error';
 import type Store from '#/services/store';
 import type AppState from '#/util/app-state';
 
+/**
+ * Renders a button to clear completed todos if there are any.
+ * On click, it will delete all completed todos.
+ * If there are no completed todos, nothing is rendered.
+ */
 export const ClearCompletedTodos = <template>
   <Request @query={{(getCompletedTodos)}} @autorefresh={{true}} @autorefreshBehavior="refresh">
     <:content as |content|>

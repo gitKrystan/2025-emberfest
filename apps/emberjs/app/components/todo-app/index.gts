@@ -1,14 +1,21 @@
-import type { TOC } from '@ember/component/template-only';
+import Component from '@glimmer/component';
+import { cached } from '@glimmer/tracking';
+import { provide } from 'ember-provide-consume-context';
 
 import type { Future } from '@warp-drive/core/request';
 
 import type { ReactiveTodosDocument } from '@workspace/shared-data/builders';
 
+import { ClearCompletedTodos } from '#/components/todo-app/clear-completed-todos';
 import { CreateTodo } from '#/components/todo-app/create-todo';
+import { MaybeFooter } from '#/components/todo-app/footer.gts';
+import { Nav } from '#/components/todo-app/nav';
 import { TodoAppState } from '#/components/todo-app/state.gts';
+import { TodoCount } from '#/components/todo-app/todo-count';
 import { TodoList } from '#/components/todo-app/todo-list';
 import { TodoProvider } from '#/components/todo-app/todo-provider';
 import { ToggleAllTodos } from '#/components/todo-app/toggle-all-todos';
+import AppState from '#/util/app-state';
 
 interface Signature {
   Args: {
@@ -16,26 +23,44 @@ interface Signature {
   };
 }
 
-export const TodoApp = <template>
-  <TodoAppState>
+export class TodoApp extends Component<Signature> {
+  <template>
+    <TodoAppState>
 
-    <:header>
-      <CreateTodo />
-    </:header>
+      <:header>
+        <CreateTodo />
+      </:header>
 
-    <:main>
-      <TodoProvider @todoFuture={{@todoFuture}}>
+      <:main>
+        <TodoProvider @todoFuture={{@todoFuture}}>
 
-        <:toggle as |todos|>
-          <ToggleAllTodos @todos={{todos}} />
-        </:toggle>
+          <:toggle as |todos|>
+            <ToggleAllTodos @todos={{todos}} />
+          </:toggle>
 
-        <:list as |todos|>
-          <TodoList @todos={{todos}} />
-        </:list>
+          <:list as |todos|>
+            <TodoList @todos={{todos}} />
+          </:list>
 
-      </TodoProvider>
-    </:main>
+        </TodoProvider>
+      </:main>
 
-  </TodoAppState>
-</template> satisfies TOC<Signature>;
+      <:footer>
+        <MaybeFooter>
+
+          <TodoCount />
+          <Nav />
+          <ClearCompletedTodos />
+
+        </MaybeFooter>
+      </:footer>
+
+    </TodoAppState>
+  </template>
+
+  @cached
+  @provide('app-state')
+  get appState(): AppState {
+    return new AppState();
+  }
+}
