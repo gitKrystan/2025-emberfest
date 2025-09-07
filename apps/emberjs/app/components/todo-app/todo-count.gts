@@ -14,7 +14,7 @@ export const TodoCount = <template>
         <Remaining @remaining={{content.data}} />
       </:content>
       <:error as |error|>
-        <HandleError @error={{error}} @display={{false}} />
+        <HandleError @error={{error}} @toast="Could not get active todos for Todo Remaining Count." />
       </:error>
     </Request>
   </span>

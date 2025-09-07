@@ -1,23 +1,38 @@
-import type { TOC } from '@ember/component/template-only';
+import Component from '@glimmer/component';
 
-export const HandleError = <template>
-  <div class="error">
-    {{#if @display}}
-      <p>Something went wrong</p>
-    {{/if}}
-    {{logError @error}}
-  </div>
-</template> satisfies TOC<{
+import { toast } from '#/helpers/toast';
+
+interface Signature<E> {
   Element: HTMLDivElement;
-  Args: { error: unknown; display?: boolean };
-}>;
+  Args: { error: E; toast?: string };
+  Blocks: { default?: [error: E] };
+}
 
-function logError(error: unknown) {
+export class HandleError<E> extends Component<Signature<E>> {
+  <template>
+    {{reportError @error}}
+
+    {{#if (has-block)}}
+      <div class="error">
+        {{yield @error}}
+      </div>
+    {{/if}}
+
+    {{#if this.toastMsg}}{{toast "error" this.toastMsg}}{{/if}}
+  </template>
+
+  get toastMsg() {
+    if (this.args.toast) {
+      return `Something went wrong. ${this.args.toast} Please contact TodoMVC support.`;
+    }
+    return null;
+  }
+}
+
+function reportError(error: unknown) {
   if (error instanceof Error) {
-    // eslint-disable-next-line no-console
     console.error(error);
   } else {
-    // eslint-disable-next-line no-console
     console.error(error);
   }
 }

@@ -16,7 +16,9 @@ export const ClearCompletedTodos = <template>
     <:content as |content|>
       <ClearCompleted @completed={{content.data}} />
     </:content>
-    <:error as |error|><HandleError @error={{error}} @display={{false}} /></:error>
+    <:error as |error|>
+      <HandleError @error={{error}} @toast="Could not get completed todos for 'Clear Completed'." />
+    </:error>
   </Request>
 </template>;
 

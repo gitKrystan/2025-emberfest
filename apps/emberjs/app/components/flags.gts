@@ -25,7 +25,9 @@ export const Flags = <template>
     <Request @query={{(queryFlags)}}>
       <:loading><LoadingSpinner /></:loading>
       <:content as |content|><FlagsContent @data={{content.data}} /></:content>
-      <:error as |error|><HandleError @error={{error}} /></:error>
+      <:error as |error|>
+        <HandleError @error={{error}} @toast="Could not get query flags for Flags List." />
+      </:error>
     </Request>
   </footer>
 </template>;
@@ -122,7 +124,9 @@ class UpdateFlag extends Component<{
       <Request @request={{this.updateRequest}}>
         <:idle></:idle>
         <:loading><LoadingDots /></:loading>
-        <:error as |error|><HandleError @error={{error}} /></:error>
+        <:error as |error|>
+          <HandleError @error={{error}} @toast="Could not update flag." />
+        </:error>
       </Request>
     </Button>
   </template>

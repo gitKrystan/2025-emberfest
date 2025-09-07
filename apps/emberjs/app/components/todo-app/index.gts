@@ -47,7 +47,12 @@ export class TodoApp extends Component<Signature> {
 
         <:loading><LoadingSpinner /></:loading>
 
-        <:error as |error|><HandleError @error={{error}} /></:error>
+        <:error as |error|>
+          <HandleError @error={{error}}>
+            <h2 class="error-message">Something went wrong.</h2>
+            <p class="error-cta">Please contact TodoMVC support.</p>
+          </HandleError>
+        </:error>
       </Request>
     </section>
 
@@ -59,7 +64,9 @@ export class TodoApp extends Component<Signature> {
           <ClearCompletedTodos />
         </Footer>
       </:content>
-      <:error as |error|><HandleError @error={{error}} @display={{false}} /></:error>
+      <:error as |error|>
+        <HandleError @error={{error}} @toast="Could not get all todos for Footer." />
+      </:error>
     </Request>
   </template>
 

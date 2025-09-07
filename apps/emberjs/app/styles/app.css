@@ -42,3 +42,27 @@
     clip-path: inset(0 -34% 0 0);
   }
 }
+
+.main .error {
+  overflow-wrap: break-word;
+  padding: 15px 15px 15px 60px;
+  display: block;
+  line-height: 1.2;
+  transition: color 0.4s;
+  font-weight: 400;
+  color: #484848;
+  font-size: 24px;
+}
+
+.main .error-message {
+  font-size: 24px;
+}
+
+.main .error-cta {
+  font-size: 18px;
+  margin-top: 8px;
+}
+
+.toast-container {
+  font-weight: 400;
+}

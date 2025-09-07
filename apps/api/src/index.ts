@@ -1,4 +1,5 @@
 import cors from 'cors';
+import type { Express } from 'express';
 import express from 'express';
 
 import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
@@ -16,7 +17,7 @@ import {
 import { validateJsonApiContentType } from './middleware/validate-content-type.ts';
 import { getBaseUrl } from './utils/url.ts';
 
-const app = express();
+const app: Express = express();
 const PORT = process.env['PORT'] || 3001;
 
 // Configure query parser to handle nested objects like filter[completed]=true
