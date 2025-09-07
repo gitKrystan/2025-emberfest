@@ -4,7 +4,7 @@ import { getAllTodos } from '@workspace/shared-data/builders';
 
 import { HandleError } from '#/components/design-system/error';
 import { ClearCompletedTodos } from '#/components/todo-app/clear-completed-todos';
-import { Nav } from '#/components/todo-app/nav.gts';
+import { Nav } from '#/components/todo-app/nav';
 import { TodoCount } from '#/components/todo-app/todo-count';
 
 /** Ensures all Todos are loaded before displaying the footer elements. */

@@ -1,18 +1,14 @@
-import Component from '@glimmer/component';
-import { provide } from 'ember-provide-consume-context';
+import type { TOC } from '@ember/component/template-only';
 
 import type { Future } from '@warp-drive/core/request';
-import { Request } from '@warp-drive/ember';
 
 import type { ReactiveTodosDocument } from '@workspace/shared-data/builders';
 
-import { LoadingSpinner } from '#/components/design-system/loading.gts';
-import { AppError } from '#/components/todo-app/app-error';
 import { CreateTodo } from '#/components/todo-app/create-todo';
-import { Footer } from '#/components/todo-app/footer';
+import { TodoAppState } from '#/components/todo-app/state.gts';
 import { TodoList } from '#/components/todo-app/todo-list';
+import { TodoProvider } from '#/components/todo-app/todo-provider';
 import { ToggleAllTodos } from '#/components/todo-app/toggle-all-todos';
-import AppState from '#/util/app-state';
 
 interface Signature {
   Args: {
@@ -20,45 +16,26 @@ interface Signature {
   };
 }
 
-export class TodoApp extends Component<Signature> {
-  <template>
-    <section>
-      {{#if this.appState.error}}
-        <div class="new-todo">OH NO</div>
-      {{else}}
-        <CreateTodo />
-      {{/if}}
-    </section>
-    <section class="main">
-      {{#if this.appState.error}}
-        <AppError />
-      {{else}}
-        <Request @request={{@todoFuture}} @autorefresh={{true}} @autorefreshBehavior="refresh">
-          <:content as |content|>
-            {{#if content.data.length}}
-              {{#if this.appState.isSaving}}
-                <LoadingSpinner />
-              {{else if this.appState.canToggle}}
-                <ToggleAllTodos @todos={{content.data}} />
-              {{/if}}
+export const TodoApp = <template>
+  <TodoAppState>
 
-              {{#unless this.appState.error}}
-                <TodoList @todos={{content.data}} />
-              {{/unless}}
-            {{/if}}
-          </:content>
+    <:header>
+      <CreateTodo />
+    </:header>
 
-          <:loading><LoadingSpinner /></:loading>
-          <:error as |error|>{{this.appState.onUnrecoverableError error}}</:error>
-        </Request>
-      {{/if}}
-    </section>
+    <:main>
+      <TodoProvider @todoFuture={{@todoFuture}}>
 
-    {{#unless this.appState.error}}
-      <Footer />
-    {{/unless}}
-  </template>
+        <:toggle as |todos|>
+          <ToggleAllTodos @todos={{todos}} />
+        </:toggle>
 
-  @provide('app-state')
-  private readonly appState = new AppState();
-}
+        <:list as |todos|>
+          <TodoList @todos={{todos}} />
+        </:list>
+
+      </TodoProvider>
+    </:main>
+
+  </TodoAppState>
+</template> satisfies TOC<Signature>;

@@ -17,7 +17,7 @@ import type {
 } from '@workspace/shared-data/types';
 
 import { HandleError } from '#/components/design-system/error';
-import { LoadingDots, LoadingSpinner } from '#/components/design-system/loading.gts';
+import { LoadingDots, LoadingSpinner } from '#/components/design-system/loading';
 import type Store from '#/services/store';
 
 export const Flags = <template>
