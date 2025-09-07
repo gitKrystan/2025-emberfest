@@ -4,7 +4,11 @@ import Component from '@glimmer/component';
 
 import { Request } from '@warp-drive/ember';
 
-import { bulkDeleteCompletedTodos, getCompletedTodosCount } from '@workspace/shared-data/builders';
+import {
+  bulkDeleteCompletedTodos,
+  getCompletedTodosCount,
+  invalidateAllTodoQueries,
+} from '@workspace/shared-data/builders';
 
 import { HandleError } from '#/components/design-system/error';
 import { reportError } from '#/helpers/error';
@@ -45,6 +49,7 @@ class ClearCompleted extends Component<{
   clearCompleted = async () => {
     try {
       await this.store.request(bulkDeleteCompletedTodos());
+      invalidateAllTodoQueries(this.store);
     } catch (e) {
       reportError(new Error('Could not clear completed todos', { cause: e }), { toast: true });
     }

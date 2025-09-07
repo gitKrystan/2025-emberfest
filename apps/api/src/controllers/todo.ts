@@ -304,7 +304,11 @@ export function bulkDeleteAllTodos(
       todoStore.clear();
     }
 
-    return res.status(204).send();
+    // Return an empty document to ensure the cache updates in the frontend
+    const document = { data: null };
+
+    res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
+    return res.json(document);
   } catch (error) {
     return handleError(res, error);
   }

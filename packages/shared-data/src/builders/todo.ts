@@ -26,6 +26,13 @@ export interface ResourceCountDocument extends ResourceMetaDocument {
   };
 }
 
+const queryBuilders = [getAllTodos, getCompletedTodos, getActiveTodos];
+const countBuilders = [
+  getAllTodosCount,
+  getCompletedTodosCount,
+  getActiveTodosCount,
+];
+
 /**
  * GET /todo
  * (plus pagination params)
@@ -238,26 +245,38 @@ export function patchTodo(
  * @param store - The store instance
  * @param todo - The todo to mark as completed
  */
-export function patchCacheTodoCompleted(store: Store, todo: Todo) {
+export function patchCacheTodoCompleted(
+  store: Store,
+  todo: Todo,
+  options?: { invalidateCounts?: boolean },
+) {
   const resourceKey = keyForSavedResource(todo);
   const completedRequestKey = keyForRequest(store, getCompletedTodos());
   const activeRequestKey = keyForRequest(store, getActiveTodos());
 
   // Add to "completed"
-  store.cache.patch({
-    record: completedRequestKey,
-    op: 'add',
-    value: resourceKey,
-    field: 'data',
-    index: 0,
-  });
+  if (store.cache.peekRequest(completedRequestKey)) {
+    store.cache.patch({
+      record: completedRequestKey,
+      op: 'add',
+      value: resourceKey,
+      field: 'data',
+      index: 0,
+    });
+  }
   // Remove from "active"
-  store.cache.patch({
-    record: activeRequestKey,
-    op: 'remove',
-    value: resourceKey,
-    field: 'data',
-  });
+  if (store.cache.peekRequest(activeRequestKey)) {
+    store.cache.patch({
+      record: activeRequestKey,
+      op: 'remove',
+      value: resourceKey,
+      field: 'data',
+    });
+  }
+
+  if (options?.invalidateCounts ?? true) {
+    invalidateRequests(store, countBuilders);
+  }
 }
 
 /**
@@ -279,27 +298,39 @@ export function patchCacheTodoCompleted(store: Store, todo: Todo) {
  * @param store - The store instance
  * @param todo - The todo that to mark as activated
  */
-export function patchCacheTodoActivated(store: Store, todo: Todo) {
+export function patchCacheTodoActivated(
+  store: Store,
+  todo: Todo,
+  options?: { invalidateCounts?: boolean },
+) {
   const resourceKey = keyForSavedResource(todo);
   const completedRequestKey = keyForRequest(store, getCompletedTodos());
   const activeRequestKey = keyForRequest(store, getActiveTodos());
 
   // FIXME: Set a real index on these.
   // Add to "active"
-  store.cache.patch({
-    record: activeRequestKey,
-    op: 'add',
-    value: resourceKey,
-    field: 'data',
-    index: 0,
-  });
+  if (store.cache.peekRequest(activeRequestKey)) {
+    store.cache.patch({
+      record: activeRequestKey,
+      op: 'add',
+      value: resourceKey,
+      field: 'data',
+      index: 0,
+    });
+  }
   // Remove from "completed"
-  store.cache.patch({
-    record: completedRequestKey,
-    op: 'remove',
-    value: resourceKey,
-    field: 'data',
-  });
+  if (store.cache.peekRequest(completedRequestKey)) {
+    store.cache.patch({
+      record: completedRequestKey,
+      op: 'remove',
+      value: resourceKey,
+      field: 'data',
+    });
+  }
+
+  if (options?.invalidateCounts ?? true) {
+    invalidateRequests(store, countBuilders);
+  }
 }
 
 export function bulkPatchTodos(
@@ -338,6 +369,7 @@ export function bulkPatchCacheTodos(
   store: Store,
   todos: Todo[],
   attributes: Partial<TodoAttributes>,
+  options?: { invalidateCounts?: boolean },
 ) {
   for (const todo of todos.toReversed()) {
     const resourceKey = keyForSavedResource(todo);
@@ -349,14 +381,18 @@ export function bulkPatchCacheTodos(
       const isCompleted = attributes.completed;
 
       if (isCompleted && !wasCompleted) {
-        patchCacheTodoCompleted(store, todo);
+        patchCacheTodoCompleted(store, todo, { invalidateCounts: false });
       } else if (!isCompleted && wasCompleted) {
-        patchCacheTodoActivated(store, todo);
+        patchCacheTodoActivated(store, todo, { invalidateCounts: false });
       }
     }
 
     // Finally, patch the attributes into the cached resource
     store.cache.upsert(resourceKey, { ...resourceKey, attributes }, true);
+  }
+
+  if (options?.invalidateCounts ?? true) {
+    invalidateRequests(store, countBuilders);
   }
 }
 
@@ -445,6 +481,11 @@ export function bulkDeleteCompletedTodos(): RequestInfo<ReactiveTodosDocument> {
   });
 }
 
+export function invalidateAllTodoQueries(store: Store) {
+  invalidateRequests(store, queryBuilders);
+  invalidateRequests(store, countBuilders);
+}
+
 function keyForSavedResource(resource: Todo): PersistedResourceKey<'todo'> {
   const key = recordIdentifierFor(resource);
   assert('Expected key to have type and id', isExisting(key));
@@ -455,4 +496,13 @@ function keyForRequest(store: Store, request: RequestInfo): RequestKey {
   const key = store.cacheKeyManager.getOrCreateDocumentIdentifier(request);
   assert('Expected key to be defined', key);
   return key;
+}
+
+function invalidateRequests(store: Store, builders: (() => RequestInfo)[]) {
+  for (const builder of builders) {
+    const countRequestKey = keyForRequest(store, builder());
+    if (store.cache.peekRequest(countRequestKey)) {
+      store.notifications.notify(countRequestKey, 'invalidated');
+    }
+  }
 }

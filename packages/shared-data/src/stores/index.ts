@@ -25,13 +25,6 @@ export default class AppStore extends Store {
   lifetimes = new DefaultCachePolicy({
     apiCacheHardExpires: 15 * 60 * 1000, // 15 minutes
     apiCacheSoftExpires: 1 * 30 * 1000, // 30 seconds
-    constraints: {
-      headers: {
-        'X-WarpDrive-Expires': true,
-        'Cache-Control': true,
-        Expires: true,
-      },
-    },
   });
 
   createSchemaService() {
