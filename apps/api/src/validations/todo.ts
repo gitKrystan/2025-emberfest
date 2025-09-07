@@ -39,6 +39,44 @@ export const todoQuerySchema = z.object({
         }),
     })
     .optional(),
+  page: z
+    .object({
+      limit: z
+        .string()
+        .optional()
+        .transform((val) => {
+          if (val === undefined) return undefined;
+          const num = parseInt(val, 10);
+          if (isNaN(num) || num < 1 || num > 100) {
+            throw new z.ZodError([
+              {
+                code: 'custom',
+                message: 'page.limit must be a number between 1 and 100',
+                path: ['page', 'limit'],
+              },
+            ]);
+          }
+          return num;
+        }),
+      offset: z
+        .string()
+        .optional()
+        .transform((val) => {
+          if (val === undefined) return undefined;
+          const num = parseInt(val, 10);
+          if (isNaN(num) || num < 0) {
+            throw new z.ZodError([
+              {
+                code: 'custom',
+                message: 'page.offset must be a non-negative number',
+                path: ['page', 'offset'],
+              },
+            ]);
+          }
+          return num;
+        }),
+    })
+    .optional(),
 });
 export type TodoQuery = z.infer<typeof todoQuerySchema>;
 

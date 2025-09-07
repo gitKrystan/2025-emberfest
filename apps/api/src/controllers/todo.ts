@@ -15,6 +15,7 @@ import { todoStore } from '../db/todo-store.ts';
 import { InternalServerError } from '../errors.ts';
 import {
   serializeCollectionResourceDocument,
+  serializePaginatedCollectionResourceDocument,
   serializeSingleResourceDocument,
 } from '../serializers/base.ts';
 import { handleError } from '../serializers/error.ts';
@@ -65,15 +66,40 @@ export function getTodos(
       cleanQuery['completed'] = queryParams.filter.completed;
     }
 
-    const hasQueryParams = Object.keys(cleanQuery).length > 0;
-    const todos = hasQueryParams
-      ? todoStore.query(cleanQuery)
-      : todoStore.findAll();
+    // Use pagination if page parameters are provided
+    const hasPageParams =
+      queryParams.page?.limit !== undefined ||
+      queryParams.page?.offset !== undefined;
 
-    const document = serializeCollectionResourceDocument(req, 'todo', todos);
+    if (hasPageParams) {
+      const limit = queryParams.page?.limit ?? 25;
+      const offset = queryParams.page?.offset ?? 0;
 
-    res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
-    return res.json(document);
+      const hasQueryParams = Object.keys(cleanQuery).length > 0;
+      const paginatedResult = hasQueryParams
+        ? todoStore.queryPaginated(cleanQuery, { limit, offset })
+        : todoStore.findAllPaginated({ limit, offset });
+
+      const document = serializePaginatedCollectionResourceDocument(
+        req,
+        'todo',
+        paginatedResult,
+      );
+
+      res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
+      return res.json(document);
+    } else {
+      // Legacy behavior when no pagination is requested
+      const hasQueryParams = Object.keys(cleanQuery).length > 0;
+      const todos = hasQueryParams
+        ? todoStore.query(cleanQuery)
+        : todoStore.findAll();
+
+      const document = serializeCollectionResourceDocument(req, 'todo', todos);
+
+      res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
+      return res.json(document);
+    }
   } catch (error) {
     return handleError(res, error);
   }

@@ -1,5 +1,17 @@
 import { NotFoundError } from '../errors.ts';
 
+export interface PaginationOptions {
+  limit?: number;
+  offset?: number;
+}
+
+export interface PaginatedResult<T> {
+  data: T[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
 /**
  * Abstract base class for in-memory data stores
  */
@@ -42,6 +54,51 @@ export abstract class Store<T extends { id: string }> {
           ),
         ),
     );
+  }
+
+  /**
+   * Get paginated results
+   */
+  findAllPaginated(options: PaginationOptions = {}): PaginatedResult<T> {
+    const { limit = 25, offset = 0 } = options;
+    const allItems = Array.from(this.map.values());
+    const total = allItems.length;
+    const data = allItems.slice(offset, offset + limit);
+
+    return {
+      data,
+      total,
+      limit,
+      offset,
+    };
+  }
+
+  /**
+   * Query with pagination
+   */
+  queryPaginated(
+    query: Partial<T>,
+    options: PaginationOptions = {},
+  ): PaginatedResult<T> {
+    const { limit = 25, offset = 0 } = options;
+    const filteredItems = Array.from(
+      this.map
+        .values()
+        .filter((item) =>
+          Object.entries(query).every(
+            ([key, value]) => item[key as keyof T] === value,
+          ),
+        ),
+    );
+    const total = filteredItems.length;
+    const data = filteredItems.slice(offset, offset + limit);
+
+    return {
+      data,
+      total,
+      limit,
+      offset,
+    };
   }
 
   /**
