@@ -4,6 +4,7 @@
 /* eslint-disable @typescript-eslint/prefer-destructuring */
 /* eslint-disable @typescript-eslint/prefer-readonly */
 import type { RequestManager, Store } from '@warp-drive/core';
+import type { ReactiveDataDocument } from '@warp-drive/core/reactive';
 import type { Future } from '@warp-drive/core/request';
 import type {
   RequestSubscription,
@@ -39,8 +40,13 @@ type ContentFeatures<RT> = {
   loadPage?: (url: string) => Promise<void>;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export interface PaginationSubscription<RT, E> {
+export interface PaginationSubscription<
+  T,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  RT extends ReactiveDataDocument<T[]>,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  E,
+> {
   /**
    * The method to call when the component this subscription is attached to
    * unmounts.
@@ -53,7 +59,11 @@ export interface PaginationSubscription<RT, E> {
  *
  * @hideconstructor
  */
-export class PaginationSubscription<RT, E> {
+export class PaginationSubscription<
+  T,
+  RT extends ReactiveDataDocument<T[]>,
+  E,
+> {
   /** @internal */
   declare private isDestroyed: boolean;
   /** @internal */
@@ -116,7 +126,7 @@ export class PaginationSubscription<RT, E> {
     const page = this.paginationState.getPageState({ self: url });
     this.paginationState.activatePage(page);
     if (!page.request) {
-      const request = this.store.request({ method: 'GET', url });
+      const request = this.store.request<RT>({ method: 'GET', url });
       await page.load(request);
     }
   };
@@ -169,15 +179,19 @@ export class PaginationSubscription<RT, E> {
   }
 
   @memoized
-  get paginationState(): PaginationState<RT, E> {
-    return getPaginationState<RT, E>(this.request);
+  get paginationState(): PaginationState<T, RT, E> {
+    return getPaginationState<T, RT, E>(this.request);
   }
 }
 
-export function createPaginationSubscription<RT, E>(
+export function createPaginationSubscription<
+  T,
+  RT extends ReactiveDataDocument<T[]>,
+  E,
+>(
   store: Store | RequestManager,
   args: SubscriptionArgs<RT, E>
-): PaginationSubscription<RT, E> {
+): PaginationSubscription<T, RT, E> {
   return new PaginationSubscription(store, args);
 }
 
@@ -190,7 +204,9 @@ function upgradeSubscription(sub: unknown): PrivatePaginationSubscription {
   return sub as PrivatePaginationSubscription;
 }
 
-function _DISPOSE<RT, E>(this: PaginationSubscription<RT, E>) {
+function _DISPOSE<T, RT extends ReactiveDataDocument<T[]>, E>(
+  this: PaginationSubscription<T, RT, E>
+) {
   const self = upgradeSubscription(this);
   self.isDestroyed = true;
   self._requestSubscription[DISPOSE]();

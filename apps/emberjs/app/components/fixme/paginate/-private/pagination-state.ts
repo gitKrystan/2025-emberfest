@@ -1,22 +1,25 @@
 /* eslint-disable @typescript-eslint/array-type */
 /* eslint-disable @typescript-eslint/consistent-type-definitions */
 /* eslint-disable @typescript-eslint/no-unnecessary-condition */
-/* eslint-disable @typescript-eslint/no-unnecessary-type-arguments */
 
 /**
  * @module @warp-drive/ember
  */
 import { assert } from '@warp-drive/core/build-config/macros';
-import type { ReactiveDocument } from '@warp-drive/core/reactive';
+import type { ReactiveDataDocument } from '@warp-drive/core/reactive';
 import type { RequestState } from '@warp-drive/core/reactive';
+import { getRequestState } from '@warp-drive/core/reactive';
 import type { Future } from '@warp-drive/core/request';
 import { defineSignal, memoized } from '@warp-drive/core/store/-private';
 import type { RequestLoadingState } from '@warp-drive/core/store/-private/new-core-tmp/request-state';
-import { getRequestState } from '@warp-drive/core/store/-private/new-core-tmp/request-state';
 import type { StructuredErrorDocument } from '@warp-drive/core/types/request';
 import type { Link } from '@warp-drive/core/types/spec/json-api-raw';
 
-const PaginationCache = new WeakMap<Future<unknown>, PaginationState>();
+// TODO: Make generic?
+const PaginationCache = new WeakMap<
+  Future<unknown>,
+  PaginationState<unknown, ReactiveDataDocument<unknown[]>, unknown>
+>();
 
 function getHref(link?: Link | null): string | null {
   if (!link) {
@@ -28,14 +31,14 @@ function getHref(link?: Link | null): string | null {
   return link.href;
 }
 
-type PageStateCreateOptions = {
-  self: Future<unknown> | string;
+type PageStateCreateOptions<RT> = {
+  self: Future<RT> | string;
   prev?: string | null;
   next?: string | null;
 };
 
-export class PageState<RT = unknown, E = unknown> {
-  declare manager: PaginationState<RT, E>;
+export class PageState<T, RT extends ReactiveDataDocument<T[]>, E> {
+  declare manager: PaginationState<T, RT, E>;
   declare request: Future<RT> | null;
   declare state: Readonly<RequestState<RT, StructuredErrorDocument<E>>>;
   declare selfLink: string | null;
@@ -43,8 +46,8 @@ export class PageState<RT = unknown, E = unknown> {
   declare _nextLink: string | null;
 
   constructor(
-    manager: PaginationState<RT, E>,
-    options: PageStateCreateOptions
+    manager: PaginationState<T, RT, E>,
+    options: PageStateCreateOptions<RT>
   ) {
     this.manager = manager;
     this._prevLink = options.prev ?? null;
@@ -52,9 +55,9 @@ export class PageState<RT = unknown, E = unknown> {
     if (typeof options.self === 'string') {
       this.selfLink = options.self;
     } else {
-      void this.load(options.self as Future<RT>);
+      void this.load(options.self);
       void options.self.then((value) => {
-        const content = value.content as ReactiveDocument<RT[]>;
+        const { content } = value;
         const url = getHref(content?.links?.self);
         assert('Expected the page to have a self link', url);
         this.selfLink = url;
@@ -64,8 +67,8 @@ export class PageState<RT = unknown, E = unknown> {
   }
 
   @memoized
-  get value(): ReactiveDocument<RT[]> | null {
-    return this.state?.value as ReactiveDocument<RT[]>;
+  get value(): RT | null {
+    return this.state?.value;
   }
 
   @memoized
@@ -104,7 +107,7 @@ export class PageState<RT = unknown, E = unknown> {
   }
 
   @memoized
-  get prev(): PageState<RT, E> | null {
+  get prev(): PageState<T, RT, E> | null {
     const url = this.prevLink;
     return url
       ? this.manager.getPageState({ self: url, next: this.selfLink })
@@ -112,15 +115,15 @@ export class PageState<RT = unknown, E = unknown> {
   }
 
   @memoized
-  get next(): PageState<RT, E> | null {
+  get next(): PageState<T, RT, E> | null {
     const url = this.nextLink;
     return url
       ? this.manager.getPageState({ self: url, prev: this.selfLink })
       : null;
   }
 
-  load = async (request: Future<unknown>): Promise<void> => {
-    this.request = request as Future<RT>;
+  load = async (request: Future<RT>): Promise<void> => {
+    this.request = request;
     this.state = getRequestState<RT, E>(this.request);
     await this.request;
   };
@@ -130,14 +133,14 @@ defineSignal(PageState.prototype, 'request', undefined);
 defineSignal(PageState.prototype, 'state', undefined);
 defineSignal(PageState.prototype, 'self', undefined);
 
-export class PaginationState<RT = unknown, E = unknown> {
-  declare initialPage: Readonly<PageState<RT, E>>;
-  declare activePage: Readonly<PageState<RT, E>>;
-  declare pagesCache: Map<string, PageState>;
+export class PaginationState<T, RT extends ReactiveDataDocument<T[]>, E> {
+  declare initialPage: Readonly<PageState<T, RT, E>>;
+  declare activePage: Readonly<PageState<T, RT, E>>;
+  declare pagesCache: Map<string, PageState<T, RT, E>>;
 
   constructor(request: Future<RT>) {
-    this.pagesCache = new Map<string, PageState>();
-    this.initialPage = new PageState<RT, E>(this, { self: request });
+    this.pagesCache = new Map<string, PageState<T, RT, E>>();
+    this.initialPage = new PageState<T, RT, E>(this, { self: request });
     this.activePage = this.initialPage;
   }
 
@@ -171,7 +174,7 @@ export class PaginationState<RT = unknown, E = unknown> {
   }
 
   @memoized
-  get firstPage(): Readonly<PageState<RT, E>> {
+  get firstPage(): Readonly<PageState<T, RT, E>> {
     let page = this.activePage;
     while (page.prev) {
       page = page.prev;
@@ -180,7 +183,7 @@ export class PaginationState<RT = unknown, E = unknown> {
   }
 
   @memoized
-  get lastPage(): Readonly<PageState<RT, E>> {
+  get lastPage(): Readonly<PageState<T, RT, E>> {
     let page = this.activePage;
     while (page.next) {
       page = page.next;
@@ -189,7 +192,7 @@ export class PaginationState<RT = unknown, E = unknown> {
   }
 
   @memoized
-  get prevPages(): Readonly<PageState<RT, E>[]> {
+  get prevPages(): Readonly<PageState<T, RT, E>[]> {
     const pages = [];
     let page = this.activePage?.prev;
     while (page) {
@@ -200,7 +203,7 @@ export class PaginationState<RT = unknown, E = unknown> {
   }
 
   @memoized
-  get nextPages(): Readonly<PageState<RT, E>[]> {
+  get nextPages(): Readonly<PageState<T, RT, E>[]> {
     const pages = [];
     let page = this.activePage?.next;
     while (page) {
@@ -211,17 +214,17 @@ export class PaginationState<RT = unknown, E = unknown> {
   }
 
   @memoized
-  get pages(): Readonly<PageState<RT, E>[]> {
+  get pages(): Readonly<PageState<T, RT, E>[]> {
     if (!this.activePage) return [];
 
     return [...this.prevPages, this.activePage, ...this.nextPages];
   }
 
   @memoized
-  get data(): RT[] {
+  get data(): T[] {
     if (!this.pages) return [];
 
-    return this.pages.reduce((acc: RT[], page) => {
+    return this.pages.reduce((acc: T[], page) => {
       const content = page.value;
       if (content?.data) {
         return [...acc, ...content.data];
@@ -259,22 +262,22 @@ export class PaginationState<RT = unknown, E = unknown> {
     return this.lastPage.request;
   }
 
-  activatePage = (page: Readonly<PageState<unknown, unknown>>): void => {
-    this.activePage = page as Readonly<PageState<RT, E>>;
+  activatePage = (page: Readonly<PageState<T, RT, E>>): void => {
+    this.activePage = page;
   };
 
   getPageState = (
-    options: PageStateCreateOptions & { self: string }
-  ): Readonly<PageState<RT, E>> => {
+    options: PageStateCreateOptions<RT> & { self: string }
+  ): Readonly<PageState<T, RT, E>> => {
     const url = options.self;
     let state = this.pagesCache.get(url);
 
     if (!state) {
-      state = new PageState<RT, E>(this, options);
+      state = new PageState<T, RT, E>(this, options);
       this.pagesCache.set(url, state);
     }
 
-    return state as Readonly<PageState<RT, E>>;
+    return state;
   };
 }
 
@@ -299,15 +302,19 @@ defineSignal(PaginationState.prototype, 'activePage', undefined);
  * @param future
  * @return {PaginationState}
  */
-export function getPaginationState<RT, E>(
+export function getPaginationState<T, RT extends ReactiveDataDocument<T[]>, E>(
   future: Future<RT>
-): Readonly<PaginationState<RT, E>> {
-  let state = PaginationCache.get(future);
+): Readonly<PaginationState<T, RT, E>> {
+  let state = PaginationCache.get(future) as unknown as PaginationState<
+    T,
+    RT,
+    E
+  >;
 
   if (!state) {
-    state = new PaginationState<RT, E>(future);
+    state = new PaginationState<T, RT, E>(future);
     PaginationCache.set(future, state);
   }
 
-  return state as Readonly<PaginationState<RT, E>>;
+  return state;
 }

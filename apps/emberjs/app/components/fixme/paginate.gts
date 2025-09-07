@@ -11,16 +11,18 @@ import { cached } from '@glimmer/tracking';
 
 import type { Store, StoreRequestInput } from '@warp-drive/core';
 import { assert } from '@warp-drive/core/build-config/macros';
-import type { RequestState } from '@warp-drive/core/reactive';
+import type { ReactiveDataDocument, RequestState } from '@warp-drive/core/reactive';
 import type { Future } from '@warp-drive/core/request';
 import type { RequestLoadingState } from '@warp-drive/core/store/-private';
 import { DISPOSE } from '@warp-drive/core/store/-private';
 import type { StructuredErrorDocument } from '@warp-drive/core/types/request';
-import { and, Throw } from '@warp-drive/ember/-private/await';
+import { Throw } from '@warp-drive/ember';
 
-import type { PageState, PaginationState } from './paginate/-private/pagination-state';
-import type { PaginationSubscription } from './paginate/-private/pagination-subscription';
-import { createPaginationSubscription } from './paginate/-private/pagination-subscription';
+import type { PageState, PaginationState } from './paginate/-private/pagination-state.ts';
+import type { PaginationSubscription } from './paginate/-private/pagination-subscription.ts';
+import { createPaginationSubscription } from './paginate/-private/pagination-subscription.ts';
+
+export const and = (x: unknown, y: unknown): boolean => Boolean(x && y);
 
 function notNull(x: null): never;
 function notNull<T>(x: T): Exclude<T, null>;
@@ -47,24 +49,29 @@ type AutorefreshBehaviorCombos =
   | `${AutorefreshBehaviorType},${AutorefreshBehaviorType}`
   | `${AutorefreshBehaviorType},${AutorefreshBehaviorType},${AutorefreshBehaviorType}`;
 
-type ContentFeatures<RT> = {
+type ContentFeatures<T, RT extends ReactiveDataDocument<T[]>> = {
   isOnline: boolean;
   isHidden: boolean;
   isRefreshing: boolean;
   refresh: () => Promise<void>;
   reload: () => Promise<void>;
   abort?: () => void;
+
+  loadNext?: () => Promise<void>;
+  loadPage?: (url: string) => Promise<void>;
+  loadPrev?: () => Promise<void>;
+
   latestRequest?: Future<RT>;
 };
 
-interface PaginateSignature<RT, E> {
+interface PaginateSignature<T, RT extends ReactiveDataDocument<T[]>, E> {
   Args: {
     /**
      * The request to monitor. This should be a `Future` instance returned
      * by either the `store.request` or `store.requestManager.request` methods.
      *
      */
-    request?: Future<RT>;
+    request: Future<RT>;
 
     /**
      * A query to use for the request. This should be an object that can be
@@ -172,8 +179,8 @@ interface PaginateSignature<RT, E> {
      * The block to render when the request succeeded.
      *
      */
-    content: [state: PaginationState<RT, E>, features: ContentFeatures<RT>];
-    always: [state: PaginationState<RT, E>, features: ContentFeatures<RT>];
+    content: [value: T[], features: ContentFeatures<T, RT>];
+    always: [state: PaginationState<T, RT, E>, features: ContentFeatures<T, RT>];
   };
 }
 
@@ -394,7 +401,7 @@ interface PaginateSignature<RT, E> {
  * @class <Request />
  * @public
  */
-export class Paginate<RT, E> extends Component<PaginateSignature<RT, E>> {
+export class Paginate<T, RT extends ReactiveDataDocument<T[]>, E> extends Component<PaginateSignature<T, RT, E>> {
   /**
    * The store instance to use for making requests. If contexts are available, this
    * will be the `store` on the context, else it will be the store service.
@@ -414,8 +421,8 @@ export class Paginate<RT, E> extends Component<PaginateSignature<RT, E>> {
     return store;
   }
 
-  _state: PaginationSubscription<RT, E> | null = null;
-  get state(): PaginationSubscription<RT, E> {
+  _state: PaginationSubscription<T, RT, E> | null = null;
+  get state(): PaginationSubscription<T, RT, E> {
     let { _state } = this;
     const { store } = this;
     if (_state && _state.store !== store) {
@@ -444,12 +451,12 @@ export class Paginate<RT, E> extends Component<PaginateSignature<RT, E>> {
   }
 
   @cached
-  get pages(): readonly PageState<RT, E>[] {
+  get pages(): readonly PageState<T, RT, E>[] {
     return this.state.paginationState.pages;
   }
 
   @cached
-  get data(): RT[] {
+  get data(): T[] {
     return this.state.paginationState.data;
   }
 
@@ -490,7 +497,7 @@ export class Paginate<RT, E> extends Component<PaginateSignature<RT, E>> {
       {{yield (notNull this.state.paginationState.reason) this.state.errorFeatures to="error"}}
 
     {{else if this.state.paginationState.isSuccess}}
-      {{yield this.state.paginationState this.state.contentFeatures to="content"}}
+      {{yield this.state.paginationState.data this.state.contentFeatures to="content"}}
 
     {{else if (not this.state.paginationState.isCancelled)}}
       <Throw @error={{notNull this.state.paginationState.reason}} />

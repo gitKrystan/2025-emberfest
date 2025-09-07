@@ -8,7 +8,9 @@ import type { ReactiveTodosDocument } from '@workspace/shared-data/builders';
 import type { Todo } from '@workspace/shared-data/types';
 
 import { LoadingSpinner } from '#/components/design-system/loading';
+import { Paginate } from '#/components/fixme/paginate';
 import type AppState from '#/services/app-state';
+import { on } from '@ember/modifier';
 
 interface Signature {
   Args: {
@@ -22,18 +24,19 @@ interface Signature {
 
 export class TodoProvider extends Component<Signature> {
   <template>
-    <Request @request={{@todoFuture}} @autorefresh={{true}} @autorefreshBehavior="refresh">
+    <Paginate @request={{@todoFuture}} @autorefresh={{true}} @autorefreshBehavior="refresh">
 
-      <:content as |content|>
-        {{#if content.data.length}}
+      <:content as |data|>
+        {{log "content" data}}
+        {{#if data.length}}
           {{#if this.appState.isSaving}}
             <LoadingSpinner />
           {{else if this.appState.canToggle}}
-            {{yield content.data to="toggle"}}
+            {{yield data to="toggle"}}
           {{/if}}
 
           {{#unless this.appState.error}}
-            {{yield content.data to="list"}}
+            {{yield data to="list"}}
           {{/unless}}
         {{/if}}
       </:content>
@@ -42,7 +45,15 @@ export class TodoProvider extends Component<Signature> {
 
       <:error as |error|>{{this.appState.onUnrecoverableError error}}</:error>
 
-    </Request>
+      <:always as |state features|>
+        {{log "state" state}}
+        {{log "features" features}}
+        {{#if features.loadNext}}
+          <button type="button" {{on "click" features.loadNext}}>Load more todos...</button>
+        {{/if}}
+      </:always>
+
+    </Paginate>
   </template>
 
   @service declare private readonly appState: AppState;
