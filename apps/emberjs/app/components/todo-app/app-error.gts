@@ -1,8 +1,9 @@
+import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { consume } from 'ember-provide-consume-context';
 
 import { HandleError } from '#/components/design-system/error';
-import type AppState from '#/util/app-state';
+import type AppState from '#/services/app-state';
 
 /** Displays a generic error message when the application is in an error state. */
 export class AppError extends Component {
@@ -14,6 +15,5 @@ export class AppError extends Component {
     </HandleError>
   </template>
 
-  @consume('app-state')
-  declare private readonly appState: AppState;
+  @service declare private readonly appState: AppState;
 }

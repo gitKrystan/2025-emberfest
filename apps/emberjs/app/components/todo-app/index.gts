@@ -1,6 +1,5 @@
+import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import { cached } from '@glimmer/tracking';
-import { provide } from 'ember-provide-consume-context';
 
 import type { Future } from '@warp-drive/core/request';
 
@@ -15,7 +14,7 @@ import { TodoCount } from '#/components/todo-app/todo-count';
 import { TodoList } from '#/components/todo-app/todo-list';
 import { TodoProvider } from '#/components/todo-app/todo-provider';
 import { ToggleAllTodos } from '#/components/todo-app/toggle-all-todos';
-import AppState from '#/util/app-state';
+import type AppState from '#/services/app-state';
 
 interface Signature {
   Args: {
@@ -58,9 +57,5 @@ export class TodoApp extends Component<Signature> {
     </TodoAppState>
   </template>
 
-  @cached
-  @provide('app-state')
-  get appState(): AppState {
-    return new AppState();
-  }
+  @service declare private readonly appState: AppState;
 }

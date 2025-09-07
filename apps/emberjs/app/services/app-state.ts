@@ -1,6 +1,7 @@
+import Service from '@ember/service';
 import { tracked } from '@glimmer/tracking';
 
-export default class AppState {
+export default class AppState extends Service {
   @tracked private _error: unknown = null;
   get error() {
     return this._error;
@@ -15,7 +16,7 @@ export default class AppState {
     });
   };
 
-  @tracked private _isEditing = true;
+  @tracked private _isEditing = false;
   get isEditing() {
     return this._isEditing;
   }

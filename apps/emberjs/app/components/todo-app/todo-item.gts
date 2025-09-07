@@ -17,8 +17,8 @@ import type { EditableTodo } from '@workspace/shared-data/types';
 import { Form } from '#/components/design-system/form';
 import { reportError } from '#/helpers/error';
 import { autofocus } from '#/modifiers/autofocus';
+import type AppState from '#/services/app-state';
 import type Store from '#/services/store';
-import type AppState from '#/util/app-state';
 
 interface Signature {
   Args: {
@@ -85,8 +85,7 @@ export class TodoItem extends Component<Signature> {
     </li>
   </template>
 
-  @consume('app-state')
-  declare private readonly appState: AppState;
+  @service declare private readonly appState: AppState;
 
   /** Whether we are in title-editing mode */
   @tracked private isEditingTitle = false;

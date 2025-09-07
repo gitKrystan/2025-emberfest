@@ -11,8 +11,8 @@ import type { Todo } from '@workspace/shared-data/types';
 
 import { HandleError } from '#/components/design-system/error';
 import { reportError } from '#/helpers/error';
+import type AppState from '#/services/app-state';
 import type Store from '#/services/store';
-import type AppState from '#/util/app-state';
 
 /**
  * Renders a button to clear completed todos if there are any.
@@ -42,9 +42,7 @@ class ClearCompleted extends Component<{
   </template>
 
   @service declare private readonly store: Store;
-
-  @consume('app-state')
-  declare private readonly appState: AppState;
+  @service declare private readonly appState: AppState;
 
   clearCompleted = async () => {
     try {

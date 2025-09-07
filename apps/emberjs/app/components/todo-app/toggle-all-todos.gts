@@ -8,8 +8,8 @@ import { bulkPatchCacheTodos, bulkPatchTodos } from '@workspace/shared-data/buil
 import type { Todo } from '@workspace/shared-data/types';
 
 import { reportError } from '#/helpers/error';
+import type AppState from '#/services/app-state';
 import type Store from '#/services/store';
-import type AppState from '#/util/app-state';
 
 export class ToggleAllTodos extends Component<{
   Args: {
@@ -28,9 +28,7 @@ export class ToggleAllTodos extends Component<{
   </template>
 
   @service declare private readonly store: Store;
-
-  @consume('app-state')
-  declare private readonly appState: AppState;
+  @service declare private readonly appState: AppState;
 
   @cached
   private get areViewableCompleted(): boolean {

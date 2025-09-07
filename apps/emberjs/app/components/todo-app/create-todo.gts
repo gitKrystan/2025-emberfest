@@ -8,8 +8,8 @@ import { createTodo } from '@workspace/shared-data/builders';
 import type { TodoAttributes } from '@workspace/shared-data/types';
 
 import { reportError } from '#/helpers/error';
+import type AppState from '#/services/app-state';
 import type Store from '#/services/store';
-import type AppState from '#/util/app-state';
 
 const NameForTitle = 'title';
 type NameForTitle = typeof NameForTitle;
@@ -38,9 +38,7 @@ export class CreateTodo extends Component {
   </template>
 
   @service declare private readonly store: Store;
-
-  @consume('app-state')
-  declare private readonly appState: AppState;
+  @service declare private readonly appState: AppState;
 
   private readonly onSubmit = async (event: SubmitEvent) => {
     this.appState.onSaveStart();

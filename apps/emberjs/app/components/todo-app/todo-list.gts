@@ -1,3 +1,4 @@
+import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { consume } from 'ember-provide-consume-context';
 
@@ -8,7 +9,7 @@ import type { EditableTodo, Todo } from '@workspace/shared-data/types';
 
 import { HandleError } from '#/components/design-system/error';
 import { TodoItem } from '#/components/todo-app/todo-item';
-import type AppState from '#/util/app-state';
+import type AppState from '#/services/app-state';
 
 interface Signature {
   Args: { todos: Todo[] };
@@ -38,8 +39,7 @@ export class TodoList extends Component<Signature> {
     </ul>
   </template>
 
-  @consume('app-state')
-  declare private readonly appState: AppState;
+  @service declare private readonly appState: AppState;
 
   checkout(todo: Todo): Promise<EditableTodo> {
     return checkout<EditableTodo>(todo);

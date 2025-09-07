@@ -1,8 +1,9 @@
+import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { consume } from 'ember-provide-consume-context';
 
 import { AppError } from '#/components/todo-app/app-error';
-import type AppState from '#/util/app-state';
+import type AppState from '#/services/app-state';
 
 interface Signature {
   Blocks: {
@@ -42,6 +43,5 @@ export class TodoAppState extends Component<Signature> {
     {{/unless}}
   </template>
 
-  @consume('app-state')
-  declare private readonly appState: AppState;
+  @service declare private readonly appState: AppState;
 }

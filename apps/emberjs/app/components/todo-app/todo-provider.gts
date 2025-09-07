@@ -1,3 +1,4 @@
+import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { consume } from 'ember-provide-consume-context';
 
@@ -8,7 +9,7 @@ import type { ReactiveTodosDocument } from '@workspace/shared-data/builders';
 import type { Todo } from '@workspace/shared-data/types';
 
 import { LoadingSpinner } from '#/components/design-system/loading';
-import type AppState from '#/util/app-state';
+import type AppState from '#/services/app-state';
 
 interface Signature {
   Args: {
@@ -45,6 +46,5 @@ export class TodoProvider extends Component<Signature> {
     </Request>
   </template>
 
-  @consume('app-state')
-  declare private readonly appState: AppState;
+  @service declare private readonly appState: AppState;
 }
