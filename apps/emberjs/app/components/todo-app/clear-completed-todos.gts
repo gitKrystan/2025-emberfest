@@ -10,6 +10,9 @@ import type { Todo } from '@workspace/shared-data/types';
 
 import { HandleError } from '#/components/design-system/error';
 import type Store from '#/services/store';
+import type AppState from '#/services/app-state';
+import { toast } from '#/helpers/toast';
+import { reportError } from '#/helpers/error';
 
 export const ClearCompletedTodos = <template>
   <Request @query={{(getCompletedTodos)}} @autorefresh={{true}} @autorefreshBehavior="refresh">
@@ -34,8 +37,13 @@ class ClearCompleted extends Component<{
   </template>
 
   @service declare private readonly store: Store;
+  @service declare private readonly appState: AppState;
 
   clearCompleted = async () => {
-    await this.store.request(bulkDeleteTodos(this.args.completed));
+    try {
+      await this.store.request(bulkDeleteTodos(this.args.completed));
+    } catch (e) {
+      reportError(new Error('Could not clear completed todos', { cause: e }), { toast: true });
+    }
   };
 }

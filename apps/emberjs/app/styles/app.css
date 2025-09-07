@@ -43,6 +43,14 @@
   }
 }
 
+.app-state-error {
+  position: absolute;
+  font-size: 36px;
+  color: #b83f45;
+  left: 11px;
+  top: -41px;
+}
+
 .main .error {
   overflow-wrap: break-word;
   padding: 15px 15px 15px 60px;

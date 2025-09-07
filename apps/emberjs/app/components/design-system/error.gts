@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 
 import { toast } from '#/helpers/toast';
+import { reportError } from '#/helpers/error';
 
 interface Signature<E> {
   Element: HTMLDivElement;
@@ -18,21 +19,6 @@ export class HandleError<E> extends Component<Signature<E>> {
       </div>
     {{/if}}
 
-    {{#if this.toastMsg}}{{toast "error" this.toastMsg}}{{/if}}
+    {{#if @toast}}{{toast "error" @toast}}{{/if}}
   </template>
-
-  get toastMsg() {
-    if (this.args.toast) {
-      return `Something went wrong. ${this.args.toast} Please contact TodoMVC support.`;
-    }
-    return null;
-  }
-}
-
-function reportError(error: unknown) {
-  if (error instanceof Error) {
-    console.error(error);
-  } else {
-    console.error(error);
-  }
 }

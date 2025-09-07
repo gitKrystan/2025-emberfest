@@ -16,6 +16,7 @@ import { Form } from '#/components/design-system/form';
 import { autofocus } from '#/modifiers/autofocus';
 import type AppState from '#/services/app-state';
 import type Store from '#/services/store';
+import { reportError } from '#/helpers/error';
 
 interface Signature {
   Args: {
@@ -32,9 +33,9 @@ export class TodoItem extends Component<Signature> {
         <TitleForm
           class="edit"
           @todo={{@todo}}
+          @isSaving={{this.appState.isSaving}}
           @onSaveStart={{this.onSaveStart}}
           @onSaveEnd={{this.onSaveEnd}}
-          @isSaving={{this.appState.isSaving}}
           {{on "keyup" this.onTitleKeyup}}
           {{autofocus}}
         />
@@ -43,9 +44,9 @@ export class TodoItem extends Component<Signature> {
           <CompletedForm
             class="toggle"
             @todo={{@todo}}
+            @isSaving={{this.appState.isSaving}}
             @onSaveStart={{this.onSaveStart}}
             @onSaveEnd={{this.onSaveEnd}}
-            @isSaving={{this.appState.isSaving}}
             {{on "keyup" this.onToggleKeyup}}
           >
             {{! This must live within the "completed" form for compat with TodoMVC CSS }}
@@ -58,9 +59,9 @@ export class TodoItem extends Component<Signature> {
           <DestroyForm
             class="destroy"
             @todo={{@todo}}
+            @isSaving={{this.appState.isSaving}}
             @onSaveStart={{this.onSaveStart}}
             @onSaveEnd={{this.onSaveEnd}}
-            @isSaving={{this.appState.isSaving}}
           />
         </div>
       {{/if}}
@@ -168,12 +169,16 @@ class CompletedForm extends Component<{
   private readonly updateCompleted = async (completed: boolean) => {
     this.args.onSaveStart();
 
-    await this.store.request(patchTodo(this.args.todo, { completed }));
+    try {
+      await this.store.request(patchTodo(this.args.todo, { completed }));
 
-    if (completed) {
-      patchCacheTodoCompleted(this.store, this.args.todo);
-    } else {
-      patchCacheTodoActivated(this.store, this.args.todo);
+      if (completed) {
+        patchCacheTodoCompleted(this.store, this.args.todo);
+      } else {
+        patchCacheTodoActivated(this.store, this.args.todo);
+      }
+    } catch (e) {
+      reportError(new Error('Could not update todo completion state', { cause: e }), { toast: true });
     }
 
     this.args.onSaveEnd();
@@ -219,7 +224,11 @@ class DestroyForm extends Component<{
   private readonly deleteTodo = async () => {
     this.args.onSaveStart();
 
-    await this.store.request(deleteTodo(this.args.todo));
+    try {
+      await this.store.request(deleteTodo(this.args.todo));
+    } catch (e) {
+      reportError(new Error('Could not delete todo', { cause: e }), { toast: true });
+    }
 
     this.args.onSaveEnd();
   };
@@ -268,7 +277,11 @@ class TitleForm extends Component<{
   private readonly deleteTodo = async () => {
     this.args.onSaveStart();
 
-    await this.store.request(deleteTodo(this.args.todo));
+    try {
+      await this.store.request(deleteTodo(this.args.todo));
+    } catch (e) {
+      reportError(new Error('Could not delete todo', { cause: e }), { toast: true });
+    }
 
     this.args.onSaveEnd();
   };
@@ -276,7 +289,11 @@ class TitleForm extends Component<{
   private readonly patchTodoTitle = async (title: string) => {
     this.args.onSaveStart();
 
-    await this.store.request(patchTodo(this.args.todo, { title }));
+    try {
+      await this.store.request(patchTodo(this.args.todo, { title }));
+    } catch (e) {
+      reportError(new Error('Could not update todo title', { cause: e }), { toast: true });
+    }
 
     this.args.onSaveEnd();
   };

@@ -125,7 +125,7 @@ class UpdateFlag extends Component<{
         <:idle></:idle>
         <:loading><LoadingDots /></:loading>
         <:error as |error|>
-          <HandleError @error={{error}} @toast="Could not update flag." />
+          <HandleError @error={{error}} />
         </:error>
       </Request>
     </Button>

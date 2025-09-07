@@ -8,6 +8,7 @@ import type { TodoAttributes } from '@workspace/shared-data/types';
 
 import type AppState from '#/services/app-state';
 import type Store from '#/services/store';
+import { reportError } from '#/helpers/error';
 
 const NameForTitle = 'title';
 type NameForTitle = typeof NameForTitle;
@@ -39,9 +40,13 @@ export class CreateTodo extends Component {
 
     const { attributes, form } = processSubmitEvent(event);
 
-    await this.store.request(createTodo(attributes));
+    try {
+      await this.store.request(createTodo(attributes));
 
-    form.reset();
+      form.reset();
+    } catch (e) {
+      reportError(new Error('Could not create todo', { cause: e }), { toast: true });
+    }
 
     this.appState.onSaveEnd();
   };

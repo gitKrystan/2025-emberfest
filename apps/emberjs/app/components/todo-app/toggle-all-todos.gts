@@ -8,6 +8,7 @@ import type { Todo } from '@workspace/shared-data/types';
 
 import type AppState from '#/services/app-state';
 import type Store from '#/services/store';
+import { reportError } from '#/helpers/error';
 
 export class ToggleAllTodos extends Component<{
   Args: {
@@ -39,9 +40,13 @@ export class ToggleAllTodos extends Component<{
 
     const attributes = { completed: !this.areViewableCompleted };
 
-    await this.store.request(bulkPatchTodos(this.args.todos, attributes));
+    try {
+      await this.store.request(bulkPatchTodos(this.args.todos, attributes));
 
-    bulkPatchCacheTodos(this.store, this.args.todos, attributes);
+      bulkPatchCacheTodos(this.store, this.args.todos, attributes);
+    } catch (e) {
+      reportError(new Error('Could not toggle all todos', { cause: e }), { toast: true });
+    }
 
     this.appState.onSaveEnd();
   };
