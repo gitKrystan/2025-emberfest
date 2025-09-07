@@ -17,6 +17,7 @@ import { InternalServerError } from '../errors.ts';
 import {
   serializeCollectionResourceDocument,
   serializeCountDocument,
+  serializeEmptyDocument,
   serializePaginatedCollectionResourceDocument,
   serializeSingleResourceDocument,
 } from '../serializers/base.ts';
@@ -29,6 +30,7 @@ import {
 } from '../validations/request-helpers.ts';
 import {
   todoBulkDeleteSchema,
+  todoBulkPatchAllSchema,
   todoBulkPatchSchema,
   todoCreationSchema,
   todoUpdateSchema,
@@ -236,6 +238,47 @@ export function bulkPatchTodos(
 }
 
 /**
+ * PATCH /todo/ops.bulk.patchAll - Bulk patch all todos (or filtered todos)
+ */
+export function bulkPatchAllTodos(
+  req: Request,
+  res: Response,
+): Response<void> | Response<ResourceErrorDocument> {
+  try {
+    checkShouldError();
+
+    const { filter, hasFilter } = validateQueryParams(req);
+    const requestData = validateWithZod(todoBulkPatchAllSchema, req.body);
+
+    const patchAttributes: Partial<TodoAttributes> = extractTodoPatchAttributes(
+      requestData.attributes,
+    );
+
+    if (hasFilter) {
+      // Update only filtered todos
+      const todosToUpdate = todoStore.query(filter);
+      for (const todo of todosToUpdate) {
+        todoStore.update(todo.id, patchAttributes);
+      }
+    } else {
+      // Update all todos if no filter is provided
+      const allTodos = todoStore.findAll();
+      for (const todo of allTodos) {
+        todoStore.update(todo.id, patchAttributes);
+      }
+    }
+
+    // Return an empty document to ensure the cache updates in the frontend
+    const document = serializeEmptyDocument(req);
+
+    res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
+    return res.json(document);
+  } catch (error) {
+    return handleError(res, error);
+  }
+}
+
+/**
  * DELETE /todos/:id - Delete a todo
  */
 export function deleteTodo(
@@ -305,7 +348,7 @@ export function bulkDeleteAllTodos(
     }
 
     // Return an empty document to ensure the cache updates in the frontend
-    const document = { data: null };
+    const document = serializeEmptyDocument(req);
 
     res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
     return res.json(document);

@@ -4,6 +4,7 @@ import type { ResourceCountDocument } from '@workspace/shared-data/builders';
 
 import type {
   CollectionResourceDocument,
+  EmptyResourceDocument,
   ExistingResourceObject,
   SingleResourceDocument,
 } from '@warp-drive/core/types/spec/json-api-raw';
@@ -147,6 +148,15 @@ export function serializePaginatedCollectionResourceDocument<T extends string>(
       ...paginationLinks,
     },
     jsonapi: JSONAPI_VERSION,
+  };
+}
+
+export function serializeEmptyDocument(req: Request): EmptyResourceDocument {
+  return {
+    data: null,
+    links: {
+      self: getRequestUrl(req),
+    },
   };
 }
 

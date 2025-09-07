@@ -7,7 +7,7 @@ import { cached, tracked } from '@glimmer/tracking';
 import { checkout, type ReactiveResource } from '@warp-drive/core/reactive';
 import { Await, Request } from '@warp-drive/ember';
 
-import { queryFlags, updateFlag } from '@workspace/shared-data/builders';
+import { invalidateAllTodoQueries, queryFlags, updateFlag } from '@workspace/shared-data/builders';
 import type {
   ApiFlag,
   EditableShouldErrorFlag,
@@ -99,15 +99,21 @@ class UpdateTodoCountFlag extends Component<{
   Args: { flag: EditableTodoCountFlag & ReactiveResource };
 }> {
   <template>
-    <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}}>
+    <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}} @onUpdateSuccess={{this.onUpdateSuccess}}>
       Initial Todo Count:
       {{@flag.value}}
     </UpdateFlag>
   </template>
 
+  @service declare private readonly store: Store;
+
   toggle = () => {
     this.args.flag.value =
       this.args.flag.value === TodoCountOptions.small ? TodoCountOptions.large : TodoCountOptions.small;
+  };
+
+  onUpdateSuccess = () => {
+    invalidateAllTodoQueries(this.store);
   };
 }
 
@@ -115,6 +121,7 @@ class UpdateFlag extends Component<{
   Args: {
     flag: ApiFlag & ReactiveResource;
     toggle: () => void;
+    onUpdateSuccess?: () => void;
   };
   Blocks: { default: [] };
 }> {
@@ -123,6 +130,7 @@ class UpdateFlag extends Component<{
       {{yield}}
       <Request @request={{this.updateRequest}}>
         <:idle></:idle>
+        <:content>{{(@onUpdateSuccess)}}</:content>
         <:loading><LoadingDots /></:loading>
         <:error as |error|>
           <HandleError @error={{error}} />

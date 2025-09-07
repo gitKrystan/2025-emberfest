@@ -3,7 +3,11 @@ import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { cached } from '@glimmer/tracking';
 
-import { bulkPatchCacheTodos, bulkPatchTodos } from '@workspace/shared-data/builders';
+import {
+  bulkPatchAllTodosToActive,
+  bulkPatchAllTodosToCompleted,
+  invalidateAllTodoQueries,
+} from '@workspace/shared-data/builders';
 import type { Todo } from '@workspace/shared-data/types';
 
 import { reportError } from '#/helpers/error';
@@ -37,13 +41,16 @@ export class ToggleAllTodos extends Component<{
 
   private readonly toggleAll = async () => {
     this.appState.onSaveStart();
-
-    const attributes = { completed: !this.areViewableCompleted };
+    const shouldCompleteAllActive = !this.areViewableCompleted;
 
     try {
-      await this.store.request(bulkPatchTodos(this.args.todos, attributes));
+      if (shouldCompleteAllActive) {
+        await this.store.request(bulkPatchAllTodosToCompleted());
+      } else {
+        await this.store.request(bulkPatchAllTodosToActive());
+      }
 
-      bulkPatchCacheTodos(this.store, this.args.todos, attributes);
+      invalidateAllTodoQueries(this.store);
     } catch (e) {
       reportError(new Error('Could not toggle all todos', { cause: e }), { toast: true });
     }

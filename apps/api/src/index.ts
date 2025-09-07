@@ -8,6 +8,7 @@ import { getFlags, updateFlag } from './controllers/flag.ts';
 import {
   bulkDeleteAllTodos,
   bulkDeleteTodos,
+  bulkPatchAllTodos,
   bulkPatchTodos,
   createTodo,
   deleteTodo,
@@ -82,6 +83,7 @@ app.get('/api/todo/ops.count', getTodosCount);
 app.get('/api/todo/:id', getTodo);
 app.post('/api/todo', createTodo);
 app.patch('/api/todo/ops.bulk.patch', bulkPatchTodos);
+app.patch('/api/todo/ops.bulk.patchAll', bulkPatchAllTodos);
 app.patch('/api/todo/:id', patchTodo);
 app.delete('/api/todo/ops.bulk.delete', bulkDeleteTodos);
 app.delete('/api/todo/ops.bulk.deleteAll', bulkDeleteAllTodos);

@@ -138,3 +138,11 @@ export const todoBulkPatchSchema = z.object({
   attributes: todoUpdateSchema,
 });
 export type TodoBulkPatch = z.infer<typeof todoBulkPatchSchema>;
+
+/**
+ * Schema for validating bulk patch all request
+ */
+export const todoBulkPatchAllSchema = z.object({
+  attributes: todoUpdateSchema,
+});
+export type TodoBulkPatchAll = z.infer<typeof todoBulkPatchAllSchema>;
