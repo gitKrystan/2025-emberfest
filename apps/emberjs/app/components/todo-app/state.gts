@@ -1,6 +1,5 @@
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import { consume } from 'ember-provide-consume-context';
 
 import { AppError } from '#/components/todo-app/app-error';
 import type AppState from '#/services/app-state';

@@ -2,7 +2,6 @@ import { assert } from '@ember/debug';
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import { consume } from 'ember-provide-consume-context';
 
 import { createTodo } from '@workspace/shared-data/builders';
 import type { TodoAttributes } from '@workspace/shared-data/types';

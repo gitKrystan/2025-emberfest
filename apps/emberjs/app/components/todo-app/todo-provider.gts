@@ -1,6 +1,5 @@
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import { consume } from 'ember-provide-consume-context';
 
 import type { Future } from '@warp-drive/core/request';
 import { Request } from '@warp-drive/ember';

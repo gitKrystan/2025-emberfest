@@ -1,6 +1,5 @@
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import { consume } from 'ember-provide-consume-context';
 
 import { HandleError } from '#/components/design-system/error';
 import type AppState from '#/services/app-state';

@@ -1,6 +1,5 @@
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import { consume } from 'ember-provide-consume-context';
 
 import { checkout } from '@warp-drive/core/reactive';
 import { Await } from '@warp-drive/ember';
