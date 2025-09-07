@@ -49,7 +49,7 @@ type AutorefreshBehaviorCombos =
   | `${AutorefreshBehaviorType},${AutorefreshBehaviorType}`
   | `${AutorefreshBehaviorType},${AutorefreshBehaviorType},${AutorefreshBehaviorType}`;
 
-type ContentFeatures<T, RT extends ReactiveDataDocument<T[]>> = {
+type ContentFeatures<RT> = {
   isOnline: boolean;
   isHidden: boolean;
   isRefreshing: boolean;
@@ -64,14 +64,14 @@ type ContentFeatures<T, RT extends ReactiveDataDocument<T[]>> = {
   latestRequest?: Future<RT>;
 };
 
-interface PaginateSignature<T, RT extends ReactiveDataDocument<T[]>, E> {
+interface PaginateSignature<T, E> {
   Args: {
     /**
      * The request to monitor. This should be a `Future` instance returned
      * by either the `store.request` or `store.requestManager.request` methods.
      *
      */
-    request: Future<RT>;
+    request: Future<ReactiveDataDocument<T[]>>;
 
     /**
      * A query to use for the request. This should be an object that can be
@@ -79,7 +79,7 @@ interface PaginateSignature<T, RT extends ReactiveDataDocument<T[]>, E> {
      * like the component to also initiate the request.
      *
      */
-    query?: StoreRequestInput<RT>;
+    query?: StoreRequestInput<ReactiveDataDocument<T[]>>;
 
     /**
      * The store instance to use for making requests. If contexts are available,
@@ -179,8 +179,8 @@ interface PaginateSignature<T, RT extends ReactiveDataDocument<T[]>, E> {
      * The block to render when the request succeeded.
      *
      */
-    content: [value: T[], features: ContentFeatures<T, RT>];
-    always: [state: PaginationState<T, RT, E>, features: ContentFeatures<T, RT>];
+    content: [value: T[], features: ContentFeatures<ReactiveDataDocument<T[]>>];
+    always: [state: PaginationState<T, E>, features: ContentFeatures<ReactiveDataDocument<T[]>>];
   };
 }
 
@@ -401,7 +401,7 @@ interface PaginateSignature<T, RT extends ReactiveDataDocument<T[]>, E> {
  * @class <Request />
  * @public
  */
-export class Paginate<T, RT extends ReactiveDataDocument<T[]>, E> extends Component<PaginateSignature<T, RT, E>> {
+export class Paginate<T, E> extends Component<PaginateSignature<T, E>> {
   /**
    * The store instance to use for making requests. If contexts are available, this
    * will be the `store` on the context, else it will be the store service.
@@ -421,8 +421,8 @@ export class Paginate<T, RT extends ReactiveDataDocument<T[]>, E> extends Compon
     return store;
   }
 
-  _state: PaginationSubscription<T, RT, E> | null = null;
-  get state(): PaginationSubscription<T, RT, E> {
+  _state: PaginationSubscription<T, E> | null = null;
+  get state(): PaginationSubscription<T, E> {
     let { _state } = this;
     const { store } = this;
     if (_state && _state.store !== store) {
@@ -442,16 +442,16 @@ export class Paginate<T, RT extends ReactiveDataDocument<T[]>, E> extends Compon
     this._state = null;
   }
 
-  get initialState(): Readonly<RequestState<RT, StructuredErrorDocument<E>>> {
+  get initialState(): Readonly<RequestState<ReactiveDataDocument<T[]>, StructuredErrorDocument<E>>> {
     return this.state.paginationState.initialPage.state;
   }
 
-  get activePageRequest(): Future<RT> | null {
+  get activePageRequest(): Future<ReactiveDataDocument<T[]>> | null {
     return this.state.paginationState.activePage.request || null;
   }
 
   @cached
-  get pages(): readonly PageState<T, RT, E>[] {
+  get pages(): readonly PageState<T, E>[] {
     return this.state.paginationState.pages;
   }
 
@@ -471,12 +471,12 @@ export class Paginate<T, RT extends ReactiveDataDocument<T[]>, E> extends Compon
   }
 
   @cached
-  get prevRequest(): Future<RT> | null {
+  get prevRequest(): Future<ReactiveDataDocument<T[]>> | null {
     return this.state.paginationState.prevRequest;
   }
 
   @cached
-  get nextRequest(): Future<RT> | null {
+  get nextRequest(): Future<ReactiveDataDocument<T[]>> | null {
     return this.state.paginationState.nextRequest;
   }
 
