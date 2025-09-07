@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 /* eslint-disable ember/no-side-effects */
-/* eslint-disable ember/require-super-in-lifecycle-hooks */
 
 import { service } from '@ember/service';
 import { importSync, macroCondition, moduleExists } from '@embroider/macros';
@@ -438,8 +437,9 @@ export class Paginate<T, E> extends Component<PaginateSignature<T, E>> {
   }
 
   willDestroy(): void {
-    this._state![DISPOSE]();
+    this._state?.[DISPOSE]();
     this._state = null;
+    super.willDestroy();
   }
 
   get initialState(): Readonly<RequestState<ReactiveDataDocument<T[]>, StructuredErrorDocument<E>>> {

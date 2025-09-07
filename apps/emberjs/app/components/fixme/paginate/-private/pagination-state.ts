@@ -229,7 +229,7 @@ export class PaginationState<T, E> {
     return this.pages.reduce((acc: T[], page) => {
       const content = page.value;
       if (content?.data) {
-        return [...acc, ...content.data];
+        acc.push(...content.data);
       }
       return acc;
     }, []);
