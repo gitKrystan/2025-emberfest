@@ -189,7 +189,7 @@ export class PaginationSubscription<T, E> {
       // TODO: Types
       (this._args as { pageHints: PageHints<T> | undefined }).pageHints
         ? {
-            state: this.contentFeatures,
+            loadPage: this.loadPage,
             pageHints: (this._args as { pageHints: PageHints<T> }).pageHints,
           }
         : null

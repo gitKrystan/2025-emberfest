@@ -3,7 +3,6 @@ import type { ReactiveDataDocument } from '@warp-drive/core/reactive';
 import { defineSignal, memoized } from '@warp-drive/core/store/-private';
 
 import type { PaginationState } from './pagination-state';
-import type { ContentFeatures } from './pagination-subscription';
 import { getHref } from './util';
 
 /** @public */
@@ -42,16 +41,16 @@ export type PaginationLink = RealPaginationLink | PlaceholderPaginationLink;
 export class PaginationLinks<T, E> {
   private readonly pageHints: PageHints<T>;
   private readonly paginationState: PaginationState<T, E>;
-  private readonly contentFeatures: ContentFeatures<ReactiveDataDocument<T[]>>;
+  private readonly loadPage: (url: string) => Promise<void>;
 
   constructor(
     pageHints: PageHints<T>,
     paginationState: PaginationState<T, E>,
-    contentFeatures: ContentFeatures<ReactiveDataDocument<T[]>>
+    loadPage: (url: string) => Promise<void>
   ) {
     this.pageHints = pageHints;
     this.paginationState = paginationState;
-    this.contentFeatures = contentFeatures;
+    this.loadPage = loadPage;
   }
 
   private _links: PaginationLink[] | null = null;
@@ -84,7 +83,7 @@ export class PaginationLinks<T, E> {
     const links =
       this._links?.length === totalPages ? this._links : Array(totalPages);
 
-    return (this._links = links.map<PaginationLink>(
+    this._links = links.map<PaginationLink>(
       (slot: PaginationLink | undefined, i): PaginationLink => {
         // link.index and pageHints.currentPage are 1-indexed
         const index = i + 1;
@@ -96,7 +95,7 @@ export class PaginationLinks<T, E> {
             index,
             isCurrent,
             firstUrl,
-            this.contentFeatures
+            this.loadPage
           );
         }
         // Previous page
@@ -106,7 +105,7 @@ export class PaginationLinks<T, E> {
             index,
             isCurrent,
             prevUrl,
-            this.contentFeatures
+            this.loadPage
           );
         }
         // Current Page
@@ -116,7 +115,7 @@ export class PaginationLinks<T, E> {
             index,
             isCurrent,
             state.activePage.selfLink,
-            this.contentFeatures
+            this.loadPage
           );
         }
         // Next Page
@@ -126,7 +125,7 @@ export class PaginationLinks<T, E> {
             index,
             isCurrent,
             nextUrl,
-            this.contentFeatures
+            this.loadPage
           );
         }
         // Last page
@@ -136,7 +135,7 @@ export class PaginationLinks<T, E> {
             index,
             isCurrent,
             lastUrl,
-            this.contentFeatures
+            this.loadPage
           );
         }
         // Placeholder
@@ -145,56 +144,58 @@ export class PaginationLinks<T, E> {
           index,
           isCurrent,
           null,
-          this.contentFeatures
+          this.loadPage
         );
       }
-    ));
+    );
+    return this._links;
   }
 }
 
-function getPaginationLink<T>(
+function getPaginationLink(
   currentLink: PaginationLink | null,
   index: number,
   isCurrent: boolean,
   url: string | null,
-  contentFeatures: ContentFeatures<ReactiveDataDocument<T[]>>
+  loadPage: (url: string) => Promise<void>
 ): PaginationLink {
   if (currentLink && !currentLink.isPlaceholder) {
     // Update existing RealPaginationLink
-    return upgradeRealPaginationLink<T>(currentLink)._setIsCurrent(isCurrent);
+    return upgradeRealPaginationLink(currentLink)._setIsCurrent(isCurrent);
   } else if (url) {
-    return new RealPaginationLinkImpl(url, index, isCurrent, contentFeatures);
+    return new RealPaginationLinkImpl(url, index, isCurrent, loadPage);
   } else {
     assert('Cannot set PlaceHolder link to current', !isCurrent);
     return new PlaceholderPaginationLinkImpl(index);
   }
 }
 
-function upgradeRealPaginationLink<T>(
+function upgradeRealPaginationLink(
   link: RealPaginationLink
-): RealPaginationLinkImpl<T> {
-  return link as RealPaginationLinkImpl<T>;
+): RealPaginationLinkImpl {
+  return link as RealPaginationLinkImpl;
 }
 
-class RealPaginationLinkImpl<T> implements RealPaginationLink {
+class RealPaginationLinkImpl implements RealPaginationLink {
   readonly isPlaceholder = false as const;
 
   readonly url: string;
   readonly index: number;
 
   private _isCurrent: boolean;
-  private readonly _contentFeatures: ContentFeatures<ReactiveDataDocument<T[]>>;
+  private readonly _loadPage: (url: string) => Promise<void>;
 
   constructor(
     url: string,
     index: number,
     isCurrent: boolean,
-    contentFeatures: ContentFeatures<ReactiveDataDocument<T[]>>
+    loadPage: (url: string) => Promise<void>
   ) {
     this.url = url;
     this.index = index;
     this._isCurrent = isCurrent;
-    this._contentFeatures = contentFeatures;
+    debugger;
+    this._loadPage = loadPage;
   }
 
   get isCurrent(): boolean {
@@ -202,7 +203,7 @@ class RealPaginationLinkImpl<T> implements RealPaginationLink {
   }
 
   readonly setActive: () => Promise<void> = () => {
-    return this._contentFeatures.loadPage(this.url);
+    return this._loadPage(this.url);
   };
 
   /** @internal */

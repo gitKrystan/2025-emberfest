@@ -10,7 +10,6 @@ import type { StructuredErrorDocument } from '@warp-drive/core/types/request';
 import type { UrlPageStateCreateOptions } from './page-state';
 import { PageState } from './page-state';
 import { type PageHints, PaginationLinks } from './pagination-links';
-import type { ContentFeatures } from './pagination-subscription';
 
 // TODO: Make generic?
 const PaginationCache = new WeakMap<
@@ -33,7 +32,7 @@ export class PaginationState<T, E> {
     request: Future<ReactiveDataDocument<T[]>>,
     linkSupport: {
       pageHints: PageHints<T>;
-      state: ContentFeatures<ReactiveDataDocument<T[]>>;
+      loadPage: (url: string) => Promise<void>;
     } | null
   ) {
     this.pagesCache = new Map<string, PageState<T, E>>();
@@ -43,7 +42,7 @@ export class PaginationState<T, E> {
       this.links = new PaginationLinks(
         linkSupport.pageHints,
         this,
-        linkSupport.state
+        linkSupport.loadPage
       );
     } else {
       this.links = null;
@@ -205,7 +204,7 @@ defineSignal(PaginationState.prototype, 'activePage', undefined);
 
 interface LinkSupport<T> {
   pageHints: PageHints<T>;
-  state: ContentFeatures<ReactiveDataDocument<T[]>>;
+  loadPage: (url: string) => Promise<void>;
 }
 
 /**
