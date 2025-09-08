@@ -58,7 +58,6 @@ export class PageState<T, E> {
     manager: PaginationState<T, E>,
     options: PageStateCreateOptions<T>
   ) {
-    console.error('NEW PAGINATION STATE', JSON.stringify(options, null, 2));
     this.manager = manager;
     this._prevLink = options.prev ?? null;
     this._nextLink = options.next ?? null;
@@ -148,6 +147,7 @@ export class PageState<T, E> {
   };
 }
 
+defineSignal(PageState.prototype, 'requestState', undefined);
 defineSignal(PageState.prototype, 'request', undefined);
 defineSignal(PageState.prototype, 'state', undefined);
 defineSignal(PageState.prototype, 'self', undefined);

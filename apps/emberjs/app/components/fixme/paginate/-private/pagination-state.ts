@@ -122,12 +122,12 @@ export class PaginationState<T, E> {
 
   @memoized
   get prev(): string | null {
-    return this.firstPage.prevLink;
+    return this.activePage.prevLink;
   }
 
   @memoized
   get next(): string | null {
-    return this.lastPage.nextLink;
+    return this.activePage.nextLink;
   }
 
   @memoized
@@ -135,16 +135,15 @@ export class PaginationState<T, E> {
     return this.activePage.request;
   }
 
-  // FIXME: Seems weird
   @memoized
   get prevRequest(): Future<ReactiveDataDocument<T[]>> | null {
-    return this.firstPage.request;
+    return this.activePage.prev?.request ?? null;
   }
 
   // FIXME: Seems weird
   @memoized
   get nextRequest(): Future<ReactiveDataDocument<T[]>> | null {
-    return this.lastPage.request;
+    return this.activePage.next?.request ?? null;
   }
 
   activatePage = (page: Readonly<PageState<T, E>>): void => {
@@ -159,7 +158,7 @@ export class PaginationState<T, E> {
 
     if (!state) {
       state = new PageState<T, E>(this, options);
-      this.pagesCache.set(url, state);
+      this.addPage(url, state);
     }
 
     return state;

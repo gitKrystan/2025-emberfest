@@ -111,13 +111,13 @@ export class PaginationSubscription<T, E> {
    */
   private readonly loadPage = async (url: string): Promise<void> => {
     const page = this.paginationState.getPageState({ url });
-    this.paginationState.activatePage(page);
     if (!page.request || page.isError || page.isCancelled) {
       const request = this.store.request<ReactiveDataDocument<T[]>>({
         method: 'GET',
         url,
       });
       await page.load(request);
+      this.paginationState.activatePage(page);
     }
   };
 
