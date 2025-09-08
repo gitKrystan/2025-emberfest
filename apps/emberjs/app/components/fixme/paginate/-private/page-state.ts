@@ -36,9 +36,11 @@ export class PageState<T, E> {
   /** @internal */
   declare request: Future<ReactiveDataDocument<T[]>> | null;
   /** @internal */
-  declare requestState: Readonly<
-    RequestState<ReactiveDataDocument<T[]>, StructuredErrorDocument<E>>
-  >;
+  declare requestState:
+    | Readonly<
+        RequestState<ReactiveDataDocument<T[]>, StructuredErrorDocument<E>>
+      >
+    | undefined;
   declare private selfLink: string | null;
   declare private readonly _prevLink: string | null;
   declare private readonly _nextLink: string | null;
@@ -47,7 +49,7 @@ export class PageState<T, E> {
     manager: PaginationState<T, E>,
     options: PageStateCreateOptions<T>
   ) {
-    console.error('NEW PAGINATION STATE');
+    console.error('NEW PAGINATION STATE', options.self);
     this.manager = manager;
     this._prevLink = options.prev ?? null;
     this._nextLink = options.next ?? null;
@@ -68,37 +70,37 @@ export class PageState<T, E> {
   /** @internal */
   @memoized
   get value(): ReactiveDataDocument<T[]> | null {
-    return this.requestState.value;
+    return this.requestState?.value ?? null;
   }
 
   /** @internal */
   @memoized
   get isLoading(): boolean {
-    return this.requestState.isPending;
+    return Boolean(this.requestState?.isPending);
   }
 
   /** @internal */
   @memoized
   get isSuccess(): boolean {
-    return this.requestState.isSuccess;
+    return Boolean(this.requestState?.isSuccess);
   }
 
   /** @internal */
   @memoized
   get isCancelled(): boolean {
-    return this.requestState.isCancelled;
+    return Boolean(this.requestState?.isCancelled);
   }
 
   /** @internal */
   @memoized
   get isError(): boolean {
-    return this.requestState.isError;
+    return Boolean(this.requestState?.isError);
   }
 
   /** @internal */
   @memoized
   get reason(): StructuredErrorDocument<E> | null {
-    return this.requestState.reason;
+    return this.requestState?.reason ?? null;
   }
 
   /** @internal */

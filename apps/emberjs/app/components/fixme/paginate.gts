@@ -5,7 +5,7 @@ import { cached } from '@glimmer/tracking';
 
 import type { Store, StoreRequestInput } from '@warp-drive/core';
 import { assert } from '@warp-drive/core/build-config/macros';
-import type { ReactiveDataDocument, RequestState } from '@warp-drive/core/reactive';
+import type { ReactiveDataDocument } from '@warp-drive/core/reactive';
 import type { Future } from '@warp-drive/core/request';
 import type { RequestLoadingState } from '@warp-drive/core/store/-private';
 import { DISPOSE } from '@warp-drive/core/store/-private';
@@ -20,7 +20,8 @@ import type {
 } from './paginate/-private/pagination-subscription.ts';
 import { createPaginationSubscription } from './paginate/-private/pagination-subscription.ts';
 
-export type { ContentFeatures, ErrorFeatures } from './paginate/-private/pagination-subscription.ts';
+// TODO: We should make these public
+// export type { ContentFeatures, ErrorFeatures } from './paginate/-private/pagination-subscription';
 
 export const and = (x: unknown, y: unknown): boolean => Boolean(x && y);
 
@@ -433,7 +434,7 @@ export class Paginate<T, E> extends Component<PaginateSignature<T, E>> {
       <Throw @error={{IdleBlockMissingError}} />
 
     {{else if this.subscription.paginationState.isLoading}}
-      {{yield this.subscription.paginationState.loadingState to="loading"}}
+      {{yield (notNull this.subscription.paginationState.loadingState) to="loading"}}
 
     {{else if (and this.subscription.paginationState.isCancelled (has-block "cancelled"))}}
       {{yield (notNull this.subscription.paginationState.reason) this.subscription.errorFeatures to="cancelled"}}

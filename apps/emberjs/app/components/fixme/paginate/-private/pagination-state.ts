@@ -39,8 +39,8 @@ export class PaginationState<T, E> {
   }
 
   @memoized
-  get loadingState(): RequestLoadingState {
-    return this.initialPage.requestState.loadingState;
+  get loadingState(): RequestLoadingState | null {
+    return this.initialPage.requestState?.loadingState ?? null;
   }
 
   @memoized
