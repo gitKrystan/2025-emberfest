@@ -7,7 +7,8 @@ import { defineSignal, memoized } from '@warp-drive/core/store/-private';
 import type { RequestLoadingState } from '@warp-drive/core/store/-private/new-core-tmp/request-state';
 import type { StructuredErrorDocument } from '@warp-drive/core/types/request';
 
-import { PageState, type PageStateCreateOptions } from './page-state';
+import type { UrlPageStateCreateOptions } from './page-state';
+import { PageState } from './page-state';
 
 // TODO: Make generic?
 const PaginationCache = new WeakMap<
@@ -151,9 +152,9 @@ export class PaginationState<T, E> {
   };
 
   getPageState = (
-    options: PageStateCreateOptions<T> & { self: string }
+    options: UrlPageStateCreateOptions
   ): Readonly<PageState<T, E>> => {
-    const url = options.self;
+    const { url } = options;
     let state = this.pagesCache.get(url);
 
     if (!state) {

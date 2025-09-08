@@ -23,9 +23,18 @@ function getHref(link?: Link | null): string | null {
 }
 
 /** @internal */
-export interface PageStateCreateOptions<T> {
-  // FIXME: Confusing that self can be a future or a string
-  self: Future<ReactiveDataDocument<T[]>> | string;
+export type PageStateCreateOptions<T> =
+  | UrlPageStateCreateOptions
+  | FuturePageStateCreateOptions<T>;
+
+export interface UrlPageStateCreateOptions {
+  url: string;
+  prev?: string | null;
+  next?: string | null;
+}
+
+export interface FuturePageStateCreateOptions<T> {
+  self: Future<ReactiveDataDocument<T[]>>;
   prev?: string | null;
   next?: string | null;
 }
@@ -49,12 +58,12 @@ export class PageState<T, E> {
     manager: PaginationState<T, E>,
     options: PageStateCreateOptions<T>
   ) {
-    console.error('NEW PAGINATION STATE', options.self);
+    console.error('NEW PAGINATION STATE', JSON.stringify(options, null, 2));
     this.manager = manager;
     this._prevLink = options.prev ?? null;
     this._nextLink = options.next ?? null;
-    if (typeof options.self === 'string') {
-      this.selfLink = options.self;
+    if ('url' in options) {
+      this.selfLink = options.url;
     } else {
       void this.load(options.self);
       void options.self.then((value) => {
@@ -119,18 +128,14 @@ export class PageState<T, E> {
   @memoized
   get prev(): Readonly<PageState<T, E>> | null {
     const url = this.prevLink;
-    return url
-      ? this.manager.getPageState({ self: url, next: this.selfLink })
-      : null;
+    return url ? this.manager.getPageState({ url, next: this.selfLink }) : null;
   }
 
   /** @internal */
   @memoized
   get next(): Readonly<PageState<T, E>> | null {
     const url = this.nextLink;
-    return url
-      ? this.manager.getPageState({ self: url, prev: this.selfLink })
-      : null;
+    return url ? this.manager.getPageState({ url, prev: this.selfLink }) : null;
   }
 
   /** @internal */
