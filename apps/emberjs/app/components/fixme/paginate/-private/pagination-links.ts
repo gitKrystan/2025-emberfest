@@ -55,6 +55,7 @@ export class PaginationLinks<T, E> {
 
   private _links: PaginationLink[] | null = null;
 
+  /** All available links and placeholders */
   @memoized
   get links(): PaginationLink[] | null {
     console.log('PaginationLinks.links recomputed');

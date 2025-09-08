@@ -61,9 +61,17 @@ export class TodoProvider extends Component<Signature> {
             {{/if}}
 
             <EachLink @pages={{pages}}>
-              <:placeholder as |link|>{{link.text}}</:placeholder>
+              <:placeholder as |link|>
+                <span class="pagination-link pagination-placeholder-link">{{link.text}}</span>
+              </:placeholder>
               <:link as |link|>
-                <button type="button" {{on "click" link.setActive}}>{{link.index}}</button>
+                <button
+                  type="button"
+                  {{on "click" link.setActive}}
+                  class="pagination-link pagination-real-link {{if link.isCurrent 'pagination-link-active'}}"
+                >
+                  {{link.index}}
+                </button>
               </:link>
             </EachLink>
 

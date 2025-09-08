@@ -871,20 +871,6 @@ type PaginationLink = RealPaginationLink | PlaceholderPaginationLink;
 interface PaginationLinks {
   /** All available links and placeholders */
   links: Array<PaginationLink>;
-  /** The currently active page link */
-  activeLink: PaginationLink | null;
-  /** The index of the currently active page, or null if no active page */
-  activeIndex: number | null;
-  /** Move to the next page, if available */
-  next(): void;
-  /** Move to the previous page, if available */
-  prev(): void;
-  /** Move to a specific page by its 1-indexed index */
-  setActive(index: number): void;
-  /** True if there is a next page available */
-  hasNext: boolean;
-  /** True if there is a previous page available */
-  hasPrev: boolean;
 }
 ```
 
