@@ -21,7 +21,7 @@ import { LoadingDots, LoadingSpinner } from '#/components/design-system/loading'
 import type Store from '#/services/store';
 
 export const Flags = <template>
-  <footer class="footer">
+  <aside>
     <Request @query={{(queryFlags)}}>
       <:loading><LoadingSpinner /></:loading>
       <:content as |content|><FlagsContent @data={{content.data}} /></:content>
@@ -29,7 +29,7 @@ export const Flags = <template>
         <HandleError @error={{error}} @toast="Could not get query flags for Flags List." />
       </:error>
     </Request>
-  </footer>
+  </aside>
 </template>;
 
 class FlagsContent extends Component<{

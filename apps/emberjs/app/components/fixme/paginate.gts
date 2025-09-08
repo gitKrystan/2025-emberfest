@@ -159,6 +159,19 @@ interface PaginateSignature<T, E> {
      *
      */
     content: [value: T[], features: ContentFeatures<ReactiveDataDocument<T[]>>];
+
+    /**
+     * The block to render when a request for a previous link is being performed.
+     *
+     */
+    prev: [request: Future<ReactiveDataDocument<T[]>>];
+
+    /**
+     * The block to render when a request for a next link is being performed.
+     *
+     */
+    next: [request: Future<ReactiveDataDocument<T[]>>];
+
     // TODO: Do we want to expose the entire PaginationState or select features?
     always: [state: Readonly<PaginationState<T, E>>, features: ContentFeatures<ReactiveDataDocument<T[]>>];
   };
@@ -443,7 +456,18 @@ export class Paginate<T, E> extends Component<PaginateSignature<T, E>> {
       {{yield (notNull this.subscription.paginationState.reason) this.subscription.errorFeatures to="error"}}
 
     {{else if this.subscription.paginationState.isSuccess}}
+      {{! Render prev block if prev page is loading and block is provided }}
+      {{#if (and this.subscription.paginationState.isPrevLoading (has-block "prev"))}}
+        {{yield (notNull this.subscription.paginationState.prevRequest) to="prev"}}
+      {{/if}}
+
+      {{! Render content block }}
       {{yield this.subscription.paginationState.data this.subscription.contentFeatures to="content"}}
+
+      {{! Render next block if next page is loading and block is provided }}
+      {{#if (and this.subscription.paginationState.isNextLoading (has-block "next"))}}
+        {{yield (notNull this.subscription.paginationState.nextRequest) to="next"}}
+      {{/if}}
 
     {{else if (not this.subscription.paginationState.isCancelled)}}
       <Throw @error={{notNull this.subscription.paginationState.reason}} />

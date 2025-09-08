@@ -13,7 +13,7 @@ import type { ReactiveTodosDocument } from './types.ts';
 export function getAllTodos(): RequestInfo<ReactiveTodosDocument> {
   const url = buildBaseURL({ resourcePath: 'todo' });
   const queryString = buildQueryParams({
-    'page[limit]': 25,
+    'page[limit]': 5,
     'page[offset]': 0,
   });
 
@@ -38,7 +38,7 @@ export function getCompletedTodos(): RequestInfo<ReactiveTodosDocument> {
   const url = buildBaseURL({ resourcePath: 'todo' });
   const queryString = buildQueryParams({
     'filter[completed]': true,
-    'page[limit]': 25,
+    'page[limit]': 5,
     'page[offset]': 0,
   });
 
@@ -58,7 +58,7 @@ export function getActiveTodos(): RequestInfo<ReactiveTodosDocument> {
   const url = buildBaseURL({ resourcePath: 'todo' });
   const queryString = buildQueryParams({
     'filter[completed]': false,
-    'page[limit]': 25,
+    'page[limit]': 5,
     'page[offset]': 0,
   });
 

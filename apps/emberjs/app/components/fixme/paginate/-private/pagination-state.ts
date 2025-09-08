@@ -146,6 +146,16 @@ export class PaginationState<T, E> {
     return this.activePage.next?.request ?? null;
   }
 
+  @memoized
+  get isPrevLoading(): boolean {
+    return this.activePage.prev?.isLoading ?? false;
+  }
+
+  @memoized
+  get isNextLoading(): boolean {
+    return this.activePage.next?.isLoading ?? false;
+  }
+
   activatePage = (page: Readonly<PageState<T, E>>): void => {
     this.activePage = page;
   };

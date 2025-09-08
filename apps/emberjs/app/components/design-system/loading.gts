@@ -3,5 +3,9 @@ export const LoadingSpinner = <template>
 </template>;
 
 export const LoadingDots = <template>
-  <span class="loading-dots"></span>
+  <div class="loading-dots">
+    <div class="dot"></div>
+    <div class="dot"></div>
+    <div class="dot"></div>
+  </div>
 </template>;
