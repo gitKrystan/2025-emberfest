@@ -145,35 +145,30 @@ interface PaginateSignature<T, E> {
      * you do not want the error to crash the application.
      *
      */
-    error: [
-      error: StructuredErrorDocument<E>,
-      features: {
-        isOnline: boolean;
-        isHidden: boolean;
-        retry: () => Promise<void>;
-      },
-    ];
+    error: [error: StructuredErrorDocument<E>, state: ErrorFeatures];
 
     /**
      * The block to render when the request succeeded.
-     *
      */
-    content: [pages: Readonly<PaginationState<T, E>>, features: ContentFeatures<ReactiveDataDocument<T[]>>];
+    content: [pages: Readonly<PaginationState<T, E>>, state: ContentFeatures<ReactiveDataDocument<T[]>>];
 
     /**
      * The block to render when a request for a previous link is being performed.
-     *
      */
     prev: [request: Future<ReactiveDataDocument<T[]>>];
 
     /**
      * The block to render when a request for a next link is being performed.
-     *
      */
     next: [request: Future<ReactiveDataDocument<T[]>>];
 
     // TODO: Do we want to expose the entire PaginationState or select features?
-    always: [pages: Readonly<PaginationState<T, E>>, features: ContentFeatures<ReactiveDataDocument<T[]>>];
+    always: [pages: Readonly<PaginationState<T, E>>, state: ContentFeatures<ReactiveDataDocument<T[]>>];
+
+    /**
+     * The block to render when the request succeeded.
+     */
+    default: [pages: Readonly<PaginationState<T, E>>, state: ContentFeatures<ReactiveDataDocument<T[]>>];
   };
 }
 
@@ -440,39 +435,45 @@ export class Paginate<T, E> extends Component<PaginateSignature<T, E>> {
   }
 
   <template>
-    {{#if (and this.subscription.isIdle (has-block "idle"))}}
-      {{yield to="idle"}}
+    {{#if (has-block)}}
+      {{yield this.subscription.paginationState this.subscription.contentFeatures}}
 
-    {{else if this.subscription.isIdle}}
-      <Throw @error={{IdleBlockMissingError}} />
+    {{else}}
 
-    {{else if this.subscription.paginationState.isLoading}}
-      {{yield (notNull this.subscription.paginationState.loadingState) to="loading"}}
+      {{#if (and this.subscription.isIdle (has-block "idle"))}}
+        {{yield to="idle"}}
 
-    {{else if (and this.subscription.paginationState.isCancelled (has-block "cancelled"))}}
-      {{yield (notNull this.subscription.paginationState.reason) this.subscription.errorFeatures to="cancelled"}}
+      {{else if this.subscription.isIdle}}
+        <Throw @error={{IdleBlockMissingError}} />
 
-    {{else if (and this.subscription.paginationState.isError (has-block "error"))}}
-      {{yield (notNull this.subscription.paginationState.reason) this.subscription.errorFeatures to="error"}}
+      {{else if this.subscription.paginationState.isLoading}}
+        {{yield (notNull this.subscription.paginationState.loadingState) to="loading"}}
 
-    {{else if this.subscription.paginationState.isSuccess}}
-      {{! Render prev block if prev page is loading and block is provided }}
-      {{#if (and this.subscription.paginationState.isPrevLoading (has-block "prev"))}}
-        {{yield (notNull this.subscription.paginationState.prevRequest) to="prev"}}
+      {{else if (and this.subscription.paginationState.isCancelled (has-block "cancelled"))}}
+        {{yield (notNull this.subscription.paginationState.reason) this.subscription.errorFeatures to="cancelled"}}
+
+      {{else if (and this.subscription.paginationState.isError (has-block "error"))}}
+        {{yield (notNull this.subscription.paginationState.reason) this.subscription.errorFeatures to="error"}}
+
+      {{else if this.subscription.paginationState.isSuccess}}
+        {{! Render prev block if prev page is loading and block is provided }}
+        {{#if (and this.subscription.paginationState.isPrevLoading (has-block "prev"))}}
+          {{yield (notNull this.subscription.paginationState.prevRequest) to="prev"}}
+        {{/if}}
+
+        {{! Render content block }}
+        {{yield this.subscription.paginationState this.subscription.contentFeatures to="content"}}
+
+        {{! Render next block if next page is loading and block is provided }}
+        {{#if (and this.subscription.paginationState.isNextLoading (has-block "next"))}}
+          {{yield (notNull this.subscription.paginationState.nextRequest) to="next"}}
+        {{/if}}
+
+      {{else if (not this.subscription.paginationState.isCancelled)}}
+        <Throw @error={{notNull this.subscription.paginationState.reason}} />
       {{/if}}
 
-      {{! Render content block }}
-      {{yield this.subscription.paginationState this.subscription.contentFeatures to="content"}}
-
-      {{! Render next block if next page is loading and block is provided }}
-      {{#if (and this.subscription.paginationState.isNextLoading (has-block "next"))}}
-        {{yield (notNull this.subscription.paginationState.nextRequest) to="next"}}
-      {{/if}}
-
-    {{else if (not this.subscription.paginationState.isCancelled)}}
-      <Throw @error={{notNull this.subscription.paginationState.reason}} />
+      {{yield this.subscription.paginationState this.subscription.contentFeatures to="always"}}
     {{/if}}
-
-    {{yield this.subscription.paginationState this.subscription.contentFeatures to="always"}}
   </template>
 }
