@@ -128,6 +128,10 @@ export function serializeCollectionResourceDocument<T extends string>(
  *     "next": "http://example.com/api/todo?page[limit]=25&page[offset]=25",
  *     "last": "http://example.com/api/todo?page[limit]=25&page[offset]=75"
  *   },
+ *   "meta": {
+ *     "currentPage": 1,
+ *     "totalPages": 4
+ *   },
  *   "jsonapi": {
  *     "version": "1.1"
  *   }
@@ -139,14 +143,13 @@ export function serializePaginatedCollectionResourceDocument<T extends string>(
   type: T,
   paginatedResult: PaginatedResult<ExistingRecord<T>>,
 ): CollectionResourceDocument<T> {
-  const paginationLinks = buildPaginationLinks(req, paginatedResult);
-
   return {
     data: serializeExistingResourceCollection(req, type, paginatedResult.data),
     links: {
       self: getRequestUrl(req),
-      ...paginationLinks,
+      ...buildPaginationLinks(req, paginatedResult),
     },
+    meta: serializePaginationMeta<T>(paginatedResult),
     jsonapi: JSONAPI_VERSION,
   };
 }
@@ -202,4 +205,13 @@ function serializeExistingResourceCollection<T extends string>(
   return records.map((record) =>
     serializeExistingResourceObject(req, type, record),
   );
+}
+
+function serializePaginationMeta<T extends string>(
+  paginatedResult: PaginatedResult<ExistingRecord<T>>,
+) {
+  const currentPage =
+    Math.floor(paginatedResult.offset / paginatedResult.limit) + 1;
+  const totalPages = Math.ceil(paginatedResult.total / paginatedResult.limit);
+  return { currentPage, totalPages };
 }
