@@ -14,7 +14,7 @@ export type PageHints<T> = (result: ReactiveDataDocument<T[]>) => {
 };
 
 export interface RealPaginationLink {
-  isPlaceholder: false;
+  isReal: true;
   /** 1-indexed page index */
   index: number;
   /** Is this the current active page? */
@@ -26,7 +26,7 @@ export interface RealPaginationLink {
 }
 
 export interface PlaceholderPaginationLink {
-  isPlaceholder: true;
+  isReal: false;
   /** 1-indexed page index */
   index: number;
   /** Defaults to '.' */
@@ -80,18 +80,22 @@ export class PaginationLinks<T, E> {
     }
 
     // TODO: reset if the totalPages changed...verify this is desired behavior
-    const links =
-      this._links?.length === totalPages ? this._links : Array(totalPages);
+    const existingLinks =
+      this._links?.length === totalPages ? this._links : null;
 
-    this._links = links.map<PaginationLink>(
-      (slot: PaginationLink | undefined, i): PaginationLink => {
+    // TODO: Could probably find a more performant way to do this,
+    // e.g. on update only updating the known pages
+    return (this._links = Array.from(
+      { length: totalPages },
+      (_, i): PaginationLink => {
+        const existingLink = existingLinks?.[i] ?? null;
         // link.index and pageHints.currentPage are 1-indexed
         const index = i + 1;
         const isCurrent = index === currentPage;
         // First page
         if (index === 1) {
           return getPaginationLink(
-            slot ?? null,
+            existingLink,
             index,
             isCurrent,
             firstUrl,
@@ -101,7 +105,7 @@ export class PaginationLinks<T, E> {
         // Previous page
         if (index === currentPage - 1) {
           return getPaginationLink(
-            slot ?? null,
+            existingLink,
             index,
             isCurrent,
             prevUrl,
@@ -111,7 +115,7 @@ export class PaginationLinks<T, E> {
         // Current Page
         if (isCurrent) {
           return getPaginationLink(
-            slot ?? null,
+            existingLink,
             index,
             isCurrent,
             state.activePage.selfLink,
@@ -121,7 +125,7 @@ export class PaginationLinks<T, E> {
         // Next Page
         if (index === currentPage + 1) {
           return getPaginationLink(
-            slot ?? null,
+            existingLink,
             index,
             isCurrent,
             nextUrl,
@@ -131,7 +135,7 @@ export class PaginationLinks<T, E> {
         // Last page
         if (index === totalPages) {
           return getPaginationLink(
-            slot ?? null,
+            existingLink,
             index,
             isCurrent,
             lastUrl,
@@ -140,15 +144,14 @@ export class PaginationLinks<T, E> {
         }
         // Placeholder
         return getPaginationLink(
-          slot ?? null,
+          existingLink,
           index,
           isCurrent,
           null,
           this.loadPage
         );
       }
-    );
-    return this._links;
+    ));
   }
 }
 
@@ -159,7 +162,7 @@ function getPaginationLink(
   url: string | null,
   loadPage: (url: string) => Promise<void>
 ): PaginationLink {
-  if (currentLink && !currentLink.isPlaceholder) {
+  if (currentLink?.isReal) {
     // Update existing RealPaginationLink
     return upgradeRealPaginationLink(currentLink)._setIsCurrent(isCurrent);
   } else if (url) {
@@ -177,7 +180,7 @@ function upgradeRealPaginationLink(
 }
 
 class RealPaginationLinkImpl implements RealPaginationLink {
-  readonly isPlaceholder = false as const;
+  readonly isReal = true as const;
 
   readonly url: string;
   readonly index: number;
@@ -194,7 +197,6 @@ class RealPaginationLinkImpl implements RealPaginationLink {
     this.url = url;
     this.index = index;
     this._isCurrent = isCurrent;
-    debugger;
     this._loadPage = loadPage;
   }
 
@@ -214,7 +216,7 @@ class RealPaginationLinkImpl implements RealPaginationLink {
 }
 
 class PlaceholderPaginationLinkImpl implements PlaceholderPaginationLink {
-  readonly isPlaceholder = true as const;
+  readonly isReal = false as const;
 
   readonly index: number;
   text = '.';

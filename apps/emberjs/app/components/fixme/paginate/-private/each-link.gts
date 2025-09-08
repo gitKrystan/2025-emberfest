@@ -20,10 +20,10 @@ export class EachLink<T, E> extends Component<EachLinkSignature<T, E>> {
   <template>
     {{#if @pages.links.links}}
       {{#each @pages.links.links as |link|}}
-        {{#if link.isPlaceholder}}
-          {{yield link to="placeholder"}}
-        {{else}}
+        {{#if link.isReal}}
           {{yield link to="link"}}
+        {{else}}
+          {{yield link to="placeholder"}}
         {{/if}}
       {{/each}}
     {{/if}}
