@@ -48,28 +48,34 @@ export class TodoProvider extends Component<Signature> {
       <:error as |error|>{{this.appState.onUnrecoverableError error}}</:error>
 
       <:always as |_state features|>
-        <div class="pagination-controls">
-          {{#if features.loadPrev}}
-            <button type="button" class="pagination-button prev" {{on "click" features.loadPrev}}>
-              ←
-              <span class="pagination-button-text">Load previous</span>
-            </button>
-          {{else}}
-            <div></div>
-          {{/if}}
-          {{#if features.loadNext}}
-            <button type="button" class="pagination-button next" {{on "click" features.loadNext}}>
-              <span class="pagination-button-text">Load next</span>
-              →
-            </button>
-          {{else}}
-            <div></div>
-          {{/if}}
-        </div>
+        {{#if (or features.loadPrev features.loadNext)}}
+          <div class="pagination-controls">
+            {{#if features.loadPrev}}
+              <button type="button" class="pagination-button prev" {{on "click" features.loadPrev}}>
+                ←
+                <span class="pagination-button-text">Load previous</span>
+              </button>
+            {{else}}
+              <div></div>
+            {{/if}}
+            {{#if features.loadNext}}
+              <button type="button" class="pagination-button next" {{on "click" features.loadNext}}>
+                <span class="pagination-button-text">Load next</span>
+                →
+              </button>
+            {{else}}
+              <div></div>
+            {{/if}}
+          </div>
+        {{/if}}
       </:always>
 
     </Paginate>
   </template>
 
   @service declare private readonly appState: AppState;
+}
+
+function or(a: unknown, b: unknown): boolean {
+  return Boolean(a || b);
 }

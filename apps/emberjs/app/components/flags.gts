@@ -17,11 +17,11 @@ import type {
 } from '@workspace/shared-data/types';
 
 import { HandleError } from '#/components/design-system/error';
-import { LoadingDots, LoadingSpinner } from '#/components/design-system/loading';
+import { LoadingSpinner } from '#/components/design-system/loading';
 import type Store from '#/services/store';
 
 export const Flags = <template>
-  <aside>
+  <aside class="flags">
     <Request @query={{(queryFlags)}}>
       <:loading><LoadingSpinner /></:loading>
       <:content as |content|><FlagsContent @data={{content.data}} /></:content>
@@ -80,7 +80,7 @@ class UpdateShouldErrorFlag extends Component<{
 }> {
   <template>
     <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}}>
-      Should Error:
+      <span class="flag-name">Should Error:</span>
       {{@flag.value}}
     </UpdateFlag>
   </template>
@@ -100,7 +100,7 @@ class UpdateTodoCountFlag extends Component<{
 }> {
   <template>
     <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}} @onUpdateSuccess={{this.onUpdateSuccess}}>
-      Initial Todo Count:
+      <span class="flag-name">Initial Todo Count:</span>
       {{@flag.value}}
     </UpdateFlag>
   </template>
@@ -131,7 +131,7 @@ class UpdateFlag extends Component<{
       <Request @request={{this.updateRequest}}>
         <:idle></:idle>
         <:content>{{(@onUpdateSuccess)}}</:content>
-        <:loading><LoadingDots /></:loading>
+        <:loading><LoadingSpinner class="loading-spinner-small loading-spinner-inline" /></:loading>
         <:error as |error|>
           <HandleError @error={{error}} />
         </:error>
