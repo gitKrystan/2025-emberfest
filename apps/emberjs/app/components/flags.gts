@@ -25,10 +25,16 @@ export class Flags extends Component {
   <template>
     <div class="flags-container">
 
+      <button
+        type="button"
+        class="flags-toggle {{if this.isOpen 'flags-open'}}"
+        {{on "click" this.toggleFlags}}
+        title="Open Settings"
+      >
+        ⌘
+      </button>
+
       <aside class="flags {{if this.isOpen 'flags-open'}}">
-        <button type="button" class="close-x" {{on "click" this.closeFlags}} title="Close Settings">
-          ｘ
-        </button>
         <Request @query={{(queryFlags)}}>
           <:loading><LoadingSpinner /></:loading>
           <:content as |content|><FlagsContent @data={{content.data}} /></:content>
@@ -38,26 +44,13 @@ export class Flags extends Component {
         </Request>
       </aside>
 
-      <button
-        type="button"
-        class="flags-toggle {{if this.isOpen 'flags-open'}}"
-        {{on "click" this.openFlags}}
-        title="Open Settings"
-      >
-        ⌘
-      </button>
-
     </div>
   </template>
 
   @tracked isOpen = false;
 
-  openFlags = () => {
-    this.isOpen = true;
-  };
-
-  closeFlags = () => {
-    this.isOpen = false;
+  toggleFlags = () => {
+    this.isOpen = !this.isOpen;
   };
 }
 
