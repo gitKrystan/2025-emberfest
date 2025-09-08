@@ -162,11 +162,27 @@
   text-align: right;
 }
 
-/* Filters overlay box - bottom left corner */
-.flags {
+.flags-container {
   position: fixed;
   bottom: 20px;
   left: 20px;
+}
+
+.flags-toggle {
+  background: #fff;
+  border: 1px solid #e6e6e6;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 15%);
+  padding: 12px;
+  z-index: 1000;
+  height: 50px;
+  width: 50px;
+  font-size: 20px;
+}
+
+/* Filters overlay box - bottom left corner */
+.flags {
+  display: none;
   background: #fff;
   border: 1px solid #e6e6e6;
   border-radius: 8px;
@@ -174,6 +190,24 @@
   padding: 12px;
   z-index: 1000;
   width: 300px;
+}
+
+.flags.flags-open {
+  display: block;
+}
+
+.flags-toggle.flags-open {
+  display: none;
+}
+
+.flags .close-x {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  font-size: 20px;
+  width: 25px;
+  height: 25px;
+  line-height: 1;
 }
 
 .flags .filters {
@@ -204,14 +238,18 @@
   float: right;
 }
 
-.flags .filters button:focus {
+.flags button:hover {
+  background: #f5f5f5;
+  border-color: #b83f45;
+}
+
+.flags-container button:focus {
   outline: none;
   box-shadow: none;
 }
 
-.flags .filters button:hover {
-  background: #f5f5f5;
-  border-color: #b83f45;
+.flags-container button:hover {
+  box-shadow: none;
 }
 
 .flags .flag-name {

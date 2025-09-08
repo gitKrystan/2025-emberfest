@@ -7,7 +7,7 @@ import type { Future } from '@warp-drive/core/request';
 import type { ReactiveTodosDocument } from '@workspace/shared-data/builders';
 import type { Todo } from '@workspace/shared-data/types';
 
-import { LoadingSpinner, LoadingDots } from '#/components/design-system/loading';
+import { LoadingDots, LoadingSpinner } from '#/components/design-system/loading';
 import { Paginate } from '#/components/fixme/paginate';
 import type AppState from '#/services/app-state';
 

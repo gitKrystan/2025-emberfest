@@ -16,21 +16,50 @@ import type {
   TodoCountFlag,
 } from '@workspace/shared-data/types';
 
-import { HandleError } from '#/components/design-system/error';
-import { LoadingSpinner } from '#/components/design-system/loading';
 import type Store from '#/services/store';
 
-export const Flags = <template>
-  <aside class="flags">
-    <Request @query={{(queryFlags)}}>
-      <:loading><LoadingSpinner /></:loading>
-      <:content as |content|><FlagsContent @data={{content.data}} /></:content>
-      <:error as |error|>
-        <HandleError @error={{error}} @toast="Could not get query flags for Flags List." />
-      </:error>
-    </Request>
-  </aside>
-</template>;
+import { HandleError } from './design-system/error';
+import { LoadingSpinner } from './design-system/loading';
+
+export class Flags extends Component {
+  <template>
+    <div class="flags-container">
+
+      <aside class="flags {{if this.isOpen 'flags-open'}}">
+        <button type="button" class="close-x" {{on "click" this.closeFlags}} title="Close Settings">
+          ｘ
+        </button>
+        <Request @query={{(queryFlags)}}>
+          <:loading><LoadingSpinner /></:loading>
+          <:content as |content|><FlagsContent @data={{content.data}} /></:content>
+          <:error as |error|>
+            <HandleError @error={{error}} @toast="Could not get query flags for Flags List." />
+          </:error>
+        </Request>
+      </aside>
+
+      <button
+        type="button"
+        class="flags-toggle {{if this.isOpen 'flags-open'}}"
+        {{on "click" this.openFlags}}
+        title="Open Settings"
+      >
+        ⌘
+      </button>
+
+    </div>
+  </template>
+
+  @tracked isOpen = false;
+
+  openFlags = () => {
+    this.isOpen = true;
+  };
+
+  closeFlags = () => {
+    this.isOpen = false;
+  };
+}
 
 class FlagsContent extends Component<{
   Args: { data: ApiFlag[] };
