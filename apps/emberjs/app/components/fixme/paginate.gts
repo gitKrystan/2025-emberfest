@@ -158,7 +158,7 @@ interface PaginateSignature<T, E> {
      * The block to render when the request succeeded.
      *
      */
-    content: [value: T[], features: ContentFeatures<ReactiveDataDocument<T[]>>];
+    content: [pages: Readonly<PaginationState<T, E>>, features: ContentFeatures<ReactiveDataDocument<T[]>>];
 
     /**
      * The block to render when a request for a previous link is being performed.
@@ -173,7 +173,7 @@ interface PaginateSignature<T, E> {
     next: [request: Future<ReactiveDataDocument<T[]>>];
 
     // TODO: Do we want to expose the entire PaginationState or select features?
-    always: [state: Readonly<PaginationState<T, E>>, features: ContentFeatures<ReactiveDataDocument<T[]>>];
+    always: [pages: Readonly<PaginationState<T, E>>, features: ContentFeatures<ReactiveDataDocument<T[]>>];
   };
 }
 
@@ -462,7 +462,7 @@ export class Paginate<T, E> extends Component<PaginateSignature<T, E>> {
       {{/if}}
 
       {{! Render content block }}
-      {{yield this.subscription.paginationState.data this.subscription.contentFeatures to="content"}}
+      {{yield this.subscription.paginationState this.subscription.contentFeatures to="content"}}
 
       {{! Render next block if next page is loading and block is provided }}
       {{#if (and this.subscription.paginationState.isNextLoading (has-block "next"))}}

@@ -27,16 +27,16 @@ export class TodoProvider extends Component<Signature> {
 
       <:prev><LoadingDots /></:prev>
 
-      <:content as |data|>
-        {{#if data.length}}
+      <:content as |pages|>
+        {{#if pages.data.length}}
           {{#if this.appState.isSaving}}
             <LoadingSpinner />
           {{else if this.appState.canToggle}}
-            {{yield data to="toggle"}}
+            {{yield pages.data to="toggle"}}
           {{/if}}
 
           {{#unless this.appState.error}}
-            {{yield data to="list"}}
+            {{yield pages.data to="list"}}
           {{/unless}}
         {{/if}}
       </:content>
