@@ -11,6 +11,7 @@ import {
   memoized,
 } from '@warp-drive/core/store/-private';
 
+import type { PageHints } from './pagination-links';
 import { getPaginationState, type PaginationState } from './pagination-state';
 
 /** @public Features exposed to error slot. */
@@ -183,7 +184,16 @@ export class PaginationSubscription<T, E> {
   /** @internal */
   @memoized
   get paginationState(): Readonly<PaginationState<T, E>> {
-    return getPaginationState<T, E>(this.request);
+    return getPaginationState<T, E>(
+      this.request,
+      // TODO: Types
+      (this._args as { pageHints: PageHints<T> | undefined }).pageHints
+        ? {
+            state: this.contentFeatures,
+            pageHints: (this._args as { pageHints: PageHints<T> }).pageHints,
+          }
+        : null
+    );
   }
 }
 

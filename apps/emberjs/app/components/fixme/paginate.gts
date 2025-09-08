@@ -12,6 +12,9 @@ import { DISPOSE } from '@warp-drive/core/store/-private';
 import type { StructuredErrorDocument } from '@warp-drive/core/types/request';
 import { Throw } from '@warp-drive/ember';
 
+export { EachLink } from './paginate/-private/each-link';
+
+import type { PageHints } from './paginate/-private/pagination-links.ts';
 import type { PaginationState } from './paginate/-private/pagination-state.ts';
 import type {
   ContentFeatures,
@@ -21,7 +24,7 @@ import type {
 import { createPaginationSubscription } from './paginate/-private/pagination-subscription.ts';
 
 // TODO: We should make these public
-// export type { ContentFeatures, ErrorFeatures } from './paginate/-private/pagination-subscription';
+// export type { ContentFeatures, ErrorFeatures, PageHints, PaginationLinks, PaginationLink, RealPaginationLink, PlaceholderPaginationLink } from './paginate/-private/pagination-subscription';
 
 export const and = (x: unknown, y: unknown): boolean => Boolean(x && y);
 
@@ -117,6 +120,8 @@ interface PaginateSignature<T, E> {
      *
      */
     autorefreshBehavior?: 'refresh' | 'reload' | 'policy';
+
+    pageHints?: PageHints<T>;
   };
   Blocks: {
     /**

@@ -9,6 +9,8 @@ import type { StructuredErrorDocument } from '@warp-drive/core/types/request';
 
 import type { UrlPageStateCreateOptions } from './page-state';
 import { PageState } from './page-state';
+import { type PageHints, PaginationLinks } from './pagination-links';
+import type { ContentFeatures } from './pagination-subscription';
 
 // TODO: Make generic?
 const PaginationCache = new WeakMap<
@@ -24,10 +26,28 @@ export class PaginationState<T, E> {
   declare activePage: Readonly<PageState<T, E>>;
   declare private readonly pagesCache: Map<string, PageState<T, E>>;
 
-  constructor(request: Future<ReactiveDataDocument<T[]>>) {
+  // TODO: Make reactive?
+  declare readonly links: PaginationLinks<T, E> | null;
+
+  constructor(
+    request: Future<ReactiveDataDocument<T[]>>,
+    linkSupport: {
+      pageHints: PageHints<T>;
+      state: ContentFeatures<ReactiveDataDocument<T[]>>;
+    } | null
+  ) {
     this.pagesCache = new Map<string, PageState<T, E>>();
     this.initialPage = new PageState<T, E>(this, { self: request });
     this.activePage = this.initialPage;
+    if (linkSupport) {
+      this.links = new PaginationLinks(
+        linkSupport.pageHints,
+        this,
+        linkSupport.state
+      );
+    } else {
+      this.links = null;
+    }
   }
 
   addPage(url: string, pageState: PageState<T, E>) {
@@ -39,26 +59,31 @@ export class PaginationState<T, E> {
     return this.initialPage.isLoading;
   }
 
+  // TODO: Should be `activePage`?
   @memoized
   get loadingState(): RequestLoadingState | null {
     return this.initialPage.requestState?.loadingState ?? null;
   }
 
+  // TODO: Should be `activePage`?
   @memoized
   get isSuccess(): boolean {
     return this.initialPage.isSuccess;
   }
 
+  // TODO: Should be `activePage`?
   @memoized
   get isCancelled(): boolean {
     return this.initialPage.isCancelled;
   }
 
+  // TODO: Should be `activePage`?
   @memoized
   get isError(): boolean {
     return this.initialPage.isError;
   }
 
+  // TODO: Should be `activePage`?
   @memoized
   get reason(): StructuredErrorDocument<E> | null {
     return this.initialPage.reason;
@@ -178,6 +203,11 @@ export class PaginationState<T, E> {
 defineSignal(PaginationState.prototype, 'initialPage', undefined);
 defineSignal(PaginationState.prototype, 'activePage', undefined);
 
+interface LinkSupport<T> {
+  pageHints: PageHints<T>;
+  state: ContentFeatures<ReactiveDataDocument<T[]>>;
+}
+
 /**
  * Get the pagination state for a given request, this will return the same
  * PaginationState instance for the same request, even if the future is
@@ -197,12 +227,16 @@ defineSignal(PaginationState.prototype, 'activePage', undefined);
  * @return {PaginationState}
  */
 export function getPaginationState<T, E>(
-  future: Future<ReactiveDataDocument<T[]>>
+  future: Future<ReactiveDataDocument<T[]>>,
+  linkSupport?: LinkSupport<T> | null
 ): Readonly<PaginationState<T, E>> {
   let state = PaginationCache.get(future);
 
   if (!state) {
-    state = new PaginationState<unknown, unknown>(future);
+    state = new PaginationState<unknown, unknown>(
+      future,
+      (linkSupport as LinkSupport<unknown> | undefined) ?? null
+    );
     PaginationCache.set(future, state);
   }
 

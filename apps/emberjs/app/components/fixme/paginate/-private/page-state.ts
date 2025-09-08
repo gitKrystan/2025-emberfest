@@ -8,19 +8,9 @@ import { getRequestState } from '@warp-drive/core/reactive';
 import type { Future } from '@warp-drive/core/request';
 import { defineSignal, memoized } from '@warp-drive/core/store/-private';
 import type { StructuredErrorDocument } from '@warp-drive/core/types/request';
-import type { Link } from '@warp-drive/core/types/spec/json-api-raw';
 
 import type { PaginationState } from './pagination-state';
-
-function getHref(link?: Link | null): string | null {
-  if (!link) {
-    return null;
-  }
-  if (typeof link === 'string') {
-    return link;
-  }
-  return link.href;
-}
+import { getHref } from './util';
 
 /** @internal */
 export type PageStateCreateOptions<T> =
@@ -50,7 +40,7 @@ export class PageState<T, E> {
         RequestState<ReactiveDataDocument<T[]>, StructuredErrorDocument<E>>
       >
     | undefined;
-  declare private selfLink: string | null;
+  declare selfLink: string | null;
   declare private readonly _prevLink: string | null;
   declare private readonly _nextLink: string | null;
 

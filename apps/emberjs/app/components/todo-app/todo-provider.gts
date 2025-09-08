@@ -1,3 +1,4 @@
+import { assert } from '@ember/debug';
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
@@ -8,7 +9,7 @@ import type { ReactiveTodosDocument } from '@workspace/shared-data/builders';
 import type { Todo } from '@workspace/shared-data/types';
 
 import { LoadingDots, LoadingSpinner } from '#/components/design-system/loading';
-import { Paginate } from '#/components/fixme/paginate';
+import { EachLink, Paginate } from '#/components/fixme/paginate';
 import type AppState from '#/services/app-state';
 
 interface Signature {
@@ -23,7 +24,7 @@ interface Signature {
 
 export class TodoProvider extends Component<Signature> {
   <template>
-    <Paginate @request={{@todoFuture}} @autorefresh={{true}} @autorefreshBehavior="refresh">
+    <Paginate @request={{@todoFuture}} @autorefresh={{true}} @autorefreshBehavior="refresh" @pageHints={{pageHints}}>
 
       <:prev><LoadingDots /></:prev>
 
@@ -47,25 +48,34 @@ export class TodoProvider extends Component<Signature> {
 
       <:error as |error|>{{this.appState.onUnrecoverableError error}}</:error>
 
-      <:always as |_state features|>
-        {{#if (or features.loadPrev features.loadNext)}}
+      <:always as |pages state|>
+        {{#if (or state.loadPrev state.loadNext)}}
           <div class="pagination-controls">
-            {{#if features.loadPrev}}
-              <button type="button" class="pagination-button prev" {{on "click" features.loadPrev}}>
+            {{#if state.loadPrev}}
+              <button type="button" class="pagination-button prev" {{on "click" state.loadPrev}}>
                 ←
                 <span class="pagination-button-text">Load previous</span>
               </button>
             {{else}}
               <div></div>
             {{/if}}
-            {{#if features.loadNext}}
-              <button type="button" class="pagination-button next" {{on "click" features.loadNext}}>
+
+            <EachLink @pages={{pages}}>
+              <:placeholder as |link|>{{link.text}}</:placeholder>
+              <:link as |link|>
+                <button type="button" {{on "click" link.setActive}}>{{link.index}}</button>
+              </:link>
+            </EachLink>
+
+            {{#if state.loadNext}}
+              <button type="button" class="pagination-button next" {{on "click" state.loadNext}}>
                 <span class="pagination-button-text">Load next</span>
                 →
               </button>
             {{else}}
               <div></div>
             {{/if}}
+
           </div>
         {{/if}}
       </:always>
@@ -78,4 +88,19 @@ export class TodoProvider extends Component<Signature> {
 
 function or(a: unknown, b: unknown): boolean {
   return Boolean(a || b);
+}
+
+function pageHints(doc: ReactiveTodosDocument): { currentPage: number; totalPages: number } {
+  assert('cannot generate page hints without meta', doc.meta);
+  const hint = { currentPage: 0, totalPages: 0 };
+
+  assert('cannot generate page hints without meta.currentPage', doc.meta.currentPage);
+  assert('cannot generate page hints; meta.currentPage is not a number', typeof doc.meta.currentPage === 'number');
+  hint.currentPage = doc.meta.currentPage;
+
+  assert('cannot generate page hints without meta.totalPages', doc.meta.totalPages);
+  assert('cannot generate page hints; meta.totalPages is not a number', typeof doc.meta.totalPages === 'number');
+  hint.totalPages = doc.meta.totalPages;
+
+  return hint;
 }

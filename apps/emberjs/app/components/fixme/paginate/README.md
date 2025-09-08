@@ -847,6 +847,47 @@ import { Paginate } from '@warp-drive/ember';
 `pages.links` exposes a `PaginationLinks` container with helpful utilities for creating
 navigation links. A companion component makes rendering links quick to setup.
 
+`PaginationLinks` exposes the following properties:
+
+<!-- FIXME: Prob don't need all of these. Thanks Claude. -->
+
+```ts
+interface RealPaginationLink {
+  isPlaceholder: false;
+  /** 1-indexed page index */
+  index: number;
+  isCurrent: boolean;
+  setActive: () => Promise<void>;
+}
+
+interface PlaceholderPaginationLink {
+  isPlaceholder: true;
+  index: number;
+  text: '.';
+}
+
+type PaginationLink = RealPaginationLink | PlaceholderPaginationLink;
+
+interface PaginationLinks {
+  /** All available links and placeholders */
+  links: Array<PaginationLink>;
+  /** The currently active page link */
+  activeLink: PaginationLink | null;
+  /** The index of the currently active page, or null if no active page */
+  activeIndex: number | null;
+  /** Move to the next page, if available */
+  next(): void;
+  /** Move to the previous page, if available */
+  prev(): void;
+  /** Move to a specific page by its 1-indexed index */
+  setActive(index: number): void;
+  /** True if there is a next page available */
+  hasNext: boolean;
+  /** True if there is a previous page available */
+  hasPrev: boolean;
+}
+```
+
 The `<EachLink/>` component renders each available link or placeholder. Placeholders
 occur when it is known that a link _could_ exist but we have not yet received the link.
 The `text` property on the link will be a single `'.'` in these cases.
@@ -887,7 +928,9 @@ will be run.
 ```ts
 interface PageHints {
   (result: ResourceCollectionDocument): {
+    /** 1-indexed current page index */
     currentPage: number;
+    /** Total number of pages available for the query */
     totalPages: number;
   };
 }
