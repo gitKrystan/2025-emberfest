@@ -1,8 +1,8 @@
+import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 
 import type { Future } from '@warp-drive/core/request';
-import { Request } from '@warp-drive/ember';
 
 import type { ReactiveTodosDocument } from '@workspace/shared-data/builders';
 import type { Todo } from '@workspace/shared-data/types';
@@ -10,7 +10,6 @@ import type { Todo } from '@workspace/shared-data/types';
 import { LoadingSpinner } from '#/components/design-system/loading';
 import { Paginate } from '#/components/fixme/paginate';
 import type AppState from '#/services/app-state';
-import { on } from '@ember/modifier';
 
 interface Signature {
   Args: {
@@ -27,7 +26,7 @@ export class TodoProvider extends Component<Signature> {
     <Paginate @request={{@todoFuture}} @autorefresh={{true}} @autorefreshBehavior="refresh">
 
       <:content as |data|>
-        {{log "content" data}}
+        {{!-- {{log "content" data}} --}}
         {{#if data.length}}
           {{#if this.appState.isSaving}}
             <LoadingSpinner />
@@ -46,8 +45,8 @@ export class TodoProvider extends Component<Signature> {
       <:error as |error|>{{this.appState.onUnrecoverableError error}}</:error>
 
       <:always as |state features|>
-        {{log "state" state}}
-        {{log "features" features}}
+        {{!-- {{log "state" state}}
+        {{log "features" features}} --}}
         {{#if features.loadNext}}
           <button type="button" {{on "click" features.loadNext}}>Load more todos...</button>
         {{/if}}

@@ -1,8 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
-/* eslint-disable @typescript-eslint/method-signature-style */
-/* eslint-disable @typescript-eslint/prefer-destructuring */
-/* eslint-disable @typescript-eslint/prefer-readonly */
 import type { RequestManager, Store } from '@warp-drive/core';
 import type { ReactiveDataDocument } from '@warp-drive/core/reactive';
 import type { Future } from '@warp-drive/core/request';
@@ -18,49 +13,52 @@ import {
 
 import { getPaginationState, type PaginationState } from './pagination-state';
 
-interface ErrorFeatures {
+/** @public Features exposed to error slot. */
+export interface ErrorFeatures {
   isHidden: boolean;
   isOnline: boolean;
+  /**
+   * Retry the request, reloading it from the server.
+   */
   retry: () => Promise<void>;
 }
 
-type ContentFeatures<T> = {
-  // Initial Request
+/** @public Features exposed to content slot. */
+export interface ContentFeatures<RT> {
   isOnline: boolean;
   isHidden: boolean;
   isRefreshing: boolean;
   refresh: () => Promise<void>;
   reload: () => Promise<void>;
   abort?: () => void;
-  latestRequest?: Future<ReactiveDataDocument<T[]>>;
+  latestRequest?: Future<RT>;
 
   // Pagination
-  loadNext?: () => Promise<void>;
-  loadPrev?: () => Promise<void>;
-  loadPage?: (url: string) => Promise<void>;
-};
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export interface PaginationSubscription<T, E> {
-  /**
-   * The method to call when the component this subscription is attached to
-   * unmounts.
-   */
-  [DISPOSE](): void;
+  /** Load next page, if any, based on links. */
+  loadNext: (() => Promise<void>) | null;
+  /** Load previous page, if any, based on links. */
+  loadPrev: (() => Promise<void>) | null;
+  /** Load specific page by URL. */
+  loadPage: (url: string) => Promise<void>;
 }
 
 /**
- * A reactive class
+ * Wrapper for RequestSubscription.
+ *
+ * Manages lifecycle and integrates with WarpDrive.
  *
  * @hideconstructor
  */
 export class PaginationSubscription<T, E> {
   /** @internal */
-  declare private isDestroyed: boolean;
+  declare private readonly isDestroyed: boolean;
   /** @internal */
-  declare private _subscribedTo: object | null;
+  declare private readonly _subscribedTo: object | null;
   /** @internal */
-  declare private _args: SubscriptionArgs<ReactiveDataDocument<T[]>, E>;
+  declare private readonly _args: SubscriptionArgs<
+    ReactiveDataDocument<T[]>,
+    E
+  >;
   /** @internal */
   declare store: Store | RequestManager;
 
@@ -71,52 +69,47 @@ export class PaginationSubscription<T, E> {
     this._args = args;
     this.store = store;
     this.isDestroyed = false;
-    this[DISPOSE] = _DISPOSE;
+    (this as unknown as PrivatePaginationSubscription)[DISPOSE] = _DISPOSE;
   }
 
+  /** @internal */
   @memoized
   get isIdle(): boolean {
     return this._requestSubscription.isIdle;
   }
 
   /**
-   * Retry the request, reloading it from the server.
-   */
-  retry = async (): Promise<void> => {
-    await this._requestSubscription.retry();
-  };
-
-  /**
-   * Refresh the request, updating it in the background.
-   */
-  refresh = async (): Promise<void> => {
-    await this._requestSubscription.refresh();
-  };
-
-  /**
    * Loads the prev page based on links.
+   *
+   * @private Exposed via `this.contentFeatures`.
    */
-  loadPrev = async (): Promise<void> => {
+  private get loadPrev(): (() => Promise<void>) | null {
     const { prev } = this.paginationState;
     if (prev) {
-      await this.loadPage(prev);
+      return () => this.loadPage(prev);
     }
-  };
+    return null;
+  }
 
   /**
    * Loads the next page based on links.
+   *
+   * @private Exposed via `this.contentFeatures`.
    */
-  loadNext = async (): Promise<void> => {
+  private get loadNext(): (() => Promise<void>) | null {
     const { next } = this.paginationState;
     if (next) {
-      await this.loadPage(next);
+      return () => this.loadPage(next);
     }
-  };
+    return null;
+  }
 
   /**
    * Loads a specific page by its URL.
+   *
+   * @private Exposed via `this.contentFeatures`
    */
-  loadPage = async (url: string): Promise<void> => {
+  private readonly loadPage = async (url: string): Promise<void> => {
     const page = this.paginationState.getPageState({ self: url });
     this.paginationState.activatePage(page);
     if (!page.request || page.isError || page.isCancelled) {
@@ -130,6 +123,8 @@ export class PaginationSubscription<T, E> {
 
   /**
    * Error features to yield to the error slot of a component
+   *
+   * @internal
    */
   @memoized
   get errorFeatures(): ErrorFeatures {
@@ -142,15 +137,18 @@ export class PaginationSubscription<T, E> {
 
   /**
    * Content features to yield to the content slot of a component
+   *
+   * @internal
    */
   @memoized
-  get contentFeatures(): ContentFeatures<T> {
-    const contentFeatures = this._requestSubscription.contentFeatures;
-    const feat: ContentFeatures<T> = {
+  get contentFeatures(): ContentFeatures<ReactiveDataDocument<T[]>> {
+    const { contentFeatures } = this._requestSubscription;
+    const feat: ContentFeatures<ReactiveDataDocument<T[]>> = {
       ...contentFeatures,
       loadPrev: this.loadPrev,
       loadNext: this.loadNext,
       loadPage: this.loadPage,
+      latestRequest: contentFeatures.latestRequest,
     };
 
     if (feat.isRefreshing) {
@@ -163,7 +161,7 @@ export class PaginationSubscription<T, E> {
   }
 
   /**
-   * @internal
+   * @private
    */
   @memoized
   get _requestSubscription(): RequestSubscription<
@@ -176,13 +174,15 @@ export class PaginationSubscription<T, E> {
     );
   }
 
+  /** @private */
   @memoized
   get request(): Future<ReactiveDataDocument<T[]>> {
     return this._requestSubscription.request;
   }
 
+  /** @internal */
   @memoized
-  get paginationState(): PaginationState<T, E> {
+  get paginationState(): Readonly<PaginationState<T, E>> {
     return getPaginationState<T, E>(this.request);
   }
 }
@@ -195,6 +195,11 @@ export function createPaginationSubscription<T, E>(
 }
 
 interface PrivatePaginationSubscription {
+  /**
+   * The method to call when the component this subscription is attached to
+   * unmounts.
+   */
+  [DISPOSE]: () => void;
   isDestroyed: boolean;
   _requestSubscription: RequestSubscription<unknown, unknown>;
 }

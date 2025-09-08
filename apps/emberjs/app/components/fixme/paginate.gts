@@ -1,8 +1,3 @@
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
-/* eslint-disable ember/no-side-effects */
-
 import { service } from '@ember/service';
 import { importSync, macroCondition, moduleExists } from '@embroider/macros';
 import Component from '@glimmer/component';
@@ -17,9 +12,15 @@ import { DISPOSE } from '@warp-drive/core/store/-private';
 import type { StructuredErrorDocument } from '@warp-drive/core/types/request';
 import { Throw } from '@warp-drive/ember';
 
-import type { PageState, PaginationState } from './paginate/-private/pagination-state.ts';
-import type { PaginationSubscription } from './paginate/-private/pagination-subscription.ts';
+import type { PaginationState } from './paginate/-private/pagination-state.ts';
+import type {
+  ContentFeatures,
+  ErrorFeatures,
+  PaginationSubscription,
+} from './paginate/-private/pagination-subscription.ts';
 import { createPaginationSubscription } from './paginate/-private/pagination-subscription.ts';
+
+export type { ContentFeatures, ErrorFeatures } from './paginate/-private/pagination-subscription.ts';
 
 export const and = (x: unknown, y: unknown): boolean => Boolean(x && y);
 
@@ -47,21 +48,6 @@ type AutorefreshBehaviorCombos =
   | AutorefreshBehaviorType
   | `${AutorefreshBehaviorType},${AutorefreshBehaviorType}`
   | `${AutorefreshBehaviorType},${AutorefreshBehaviorType},${AutorefreshBehaviorType}`;
-
-type ContentFeatures<RT> = {
-  isOnline: boolean;
-  isHidden: boolean;
-  isRefreshing: boolean;
-  refresh: () => Promise<void>;
-  reload: () => Promise<void>;
-  abort?: () => void;
-
-  loadNext?: () => Promise<void>;
-  loadPage?: (url: string) => Promise<void>;
-  loadPrev?: () => Promise<void>;
-
-  latestRequest?: Future<RT>;
-};
 
 interface PaginateSignature<T, E> {
   Args: {
@@ -148,14 +134,7 @@ interface PaginateSignature<T, E> {
      * The block to render when the request was cancelled.
      *
      */
-    cancelled: [
-      error: StructuredErrorDocument<E>,
-      features: {
-        isOnline: boolean;
-        isHidden: boolean;
-        retry: () => Promise<void>;
-      },
-    ];
+    cancelled: [error: StructuredErrorDocument<E>, features: ErrorFeatures];
 
     /**
      * The block to render when the request failed. If this block is not provided,
@@ -179,7 +158,8 @@ interface PaginateSignature<T, E> {
      *
      */
     content: [value: T[], features: ContentFeatures<ReactiveDataDocument<T[]>>];
-    always: [state: PaginationState<T, E>, features: ContentFeatures<ReactiveDataDocument<T[]>>];
+    // TODO: Do we want to expose the entire PaginationState or select features?
+    always: [state: Readonly<PaginationState<T, E>>, features: ContentFeatures<ReactiveDataDocument<T[]>>];
   };
 }
 
@@ -409,8 +389,9 @@ export class Paginate<T, E> extends Component<PaginateSignature<T, E>> {
    */
   @consume('store') declare _store: Store;
 
+  @cached
   get store(): Store {
-    const store = this.args.store || this._store;
+    const store = this.args.store ?? this._store;
     assert(
       moduleExists('ember-provide-consume-context')
         ? `No store was provided to the <Request> component. Either provide a store via the @store arg or via the context API provided by ember-provide-consume-context.`
@@ -420,89 +401,53 @@ export class Paginate<T, E> extends Component<PaginateSignature<T, E>> {
     return store;
   }
 
-  _state: PaginationSubscription<T, E> | null = null;
-  get state(): PaginationSubscription<T, E> {
-    let { _state } = this;
+  private _subscription: PaginationSubscription<T, E> | null = null;
+  @cached
+  get subscription(): PaginationSubscription<T, E> {
+    let { _subscription: _state } = this;
     const { store } = this;
     if (_state && _state.store !== store) {
-      _state[DISPOSE]();
+      (_state as PaginationSubscription<T, E> & { [DISPOSE]: () => void })[DISPOSE]();
       _state = null;
     }
 
     if (!_state) {
-      this._state = _state = createPaginationSubscription(store, this.args);
+      // eslint-disable-next-line ember/no-side-effects
+      this._subscription = _state = createPaginationSubscription(store, this.args);
     }
 
     return _state;
   }
 
   willDestroy(): void {
-    this._state?.[DISPOSE]();
-    this._state = null;
+    (this._subscription as (PaginationSubscription<T, E> & { [DISPOSE]: () => void }) | undefined)?.[DISPOSE]();
+    this._subscription = null;
     super.willDestroy();
   }
 
-  get initialState(): Readonly<RequestState<ReactiveDataDocument<T[]>, StructuredErrorDocument<E>>> {
-    return this.state.paginationState.initialPage.state;
-  }
-
-  get activePageRequest(): Future<ReactiveDataDocument<T[]>> | null {
-    return this.state.paginationState.activePage.request || null;
-  }
-
-  @cached
-  get pages(): readonly PageState<T, E>[] {
-    return this.state.paginationState.pages;
-  }
-
-  @cached
-  get data(): T[] {
-    return this.state.paginationState.data;
-  }
-
-  @cached
-  get hasPrev(): boolean {
-    return Boolean(this.state.paginationState.prev);
-  }
-
-  @cached
-  get hasNext(): boolean {
-    return Boolean(this.state.paginationState.next);
-  }
-
-  @cached
-  get prevRequest(): Future<ReactiveDataDocument<T[]>> | null {
-    return this.state.paginationState.prevRequest;
-  }
-
-  @cached
-  get nextRequest(): Future<ReactiveDataDocument<T[]>> | null {
-    return this.state.paginationState.nextRequest;
-  }
-
   <template>
-    {{#if (and this.state.isIdle (has-block "idle"))}}
+    {{#if (and this.subscription.isIdle (has-block "idle"))}}
       {{yield to="idle"}}
 
-    {{else if this.state.isIdle}}
+    {{else if this.subscription.isIdle}}
       <Throw @error={{IdleBlockMissingError}} />
 
-    {{else if this.state.paginationState.isLoading}}
-      {{yield this.state.paginationState.loadingState to="loading"}}
+    {{else if this.subscription.paginationState.isLoading}}
+      {{yield this.subscription.paginationState.loadingState to="loading"}}
 
-    {{else if (and this.state.paginationState.isCancelled (has-block "cancelled"))}}
-      {{yield (notNull this.state.paginationState.reason) this.state.errorFeatures to="cancelled"}}
+    {{else if (and this.subscription.paginationState.isCancelled (has-block "cancelled"))}}
+      {{yield (notNull this.subscription.paginationState.reason) this.subscription.errorFeatures to="cancelled"}}
 
-    {{else if (and this.state.paginationState.isError (has-block "error"))}}
-      {{yield (notNull this.state.paginationState.reason) this.state.errorFeatures to="error"}}
+    {{else if (and this.subscription.paginationState.isError (has-block "error"))}}
+      {{yield (notNull this.subscription.paginationState.reason) this.subscription.errorFeatures to="error"}}
 
-    {{else if this.state.paginationState.isSuccess}}
-      {{yield this.state.paginationState.data this.state.contentFeatures to="content"}}
+    {{else if this.subscription.paginationState.isSuccess}}
+      {{yield this.subscription.paginationState.data this.subscription.contentFeatures to="content"}}
 
-    {{else if (not this.state.paginationState.isCancelled)}}
-      <Throw @error={{notNull this.state.paginationState.reason}} />
+    {{else if (not this.subscription.paginationState.isCancelled)}}
+      <Throw @error={{notNull this.subscription.paginationState.reason}} />
     {{/if}}
 
-    {{yield this.state.paginationState this.state.contentFeatures to="always"}}
+    {{yield this.subscription.paginationState this.subscription.contentFeatures to="always"}}
   </template>
 }
