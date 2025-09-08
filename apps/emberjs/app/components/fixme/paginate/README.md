@@ -1063,18 +1063,18 @@ Based on my analysis of the README.md documentation versus the current implement
 
 ❌ Documented but Missing:
 
-- [ ] prev block: Documented for showing loading state during previous page requests - NOT IMPLEMENTED
-- [ ] next block: Documented for showing loading state during next page requests - NOT IMPLEMENTED
-- [ ] default block: Documented for alternate mode without other blocks - NOT IMPLEMENTED
+- [x] prev block: Documented for showing loading state during previous page requests - NOT IMPLEMENTED
+- [x] next block: Documented for showing loading state during next page requests - NOT IMPLEMENTED
+- [x] default block: Documented for alternate mode without other blocks - NOT IMPLEMENTED
 
 ⚠️ Partial Implementation:
 
-- [ ] The component implements basic pagination through loadNext/loadPrev functions but doesn't support the specialized blocks for showing loading states during pagination requests
+- [x] The component implements basic pagination through loadNext/loadPrev functions but doesn't support the specialized blocks for showing loading states during pagination requests
 
 ## Key Missing Features Summary:
 
-- [ ] <:prev> and <:next> blocks for pagination loading states
-- [ ] <:default> block for simpler usage without state management
+- [x] <:prev> and <:next> blocks for pagination loading states
+- [x] <:default> block for simpler usage without state management
 - [ ] PaginationLinks container for navigation utilities
 - [ ] EachLink component for rendering pagination navigation
 - [ ] PageHints interface and @pageHints argument for page count hints
