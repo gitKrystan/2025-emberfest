@@ -1,76 +1,971 @@
+/* LCARS Color Variables */
+:root {
+  /* LCARS Core Colors from the screenshot */
+  --lcars-orange: #ff9933;
+  --lcars-red: #cc6666;
+  --lcars-pink: #cc99cc;
+  --lcars-blue: #9999ff;
+  --lcars-light-blue: #99ccff;
+  --lcars-yellow: #ffcc66;
+  --lcars-tan: #cc9966;
+  --lcars-purple: #9966cc;
+  --lcars-white: #ffffff;
+  --lcars-black: #000000;
+  --lcars-gray: #666666;
+
+  /* LCARS Semantic Colors */
+  --lcars-primary: var(--lcars-orange);
+  --lcars-secondary: var(--lcars-blue);
+  --lcars-accent: var(--lcars-pink);
+  --lcars-warning: var(--lcars-red);
+  --lcars-info: var(--lcars-light-blue);
+  --lcars-success: var(--lcars-yellow);
+
+  /* Background and Text */
+  --lcars-bg: var(--lcars-black);
+  --lcars-text: var(--lcars-white);
+  --lcars-text-dim: var(--lcars-gray);
+
+  /* LCARS Typography */
+  --lcars-font-family: 'Orbitron', 'Helvetica Neue', 'Arial', sans-serif;
+  --lcars-font-mono: 'Fira Code', 'Courier New', monospace;
+
+  /* LCARS Spacing */
+  --lcars-gap: 1.6rem;
+  --lcars-border-radius: 20px;
+  --lcars-border-width: 4px;
+}
+
+/* Import Orbitron font for authentic LCARS feel */
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap');
+
+/* Global LCARS Styling */
+html {
+  background: var(--lcars-bg);
+  color: var(--lcars-text);
+  font-family: var(--lcars-font-family);
+}
+
+body {
+  background: var(--lcars-bg);
+  color: var(--lcars-text);
+  font-family: var(--lcars-font-family);
+}
+
 .slidev-layout {
-  h1 + p {
-    @apply -mt-2 opacity-50 mb-4;
-  }
+  background: var(--lcars-bg);
+  color: var(--lcars-text);
+  font-family: var(--lcars-font-family);
+}
 
-  p + h2, ul + h2, table + h2 {
-    @apply mt-10;
-  }
+.slidev-layout h1 + p {
+  @apply -mt-2 mb-4;
+  opacity: 0.8;
+  color: var(--lcars-text-dim);
+}
 
-  h1 {
-    @apply text-4xl mb-4 -ml-[0.05em];
-  }
+.slidev-layout p + h2,
+.slidev-layout ul + h2,
+.slidev-layout table + h2 {
+  @apply mt-10;
+}
 
-  h2 {
-    @apply text-3xl;
-  }
+.slidev-layout h1 {
+  @apply text-4xl mb-4 -ml-[0.05em];
+  color: var(--lcars-primary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
 
-  h3 {
-    @apply text-2xl;
-  }
+.slidev-layout h2 {
+  @apply text-3xl;
+  color: var(--lcars-secondary);
+  font-weight: 500;
+  text-transform: uppercase;
+}
 
-  h4 {
-    @apply text-xl;
-  }
+.slidev-layout h3 {
+  @apply text-2xl;
+  color: var(--lcars-accent);
+  font-weight: 500;
+}
 
-  h5 {
-    @apply text-base;
-  }
+.slidev-layout h4 {
+  @apply text-xl;
+  color: var(--lcars-info);
+  font-weight: 500;
+}
 
-  h6 {
-    @apply text-sm pt-1 uppercase tracking-widest font-500 -ml-[0.05em];
-  }
+.slidev-layout h5 {
+  @apply text-base;
+  color: var(--lcars-success);
+  font-weight: 500;
+}
 
-  h6:not(.opacity-100) {
-    @apply opacity-40;
+.slidev-layout h6 {
+  @apply text-sm pt-1 uppercase tracking-widest font-500 -ml-[0.05em];
+  color: var(--lcars-text-dim);
+}
+
+.slidev-layout h6:not(.opacity-100) {
+  opacity: 0.7;
+}
+
+/* LCARS Layout-Specific Styling */
+
+/* Cover Layout - Title Slide with LCARS aesthetic */
+.slidev-layout.cover {
+  position: relative;
+  background: var(--lcars-bg);
+  padding: var(--lcars-gap);
+  overflow: hidden;
+}
+
+.slidev-layout.cover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(
+    90deg,
+    var(--lcars-primary) 0%,
+    var(--lcars-primary) 40%,
+    var(--lcars-secondary) 60%,
+    var(--lcars-accent) 100%
+  );
+  border-radius: 0 0 var(--lcars-border-radius) var(--lcars-border-radius);
+}
+
+.slidev-layout.cover::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(
+    90deg,
+    var(--lcars-accent) 0%,
+    var(--lcars-secondary) 40%,
+    var(--lcars-primary) 100%
+  );
+  border-radius: var(--lcars-border-radius) var(--lcars-border-radius) 0 0;
+}
+
+.slidev-layout.cover h1 {
+  @apply text-6xl font-bold mt-20;
+  color: var(--lcars-primary);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-shadow: 0 0 20px var(--lcars-primary);
+  z-index: 10;
+  position: relative;
+}
+
+.slidev-layout.cover p {
+  text-align: center;
+  color: var(--lcars-secondary);
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  z-index: 10;
+  position: relative;
+}
+
+/* Fact Layout - Information Display */
+.slidev-layout.fact {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 153, 51, 0.05) 0%,
+    rgba(0, 0, 0, 0.9) 50%,
+    rgba(153, 153, 255, 0.05) 100%
+  );
+  border-left: 8px solid var(--lcars-primary);
+  padding: var(--lcars-gap);
+  position: relative;
+}
+
+.slidev-layout.fact::before {
+  content: 'DATA ANALYSIS';
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  font-size: 0.8rem;
+  color: var(--lcars-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.slidev-layout.fact h1 {
+  color: var(--lcars-primary);
+  border-bottom: 3px solid var(--lcars-primary);
+  padding-bottom: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Statement Layout - Key Points */
+.slidev-layout.statement {
+  background: radial-gradient(
+    circle at center,
+    rgba(153, 153, 255, 0.1) 0%,
+    rgba(0, 0, 0, 0.9) 70%
+  );
+  border: 2px solid var(--lcars-secondary);
+  border-radius: var(--lcars-border-radius);
+  padding: calc(var(--lcars-gap) * 1.5);
+  margin: var(--lcars-gap);
+  position: relative;
+}
+
+.slidev-layout.statement::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 20px;
+  background: var(--lcars-secondary);
+  border-radius: 10px;
+}
+
+.slidev-layout.statement h1 {
+  text-align: center;
+  color: var(--lcars-secondary);
+  margin-bottom: 2rem;
+}
+
+/* Quote Layout - Special Emphasis */
+.slidev-layout.quote {
+  background: var(--lcars-bg);
+  padding: calc(var(--lcars-gap) * 2);
+  position: relative;
+  text-align: center;
+}
+
+.slidev-layout.quote::before {
+  content: '"';
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 8rem;
+  color: var(--lcars-accent);
+  opacity: 0.3;
+  font-family: serif;
+  line-height: 1;
+}
+
+.slidev-layout.quote::after {
+  content: '"';
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  font-size: 8rem;
+  color: var(--lcars-accent);
+  opacity: 0.3;
+  font-family: serif;
+  line-height: 1;
+}
+
+.slidev-layout.quote blockquote {
+  font-size: 2rem;
+  color: var(--lcars-accent);
+  font-style: italic;
+  margin: 0;
+  padding: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.slidev-layout.quote cite {
+  color: var(--lcars-text-dim);
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  display: block;
+}
+
+.slidev-layout.quote cite::before {
+  content: '— ';
+}
+
+/* Section Layout - Section Dividers */
+.slidev-layout.section {
+  background: linear-gradient(
+    45deg,
+    var(--lcars-primary) 0%,
+    var(--lcars-secondary) 50%,
+    var(--lcars-accent) 100%
+  );
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.slidev-layout.section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.1) 2px,
+    rgba(0, 0, 0, 0.1) 4px
+  );
+  animation: lcars-scan 3s infinite linear;
+}
+
+.slidev-layout.section h1 {
+  color: var(--lcars-black);
+  font-size: 4rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  z-index: 10;
+  position: relative;
+}
+
+/* Intro Layout - Introduction Slides */
+.slidev-layout.intro {
+  padding: var(--lcars-gap);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 153, 51, 0.1) 0%,
+    rgba(0, 0, 0, 0.95) 30%,
+    rgba(153, 153, 255, 0.1) 100%
+  );
+  border-right: 6px solid var(--lcars-info);
+  position: relative;
+}
+
+.slidev-layout.intro::before {
+  content: 'BRIEFING';
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 0.9rem;
+  color: var(--lcars-info);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  padding: 0.3rem 0.8rem;
+  background: rgba(153, 204, 255, 0.2);
+  border-radius: 15px;
+}
+
+/* LCARS Panel styling for content blocks */
+.lcars-panel {
+  background: linear-gradient(
+    90deg,
+    var(--lcars-primary) 0%,
+    var(--lcars-primary) 20px,
+    transparent 20px
+  );
+  border-left: var(--lcars-border-width) solid var(--lcars-primary);
+  border-radius: 0 var(--lcars-border-radius) var(--lcars-border-radius) 0;
+  padding: var(--lcars-gap);
+  margin: var(--lcars-gap) 0;
+}
+
+/* LCARS Button styling */
+.lcars-button {
+  background: var(--lcars-primary);
+  color: var(--lcars-black);
+  border: none;
+  border-radius: var(--lcars-border-radius);
+  padding: 0.5em 1.5em;
+  font-family: var(--lcars-font-family);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* LCARS Button Components */
+.lcars-btn {
+  background: var(--lcars-primary);
+  color: var(--lcars-black);
+  border: none;
+  border-radius: var(--lcars-border-radius);
+  padding: 0.8em 2em;
+  font-family: var(--lcars-font-family);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.lcars-btn:hover {
+  background: var(--lcars-secondary);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 153, 51, 0.3);
+}
+
+.lcars-btn:active {
+  transform: translateY(0);
+}
+
+/* LCARS Data Display Panels */
+.lcars-data-panel {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 153, 51, 0.1) 0%,
+    rgba(0, 0, 0, 0.8) 50%,
+    rgba(153, 153, 255, 0.1) 100%
+  );
+  border: 2px solid var(--lcars-primary);
+  border-radius: 20px;
+  padding: var(--lcars-gap);
+  margin: var(--lcars-gap) 0;
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+.lcars-data-panel::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(
+    45deg,
+    var(--lcars-primary),
+    var(--lcars-secondary),
+    var(--lcars-accent),
+    var(--lcars-primary)
+  );
+  border-radius: 22px;
+  z-index: -1;
+  animation: lcars-border-glow 3s ease-in-out infinite alternate;
+}
+
+/* LCARS Text Effects */
+.lcars-text-glow {
+  text-shadow:
+    0 0 5px currentColor,
+    0 0 10px currentColor,
+    0 0 15px currentColor;
+}
+
+.lcars-text-flicker {
+  animation: lcars-flicker 2s infinite alternate;
+}
+
+/* LCARS Status Indicators */
+.lcars-status {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+  animation: lcars-pulse 2s infinite;
+}
+
+.lcars-status.online {
+  background: var(--lcars-success);
+  box-shadow: 0 0 10px var(--lcars-success);
+}
+
+.lcars-status.warning {
+  background: var(--lcars-warning);
+  box-shadow: 0 0 10px var(--lcars-warning);
+}
+
+.lcars-status.offline {
+  background: var(--lcars-gray);
+  box-shadow: 0 0 10px var(--lcars-gray);
+}
+
+/* LCARS Progress Bars */
+.lcars-progress {
+  width: 100%;
+  height: 20px;
+  background: var(--lcars-black);
+  border: 2px solid var(--lcars-primary);
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.lcars-progress-bar {
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    var(--lcars-primary) 0%,
+    var(--lcars-secondary) 100%
+  );
+  transition: width 0.5s ease;
+  position: relative;
+}
+
+.lcars-progress-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  animation: lcars-scan 2s infinite;
+}
+
+/* LCARS Grid System */
+.lcars-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: var(--lcars-gap);
+  padding: var(--lcars-gap);
+}
+
+.lcars-grid-item {
+  background: rgba(255, 153, 51, 0.1);
+  border: 1px solid var(--lcars-primary);
+  border-radius: 15px;
+  padding: var(--lcars-gap);
+  transition: all 0.3s ease;
+}
+
+.lcars-grid-item:hover {
+  background: rgba(255, 153, 51, 0.2);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(255, 153, 51, 0.2);
+}
+
+/* LCARS Animations */
+@keyframes lcars-border-glow {
+  0% {
+    opacity: 0.5;
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    opacity: 1;
+    filter: hue-rotate(30deg);
   }
 }
 
+@keyframes lcars-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+@keyframes lcars-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}
+
+@keyframes lcars-scan {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* LCARS Code Blocks */
+pre,
+code {
+  font-family: var(--lcars-font-mono) !important;
+  background: rgba(0, 0, 0, 0.8) !important;
+  border: 1px solid var(--lcars-secondary) !important;
+  border-radius: 10px !important;
+  color: var(--lcars-info) !important;
+}
+
+pre {
+  padding: var(--lcars-gap) !important;
+  margin: var(--lcars-gap) 0 !important;
+  position: relative;
+}
+
+pre::before {
+  content: 'LCARS TERMINAL';
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  font-size: 0.7em;
+  color: var(--lcars-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* LCARS Lists */
+ul,
+ol {
+  list-style: none;
+  padding-left: 0;
+}
+
+li {
+  position: relative;
+  padding-left: 30px;
+  margin: 10px 0;
+  color: var(--lcars-text);
+}
+
+li::before {
+  content: '▶';
+  position: absolute;
+  left: 0;
+  color: var(--lcars-primary);
+  font-size: 0.8em;
+}
+
+/* LCARS Links */
+a {
+  color: var(--lcars-info);
+  text-decoration: none;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  color: var(--lcars-primary);
+  text-shadow: 0 0 10px var(--lcars-primary);
+}
+
+a::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--lcars-primary);
+  transition: width 0.3s ease;
+}
+
+a:hover::after {
+  width: 100%;
+}
+
+/* LCARS Table Styling */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 2px;
+  background: transparent;
+  margin: var(--lcars-gap) 0;
+}
+
+th,
+td {
+  padding: 12px;
+  background: rgba(255, 153, 51, 0.1);
+  border: 1px solid var(--lcars-primary);
+  border-radius: 8px;
+  text-align: left;
+}
+
+th {
+  background: var(--lcars-primary);
+  color: var(--lcars-black);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Responsive LCARS Design */
+@media (max-width: 768px) {
+  .lcars-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .slidev-layout.cover::before,
+  .slidev-layout.cover::after {
+    height: 40px;
+  }
+
+  .slidev-layout h1 {
+    font-size: 3rem !important;
+  }
+} /* Cover Layout - LCARS Command Interface */
 .slidev-layout.cover,
 .slidev-layout.intro {
   @apply h-full grid;
+  background: var(--lcars-bg);
+  position: relative;
+  overflow: hidden;
 
   h1 {
     @apply text-6xl leading-20;
+    color: var(--lcars-primary);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 20px var(--lcars-primary);
+  }
+
+  /* LCARS Frame Decorations */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(
+      90deg,
+      var(--lcars-orange) 0%,
+      var(--lcars-orange) 200px,
+      var(--lcars-red) 200px,
+      var(--lcars-red) 300px,
+      var(--lcars-blue) 300px,
+      var(--lcars-blue) 400px,
+      transparent 400px
+    );
+    border-radius: 0 0 30px 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(
+      90deg,
+      var(--lcars-pink) 0%,
+      var(--lcars-pink) 150px,
+      var(--lcars-purple) 150px,
+      var(--lcars-purple) 250px,
+      var(--lcars-light-blue) 250px,
+      var(--lcars-light-blue) 350px,
+      transparent 350px
+    );
+    border-radius: 30px 0 0 0;
+  }
+
+  /* Side panels */
+  .lcars-side-panel {
+    position: absolute;
+    top: 80px;
+    bottom: 80px;
+    width: 80px;
+    background: var(--lcars-tan);
+    border-radius: 40px;
+  }
+
+  .lcars-side-panel.left {
+    left: 20px;
+  }
+
+  .lcars-side-panel.right {
+    right: 20px;
+    background: var(--lcars-yellow);
   }
 }
 
-
+/* Fact Layout - LCARS Data Display */
 .slidev-layout.fact {
   @apply text-center grid h-full;
+  background: var(--lcars-bg);
+  position: relative;
+
   h1 {
     @apply text-8xl font-700;
+    color: var(--lcars-warning);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    text-shadow: 0 0 30px var(--lcars-warning);
+    font-family: var(--lcars-font-family);
   }
   h1 + p {
     @apply font-700 text-2xl;
+    color: var(--lcars-info);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  /* LCARS Data bars */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 120px;
+    height: 200px;
+    background: linear-gradient(
+      0deg,
+      var(--lcars-blue) 0%,
+      var(--lcars-blue) 25%,
+      var(--lcars-orange) 25%,
+      var(--lcars-orange) 50%,
+      var(--lcars-red) 50%,
+      var(--lcars-red) 75%,
+      var(--lcars-pink) 75%
+    );
+    border-radius: 0 60px 60px 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 120px;
+    height: 200px;
+    background: linear-gradient(
+      0deg,
+      var(--lcars-purple) 0%,
+      var(--lcars-purple) 25%,
+      var(--lcars-yellow) 25%,
+      var(--lcars-yellow) 50%,
+      var(--lcars-light-blue) 50%,
+      var(--lcars-light-blue) 75%,
+      var(--lcars-tan) 75%
+    );
+    border-radius: 60px 0 0 60px;
   }
 }
+
+/* Statement Layout - LCARS Alert Display */
 .slidev-layout.statement {
   @apply text-center grid h-full;
+  background: var(--lcars-bg);
+  position: relative;
 
   h1 {
     @apply text-6xl font-700;
+    color: var(--lcars-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 25px var(--lcars-primary);
+  }
+
+  /* LCARS Alert Frame */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    border: 6px solid var(--lcars-warning);
+    border-radius: 40px;
+    background: linear-gradient(
+      45deg,
+      transparent 0%,
+      rgba(204, 102, 102, 0.1) 50%,
+      transparent 100%
+    );
   }
 }
+
+/* Quote Layout - LCARS Personal Log */
 .slidev-layout.quote {
   @apply grid h-full;
+  background: var(--lcars-bg);
+  position: relative;
 
   h1 + p {
     @apply mt-2;
+    color: var(--lcars-accent);
+    font-style: italic;
+  }
+
+  /* LCARS Quote Frame */
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 20px;
+    background: linear-gradient(
+      0deg,
+      var(--lcars-accent) 0%,
+      var(--lcars-accent) 30%,
+      transparent 30%,
+      transparent 70%,
+      var(--lcars-accent) 70%
+    );
+  }
+
+  &::after {
+    content: '"';
+    position: absolute;
+    top: 20px;
+    left: 40px;
+    font-size: 8rem;
+    color: var(--lcars-accent);
+    opacity: 0.3;
+    font-family: serif;
   }
 }
+
+/* Section Layout - LCARS Department Header */
 .slidev-layout.section {
+  background: var(--lcars-bg);
+  position: relative;
+
   h1 {
     @apply text-6xl font-500 leading-20;
+    color: var(--lcars-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    text-shadow: 0 0 20px var(--lcars-secondary);
+  }
+
+  /* LCARS Section Identifier */
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 50%;
+    height: 120px;
+    background: var(--lcars-secondary);
+    border-radius: 0 0 60px 0;
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 50%;
+    height: 120px;
+    background: var(--lcars-secondary);
+    border-radius: 60px 0 0 0;
   }
 }
