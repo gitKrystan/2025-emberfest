@@ -40,7 +40,13 @@ export class PageState<T, E> {
         RequestState<ReactiveDataDocument<T[]>, StructuredErrorDocument<E>>
       >
     | undefined;
-  declare selfLink: string | null;
+  declare _selfLink: string | null;
+  get selfLink(): string | null {
+    return this._selfLink;
+  }
+  set selfLink(selfLink: string | null) {
+    this._selfLink = selfLink;
+  }
   declare private readonly _prevLink: string | null;
   declare private readonly _nextLink: string | null;
 
@@ -55,13 +61,6 @@ export class PageState<T, E> {
       this.selfLink = options.url;
     } else {
       void this.load(options.self);
-      void options.self.then((value) => {
-        const { content } = value;
-        const url = getHref(content.links?.self);
-        assert('Expected the page to have a self link', url);
-        this.selfLink = url;
-        this.manager.addPage(this.selfLink, this);
-      });
     }
   }
 
@@ -133,7 +132,11 @@ export class PageState<T, E> {
     this.requestState = getRequestState<ReactiveDataDocument<T[]>, E>(
       this.request
     );
-    await this.request;
+    const { content } = await request;
+    const url = getHref(content.links?.self);
+    assert('Expected the page to have a self link', url);
+    this.selfLink = url;
+    this.manager.addPage(this.selfLink, this);
   };
 }
 
@@ -141,3 +144,4 @@ defineSignal(PageState.prototype, 'requestState', undefined);
 defineSignal(PageState.prototype, 'request', undefined);
 defineSignal(PageState.prototype, 'state', undefined);
 defineSignal(PageState.prototype, 'self', undefined);
+defineSignal(PageState.prototype, 'selfLink', undefined);
