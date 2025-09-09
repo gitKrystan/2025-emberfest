@@ -18,7 +18,7 @@ interface Signature {
 export class TodoList extends Component<Signature> {
   <template>
     <ul class="todo-list">
-      {{#each @todos as |immutableTodo|}}
+      {{#each this.todos as |immutableTodo|}}
         <Await @promise={{this.checkout immutableTodo}}>
 
           {{! On success, check out a mutable copy of the todo }}
@@ -35,6 +35,14 @@ export class TodoList extends Component<Signature> {
 
         </Await>
       {{/each}}
+
+      {{#if this.remaining}}
+        <li><label class="view"><div class="do-not-crash">
+              +
+              {{this.remaining}}
+              todos we couldn't load without crashing
+            </div></label></li>
+      {{/if}}
     </ul>
   </template>
 
@@ -42,5 +50,13 @@ export class TodoList extends Component<Signature> {
 
   checkout(todo: Todo): Promise<EditableTodo> {
     return checkout<EditableTodo>(todo);
+  }
+
+  get todos(): Todo[] {
+    return this.args.todos.slice(0, 99);
+  }
+
+  get remaining() {
+    return Math.max(this.args.todos.length - 100, 0);
   }
 }

@@ -288,3 +288,7 @@
 .flags .flag-name {
   font-weight: 500;
 }
+
+.do-not-crash {
+  font-size: 16px;
+}
