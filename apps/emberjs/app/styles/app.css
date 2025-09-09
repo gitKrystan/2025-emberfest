@@ -291,3 +291,65 @@
 .do-not-crash {
   font-size: 16px;
 }
+
+/* Enterprise Edition sticker styling - Starburst design */
+.enterprise-edition {
+  width: 100px;
+  height: 100px;
+  clip-path: polygon(
+    100% 50%,
+    86.14% 61.74%,
+    90.45% 79.39%,
+    72.34% 80.74%,
+    65.45% 97.55%,
+    50% 88%,
+    34.55% 97.55%,
+    27.66% 80.74%,
+    9.55% 79.39%,
+    13.86% 61.74%,
+    0% 50%,
+    13.86% 38.26%,
+    9.55% 20.61%,
+    27.66% 19.26%,
+    34.55% 2.45%,
+    50% 12%,
+    65.45% 2.45%,
+    72.34% 19.26%,
+    90.45% 20.61%,
+    86.14% 38.26%
+  );
+  background-color: #ffc200;
+  position: absolute;
+  top: 0;
+  right: 93px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: shimmer 2s ease-in-out infinite alternate;
+  z-index: 10;
+}
+
+.enterprise-edition span {
+  font-size: 10px;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+  line-height: 1.1;
+  text-shadow: 0 1px 2px rgb(255 255 255 / 80%);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  position: relative;
+  top: 2px;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: rotate(15deg) scale(1);
+    filter: brightness(1);
+  }
+
+  100% {
+    transform: rotate(15deg) scale(1.05);
+    filter: brightness(1.1);
+  }
+}

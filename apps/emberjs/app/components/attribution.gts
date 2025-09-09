@@ -4,7 +4,7 @@ export const Attribution = <template>
     Created by
     <a href="https://github.com/cibernox">Miguel Camba</a>,
     <a href="https://github.com/addyosmani">Addy Osmani</a>,
-    <a href="https://github.com/NullVoxPopuli">NullVoxPopuli</a>
+    <a href="https://github.com/NullVoxPopuli">NullVoxPopuli</a>,
     <a href="https://github.com/gitKrystan">Krystan HuffMenne</a>
   </p>
 

@@ -13,7 +13,13 @@ export const Layout = <template>
   <section><Flags /></section>
 
   <main class="todoapp">
-    <header class="header"><h1>todos</h1></header>
+    <header class="header">
+      <h1>
+        todos
+        <div class="enterprise-edition"><span>Enterprise Edition</span></div>
+      </h1>
+
+    </header>
 
     {{yield}}
   </main>
