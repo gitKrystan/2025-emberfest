@@ -270,21 +270,9 @@ function getPaginationLink(
   const distanceFromActiveIndex = Math.abs(index - currentPage);
 
   if (existingLink?.isReal) {
-    // If the existing link has the same distance and current state, reuse it
-    if (
-      existingLink.distanceFromActiveIndex === distanceFromActiveIndex &&
-      existingLink.isCurrent === isCurrent
-    ) {
-      return existingLink;
-    }
-    // Otherwise create a new one with updated values
-    return new RealPaginationLinkImpl(
-      existingLink.url,
-      index,
-      isCurrent,
-      distanceFromActiveIndex,
-      loadPage
-    );
+    existingLink.isCurrent = isCurrent;
+    existingLink.distanceFromActiveIndex = distanceFromActiveIndex;
+    return existingLink;
   } else if (url) {
     return new RealPaginationLinkImpl(
       url,
@@ -307,9 +295,9 @@ class RealPaginationLinkImpl implements RealPaginationLink {
 
   readonly url: string;
   readonly index: number;
-  readonly distanceFromActiveIndex: number;
+  distanceFromActiveIndex: number;
+  isCurrent: boolean;
 
-  private readonly _isCurrent: boolean;
   private readonly _loadPage: (url: string) => Promise<void>;
 
   constructor(
@@ -321,13 +309,9 @@ class RealPaginationLinkImpl implements RealPaginationLink {
   ) {
     this.url = url;
     this.index = index;
-    this._isCurrent = isCurrent;
+    this.isCurrent = isCurrent;
     this._loadPage = loadPage;
     this.distanceFromActiveIndex = distanceFromActiveIndex;
-  }
-
-  get isCurrent(): boolean {
-    return this._isCurrent;
   }
 
   readonly setActive: () => Promise<void> = () => {
