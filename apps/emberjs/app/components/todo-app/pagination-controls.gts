@@ -92,6 +92,10 @@ const PlaceholderLink = <template>
   };
 }>;
 
+function shouldShowPlaceholder(distanceFromActiveIndex: number): boolean {
+  return distanceFromActiveIndex < 3;
+}
+
 const RealLink = <template>
   {{#if (shouldShowRealLink @link.index @link.distanceFromActiveIndex @pages.links.totalPages)}}
     <button
@@ -100,6 +104,10 @@ const RealLink = <template>
       class="pagination-link pagination-real-link {{if @link.isCurrent 'pagination-link-active'}}"
     >
       {{@link.index}}
+    </button>
+  {{else if (shouldShowLinkExpander @link.index @link.distanceFromActiveIndex @pages.links.totalPages)}}
+    <button type="button" {{on "click" @link.setActive}} class="pagination-link pagination-placeholder-link">
+      ⋯
     </button>
   {{/if}}
 </template> satisfies TOC<{
@@ -110,9 +118,7 @@ const RealLink = <template>
   };
 }>;
 
-function shouldShowPlaceholder(distanceFromActiveIndex: number): boolean {
-  return distanceFromActiveIndex < 3;
-}
+const showDistance = 3;
 
 function shouldShowRealLink(
   index: number,
@@ -120,12 +126,27 @@ function shouldShowRealLink(
   totalPages: number | null | undefined
 ): boolean {
   return (
-    //first page
+    // first page
     index === 1 ||
-    //last page
+    // last page
     (totalPages && index === totalPages) ||
     // close to current page
-    distanceFromActiveIndex < 4
+    distanceFromActiveIndex <= showDistance
+  );
+}
+
+function shouldShowLinkExpander(
+  index: number,
+  distanceFromActiveIndex: number,
+  totalPages: number | null | undefined
+): boolean {
+  return (
+    // not first page
+    index !== 1 ||
+    // not last page
+    (totalPages && index !== totalPages) ||
+    // one outside of showDistance
+    distanceFromActiveIndex === showDistance + 1
   );
 }
 

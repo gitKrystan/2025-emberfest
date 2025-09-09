@@ -1123,7 +1123,6 @@ Based on my analysis of the README.md documentation versus the current implement
 
 TODO:
 Make pagination-links pretty
-Extract to separate component
 Show button to "expand" hidden real links
 
 Update url w/ any page number other than 1
