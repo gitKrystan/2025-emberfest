@@ -21,8 +21,7 @@ import type { ContentFeatures } from '#/components/fixme/paginate/-private/pagin
 
 interface Signature {
   Args: {
-    // FIXME: Remove this Readonly junk
-    pages: Readonly<PaginationState<Todo, unknown>>;
+    pages: PaginationState<Todo>;
     state: ContentFeatures<ReactiveDataDocument<Todo[]>>;
   };
 }
@@ -126,8 +125,7 @@ const PageLinks = <template>
   </div>
 </template> satisfies TOC<{
   Args: {
-    // FIXME: Remove this Readonly junk
-    pages: Readonly<PaginationState<Todo, unknown>>;
+    pages: PaginationState<Todo>;
   };
 }>;
 
@@ -144,8 +142,7 @@ const showDistance = 3;
 class RealLink extends Component<{
   Args: {
     link: RealPaginationLink;
-    // FIXME: Remove this Readonly junk
-    pages: Readonly<PaginationState<Todo, unknown>>;
+    pages: PaginationState<Todo>;
   };
 }> {
   <template>

@@ -56,8 +56,7 @@ export class TodoProvider extends Component<Signature> {
 
 class ActivePage extends Component<{
   Args: {
-    // FIXME: Remove this Readonly junk
-    pages: Readonly<PaginationState<Todo, unknown>>;
+    pages: PaginationState<Todo>;
     state: ContentFeatures<ReactiveDataDocument<Todo[]>>;
     activePageData: Todo[];
   };

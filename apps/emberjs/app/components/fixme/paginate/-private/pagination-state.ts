@@ -14,15 +14,15 @@ import { type PageHints, PaginationLinks } from './pagination-links';
 // TODO: Make generic?
 const PaginationCache = new WeakMap<
   Future<unknown>,
-  PaginationState<unknown, unknown>
+  PaginationState<unknown>
 >();
 
 /**
  * @public Exposed via always slot.
  */
-export class PaginationState<T, E> {
-  declare readonly initialPage: Readonly<PageState<T, E>>;
-  declare activePage: Readonly<PageState<T, E>>;
+export class PaginationState<T, E = unknown> {
+  declare readonly initialPage: PageState<T, E>;
+  declare activePage: PageState<T, E>;
   declare private readonly pagesCache: Map<string, PageState<T, E>>;
 
   // TODO: Make reactive?
@@ -91,7 +91,7 @@ export class PaginationState<T, E> {
   }
 
   @memoized
-  get firstPage(): Readonly<PageState<T, E>> {
+  get firstPage(): PageState<T, E> {
     let page = this.activePage;
     while (page.prev) {
       page = page.prev;
@@ -100,7 +100,7 @@ export class PaginationState<T, E> {
   }
 
   @memoized
-  get lastPage(): Readonly<PageState<T, E>> {
+  get lastPage(): PageState<T, E> {
     let page = this.activePage;
     while (page.next) {
       page = page.next;
@@ -109,7 +109,7 @@ export class PaginationState<T, E> {
   }
 
   @memoized
-  get prevPages(): Readonly<PageState<T, E>>[] {
+  get prevPages(): PageState<T, E>[] {
     const pages = [];
     let page = this.activePage.prev;
     while (page) {
@@ -120,7 +120,7 @@ export class PaginationState<T, E> {
   }
 
   @memoized
-  get nextPages(): Readonly<PageState<T, E>>[] {
+  get nextPages(): PageState<T, E>[] {
     const pages = [];
     let page = this.activePage.next;
     while (page) {
@@ -131,7 +131,7 @@ export class PaginationState<T, E> {
   }
 
   @memoized
-  get pages(): Readonly<PageState<T, E>>[] {
+  get pages(): PageState<T, E>[] {
     return [...this.prevPages, this.activePage, ...this.nextPages];
   }
 
@@ -171,7 +171,7 @@ export class PaginationState<T, E> {
     return this.activePage.prev?.request ?? null;
   }
 
-  // FIXME: Seems weird
+  // TODO: Seems weird
   @memoized
   get nextRequest(): Future<ReactiveDataDocument<T[]>> | null {
     return this.activePage.next?.request ?? null;
@@ -187,13 +187,11 @@ export class PaginationState<T, E> {
     return this.activePage.next?.isLoading ?? false;
   }
 
-  activatePage = (page: Readonly<PageState<T, E>>): void => {
+  activatePage = (page: PageState<T, E>): void => {
     this.activePage = page;
   };
 
-  getPageState = (
-    options: UrlPageStateCreateOptions
-  ): Readonly<PageState<T, E>> => {
+  getPageState = (options: UrlPageStateCreateOptions): PageState<T, E> => {
     const { url } = options;
     let state = this.pagesCache.get(url);
 
@@ -235,12 +233,12 @@ interface LinkSupport<T> {
 export function getPaginationState<T, E>(
   future: Future<ReactiveDataDocument<T[]>>,
   linkSupport?: LinkSupport<T> | null
-): Readonly<PaginationState<T, E>> {
+): PaginationState<T, E> {
   // TODO: @runspired This don't seem to ever hit
   let state = PaginationCache.get(future);
 
   if (!state) {
-    state = new PaginationState<unknown, unknown>(
+    state = new PaginationState<unknown>(
       future,
       (linkSupport as LinkSupport<unknown> | undefined) ?? null
     );
@@ -248,5 +246,5 @@ export function getPaginationState<T, E>(
   }
 
   // TODO: Clean up PaginationCache types
-  return state as Readonly<PaginationState<T, E>>;
+  return state as PaginationState<T, E>;
 }

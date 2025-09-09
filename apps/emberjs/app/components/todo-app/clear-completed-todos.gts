@@ -15,7 +15,6 @@ import { reportError } from '#/helpers/error';
 import type AppState from '#/services/app-state';
 import type Store from '#/services/store';
 
-// FIXME: Need a new "clear all completed endpoint for the backend now that we paginate"
 /**
  * Renders a button to clear completed todos if there are any.
  * On click, it will delete all completed todos.

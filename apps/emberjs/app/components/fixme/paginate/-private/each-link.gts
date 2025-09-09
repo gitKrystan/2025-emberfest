@@ -5,7 +5,7 @@ import type { PaginationState } from './pagination-state';
 
 interface EachLinkSignature<T, E> {
   Args: {
-    pages: Readonly<PaginationState<T, E>>;
+    pages: PaginationState<T, E>;
   };
   Blocks: {
     default: [link: PaginationLink];

@@ -33,9 +33,8 @@ export interface ContentFeatures<RT> {
   refresh: () => Promise<void>;
   reload: () => Promise<void>;
   abort?: () => void;
-  // FIXME: latestRequest is for initial page only. Confusing naming.
+  // TODO: latestRequest is for initial page only. Confusing naming.
   latestRequest?: Future<RT>;
-  latestPageRequest?: Future<RT>;
 
   // Pagination
   /** Load next page, if any, based on links. */
@@ -205,7 +204,7 @@ export class PaginationSubscription<T, E> {
 
   /** @internal */
   @memoized
-  get paginationState(): Readonly<PaginationState<T, E>> {
+  get paginationState(): PaginationState<T, E> {
     return getPaginationState<T, E>(
       this.request,
       // TODO: Types

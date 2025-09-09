@@ -155,7 +155,7 @@ interface PaginateSignature<T, E> {
     /**
      * The block to render when the request succeeded.
      */
-    content: [pages: Readonly<PaginationState<T, E>>, state: ContentFeatures<ReactiveDataDocument<T[]>>];
+    content: [pages: PaginationState<T, E>, state: ContentFeatures<ReactiveDataDocument<T[]>>];
 
     /**
      * The block to render when a request for a previous link is being performed.
@@ -168,12 +168,12 @@ interface PaginateSignature<T, E> {
     next: [request: Future<ReactiveDataDocument<T[]>>];
 
     // TODO: Do we want to expose the entire PaginationState or select features?
-    always: [pages: Readonly<PaginationState<T, E>>, state: ContentFeatures<ReactiveDataDocument<T[]>>];
+    always: [pages: PaginationState<T, E>, state: ContentFeatures<ReactiveDataDocument<T[]>>];
 
     /**
      * The block to render when the request succeeded.
      */
-    default: [pages: Readonly<PaginationState<T, E>>, state: ContentFeatures<ReactiveDataDocument<T[]>>];
+    default: [pages: PaginationState<T, E>, state: ContentFeatures<ReactiveDataDocument<T[]>>];
   };
 }
 

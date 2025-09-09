@@ -36,9 +36,7 @@ export class PageState<T, E> {
   declare request: Future<ReactiveDataDocument<T[]>> | null;
   /** @internal */
   declare requestState:
-    | Readonly<
-        RequestState<ReactiveDataDocument<T[]>, StructuredErrorDocument<E>>
-      >
+    | RequestState<ReactiveDataDocument<T[]>, StructuredErrorDocument<E>>
     | undefined;
   declare _selfLink: string | null;
   get selfLink(): string | null {
@@ -114,14 +112,14 @@ export class PageState<T, E> {
 
   /** @internal */
   @memoized
-  get prev(): Readonly<PageState<T, E>> | null {
+  get prev(): PageState<T, E> | null {
     const url = this.prevLink;
     return url ? this.manager.getPageState({ url, next: this.selfLink }) : null;
   }
 
   /** @internal */
   @memoized
-  get next(): Readonly<PageState<T, E>> | null {
+  get next(): PageState<T, E> | null {
     const url = this.nextLink;
     return url ? this.manager.getPageState({ url, prev: this.selfLink }) : null;
   }
