@@ -82,21 +82,26 @@ export function buildPaginationLinks<T>(
   url.searchParams.set('page[offset]', '0');
   links.first = url.toString();
 
+  const maxOffset = (paginatedResult.totalPages - 1) * limit;
+
   // Last page
-  const lastOffset = Math.max(0, Math.floor((total - 1) / limit) * limit);
+  const lastOffset = Math.min(
+    Math.max(0, Math.floor((total - 1) / limit) * limit),
+    maxOffset,
+  );
   url.searchParams.set('page[offset]', lastOffset.toString());
   links.last = url.toString();
 
   // Previous page
   if (offset > 0) {
-    const prevOffset = Math.max(0, offset - limit);
+    const prevOffset = Math.min(Math.max(0, offset - limit), maxOffset);
     url.searchParams.set('page[offset]', prevOffset.toString());
     links.prev = url.toString();
   }
 
   // Next page
   if (offset + limit < total) {
-    const nextOffset = offset + limit;
+    const nextOffset = Math.min(offset + limit, maxOffset);
     url.searchParams.set('page[offset]', nextOffset.toString());
     links.next = url.toString();
   }

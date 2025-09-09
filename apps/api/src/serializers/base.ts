@@ -210,8 +210,8 @@ function serializeExistingResourceCollection<T extends string>(
 function serializePaginationMeta<T extends string>(
   paginatedResult: PaginatedResult<ExistingRecord<T>>,
 ) {
-  const currentPage =
-    Math.floor(paginatedResult.offset / paginatedResult.limit) + 1;
-  const totalPages = Math.ceil(paginatedResult.total / paginatedResult.limit);
-  return { currentPage, totalPages };
+  return {
+    currentPage: paginatedResult.currentPage,
+    totalPages: paginatedResult.totalPages,
+  };
 }

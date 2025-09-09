@@ -10,6 +10,8 @@ export interface PaginatedResult<T> {
   total: number;
   limit: number;
   offset: number;
+  currentPage: number;
+  totalPages: number;
 }
 
 /**
@@ -71,12 +73,16 @@ export abstract class Store<T extends { id: string }> {
     const allItems = Array.from(this.map.values());
     const total = allItems.length;
     const data = allItems.slice(offset, offset + limit);
+    const currentPage = Math.floor(offset / limit) + 1;
+    const totalPages = Math.ceil(total / limit);
 
     return {
       data,
       total,
       limit,
       offset,
+      currentPage,
+      totalPages,
     };
   }
 
@@ -99,12 +105,16 @@ export abstract class Store<T extends { id: string }> {
     );
     const total = filteredItems.length;
     const data = filteredItems.slice(offset, offset + limit);
+    const currentPage = Math.floor(offset / limit) + 1;
+    const totalPages = Math.ceil(total / limit);
 
     return {
       data,
       total,
       limit,
       offset,
+      currentPage,
+      totalPages,
     };
   }
 
