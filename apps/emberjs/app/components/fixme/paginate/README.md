@@ -849,21 +849,29 @@ navigation links. A companion component makes rendering links quick to setup.
 
 `PaginationLinks` exposes the following properties:
 
-<!-- FIXME: Prob don't need all of these. Thanks Claude. -->
-
 ```ts
 interface RealPaginationLink {
-  isPlaceholder: false;
+  isReal: true;
   /** 1-indexed page index */
   index: number;
+  /** Is this the current active page? */
   isCurrent: boolean;
+  /** Distance from the active page index */
+  distanceFromActiveIndex: number;
+  /** URL for this page */
+  url: string;
+  /** Load this page */
   setActive: () => Promise<void>;
 }
 
 interface PlaceholderPaginationLink {
-  isPlaceholder: true;
+  isReal: false;
+  /** 1-indexed page index */
   index: number;
-  text: '.';
+  /** Distance from the active page index */
+  distanceFromActiveIndex: number;
+  /** Defaults to '.' */
+  text: string;
 }
 
 type PaginationLink = RealPaginationLink | PlaceholderPaginationLink;
@@ -871,6 +879,8 @@ type PaginationLink = RealPaginationLink | PlaceholderPaginationLink;
 interface PaginationLinks {
   /** All available links and placeholders */
   links: Array<PaginationLink>;
+  currentPageIndex: number;
+  totalPages: number;
 }
 ```
 
@@ -1108,3 +1118,16 @@ Based on my analysis of the README.md documentation versus the current implement
 - [ ] EachLink component for rendering pagination navigation
 - [ ] PageHints interface and @pageHints argument for page count hints
 - [ ] The current implementation provides the core pagination state management and basic functionality, but lacks the advanced UI helpers and specialized pagination loading states that are extensively documented in the README.
+
+{{!
+
+TODO:
+Make pagination-links pretty
+Extract to separate component
+Show button to "expand" hidden real links
+
+Update url w/ any page number other than 1
+
+Only show one page at a time
+
+}}

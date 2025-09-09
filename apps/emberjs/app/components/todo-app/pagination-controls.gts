@@ -1,0 +1,134 @@
+import type { TOC } from '@ember/component/template-only';
+import { on } from '@ember/modifier';
+
+import type { ReactiveDataDocument } from '@warp-drive/core/reactive';
+
+import type { Todo } from '@workspace/shared-data/types';
+
+import { EachLink } from '#/components/fixme/paginate';
+
+import type { PlaceholderPaginationLink, RealPaginationLink } from '../fixme/paginate/-private/pagination-links';
+import type { PaginationState } from '../fixme/paginate/-private/pagination-state';
+import type { ContentFeatures } from '../fixme/paginate/-private/pagination-subscription';
+
+interface Signature {
+  Args: {
+    // FIXME: Remove this Readonly junk
+    pages: Readonly<PaginationState<Todo, unknown>>;
+    state: ContentFeatures<ReactiveDataDocument<Todo[]>>;
+  };
+}
+
+export const PaginationControls = <template>
+  {{#if (or @state.loadPrev @state.loadNext)}}
+    <div class="pagination-controls">
+      <LoadPreviousButton @loadPrev={{@state.loadPrev}} />
+
+      <PageLinks @pages={{@pages}} />
+
+      <LoadNextButton @loadNext={{@state.loadNext}} />
+    </div>
+  {{/if}}
+</template> satisfies TOC<Signature>;
+
+const LoadPreviousButton = <template>
+  {{#if @loadPrev}}
+    <button type="button" class="pagination-button prev" {{on "click" @loadPrev}}>
+      ←
+      <span class="pagination-button-text">Load previous</span>
+    </button>
+  {{else}}
+    <div></div>
+  {{/if}}
+</template> satisfies TOC<{
+  Args: {
+    loadPrev: (() => Promise<void>) | null;
+  };
+}>;
+
+const LoadNextButton = <template>
+  {{#if @loadNext}}
+    <button type="button" class="pagination-button next" {{on "click" @loadNext}}>
+      <span class="pagination-button-text">Load next</span>
+      →
+    </button>
+  {{else}}
+    <div></div>
+  {{/if}}
+</template> satisfies TOC<{
+  Args: {
+    loadNext: (() => Promise<void>) | null;
+  };
+}>;
+
+const PageLinks = <template>
+  <div class="pagination-links">
+    <EachLink @pages={{@pages}}>
+
+      <:placeholder as |link|>
+        <PlaceholderLink @placeholder={{link}} />
+      </:placeholder>
+
+      <:link as |link|>
+        <RealLink @link={{link}} @pages={{@pages}} />
+      </:link>
+
+    </EachLink>
+  </div>
+</template> satisfies TOC<{
+  Args: {
+    // FIXME: Remove this Readonly junk
+    pages: Readonly<PaginationState<Todo, unknown>>;
+  };
+}>;
+
+const PlaceholderLink = <template>
+  {{#if (shouldShowPlaceholder @placeholder.distanceFromActiveIndex)}}
+    <span class="pagination-link pagination-placeholder-link">⋯</span>
+  {{/if}}
+</template> satisfies TOC<{
+  Args: {
+    placeholder: PlaceholderPaginationLink;
+  };
+}>;
+
+const RealLink = <template>
+  {{#if (shouldShowRealLink @link.index @link.distanceFromActiveIndex @pages.links.totalPages)}}
+    <button
+      type="button"
+      {{on "click" @link.setActive}}
+      class="pagination-link pagination-real-link {{if @link.isCurrent 'pagination-link-active'}}"
+    >
+      {{@link.index}}
+    </button>
+  {{/if}}
+</template> satisfies TOC<{
+  Args: {
+    link: RealPaginationLink;
+    // FIXME: Remove this Readonly junk
+    pages: Readonly<PaginationState<Todo, unknown>>;
+  };
+}>;
+
+function shouldShowPlaceholder(distanceFromActiveIndex: number): boolean {
+  return distanceFromActiveIndex < 3;
+}
+
+function shouldShowRealLink(
+  index: number,
+  distanceFromActiveIndex: number,
+  totalPages: number | null | undefined
+): boolean {
+  return (
+    //first page
+    index === 1 ||
+    //last page
+    (totalPages && index === totalPages) ||
+    // close to current page
+    distanceFromActiveIndex < 4
+  );
+}
+
+function or(a: unknown, b: unknown): boolean {
+  return Boolean(a || b);
+}

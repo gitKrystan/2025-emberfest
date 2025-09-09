@@ -1,5 +1,4 @@
 import { assert } from '@ember/debug';
-import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 
@@ -9,7 +8,8 @@ import type { ReactiveTodosDocument } from '@workspace/shared-data/builders';
 import type { Todo } from '@workspace/shared-data/types';
 
 import { LoadingDots, LoadingSpinner } from '#/components/design-system/loading';
-import { EachLink, Paginate } from '#/components/fixme/paginate';
+import { Paginate } from '#/components/fixme/paginate';
+import { PaginationControls } from '#/components/todo-app/pagination-controls';
 import type AppState from '#/services/app-state';
 
 interface Signature {
@@ -48,54 +48,12 @@ export class TodoProvider extends Component<Signature> {
 
       <:error as |error|>{{this.appState.onUnrecoverableError error}}</:error>
 
-      <:always as |pages state|>
-        {{#if (or state.loadPrev state.loadNext)}}
-          <div class="pagination-controls">
-            {{#if state.loadPrev}}
-              <button type="button" class="pagination-button prev" {{on "click" state.loadPrev}}>
-                ←
-                <span class="pagination-button-text">Load previous</span>
-              </button>
-            {{else}}
-              <div></div>
-            {{/if}}
-
-            <EachLink @pages={{pages}}>
-              <:placeholder as |link|>
-                <span class="pagination-link pagination-placeholder-link">{{link.text}}</span>
-              </:placeholder>
-              <:link as |link|>
-                <button
-                  type="button"
-                  {{on "click" link.setActive}}
-                  class="pagination-link pagination-real-link {{if link.isCurrent 'pagination-link-active'}}"
-                >
-                  {{link.index}}
-                </button>
-              </:link>
-            </EachLink>
-
-            {{#if state.loadNext}}
-              <button type="button" class="pagination-button next" {{on "click" state.loadNext}}>
-                <span class="pagination-button-text">Load next</span>
-                →
-              </button>
-            {{else}}
-              <div></div>
-            {{/if}}
-
-          </div>
-        {{/if}}
-      </:always>
+      <:always as |pages state|><PaginationControls @pages={{pages}} @state={{state}} /></:always>
 
     </Paginate>
   </template>
 
   @service declare private readonly appState: AppState;
-}
-
-function or(a: unknown, b: unknown): boolean {
-  return Boolean(a || b);
 }
 
 function pageHints(doc: ReactiveTodosDocument): { currentPage: number; totalPages: number } {
