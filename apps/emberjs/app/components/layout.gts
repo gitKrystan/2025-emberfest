@@ -3,6 +3,15 @@ import type { TOC } from '@ember/component/template-only';
 import { Attribution } from '#/components/attribution';
 import { Flags } from '#/components/flags';
 
+import { Request } from '@warp-drive/ember';
+
+import { queryFlags } from '@workspace/shared-data/builders';
+
+import Component from '@glimmer/component';
+import { cached } from '@glimmer/tracking';
+
+import type { ApiFlag } from '@workspace/shared-data/types';
+
 interface Signature {
   Blocks: {
     default: [];
@@ -16,7 +25,10 @@ export const Layout = <template>
     <header class="header">
       <h1>
         todos
-        <div class="enterprise-edition"><span>Enterprise Edition</span></div>
+
+        <Request @query={{(queryFlags)}} @autorefresh={{true}} @autorefreshBehavior="refresh">
+          <:content as |content|><EnterpriseEdition @data={{content.data}} /></:content>
+        </Request>
       </h1>
 
     </header>
@@ -26,3 +38,19 @@ export const Layout = <template>
 
   <footer class="info"><Attribution /></footer>
 </template> satisfies TOC<Signature>;
+
+class EnterpriseEdition extends Component<{
+  Args: { data: ApiFlag[] };
+}> {
+  <template>
+    {{#if this.shouldPaginate}}
+      <div class="enterprise-edition"><span>Enterprise Edition</span></div>
+    {{/if}}
+  </template>
+
+  @cached
+  get shouldPaginate(): boolean {
+    const flag = this.args.data.find((flag) => flag.id === 'shouldPaginateFlag');
+    return flag?.value ?? false;
+  }
+}

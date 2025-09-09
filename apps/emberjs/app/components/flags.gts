@@ -195,7 +195,7 @@ class UpdateFlag extends Component<{
       {{yield}}
       <Request @request={{this.updateRequest}}>
         <:idle></:idle>
-        <:content>{{(@onUpdateSuccess)}}</:content>
+        <:content>{{(this.onUpdateSuccess)}}</:content>
         <:loading><LoadingSpinner class="loading-spinner-small loading-spinner-inline" /></:loading>
         <:error as |error|>
           <HandleError @error={{error}} />
@@ -205,6 +205,11 @@ class UpdateFlag extends Component<{
   </template>
 
   @service declare private readonly store: Store;
+
+  onUpdateSuccess = () => {
+    this.store.lifetimes.invalidateRequestsForType('flag', this.store);
+    this.args.onUpdateSuccess?.();
+  };
 
   @tracked didUpdate = false;
   doUpdate = (_event: PointerEvent) => {

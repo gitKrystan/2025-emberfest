@@ -1,9 +1,19 @@
-import { query, updateRecord } from '@warp-drive/utilities/json-api';
+import { withReactiveResponse } from '@warp-drive/core/request';
+import { buildBaseURL } from '@warp-drive/utilities';
+import { updateRecord } from '@warp-drive/utilities/json-api';
 
 import type { ApiFlag } from '../types';
 
 export function queryFlags() {
-  return query<ApiFlag>('flag', {}, { resourcePath: 'flag' });
+  const url = buildBaseURL({ resourcePath: 'flag' });
+
+  return withReactiveResponse<ApiFlag[]>({
+    method: 'GET',
+    url,
+
+    op: 'query',
+    cacheOptions: { types: ['flag'] },
+  });
 }
 
 export function updateFlag(flag: ApiFlag) {
