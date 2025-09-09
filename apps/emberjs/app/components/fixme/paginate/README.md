@@ -693,7 +693,7 @@ import { Paginate } from '@warp-drive/ember';
       >
         {{item.title}}
       </VerticalCollection>
-    <:content>
+    </:content>
 +
 +   <:error as |error state|>
 +     <ErrorForm @error={{error}} />
@@ -719,7 +719,7 @@ import { Paginate } from '@warp-drive/ember';
       >
         {{item.title}}
       </VerticalCollection>
-    <:content>
+    </:content>
 
 +   <:next><Spinner /></:next>
 
@@ -744,16 +744,24 @@ import { Paginate } from '@warp-drive/ember';
   <Paginate @request={{@request}} as |pages|>
     <:loading><Spinner /></:loading>
 
-+   <:prev as |request|>
-+     <Request @request={{request}}>
-+       <:loading><Spinner /></:loading>
-+
-+       <:error as |error state|>
-+         <ErrorForm @error={{error}} />
-+         <button {{on "click" state.retry}}>Retry</button>
-+       </:error>
-+     </Request>
-+   </:prev>
+    +
+    <:prev as |request|>
+      +
+      <Request @request={{request}}>
+        +
+        <:loading><Spinner /></:loading>
+        + +
+        <:error as |error state|>
+          +
+          <ErrorForm @error={{error}} />
+          +
+          <button {{on 'click' state.retry}}>Retry</button>
+          +
+        </:error>
+        +
+      </Request>
+      +
+    </:prev>
 
     <:content as |pages state|>
       <VerticalCollection
@@ -764,13 +772,13 @@ import { Paginate } from '@warp-drive/ember';
       >
         {{item.title}}
       </VerticalCollection>
-    <:content>
+    </:content>
 
-    <:next><Spinner /></:loading>
+    <:next><Spinner /></:next>
 
     <:error as |error state|>
       <ErrorForm @error={{error}} />
-      <button {{on "click" state.retry}}>Retry</button>
+      <button {{on 'click' state.retry}}>Retry</button>
     </:error>
   </Paginate>
 </template>

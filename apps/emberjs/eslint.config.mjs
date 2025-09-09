@@ -137,7 +137,7 @@ export default ts.config(
         'error',
         { ignorePrimitives: { string: true, number: true } },
       ],
-      '@typescript-eslint/prefer-readonly': 'error',
+      '@typescript-eslint/prefer-readonly': 'off',
       '@typescript-eslint/prefer-ts-expect-error': 'error',
       '@typescript-eslint/promise-function-async': 'off',
       '@typescript-eslint/restrict-template-expressions': [

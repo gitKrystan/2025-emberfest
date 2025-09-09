@@ -29,9 +29,11 @@ export interface RealPaginationLink {
 
 export interface PlaceholderPaginationLink {
   isReal: false;
-  /** 1-indexed page index */
-  index: number;
-  /** Distance from the active page index */
+  /** 1-indexed page index range (inclusive) */
+  indexRange: [start: number, end: number];
+  /** Number of links represented by the range. */
+  rangeSize: number;
+  /** Distance from the active page index to the nearest end of the range */
   distanceFromActiveIndex: number;
   /** Defaults to '.' */
   text: string;
@@ -124,75 +126,134 @@ export class PaginationLinks<T, E> {
     const prevUrl = getHref(prev);
     const nextUrl = getHref(next);
 
-    // TODO: reset if the totalPages changed...verify this is desired behavior
-    const existingLinks =
-      this._links?.length === totalPages ? this._links : null;
+    const links = [];
+    let prevLink: PaginationLink | null = null;
 
-    // TODO: Could probably find a more performant way to do this,
-    // e.g. on update only updating the known pages
-    const links = Array.from({ length: totalPages }, (_, i): PaginationLink => {
-      const existingLink = existingLinks?.[i] ?? null;
-      // link.index and pageHints.currentPage are 1-indexed
+    const existingLinks = this._links ?? [];
+
+    // link.index and pageHints.currentPage are 1-indexed
+    for (let i = 0; i < totalPages; i++) {
+      const existingLink = existingLinks[i] ?? null;
       const index = i + 1;
+
       // First page
       if (index === 1) {
-        return getPaginationLink(
+        const currLink = getPaginationLink(
           existingLink,
           index,
           currentPage,
           firstUrl,
           this.loadPage
         );
+        if (!prevLink || prevLink.isReal || currLink.isReal) {
+          prevLink = currLink;
+          links.push(currLink);
+          continue;
+        }
+        upgradePlaceholder(prevLink)._mergeRange(
+          currLink.indexRange,
+          currentPage
+        );
+        continue;
       }
       // Previous page
       if (index === currentPage - 1) {
-        return getPaginationLink(
+        const currLink = getPaginationLink(
           existingLink,
           index,
           currentPage,
           prevUrl,
           this.loadPage
         );
+        if (!prevLink || prevLink.isReal || currLink.isReal) {
+          prevLink = currLink;
+          links.push(currLink);
+          continue;
+        }
+        upgradePlaceholder(prevLink)._mergeRange(
+          currLink.indexRange,
+          currentPage
+        );
+        continue;
       }
       // Current Page
       if (index === currentPage) {
-        return getPaginationLink(
+        const currLink = getPaginationLink(
           existingLink,
           index,
           currentPage,
           state.activePage.selfLink,
           this.loadPage
         );
+        if (!prevLink || prevLink.isReal || currLink.isReal) {
+          prevLink = currLink;
+          links.push(currLink);
+          continue;
+        }
+        upgradePlaceholder(prevLink)._mergeRange(
+          currLink.indexRange,
+          currentPage
+        );
+        continue;
       }
       // Next Page
       if (index === currentPage + 1) {
-        return getPaginationLink(
+        const currLink = getPaginationLink(
           existingLink,
           index,
           currentPage,
           nextUrl,
           this.loadPage
         );
+        if (!prevLink || prevLink.isReal || currLink.isReal) {
+          prevLink = currLink;
+          links.push(currLink);
+          continue;
+        }
+        upgradePlaceholder(prevLink)._mergeRange(
+          currLink.indexRange,
+          currentPage
+        );
+        continue;
       }
       // Last page
       if (index === totalPages) {
-        return getPaginationLink(
+        const currLink = getPaginationLink(
           existingLink,
           index,
           currentPage,
           lastUrl,
           this.loadPage
         );
+        if (!prevLink || prevLink.isReal || currLink.isReal) {
+          prevLink = currLink;
+          links.push(currLink);
+          continue;
+        }
+        upgradePlaceholder(prevLink)._mergeRange(
+          currLink.indexRange,
+          currentPage
+        );
+        continue;
       }
       // Placeholder
-      return getPaginationLink(
+      const currLink = getPaginationLink(
         existingLink,
         index,
         currentPage,
         null,
         this.loadPage
       );
-    });
+      if (!prevLink || prevLink.isReal || currLink.isReal) {
+        prevLink = currLink;
+        links.push(currLink);
+        continue;
+      }
+      upgradePlaceholder(prevLink)._mergeRange(
+        currLink.indexRange,
+        currentPage
+      );
+    }
 
     return (this._links = links);
   }
@@ -234,7 +295,10 @@ function getPaginationLink(
     );
   } else {
     assert('Cannot set PlaceHolder link to current', !isCurrent);
-    return new PlaceholderPaginationLinkImpl(index, distanceFromActiveIndex);
+    return new PlaceholderPaginationLinkImpl(
+      [index, index],
+      distanceFromActiveIndex
+    );
   }
 }
 
@@ -274,14 +338,42 @@ class RealPaginationLinkImpl implements RealPaginationLink {
 class PlaceholderPaginationLinkImpl implements PlaceholderPaginationLink {
   readonly isReal = false as const;
 
-  readonly index: number;
-  readonly distanceFromActiveIndex: number;
+  indexRange: [start: number, end: number];
+  distanceFromActiveIndex: number;
+
   text = '.';
 
-  constructor(index: number, distanceFromActiveIndex: number) {
-    this.index = index;
+  constructor(
+    index: [start: number, end: number],
+    distanceFromActiveIndex: number
+  ) {
+    this.indexRange = index;
     this.distanceFromActiveIndex = distanceFromActiveIndex;
   }
+
+  get rangeSize() {
+    return this.indexRange[1] - this.indexRange[0] + 1;
+  }
+
+  _mergeRange(newRange: [start: number, end: number], newActiveIndex: number) {
+    const [oldStart, oldEnd] = this.indexRange;
+    const [newStart, newEnd] = newRange;
+    const mergedRange: [start: number, end: number] = [
+      Math.min(oldStart, newStart),
+      Math.max(oldEnd, newEnd),
+    ];
+    this.indexRange = mergedRange;
+    this.distanceFromActiveIndex = Math.min(
+      Math.abs(mergedRange[0] - newActiveIndex),
+      Math.abs(mergedRange[1] - newActiveIndex)
+    );
+  }
+}
+
+function upgradePlaceholder(
+  placeholder: PlaceholderPaginationLink
+): PlaceholderPaginationLinkImpl {
+  return placeholder as PlaceholderPaginationLinkImpl;
 }
 
 defineSignal(PaginationLinks.prototype, 'self', undefined);
