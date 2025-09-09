@@ -51,7 +51,10 @@ class LoadPreviousButton extends Component<{
         <span class="pagination-button-text">Load previous</span>
       </Button>
     {{else}}
-      <div></div>
+      <div class="pagination-button prev pagination-button-placeholder">
+        ←
+        <span class="pagination-button-text">Load previous</span>
+      </div>
     {{/if}}
   </template>
 
@@ -73,12 +76,15 @@ class LoadNextButton extends Component<{
 }> {
   <template>
     {{#if @loadNext}}
-      <Button {{on "click" this.loadNext}} class="pagination-button prev">
+      <Button {{on "click" this.loadNext}} class="pagination-button next">
         <span class="pagination-button-text">Load next</span>
         →
       </Button>
     {{else}}
-      <div></div>
+      <div class="pagination-button next pagination-button-placeholder">
+        <span class="pagination-button-text">Load next</span>
+        →
+      </div>
     {{/if}}
   </template>
 
