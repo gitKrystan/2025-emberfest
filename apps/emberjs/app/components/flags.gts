@@ -10,8 +10,10 @@ import { invalidateAllTodoQueries, queryFlags, updateFlag } from '@workspace/sha
 import type {
   ApiFlag,
   EditableShouldErrorFlag,
+  EditableShouldPaginateFlag,
   EditableTodoCountFlag,
   ShouldErrorFlag,
+  ShouldPaginateFlag,
   TodoCountFlag,
 } from '@workspace/shared-data/types';
 
@@ -58,14 +60,7 @@ class FlagsContent extends Component<{
 }> {
   <template>
     <ul class="filters">
-      {{#if this.shouldErrorFlag}}
-        <li>
-          <Await @promise={{this.checkoutShouldErrorFlag this.shouldErrorFlag}}>
-            <:success as |flag|><UpdateShouldErrorFlag @flag={{flag}} /></:success>
-            <:error as |error|><HandleError @error={{error}} /></:error>
-          </Await>
-        </li>
-      {{/if}}
+
       {{#if this.initialTodoCountFlag}}
         <li>
           <Await @promise={{this.checkoutInitialTodoCountFlag this.initialTodoCountFlag}}>
@@ -74,6 +69,25 @@ class FlagsContent extends Component<{
           </Await>
         </li>
       {{/if}}
+
+      {{#if this.shouldPaginateFlag}}
+        <li>
+          <Await @promise={{this.checkoutShouldPaginateFlag this.shouldPaginateFlag}}>
+            <:success as |flag|><UpdateShouldPaginateFlag @flag={{flag}} /></:success>
+            <:error as |error|><HandleError @error={{error}} /></:error>
+          </Await>
+        </li>
+      {{/if}}
+
+      {{#if this.shouldErrorFlag}}
+        <li>
+          <Await @promise={{this.checkoutShouldErrorFlag this.shouldErrorFlag}}>
+            <:success as |flag|><UpdateShouldErrorFlag @flag={{flag}} /></:success>
+            <:error as |error|><HandleError @error={{error}} /></:error>
+          </Await>
+        </li>
+      {{/if}}
+
     </ul>
   </template>
 
@@ -94,6 +108,15 @@ class FlagsContent extends Component<{
   checkoutShouldErrorFlag(flag: ShouldErrorFlag): Promise<EditableShouldErrorFlag & ReactiveResource> {
     return checkout<EditableShouldErrorFlag>(flag);
   }
+
+  @cached
+  get shouldPaginateFlag(): ShouldPaginateFlag | null {
+    return this.args.data.find((flag) => flag.id === 'shouldPaginateFlag') ?? null;
+  }
+
+  checkoutShouldPaginateFlag(flag: ShouldPaginateFlag): Promise<EditableShouldPaginateFlag & ReactiveResource> {
+    return checkout<EditableShouldPaginateFlag>(flag);
+  }
 }
 
 class UpdateShouldErrorFlag extends Component<{
@@ -102,6 +125,21 @@ class UpdateShouldErrorFlag extends Component<{
   <template>
     <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}}>
       <span class="flag-name">Should Error:</span>
+      {{@flag.value}}
+    </UpdateFlag>
+  </template>
+
+  toggle = () => {
+    this.args.flag.value = !this.args.flag.value;
+  };
+}
+
+class UpdateShouldPaginateFlag extends Component<{
+  Args: { flag: EditableShouldPaginateFlag & ReactiveResource };
+}> {
+  <template>
+    <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}}>
+      <span class="flag-name">Should Paginate:</span>
       {{@flag.value}}
     </UpdateFlag>
   </template>

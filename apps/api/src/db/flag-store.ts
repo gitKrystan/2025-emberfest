@@ -19,6 +19,11 @@ export class FlagStore extends Store<ApiFlag> {
         id: 'initialTodoCount' as const,
         value: 3,
       }),
+      asType<ApiFlag>({
+        $type: 'flag',
+        id: 'shouldPaginateFlag' as const,
+        value: false,
+      }),
     ]);
   }
 

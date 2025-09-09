@@ -65,7 +65,11 @@ export function getTodos(
     const { query, filter, hasFilter, hasPageParams } =
       validateQueryParams(req);
 
-    if (hasPageParams) {
+    // Check if pagination is disabled via flag
+    const shouldPaginateFlag = flagStore.safeFindById('shouldPaginateFlag');
+    const paginationEnabled = shouldPaginateFlag?.value !== false;
+
+    if (hasPageParams && paginationEnabled) {
       const limit = query.page?.limit ?? 25;
       const offset = query.page?.offset ?? 0;
 
@@ -82,11 +86,9 @@ export function getTodos(
       res.setHeader('Content-Type', JSONAPI_CONTENT_TYPE);
       return res.json(document);
     } else {
-      // Legacy behavior when no pagination is requested
-      const hasQueryParams = Object.keys(filter).length > 0;
-      const todos = hasQueryParams
-        ? todoStore.query(filter)
-        : todoStore.findAll();
+      // "Find all" behavior when pagination is disabled or no pagination requested
+      // Still respects filters
+      const todos = hasFilter ? todoStore.query(filter) : todoStore.findAll();
 
       const document = serializeCollectionResourceDocument(req, 'todo', todos);
 

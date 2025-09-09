@@ -4,6 +4,7 @@ import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
 import type {
   ApiFlag,
   ShouldErrorFlagAttributes,
+  ShouldPaginateFlagAttributes,
   TodoCountFlagAttributes,
 } from '@workspace/shared-data/types';
 
@@ -67,7 +68,9 @@ export function updateFlag(
         ? handleShouldErrorFlag(req, id)
         : id === 'initialTodoCount'
           ? handleInitialTodoCountFlag(req, id)
-          : null;
+          : id === 'shouldPaginateFlag'
+            ? handleShouldPaginateFlag(req, id)
+            : null;
 
     if (!updatedFlag) {
       throw new BadRequestError({ detail: [`Unknown flag id ${id}`] });
@@ -109,6 +112,22 @@ function handleInitialTodoCountFlag(
   // Update the todo store with the new count and re-seed
   const newCount = attributes.value;
   todoStore.reseed(newCount);
+
+  return flagStore.update(id, {
+    value: attributes.value,
+  });
+}
+
+function handleShouldPaginateFlag(
+  req: Request,
+  id: 'shouldPaginateFlag',
+): ApiFlag {
+  const attributes: ShouldPaginateFlagAttributes = validateUpdateRequest(
+    'flag',
+    id,
+    booleanFlagUpdateSchema,
+    req.body,
+  );
 
   return flagStore.update(id, {
     value: attributes.value,

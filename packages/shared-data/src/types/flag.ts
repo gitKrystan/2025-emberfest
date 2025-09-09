@@ -57,4 +57,9 @@ export interface ShouldPaginateFlag
     HasShouldPaginateFlagId,
     Readonly<ShouldPaginateFlagAttributes> {}
 
+export interface EditableShouldPaginateFlag
+  extends BaseApiFlag,
+    HasShouldPaginateFlagId,
+    ShouldPaginateFlagAttributes {}
+
 export type ApiFlag = ShouldErrorFlag | TodoCountFlag | ShouldPaginateFlag;
