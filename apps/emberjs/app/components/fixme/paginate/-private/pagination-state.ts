@@ -145,6 +145,11 @@ export class PaginationState<T, E> {
   }
 
   @memoized
+  get activePageData(): T[] {
+    return this.activePage.value?.data ?? [];
+  }
+
+  @memoized
   get prev(): string | null {
     return this.activePage.prevLink;
   }

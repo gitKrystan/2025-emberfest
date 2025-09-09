@@ -33,6 +33,7 @@ export class ToggleAllTodos extends Component<{
   @service declare private readonly store: Store;
   @service declare private readonly appState: AppState;
 
+  // HACK: This probably isn't amazing UX. If this were a real company I would fix it.
   @cached
   private get areViewableCompleted(): boolean {
     const { todos } = this.args;
