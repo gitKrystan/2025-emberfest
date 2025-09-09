@@ -295,7 +295,6 @@ function getPaginationLink(
       loadPage
     );
   } else {
-    assert('Cannot set PlaceHolder link to current', !isCurrent);
     return new PlaceholderPaginationLinkImpl(
       [index, index],
       distanceFromActiveIndex

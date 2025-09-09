@@ -94,10 +94,6 @@ const PlaceholderLink = <template>
   };
 }>;
 
-function shouldShowPlaceholder(distanceFromActiveIndex: number): boolean {
-  return distanceFromActiveIndex < 3;
-}
-
 const RealLink = <template>
   {{#if (shouldShowRealLink @link.index @link.distanceFromActiveIndex @pages.links.totalPages)}}
     <LinkTo
@@ -108,9 +104,13 @@ const RealLink = <template>
       {{@link.index}}
     </LinkTo>
   {{else if (shouldShowLinkExpander @link.distanceFromActiveIndex)}}
-    <button type="button" {{on "click" @link.setActive}} class="pagination-link pagination-placeholder-link">
+    <LinkTo
+      @query={{hash page=@link.index}}
+      {{on "click" @link.setActive}}
+      class="pagination-link pagination-placeholder-link"
+    >
       ⋯
-    </button>
+    </LinkTo>
   {{/if}}
 </template> satisfies TOC<{
   Args: {
@@ -121,6 +121,10 @@ const RealLink = <template>
 }>;
 
 const showDistance = 3;
+
+function shouldShowPlaceholder(distanceFromActiveIndex: number): boolean {
+  return distanceFromActiveIndex < 3;
+}
 
 function shouldShowRealLink(
   index: number,
