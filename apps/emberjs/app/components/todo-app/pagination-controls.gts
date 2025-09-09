@@ -10,6 +10,8 @@ import { EachLink } from '#/components/fixme/paginate';
 import type { PlaceholderPaginationLink, RealPaginationLink } from '../fixme/paginate/-private/pagination-links';
 import type { PaginationState } from '../fixme/paginate/-private/pagination-state';
 import type { ContentFeatures } from '../fixme/paginate/-private/pagination-subscription';
+import { LinkTo } from '@ember/routing';
+import { hash } from '@ember/helper';
 
 interface Signature {
   Args: {
@@ -98,13 +100,13 @@ function shouldShowPlaceholder(distanceFromActiveIndex: number): boolean {
 
 const RealLink = <template>
   {{#if (shouldShowRealLink @link.index @link.distanceFromActiveIndex @pages.links.totalPages)}}
-    <button
-      type="button"
+    <LinkTo
+      @query={{hash page=@link.index}}
       {{on "click" @link.setActive}}
       class="pagination-link pagination-real-link {{if @link.isCurrent 'pagination-link-active'}}"
     >
       {{@link.index}}
-    </button>
+    </LinkTo>
   {{else if (shouldShowLinkExpander @link.distanceFromActiveIndex)}}
     <button type="button" {{on "click" @link.setActive}} class="pagination-link pagination-placeholder-link">
       ⋯

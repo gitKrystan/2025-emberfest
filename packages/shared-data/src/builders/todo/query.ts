@@ -10,11 +10,11 @@ import type { ReactiveTodosDocument } from './types.ts';
  * GET /todo
  * (plus pagination params)
  */
-export function getAllTodos(): RequestInfo<ReactiveTodosDocument> {
+export function getAllTodos(page?: number): RequestInfo<ReactiveTodosDocument> {
   const url = buildBaseURL({ resourcePath: 'todo' });
   const queryString = buildQueryParams({
     'page[limit]': 5,
-    'page[offset]': 0,
+    'page[offset]': typeof page === 'number' ? (page - 1) * 5 : 0,
   });
 
   return withReactiveResponse<Todo[]>({
@@ -34,12 +34,14 @@ export function getAllTodos(): RequestInfo<ReactiveTodosDocument> {
  * GET /todo?filter[completed]=true
  * (plus pagination params)
  */
-export function getCompletedTodos(): RequestInfo<ReactiveTodosDocument> {
+export function getCompletedTodos(
+  page?: number,
+): RequestInfo<ReactiveTodosDocument> {
   const url = buildBaseURL({ resourcePath: 'todo' });
   const queryString = buildQueryParams({
     'filter[completed]': true,
     'page[limit]': 5,
-    'page[offset]': 0,
+    'page[offset]': typeof page === 'number' ? (page - 1) * 5 : 0,
   });
 
   return withReactiveResponse<Todo[]>({
@@ -54,12 +56,14 @@ export function getCompletedTodos(): RequestInfo<ReactiveTodosDocument> {
 /**
  * GET /todo?completed=false
  */
-export function getActiveTodos(): RequestInfo<ReactiveTodosDocument> {
+export function getActiveTodos(
+  page?: number,
+): RequestInfo<ReactiveTodosDocument> {
   const url = buildBaseURL({ resourcePath: 'todo' });
   const queryString = buildQueryParams({
     'filter[completed]': false,
     'page[limit]': 5,
-    'page[offset]': 0,
+    'page[offset]': typeof page === 'number' ? (page - 1) * 5 : 0,
   });
 
   return withReactiveResponse<Todo[]>({

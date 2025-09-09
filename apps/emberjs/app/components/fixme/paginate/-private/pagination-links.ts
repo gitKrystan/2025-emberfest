@@ -277,7 +277,7 @@ function getPaginationLink(
   if (existingRealLink?.isReal) {
     assert(
       'Found existing real link with a different URL',
-      !url || url === existingRealLink.url
+      !url || !existingRealLink.url || url === existingRealLink.url
     );
     return new RealPaginationLinkImpl(
       url ?? existingRealLink.url,

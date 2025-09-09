@@ -11,7 +11,13 @@ import type Store from '#/services/store';
 export default class AllTodos extends Route {
   @service declare private readonly store: Store;
 
-  model(): { todos: Future<ReactiveTodosDocument> } {
-    return { todos: this.store.request(getAllTodos()) };
+  queryParams = {
+    page: {
+      refreshModel: true,
+    },
+  };
+
+  model(params: { page: number }): { todos: Future<ReactiveTodosDocument> } {
+    return { todos: this.store.request(getAllTodos(params.page)) };
   }
 }
