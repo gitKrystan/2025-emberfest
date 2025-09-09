@@ -2,15 +2,19 @@ import { assert } from '@ember/debug';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 
+import type { ReactiveDataDocument } from '@warp-drive/core/reactive';
 import type { Future } from '@warp-drive/core/request';
 
 import type { ReactiveTodosDocument } from '@workspace/shared-data/builders';
 import type { Todo } from '@workspace/shared-data/types';
 
-import { LoadingDots, LoadingSpinner } from '#/components/design-system/loading';
+import { LoadingSpinner } from '#/components/design-system/loading';
 import { Paginate } from '#/components/fixme/paginate';
 import { PaginationControls } from '#/components/todo-app/pagination-controls';
 import type AppState from '#/services/app-state';
+
+import type { PaginationState } from '#/components/fixme/paginate/-private/pagination-state';
+import type { ContentFeatures } from '#/components/fixme/paginate/-private/pagination-subscription';
 
 interface Signature {
   Args: {
@@ -26,25 +30,20 @@ export class TodoProvider extends Component<Signature> {
   <template>
     <Paginate @request={{@todoFuture}} @autorefresh={{true}} @autorefreshBehavior="refresh" @pageHints={{pageHints}}>
 
-      <:prev><LoadingDots /></:prev>
+      <:prev><LoadingSpinner /></:prev>
 
-      <:content as |pages|>
+      <:content as |pages state|>
         {{#if pages.activePageData}}
-          {{#if this.appState.isSaving}}
-            <LoadingSpinner />
-          {{else if this.appState.canToggle}}
-            {{yield pages.activePageData to="toggle"}}
-          {{/if}}
-
-          {{#unless this.appState.error}}
-            {{yield pages.activePageData to="list"}}
-          {{/unless}}
+          <ActivePage @pages={{pages}} @state={{state}} @activePageData={{pages.activePageData}}>
+            <:toggle as |list|>{{yield list to="toggle"}}</:toggle>
+            <:list as |list|>{{yield list to="list"}}</:list>
+          </ActivePage>
         {{/if}}
       </:content>
 
       <:loading><LoadingSpinner /></:loading>
 
-      <:next><LoadingDots /></:next>
+      <:next><LoadingSpinner /></:next>
 
       <:error as |error|>{{this.appState.onUnrecoverableError error}}</:error>
 
@@ -54,6 +53,45 @@ export class TodoProvider extends Component<Signature> {
   </template>
 
   @service declare private readonly appState: AppState;
+}
+
+class ActivePage extends Component<{
+  Args: {
+    // FIXME: Remove this Readonly junk
+    pages: Readonly<PaginationState<Todo, unknown>>;
+    state: ContentFeatures<ReactiveDataDocument<Todo[]>>;
+    activePageData: Todo[];
+  };
+  Blocks: {
+    toggle: [todos: Todo[]];
+    list: [todos: Todo[]];
+  };
+}> {
+  <template>
+    {{#if this.showInternalLoading}}
+      <LoadingSpinner />
+    {{else if this.showToggle}}
+      {{yield @activePageData to="toggle"}}
+    {{/if}}
+
+    {{#unless this.showInternalError}}
+      {{yield @activePageData to="list"}}
+    {{/unless}}
+  </template>
+
+  @service declare private readonly appState: AppState;
+
+  get showInternalLoading() {
+    return this.appState.isSaving;
+  }
+
+  get showInternalError() {
+    return this.appState.error;
+  }
+
+  get showToggle() {
+    return !this.args.pages.pages.some((p) => p.isLoading) && this.appState.canToggle;
+  }
 }
 
 function pageHints(doc: ReactiveTodosDocument): { currentPage: number; totalPages: number } {

@@ -17,6 +17,7 @@ import type {
 } from '#/components/fixme/paginate/-private/pagination-links';
 import type { PaginationState } from '#/components/fixme/paginate/-private/pagination-state';
 import type { ContentFeatures } from '#/components/fixme/paginate/-private/pagination-subscription';
+import { LoadingSpinner } from '#/components/design-system/loading';
 
 interface Signature {
   Args: {
@@ -26,17 +27,28 @@ interface Signature {
   };
 }
 
-export const PaginationControls = <template>
-  {{#if (or @state.loadPrev @state.loadNext)}}
-    <div class="pagination-controls">
-      <LoadPreviousButton @prevPage={{@pages.links.prevPageNumber}} @loadPrev={{@state.loadPrev}} />
+export class PaginationControls extends Component<Signature> {
+  <template>
+    {{#if (or @state.loadPrev @state.loadNext)}}
+      <div class="pagination-controls">
+        <LoadPreviousButton @prevPage={{@pages.links.prevPageNumber}} @loadPrev={{@state.loadPrev}} />
 
-      <PageLinks @pages={{@pages}} />
+        <PageLinks @pages={{@pages}} />
 
-      <LoadNextButton @nextPage={{@pages.links.nextPageNumber}} @loadNext={{@state.loadNext}} />
-    </div>
-  {{/if}}
-</template> satisfies TOC<Signature>;
+        <LoadNextButton @nextPage={{@pages.links.nextPageNumber}} @loadNext={{@state.loadNext}} />
+
+        {{! HACK @runspired work-around for no "page that isn't the prev or next page is loading" state }}
+        {{#if this.isLoading}}
+          <LoadingSpinner />
+        {{/if}}
+      </div>
+    {{/if}}
+  </template>
+
+  get isLoading() {
+    return this.args.pages.pages.some((p) => p.isLoading);
+  }
+}
 
 class LoadPreviousButton extends Component<{
   Args: {
@@ -160,11 +172,11 @@ class RealLink extends Component<{
   };
 }
 
-const showDistance = 4;
-
 function shouldShowPlaceholder(distanceFromActiveIndex: number): boolean {
-  return distanceFromActiveIndex < showDistance;
+  return distanceFromActiveIndex < 3;
 }
+
+const showDistance = 4;
 
 function shouldShowRealLink(
   index: number,

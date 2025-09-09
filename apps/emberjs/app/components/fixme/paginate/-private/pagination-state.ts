@@ -54,6 +54,7 @@ export class PaginationState<T, E> {
     this.pagesCache.set(url, pageState);
   }
 
+  // TODO: Should be `activePage`?
   @memoized
   get isLoading(): boolean {
     return this.initialPage.isLoading;

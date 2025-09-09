@@ -7,6 +7,7 @@ import type {
 } from '@warp-drive/core/store/-private';
 import {
   createRequestSubscription,
+  defineSignal,
   DISPOSE,
   memoized,
 } from '@warp-drive/core/store/-private';
@@ -33,7 +34,9 @@ export interface ContentFeatures<RT> {
   refresh: () => Promise<void>;
   reload: () => Promise<void>;
   abort?: () => void;
+  // FIXME: latestRequest is for initial page only. Confusing naming.
   latestRequest?: Future<RT>;
+  latestPageRequest?: Future<RT>;
 
   // Pagination
   /** Load next page, if any, based on links. */
@@ -61,6 +64,7 @@ export class PaginationSubscription<T, E> {
     ReactiveDataDocument<T[]>,
     E
   >;
+
   /** @internal */
   declare store: Store | RequestManager;
   get requestInfo(): RequestInfo<ReactiveDataDocument<T[]>> | null {
@@ -134,6 +138,7 @@ export class PaginationSubscription<T, E> {
         method: 'GET',
         url,
       });
+
       await page.load(request);
     }
     this.paginationState.activatePage(page);
@@ -161,16 +166,17 @@ export class PaginationSubscription<T, E> {
   @memoized
   get contentFeatures(): ContentFeatures<ReactiveDataDocument<T[]>> {
     const { contentFeatures } = this._requestSubscription;
+    //
     const feat: ContentFeatures<ReactiveDataDocument<T[]>> = {
       ...contentFeatures,
       loadPrev: this.loadPrev,
       loadNext: this.loadNext,
       loadPage: this.loadPage,
-      latestRequest: contentFeatures.latestRequest,
     };
 
     if (feat.isRefreshing) {
       feat.abort = () => {
+        // TODO should this abort latest _page_ request instead??
         contentFeatures.latestRequest?.abort();
       };
     }
