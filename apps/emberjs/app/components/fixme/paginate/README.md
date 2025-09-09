@@ -874,9 +874,11 @@ interface RealPaginationLink {
 
 interface PlaceholderPaginationLink {
   isReal: false;
-  /** 1-indexed page index */
-  index: number;
-  /** Distance from the active page index */
+  /** 1-indexed page index range (inclusive) */
+  indexRange: [start: number, end: number];
+  /** Number of links represented by the range. */
+  rangeSize: number;
+  /** Distance from the active page index to the nearest end of the range */
   distanceFromActiveIndex: number;
   /** Defaults to '.' */
   text: string;
@@ -1079,62 +1081,3 @@ export { Await as default } from '@warp-drive/ember';
     }
   </style>
 </details>
-
-# TODOs
-
-Based on my analysis of the README.md documentation versus the current implementation, here are the features that match or have gaps:
-
-## PaginationState Features Comparison:
-
-✅ Implemented and Documented:
-
-- [x] Basic state properties: activePage, pages, data, prev/next links
-- [x] Advanced page management: prevRequest/nextRequest, activePageRequest
-- [x] Page navigation: firstPage, lastPage, prevPages, nextPages
-- [x] State properties: isLoading, isSuccess, isError, isCancelled, reason
-- [x] Page management: activatePage(), getPageState()
-
-❌ Documented but Missing:
-
-- [ ] PaginationLinks container: Documented as a utility for navigation links but not implemented on client side
-- [ ] EachLink component: Documented helper component for rendering pagination links but completely missing
-- [ ] PageHints interface: Documented @pageHints arg and PageHints function for currentPage/totalPages but not implemented
-
-## Paginate Component Blocks Comparison:
-
-✅ Implemented and Documented:
-
-- [x] Basic blocks: idle, loading, error, content, cancelled, always
-- [x] Block arguments: Proper state and features yielded to each block
-- [x] Autorefresh: Full autorefresh behavior (online, interval, invalid) with thresholds and behaviors
-
-❌ Documented but Missing:
-
-- [x] prev block: Documented for showing loading state during previous page requests - NOT IMPLEMENTED
-- [x] next block: Documented for showing loading state during next page requests - NOT IMPLEMENTED
-- [x] default block: Documented for alternate mode without other blocks - NOT IMPLEMENTED
-
-⚠️ Partial Implementation:
-
-- [x] The component implements basic pagination through loadNext/loadPrev functions but doesn't support the specialized blocks for showing loading states during pagination requests
-
-## Key Missing Features Summary:
-
-- [x] <:prev> and <:next> blocks for pagination loading states
-- [x] <:default> block for simpler usage without state management
-- [ ] PaginationLinks container for navigation utilities
-- [ ] EachLink component for rendering pagination navigation
-- [ ] PageHints interface and @pageHints argument for page count hints
-- [ ] The current implementation provides the core pagination state management and basic functionality, but lacks the advanced UI helpers and specialized pagination loading states that are extensively documented in the README.
-
-{{!
-
-TODO:
-Make pagination-links pretty
-Show button to "expand" hidden real links
-
-Update url w/ any page number other than 1
-
-Only show one page at a time
-
-}}

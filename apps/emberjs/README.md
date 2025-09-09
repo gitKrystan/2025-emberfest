@@ -55,3 +55,15 @@ Specify what it takes to deploy your app.
 - Development Browser Extensions
   - [ember inspector for chrome](https://chrome.google.com/webstore/detail/ember-inspector/bmdblncegkenkacieihfhpjfppoconhi)
   - [ember inspector for firefox](https://addons.mozilla.org/en-US/firefox/addon/ember-inspector/)
+
+{{!
+
+TODO:
+Make pagination-links pretty
+Show button to "expand" hidden real links
+
+Update url w/ any page number other than 1
+
+Only show one page at a time
+
+}}
