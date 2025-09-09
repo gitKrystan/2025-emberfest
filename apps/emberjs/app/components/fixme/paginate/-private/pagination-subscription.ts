@@ -10,6 +10,7 @@ import {
   DISPOSE,
   memoized,
 } from '@warp-drive/core/store/-private';
+import type { RequestInfo } from '@warp-drive/core/types/request';
 
 import type { PageHints } from './pagination-links';
 import { getPaginationState, type PaginationState } from './pagination-state';
@@ -62,6 +63,21 @@ export class PaginationSubscription<T, E> {
   >;
   /** @internal */
   declare store: Store | RequestManager;
+  get requestInfo(): RequestInfo<ReactiveDataDocument<T[]>> | null {
+    if (!this._args.request) {
+      return null;
+    }
+    // TODO @runspired
+    // @ts-expect-error HACKS: We probably need to pass the actual builder
+    // so we can extract cache settings.
+    // This hack assumes DefaultCachePolicy
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+    const requestInfo = this.store.cache.peekRequest(
+      this._args.request.lid
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    ).request;
+    return requestInfo as RequestInfo<ReactiveDataDocument<T[]>>;
+  }
 
   constructor(
     store: Store | RequestManager,
@@ -114,12 +130,13 @@ export class PaginationSubscription<T, E> {
     const page = this.paginationState.getPageState({ url });
     if (!page.request || page.isError || page.isCancelled) {
       const request = this.store.request<ReactiveDataDocument<T[]>>({
+        ...(this.requestInfo ?? {}),
         method: 'GET',
         url,
       });
       await page.load(request);
-      this.paginationState.activatePage(page);
     }
+    this.paginationState.activatePage(page);
   };
 
   /**

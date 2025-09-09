@@ -1,4 +1,3 @@
-import type { TOC } from '@ember/component/template-only';
 import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
@@ -16,10 +15,10 @@ import type {
   TodoCountFlag,
 } from '@workspace/shared-data/types';
 
+import { Button } from '#/components/design-system/button';
+import { HandleError } from '#/components/design-system/error';
+import { LoadingSpinner } from '#/components/design-system/loading';
 import type Store from '#/services/store';
-
-import { HandleError } from './design-system/error';
-import { LoadingSpinner } from './design-system/loading';
 
 export class Flags extends Component {
   <template>
@@ -177,10 +176,3 @@ class UpdateFlag extends Component<{
     return this.store.request(updateFlag(this.args.flag));
   }
 }
-
-const Button = <template>
-  <button type="button" ...attributes>{{yield}}</button>
-</template> satisfies TOC<{
-  Element: HTMLButtonElement;
-  Blocks: { default: [] };
-}>;

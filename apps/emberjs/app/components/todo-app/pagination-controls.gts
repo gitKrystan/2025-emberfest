@@ -1,17 +1,22 @@
 import type { TOC } from '@ember/component/template-only';
+import { assert } from '@ember/debug';
 import { on } from '@ember/modifier';
+import type RouterService from '@ember/routing/router-service';
+import { service } from '@ember/service';
+import Component from '@glimmer/component';
 
 import type { ReactiveDataDocument } from '@warp-drive/core/reactive';
 
 import type { Todo } from '@workspace/shared-data/types';
 
+import { Button } from '#/components/design-system/button';
 import { EachLink } from '#/components/fixme/paginate';
-
-import type { PlaceholderPaginationLink, RealPaginationLink } from '../fixme/paginate/-private/pagination-links';
-import type { PaginationState } from '../fixme/paginate/-private/pagination-state';
-import type { ContentFeatures } from '../fixme/paginate/-private/pagination-subscription';
-import { LinkTo } from '@ember/routing';
-import { hash } from '@ember/helper';
+import type {
+  PlaceholderPaginationLink,
+  RealPaginationLink,
+} from '#/components/fixme/paginate/-private/pagination-links';
+import type { PaginationState } from '#/components/fixme/paginate/-private/pagination-state';
+import type { ContentFeatures } from '#/components/fixme/paginate/-private/pagination-subscription';
 
 interface Signature {
   Args: {
@@ -33,37 +38,59 @@ export const PaginationControls = <template>
   {{/if}}
 </template> satisfies TOC<Signature>;
 
-const LoadPreviousButton = <template>
-  {{#if @loadPrev}}
-    <LinkTo @query={{hash page=@prevPage}} {{on "click" @loadPrev}} class="pagination-button prev">
-      ←
-      <span class="pagination-button-text">Load previous</span>
-    </LinkTo>
-  {{else}}
-    <div></div>
-  {{/if}}
-</template> satisfies TOC<{
+class LoadPreviousButton extends Component<{
   Args: {
     prevPage: number | null | undefined;
     loadPrev: (() => Promise<void>) | null;
   };
-}>;
+}> {
+  <template>
+    {{#if @loadPrev}}
+      <Button {{on "click" this.loadPrev}} class="pagination-button prev">
+        ←
+        <span class="pagination-button-text">Load previous</span>
+      </Button>
+    {{else}}
+      <div></div>
+    {{/if}}
+  </template>
 
-const LoadNextButton = <template>
-  {{#if @loadNext}}
-    <LinkTo @query={{hash page=@nextPage}} {{on "click" @loadNext}} class="pagination-button prev">
-      <span class="pagination-button-text">Load next</span>
-      →
-    </LinkTo>
-  {{else}}
-    <div></div>
-  {{/if}}
-</template> satisfies TOC<{
+  @service declare router: RouterService;
+
+  loadPrev = async () => {
+    const { prevPage, loadPrev } = this.args;
+    assert('Cannot call loadPrev', loadPrev);
+    this.router.transitionTo({ queryParams: { page: prevPage } });
+    await loadPrev();
+  };
+}
+
+class LoadNextButton extends Component<{
   Args: {
     nextPage: number | null | undefined;
     loadNext: (() => Promise<void>) | null;
   };
-}>;
+}> {
+  <template>
+    {{#if @loadNext}}
+      <Button {{on "click" this.loadNext}} class="pagination-button prev">
+        <span class="pagination-button-text">Load next</span>
+        →
+      </Button>
+    {{else}}
+      <div></div>
+    {{/if}}
+  </template>
+
+  @service declare router: RouterService;
+
+  loadNext = async () => {
+    const { nextPage, loadNext } = this.args;
+    assert('Cannot call loadNext', loadNext);
+    this.router.transitionTo({ queryParams: { page: nextPage } });
+    await loadNext();
+  };
+}
 
 const PageLinks = <template>
   <div class="pagination-links">
@@ -96,36 +123,41 @@ const PlaceholderLink = <template>
   };
 }>;
 
-const RealLink = <template>
-  {{#if (shouldShowRealLink @link.index @link.distanceFromActiveIndex @pages.links.totalPages)}}
-    <LinkTo
-      @query={{hash page=@link.index}}
-      {{on "click" @link.setActive}}
-      class="pagination-link pagination-real-link {{if @link.isCurrent 'pagination-link-active'}}"
-    >
-      {{@link.index}}
-    </LinkTo>
-  {{else if (shouldShowLinkExpander @link.distanceFromActiveIndex)}}
-    <LinkTo
-      @query={{hash page=@link.index}}
-      {{on "click" @link.setActive}}
-      class="pagination-link pagination-placeholder-link"
-    >
-      ⋯
-    </LinkTo>
-  {{/if}}
-</template> satisfies TOC<{
+class RealLink extends Component<{
   Args: {
     link: RealPaginationLink;
     // FIXME: Remove this Readonly junk
     pages: Readonly<PaginationState<Todo, unknown>>;
   };
-}>;
+}> {
+  <template>
+    {{#if (shouldShowRealLink @link.index @link.distanceFromActiveIndex @pages.links.totalPages)}}
+      <Button
+        {{on "click" this.setActive}}
+        class="pagination-link pagination-real-link {{if @link.isCurrent 'pagination-link-active'}}"
+      >
+        {{@link.index}}
+      </Button>
+    {{else if (shouldShowLinkExpander @link.distanceFromActiveIndex)}}
+      <Button {{on "click" this.setActive}} class="pagination-link pagination-placeholder-link">
+        ⋯
+      </Button>
+    {{/if}}
+  </template>
 
-const showDistance = 3;
+  @service declare router: RouterService;
+
+  setActive = async () => {
+    const { link } = this.args;
+    this.router.transitionTo({ queryParams: { page: link.index } });
+    await link.setActive();
+  };
+}
+
+const showDistance = 4;
 
 function shouldShowPlaceholder(distanceFromActiveIndex: number): boolean {
-  return distanceFromActiveIndex < 3;
+  return distanceFromActiveIndex < showDistance;
 }
 
 function shouldShowRealLink(
