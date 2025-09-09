@@ -111,7 +111,7 @@ class LoadNextButton extends Component<{
 }
 
 const PageLinks = <template>
-  <div class="pagination-links">
+  <div class="pagination-link-buttons">
     <EachLink @pages={{@pages}}>
 
       <:placeholder as |link|>
@@ -132,14 +132,14 @@ const PageLinks = <template>
 }>;
 
 const PlaceholderLink = <template>
-  {{#if (shouldShowPlaceholder @placeholder.distanceFromActiveIndex)}}
-    <span class="pagination-link pagination-placeholder-link">⋯</span>
-  {{/if}}
+  <span class="pagination-button pagination-placeholder-button">⋯</span>
 </template> satisfies TOC<{
   Args: {
     placeholder: PlaceholderPaginationLink;
   };
 }>;
+
+const showDistance = 3;
 
 class RealLink extends Component<{
   Args: {
@@ -149,16 +149,16 @@ class RealLink extends Component<{
   };
 }> {
   <template>
-    {{#if (shouldShowRealLink @link.index @link.distanceFromActiveIndex @pages.links.totalPages)}}
+    {{#if this.shouldShowRealLink}}
       <Button
         {{on "click" this.setActive}}
-        class="pagination-link pagination-real-link {{if @link.isCurrent 'pagination-link-active'}}"
+        class="pagination-button pagination-real-button {{if @link.isCurrent 'pagination-button-active'}}"
       >
-        {{@link.index}}
+        <span class="pagination-button-text">{{@link.index}}</span>
       </Button>
-    {{else if (shouldShowLinkExpander @link.distanceFromActiveIndex)}}
-      <Button {{on "click" this.setActive}} class="pagination-link pagination-placeholder-link">
-        ⋯
+    {{else if this.shouldShowLinkExpander}}
+      <Button {{on "click" this.setActive}} class="pagination-button pagination-real-button pagination-link-expander">
+        <span class="pagination-button-text">⋯</span>
       </Button>
     {{/if}}
   </template>
@@ -170,33 +170,30 @@ class RealLink extends Component<{
     this.router.transitionTo({ queryParams: { page: link.index } });
     await link.setActive();
   };
-}
 
-function shouldShowPlaceholder(distanceFromActiveIndex: number): boolean {
-  return distanceFromActiveIndex < 3;
-}
+  get showDistance() {
+    return this.args.link.index >= 10000 ? showDistance - 2 : showDistance;
+  }
 
-const showDistance = 4;
+  get shouldShowRealLink(): boolean {
+    const totalPages = this.args.pages.links?.totalPages;
+    const { index, distanceFromActiveIndex } = this.args.link;
+    return (
+      // first page
+      index === 1 ||
+      // last page
+      (totalPages && index === totalPages) ||
+      // close to current page
+      distanceFromActiveIndex <= this.showDistance
+    );
+  }
 
-function shouldShowRealLink(
-  index: number,
-  distanceFromActiveIndex: number,
-  totalPages: number | null | undefined
-): boolean {
-  return (
-    // first page
-    index === 1 ||
-    // last page
-    (totalPages && index === totalPages) ||
-    // close to current page
-    distanceFromActiveIndex <= showDistance
-  );
-}
-
-// Assumes this is called in an else after shouldShowRealLink
-// Thus, doesn't check for first or last page
-function shouldShowLinkExpander(distanceFromActiveIndex: number): boolean {
-  return distanceFromActiveIndex === showDistance + 1;
+  // Assumes this is called in an else after shouldShowRealLink
+  // Thus, doesn't check for first or last page
+  get shouldShowLinkExpander(): boolean {
+    const { distanceFromActiveIndex } = this.args.link;
+    return distanceFromActiveIndex === this.showDistance + 1;
+  }
 }
 
 function or(a: unknown, b: unknown) {

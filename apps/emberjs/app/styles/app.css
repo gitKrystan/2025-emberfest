@@ -118,7 +118,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 6px;
+  padding: 10px 0;
   height: 20px;
   text-align: center;
   font-size: 14px;
@@ -128,7 +128,7 @@
 .pagination-button {
   appearance: none;
   background: none;
-  border: 1px solid transparent;
+  border: none;
   border-radius: 3px;
   color: inherit;
   cursor: pointer;
@@ -142,15 +142,45 @@
   line-height: 19px;
 }
 
-.pagination-button:hover,
-.pagination-button:focus {
+.pagination-button-placeholder {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.pagination-placeholder-button {
+  pointer-events: none;
+  color: #949494;
+}
+
+.pagination-link-buttons .pagination-button {
+  margin-right: 1px;
+  margin-left: 1px;
+  padding-left: 1px;
+  padding-right: 1px;
+  min-width: 22px;
+}
+
+.pagination-button-active {
+  color: #b83f45;
+}
+
+.pagination-link-expander + .pagination-placeholder-button,
+.pagination-placeholder-button:has(+ .pagination-link-expander),
+.pagination-placeholder-button + .pagination-placeholder-button {
+  display: none;
+}
+
+.pagination-button:not(.pagination-placeholder-button):hover,
+.pagination-button:not(.pagination-placeholder-button):focus {
   color: #b83f45;
   outline: none;
   box-shadow: 0 0 0 0;
 }
 
-.pagination-button:hover .pagination-button-text,
-.pagination-button:focus .pagination-button-text {
+.pagination-button:not(.pagination-placeholder-button):hover
+  .pagination-button-text,
+.pagination-button:not(.pagination-placeholder-button):focus
+  .pagination-button-text {
   text-decoration: underline;
 }
 
@@ -160,81 +190,6 @@
 
 .pagination-button.next {
   text-align: right;
-}
-
-/* Placeholder buttons to maintain consistent spacing */
-.pagination-button-placeholder {
-  visibility: hidden;
-  pointer-events: none;
-
-  /* Ensure same dimensions as button by inheriting all button styles */
-  appearance: none;
-  background: none;
-  border: 1px solid transparent;
-  border-radius: 3px;
-  color: inherit;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 400;
-  font-family: inherit;
-  text-decoration: none;
-  padding: 3px 7px;
-  margin: 3px;
-  transition: all 0.2s ease;
-  line-height: 19px;
-  box-sizing: border-box;
-}
-
-/* Pagination link styles */
-.pagination-link {
-  appearance: none;
-  background: none;
-  border: 1px solid transparent;
-  border-radius: 3px;
-  color: inherit;
-  font-size: 14px;
-  font-weight: 400;
-  font-family: inherit;
-  text-decoration: none;
-  padding: 3px 7px;
-  margin: 1px 2px;
-  transition: all 0.2s ease;
-  line-height: 19px;
-  min-width: 28px;
-  text-align: center;
-  display: inline-block;
-}
-
-.pagination-real-link:hover,
-.pagination-real-link:focus {
-  cursor: pointer;
-  color: #b83f45;
-  outline: none;
-  box-shadow: 0 0 0 1px #b83f45;
-  text-decoration: none;
-}
-
-.pagination-link-active {
-  background-color: #b83f45;
-  color: white;
-  border-color: #b83f45;
-}
-
-.pagination-link-active:hover,
-.pagination-link-active:focus {
-  background-color: #a02f35;
-  border-color: #a02f35;
-  color: white;
-}
-
-.pagination-placeholder-link {
-  color: #999;
-  border: 1px solid transparent;
-}
-
-.pagination-placeholder-link:hover {
-  color: #999;
-  border: 1px solid transparent;
 }
 
 .flags-container {
