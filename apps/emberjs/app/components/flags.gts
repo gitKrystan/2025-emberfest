@@ -138,14 +138,20 @@ class UpdateShouldPaginateFlag extends Component<{
   Args: { flag: EditableShouldPaginateFlag & ReactiveResource };
 }> {
   <template>
-    <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}}>
+    <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}} @onUpdateSuccess={{this.onUpdateSuccess}}>
       <span class="flag-name">Should Paginate:</span>
       {{@flag.value}}
     </UpdateFlag>
   </template>
 
+  @service declare private readonly store: Store;
+
   toggle = () => {
     this.args.flag.value = !this.args.flag.value;
+  };
+
+  onUpdateSuccess = () => {
+    invalidateAllTodoQueries(this.store);
   };
 }
 
