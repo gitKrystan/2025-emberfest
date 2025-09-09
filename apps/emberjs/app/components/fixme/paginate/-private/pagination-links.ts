@@ -115,6 +115,7 @@ export class PaginationLinks<T, E> {
 
     const activeRequestState = state.activePage.requestState;
     if (!activeRequestState?.value || !pageHints) {
+      // TODO: Not sure this ever actually happens
       return this._links;
     }
 
@@ -129,22 +130,13 @@ export class PaginationLinks<T, E> {
     const links = [];
     let prevLink: PaginationLink | null = null;
 
-    const existingLinks = this._links ?? [];
-
     // link.index and pageHints.currentPage are 1-indexed
     for (let i = 0; i < totalPages; i++) {
       const index = i + 1;
 
-      const existingRealLink =
-        existingLinks.find(
-          (link): link is RealPaginationLink =>
-            link.isReal && link.index === index
-        ) ?? null;
-
       // First page
       if (index === 1) {
         const currLink = getPaginationLink(
-          existingRealLink,
           index,
           currentPage,
           firstUrl,
@@ -164,7 +156,6 @@ export class PaginationLinks<T, E> {
       // Previous page
       if (index === currentPage - 1) {
         const currLink = getPaginationLink(
-          existingRealLink,
           index,
           currentPage,
           prevUrl,
@@ -184,7 +175,6 @@ export class PaginationLinks<T, E> {
       // Current Page
       if (index === currentPage) {
         const currLink = getPaginationLink(
-          existingRealLink,
           index,
           currentPage,
           state.activePage.selfLink,
@@ -204,7 +194,6 @@ export class PaginationLinks<T, E> {
       // Next Page
       if (index === currentPage + 1) {
         const currLink = getPaginationLink(
-          existingRealLink,
           index,
           currentPage,
           nextUrl,
@@ -224,7 +213,6 @@ export class PaginationLinks<T, E> {
       // Last page
       if (index === totalPages) {
         const currLink = getPaginationLink(
-          existingRealLink,
           index,
           currentPage,
           lastUrl,
@@ -243,7 +231,6 @@ export class PaginationLinks<T, E> {
       }
       // Placeholder
       const currLink = getPaginationLink(
-        existingRealLink,
         index,
         currentPage,
         null,
@@ -265,7 +252,6 @@ export class PaginationLinks<T, E> {
 }
 
 function getPaginationLink(
-  existingRealLink: RealPaginationLink | null,
   index: number,
   currentPage: number,
   url: string | null,
@@ -274,12 +260,7 @@ function getPaginationLink(
   const isCurrent = index === currentPage;
   const distanceFromActiveIndex = Math.abs(index - currentPage);
 
-  if (existingRealLink?.isReal) {
-    console.log(`existing is index ${index}`);
-    existingRealLink.isCurrent = isCurrent;
-    existingRealLink.distanceFromActiveIndex = distanceFromActiveIndex;
-    return existingRealLink;
-  } else if (url) {
+  if (url) {
     return new RealPaginationLinkImpl(
       url,
       index,
