@@ -44,4 +44,17 @@ export interface EditableTodoCountFlag
     HasTodoCountFlagId,
     TodoCountFlagAttributes {}
 
-export type ApiFlag = ShouldErrorFlag | TodoCountFlag;
+interface HasShouldPaginateFlagId {
+  id: 'shouldPaginateFlag';
+}
+
+export interface ShouldPaginateFlagAttributes {
+  value: boolean;
+}
+
+export interface ShouldPaginateFlag
+  extends BaseApiFlag,
+    HasShouldPaginateFlagId,
+    Readonly<ShouldPaginateFlagAttributes> {}
+
+export type ApiFlag = ShouldErrorFlag | TodoCountFlag | ShouldPaginateFlag;
