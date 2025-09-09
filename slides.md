@@ -2,10 +2,11 @@
 theme: default
 title: 'WarpDrive: Set Data to Stun'
 info: |
-  A presentation about WarpDrive - the lightweight data framework for ambitious web applications.
-  Presented at EmberFest 2025.
+  Discover WarpDrive, the next-generation data framework that brings universal compatibility and performance to ambitious web applications.
+
+  This talk explores WarpDrive's schema-driven architecture through building a real application, demonstrating how to boldly go where your data has never gone before with a truly framework-agnostic layer. Learn how WarpDrive's TypeScript-first approach delivers enterprise-grade features while eliminating traditional data management complexity.
 author: Krystan HuffMenne
-keywords: WarpDrive,EmberData,JavaScript,TypeScript,Framework,Data Layer
+keywords: WarpDrive,EmberData,JavaScript,TypeScript,Framework,Data Layer,EmberFest
 class: text-center
 drawings:
   enabled: true
@@ -32,10 +33,54 @@ mdc: true
 </div>
 
 <!--
-I was going to call this talk "WarpDrive for Dummies" but:
-- "for Dummies" is a trademark (mention Noah's cease and desist)
-- We're not dummies. In fact, some of us know quite a lot about data libraries.
+I was going to call this talk "WarpDrive for Dummies" but we're not dummies. Some of us know quite a lot about data libraries.
+-->
 
+---
+layout: two-cols
+---
+
+# A Fresh Perspective
+
+<v-click>
+
+You might know quite a bit about **one data library** in particular...
+
+</v-click>
+
+<v-click>
+
+<div class="text-center my-8">
+  <div class="text-6xl mb-4">📊</div>
+  <div class="text-2xl font-bold text-orange-400">EmberData</div>
+</div>
+
+</v-click>
+
+<v-click>
+
+And you might even be expecting me to talk about that library.
+
+**But I'm not.**
+
+</v-click>
+
+::right::
+
+<v-click>
+
+<div class="mt-8 p-4 bg-blue-900/50 rounded border-l-4 border-blue-400">
+  <div class="text-lg italic text-blue-200">
+    "Space: the final frontier..."
+  </div>
+  <div class="mt-2">
+    Today we're going on a mission to <span class="text-yellow-300 font-bold">explore strange new patterns</span>, seek out new architectures, and <span class="text-yellow-300 font-bold">boldly go where our data has never gone before</span>.
+  </div>
+</div>
+
+</v-click>
+
+<!--
 In fact, you might know quite a bit about one data library in particular (show EmberData logo) and you might even be expecting me to talk about that library, but I'm not.
 
 Instead, I want us to explore WarpDrive with fresh eyes, like you've never seen a data framework before.
@@ -53,21 +98,28 @@ class: px-8
 
 Before we embark, let me introduce myself - I'm your guide through the WarpDrive universe:
 
-<v-clicks>
-
 - 🌧️ **Portland, Oregon** - Where I live among the coffee shops and rain
 - 👩‍👧‍👦 **Mother of two** - I understand the importance of reliable, predictable systems that just work
 - 🔥 **Ember veteran since v2** - Nearly a decade of writing Ember applications
-- 🛡️ **Staff Engineer at AuditBoard** - Building AI-first GRC software for enterprise risk management
+- 🛡️ **Staff Engineer at AuditBoard** - Building AI-first GRC software for enterprise risk
 - ⚡ **Ember Data & Tooling Teams** - Passionate about making data management both powerful and type-safe
 
-</v-clicks>
+---
+layout: center
+class: text-center
+---
 
-<v-click>
+<div class="text-6xl mb-12">🚀</div>
 
-I've seen the evolution of data patterns in Ember from the early days, and I'm excited to show you where we're **boldly going next**.
+# The Evolution Continues
 
-</v-click>
+<div class="text-2xl mb-8 leading-relaxed max-w-4xl mx-auto">
+I've seen the evolution of data patterns in Ember from the early days, and I'm excited to show you where we're <span class="text-yellow-300 font-bold">boldly going next</span>.
+</div>
+
+<div class="text-lg text-blue-200 italic">
+"Space: the final frontier. These are the voyages of the starship WarpDrive..."
+</div>
 
 ---
 layout: section
@@ -79,8 +131,6 @@ class: text-center
 ## "What is WarpDrive?"
 
 <div class="text-6xl mb-8">🌌</div>
-
-_8 minutes_
 
 ---
 
@@ -785,7 +835,7 @@ export default class TodoItem extends Component {
 - Automatic rollback on errors
 - Optimistic updates that work
 
-</v-clicks>
+</v-click>
 
 <v-click>
 
