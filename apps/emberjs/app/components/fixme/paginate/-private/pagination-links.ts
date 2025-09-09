@@ -133,13 +133,18 @@ export class PaginationLinks<T, E> {
 
     // link.index and pageHints.currentPage are 1-indexed
     for (let i = 0; i < totalPages; i++) {
-      const existingLink = existingLinks[i] ?? null;
       const index = i + 1;
+
+      const existingRealLink =
+        existingLinks.find(
+          (link): link is RealPaginationLink =>
+            link.isReal && link.index === index
+        ) ?? null;
 
       // First page
       if (index === 1) {
         const currLink = getPaginationLink(
-          existingLink,
+          existingRealLink,
           index,
           currentPage,
           firstUrl,
@@ -159,7 +164,7 @@ export class PaginationLinks<T, E> {
       // Previous page
       if (index === currentPage - 1) {
         const currLink = getPaginationLink(
-          existingLink,
+          existingRealLink,
           index,
           currentPage,
           prevUrl,
@@ -179,7 +184,7 @@ export class PaginationLinks<T, E> {
       // Current Page
       if (index === currentPage) {
         const currLink = getPaginationLink(
-          existingLink,
+          existingRealLink,
           index,
           currentPage,
           state.activePage.selfLink,
@@ -199,7 +204,7 @@ export class PaginationLinks<T, E> {
       // Next Page
       if (index === currentPage + 1) {
         const currLink = getPaginationLink(
-          existingLink,
+          existingRealLink,
           index,
           currentPage,
           nextUrl,
@@ -219,7 +224,7 @@ export class PaginationLinks<T, E> {
       // Last page
       if (index === totalPages) {
         const currLink = getPaginationLink(
-          existingLink,
+          existingRealLink,
           index,
           currentPage,
           lastUrl,
@@ -238,7 +243,7 @@ export class PaginationLinks<T, E> {
       }
       // Placeholder
       const currLink = getPaginationLink(
-        existingLink,
+        existingRealLink,
         index,
         currentPage,
         null,
@@ -260,7 +265,7 @@ export class PaginationLinks<T, E> {
 }
 
 function getPaginationLink(
-  existingLink: PaginationLink | null,
+  existingRealLink: RealPaginationLink | null,
   index: number,
   currentPage: number,
   url: string | null,
@@ -269,10 +274,11 @@ function getPaginationLink(
   const isCurrent = index === currentPage;
   const distanceFromActiveIndex = Math.abs(index - currentPage);
 
-  if (existingLink?.isReal) {
-    existingLink.isCurrent = isCurrent;
-    existingLink.distanceFromActiveIndex = distanceFromActiveIndex;
-    return existingLink;
+  if (existingRealLink?.isReal) {
+    console.log(`existing is index ${index}`);
+    existingRealLink.isCurrent = isCurrent;
+    existingRealLink.distanceFromActiveIndex = distanceFromActiveIndex;
+    return existingRealLink;
   } else if (url) {
     return new RealPaginationLinkImpl(
       url,
@@ -360,4 +366,15 @@ function upgradePlaceholder(
   return placeholder as PlaceholderPaginationLinkImpl;
 }
 
-defineSignal(PaginationLinks.prototype, 'self', undefined);
+defineSignal(RealPaginationLinkImpl.prototype, 'isCurrent', undefined);
+defineSignal(
+  RealPaginationLinkImpl.prototype,
+  'distanceFromActiveIndex',
+  undefined
+);
+defineSignal(PlaceholderPaginationLinkImpl.prototype, 'indexRange', undefined);
+defineSignal(
+  PlaceholderPaginationLinkImpl.prototype,
+  'distanceFromActiveIndex',
+  undefined
+);
