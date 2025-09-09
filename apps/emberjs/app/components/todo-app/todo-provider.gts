@@ -10,11 +10,10 @@ import type { Todo } from '@workspace/shared-data/types';
 
 import { LoadingSpinner } from '#/components/design-system/loading';
 import { Paginate } from '#/components/fixme/paginate';
-import { PaginationControls } from '#/components/todo-app/pagination-controls';
-import type AppState from '#/services/app-state';
-
 import type { PaginationState } from '#/components/fixme/paginate/-private/pagination-state';
 import type { ContentFeatures } from '#/components/fixme/paginate/-private/pagination-subscription';
+import { PaginationControls } from '#/components/todo-app/pagination-controls';
+import type AppState from '#/services/app-state';
 
 interface Signature {
   Args: {

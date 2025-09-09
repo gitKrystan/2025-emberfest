@@ -7,7 +7,6 @@ import type {
 } from '@warp-drive/core/store/-private';
 import {
   createRequestSubscription,
-  defineSignal,
   DISPOSE,
   memoized,
 } from '@warp-drive/core/store/-private';

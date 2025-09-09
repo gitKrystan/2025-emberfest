@@ -10,6 +10,7 @@ import type { ReactiveDataDocument } from '@warp-drive/core/reactive';
 import type { Todo } from '@workspace/shared-data/types';
 
 import { Button } from '#/components/design-system/button';
+import { LoadingSpinner } from '#/components/design-system/loading';
 import { EachLink } from '#/components/fixme/paginate';
 import type {
   PlaceholderPaginationLink,
@@ -17,7 +18,6 @@ import type {
 } from '#/components/fixme/paginate/-private/pagination-links';
 import type { PaginationState } from '#/components/fixme/paginate/-private/pagination-state';
 import type { ContentFeatures } from '#/components/fixme/paginate/-private/pagination-subscription';
-import { LoadingSpinner } from '#/components/design-system/loading';
 
 interface Signature {
   Args: {
