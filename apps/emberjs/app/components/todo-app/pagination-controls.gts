@@ -105,7 +105,7 @@ const RealLink = <template>
     >
       {{@link.index}}
     </button>
-  {{else if (shouldShowLinkExpander @link.index @link.distanceFromActiveIndex @pages.links.totalPages)}}
+  {{else if (shouldShowLinkExpander @link.distanceFromActiveIndex)}}
     <button type="button" {{on "click" @link.setActive}} class="pagination-link pagination-placeholder-link">
       ⋯
     </button>
@@ -135,19 +135,10 @@ function shouldShowRealLink(
   );
 }
 
-function shouldShowLinkExpander(
-  index: number,
-  distanceFromActiveIndex: number,
-  totalPages: number | null | undefined
-): boolean {
-  return (
-    // not first page
-    index !== 1 ||
-    // not last page
-    (totalPages && index !== totalPages) ||
-    // one outside of showDistance
-    distanceFromActiveIndex === showDistance + 1
-  );
+// Assumes this is called in an else after shouldShowRealLink
+// Thus, doesn't check for first or last page
+function shouldShowLinkExpander(distanceFromActiveIndex: number): boolean {
+  return distanceFromActiveIndex === showDistance + 1;
 }
 
 function or(a: unknown, b: unknown): boolean {
