@@ -24,41 +24,43 @@ interface Signature {
 export const PaginationControls = <template>
   {{#if (or @state.loadPrev @state.loadNext)}}
     <div class="pagination-controls">
-      <LoadPreviousButton @loadPrev={{@state.loadPrev}} />
+      <LoadPreviousButton @prevPage={{@pages.links.prevPageNumber}} @loadPrev={{@state.loadPrev}} />
 
       <PageLinks @pages={{@pages}} />
 
-      <LoadNextButton @loadNext={{@state.loadNext}} />
+      <LoadNextButton @nextPage={{@pages.links.nextPageNumber}} @loadNext={{@state.loadNext}} />
     </div>
   {{/if}}
 </template> satisfies TOC<Signature>;
 
 const LoadPreviousButton = <template>
   {{#if @loadPrev}}
-    <button type="button" class="pagination-button prev" {{on "click" @loadPrev}}>
+    <LinkTo @query={{hash page=@prevPage}} {{on "click" @loadPrev}} class="pagination-button prev">
       ←
       <span class="pagination-button-text">Load previous</span>
-    </button>
+    </LinkTo>
   {{else}}
     <div></div>
   {{/if}}
 </template> satisfies TOC<{
   Args: {
+    prevPage: number | null | undefined;
     loadPrev: (() => Promise<void>) | null;
   };
 }>;
 
 const LoadNextButton = <template>
   {{#if @loadNext}}
-    <button type="button" class="pagination-button next" {{on "click" @loadNext}}>
+    <LinkTo @query={{hash page=@nextPage}} {{on "click" @loadNext}} class="pagination-button prev">
       <span class="pagination-button-text">Load next</span>
       →
-    </button>
+    </LinkTo>
   {{else}}
     <div></div>
   {{/if}}
 </template> satisfies TOC<{
   Args: {
+    nextPage: number | null | undefined;
     loadNext: (() => Promise<void>) | null;
   };
 }>;
@@ -147,6 +149,6 @@ function shouldShowLinkExpander(distanceFromActiveIndex: number): boolean {
   return distanceFromActiveIndex === showDistance + 1;
 }
 
-function or(a: unknown, b: unknown): boolean {
-  return Boolean(a || b);
+function or(a: unknown, b: unknown) {
+  return a || b;
 }

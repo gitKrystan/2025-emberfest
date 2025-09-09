@@ -87,13 +87,39 @@ export class PaginationLinks<T, E> {
 
   /** The index of the currently active page, or null if no active page */
   @memoized
-  get currentPageIndex(): number | null {
+  get currentPageNumber(): number | null {
     const { pageHints } = this;
     if (!pageHints) {
       return this._currentPageIndex;
     }
 
     return (this._currentPageIndex = pageHints.currentPage);
+  }
+
+  /** The index of the previous page, if any */
+  @memoized
+  get prevPageNumber(): number | null {
+    const { pageHints } = this;
+    if (!pageHints) {
+      return null;
+    }
+
+    const { currentPage } = pageHints;
+    const maybePrev = currentPage - 1;
+    return maybePrev > 0 ? null : maybePrev;
+  }
+
+  /** The index of the next page, if any */
+  @memoized
+  get nextPageNumber(): number | null {
+    const { pageHints } = this;
+    if (!pageHints) {
+      return null;
+    }
+
+    const { currentPage, totalPages } = pageHints;
+    const maybeNext = currentPage + 1;
+    return maybeNext > totalPages ? null : maybeNext;
   }
 
   /** Total pages */

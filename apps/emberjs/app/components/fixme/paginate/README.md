@@ -889,7 +889,9 @@ type PaginationLink = RealPaginationLink | PlaceholderPaginationLink;
 interface PaginationLinks {
   /** All available links and placeholders */
   links: Array<PaginationLink>;
-  currentPageIndex: number;
+  currentPageNumber: number;
+  prevPageNumber: number | null;
+  nextPageNumber: number | null;
   totalPages: number;
 }
 ```
