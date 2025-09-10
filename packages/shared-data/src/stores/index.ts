@@ -19,7 +19,13 @@ import { TodoSchema } from '../schemas/todo.ts';
 
 export default class AppStore extends Store {
   requestManager = new RequestManager()
-    .use([new Gate(ApiHandler, useApiHandler), Fetch])
+    .use(
+      // prettier-ignore
+      [
+        new Gate(ApiHandler, useApiHandler),
+        Fetch,
+      ],
+    )
     .useCache(CacheHandler);
 
   lifetimes = new DefaultCachePolicy({

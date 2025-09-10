@@ -8,6 +8,7 @@ info: |
 author: Krystan HuffMenne
 keywords: WarpDrive,EmberData,JavaScript,TypeScript,Framework,Data Layer,EmberFest
 class: text-center
+lineNumbers: true
 drawings:
   enabled: true
   persist: false
@@ -303,11 +304,12 @@ class: text-center
 
 # The RequestManager
 
-<v-click>
+Our WarpDrive RequestManager...manages our requests:
 
-A WarpDrive RequestManager handles all HTTP communication:
-
-</v-click>
+<div>
+<div>packages/shared-data/src/stores/index.ts</div>
+<<< @/packages/shared-data/src/stores/index.ts {21|26}{maxHeight:'100px'}
+</div>
 
 <v-clicks>
 
