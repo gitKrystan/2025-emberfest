@@ -158,7 +158,7 @@ class CompletedForm extends Component<{
       name="completed"
       type="checkbox"
       checked={{@todo.completed}}
-      {{on "change" (fn this.updateCompleted @todo)}}
+      {{on "change" (fn this.handleChange @todo)}}
     />
 
     {{yield}}
@@ -166,7 +166,7 @@ class CompletedForm extends Component<{
 
   @service declare private readonly store: Store;
 
-  private readonly updateCompleted = async (todo: EditableTodo, event: Event) => {
+  private readonly handleChange = async (todo: EditableTodo, event: Event) => {
     if (this.args.isSaving) {
       return;
     }
@@ -177,6 +177,15 @@ class CompletedForm extends Component<{
 
     assert('Expected event target to be an HTMLInputElement', event.target instanceof HTMLInputElement);
     assert(`Expected target.checked to match completed ${completed}`, event.target.checked === completed);
+
+    await this.patchTodoToggle(todo);
+
+    this.args.onSaveEnd();
+  };
+
+  private async patchTodoToggle(todo: EditableTodo) {
+    const wasCompleted = todo.completed;
+    const completed = !wasCompleted;
 
     try {
       todo.completed = completed;
@@ -191,9 +200,7 @@ class CompletedForm extends Component<{
       reportError(new Error('Could not update todo completion state', { cause: e }), { toast: true });
       todo.completed = wasCompleted;
     }
-
-    this.args.onSaveEnd();
-  };
+  }
 }
 
 /** Provides a button that deletes the Todo using "pessimistic" deletion. */

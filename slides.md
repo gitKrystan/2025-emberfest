@@ -746,7 +746,7 @@ And our todo app uses both
 # Pessimistic Mutation
 
 <MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="mb-4" >
-<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {301-307}{maxHeight: '200px'}
+<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {308-314}{maxHeight: '200px'}
 </MacWindow>
 
 <v-clicks>
@@ -794,24 +794,118 @@ Adding the 'updateRecord' OpCode and specifying the `ResourceKey` for
 -->
 
 ---
+layout: iframe
+url: http://localhost:4200/?initialTodoCount=3&latency=500&shouldPaginate=false&shouldError=false
+title: 'Live Demo: Pessimistic Mutation'
+---
+
+<!--
+Demo title update + switching tabs to ensure it updated
+-->
+
+---
 
 # Controlled Optimistic Mutation with Checkout
 
-<MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="max-w-2xl">
-<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {20|21|28-37|39-44|46-52}{maxHeight: '200px'}
+<MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="mb-4 max-w-2xl">
+<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {186-192,199-203}{maxHeight: '350px'}
 </MacWindow>
 
 <v-clicks at=1>
 
-- **Request Management** - How we handle requests for data
-- **Cache Management** - How to cache that data
-- **Schema Management** - Schemas for what our data looks like
-- **Reactive State Management** - What sort of reactive objects to create for that data
+- Uses the same `patchTodo` builder
+- This time, we pass an `EditableTodo` plus the `attributes` to update
+
+</v-clicks>
+
+<!--
+CompletedForm uses optimistic mutation to ensure that the completion state is shown consistently throughout the entire TodoItem component.
+-->
+
+---
+
+# Controlled Optimistic Mutation with Checkout
+
+<MacWindow title="apps/emberjs/app/components/todo-app/todo-list.gts" class="mb-4 max-w-2xl">
+<<< @/apps/emberjs/app/components/todo-app/todo-list.gts gts {21|22|21-37}{maxHeight: '350px'}
+</MacWindow>
+
+- By default, resources are immutable
+
+<v-clicks at=0>
+
+- To get a mutable version, we use `await checkout(todo)`
 
 </v-clicks>
 
 <!--
 WarpDrive handles mutations through a "checkout" system:
+- Be default, resources are immutable
+- To get a mutable version, we use `await checkout(todo)`
+- This returns an `EditableTodo` that we can modify freely
+- When we're ready, we pass that `EditableTodo` to our `patchTodo` builder
+- Not that we're using the `@warp-drive/ember` `Await` component here. Similar to the `Request` component, it handles promise states declaratively.
+-->
+
+---
+
+# Patching State
+
+<MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="mb-4 max-w-2xl">
+<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {186-192,199-203|194-198}{maxHeight: '350px'}
+</MacWindow>
+
+<v-clicks at=1>
+
+- Patch the cached filter query documents manually
+
+</v-clicks>
+
+<!--
+There's one other interesting bit to our CompletedForm component.
+
+Because we've already made requests for completed and active todos, our store has cached documents for both.
+
+But WarpDrive can't predict that just because a Todo's `completed` attribute changed, it should move between those two lists.
+
+So, we have to patch the cached documents manually. (click)
+-->
+
+---
+
+# Patching State
+
+<MacWindow title="packages/shared-data/src/builders/todo/update.ts" class="mb-4 max-w-2xl">
+<<< @/packages/shared-data/src/builders/todo/update.ts gts {64-68|75-81|85-90|94}{maxHeight: '300px'}
+</MacWindow>
+
+<v-clicks at=1>
+
+- `cache.patch()` surgically updates cached documents
+- Add to completed list; remove from active list
+- Invalidate all queries with the 'todo-count' tag -- forces refetch
+
+</v-clicks>
+
+<!--
+I put this logic in utility functions because I use it in multiple places.
+
+(click) It uses the store's `cache.patch()` method to surgically update the cached documents.
+In the case of `patchCacheTodoCompleted` we add the todo to the completed list
+(click) and remove it from the active list.
+(click) and we invalidate all queries with the 'todo-count' tag to force a refetch as these requests are inexpensive.
+
+NOTE: We don't need to patch the caches because we're using optimistic updates. This is because we're updating the `completed` attribute used in the filter, which WarpDrive can't predict.
+-->
+
+---
+layout: iframe
+url: http://localhost:4200/?initialTodoCount=3&latency=500&shouldPaginate=false&shouldError=false
+title: 'Live Demo: Optimistic Mutation and Cache Patching'
+---
+
+<!--
+Demo completed toggle + switching tabs to ensure it updated
 -->
 
 ---

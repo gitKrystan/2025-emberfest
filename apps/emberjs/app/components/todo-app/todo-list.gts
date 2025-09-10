@@ -21,7 +21,7 @@ export class TodoList extends Component<Signature> {
       {{#each this.todos as |immutableTodo|}}
         <Await @promise={{this.checkout immutableTodo}}>
 
-          {{! On success, check out a mutable copy of the todo }}
+          {{! On success, we have a mutable copy of the todo }}
           <:success as |mutableTodoCopy|>
             <TodoItem
               @todo={{mutableTodoCopy}}
