@@ -457,14 +457,15 @@ As you can imagine, these options can get quite complex, which is why we support
 
 # Request Builders
 
-<div class="grid grid-flow-col gap-4 grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
 <MacWindow title="packages/shared-data/src/builders/todo/query.ts" class="max-w-2xl">
-<<< @/packages/shared-data/src/builders/todo/query.ts ts {9,10,12-13,18|13|15-16}{maxHeight: '300px'}
+<<< @/packages/shared-data/src/builders/todo/query.ts ts {9-10|12|13|15-16}{maxHeight: '300px'}
 </MacWindow>
 
 <v-clicks at=1>
 
+- Specifies the request method
 - Generates the URL
 - Sets cache options
 
@@ -501,7 +502,7 @@ title: 'Episode 4: "Schemas - The DNA of Your Data"'
 
 Instead of models with complex inheritance, WarpDrive uses simple, declarative schemas:
 
-<div class="grid grid-flow-col gap-4 grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
 <MacWindow title="packages/shared-data/src/schemas/todo.ts" class="max-w-2xl">
 <<< @/packages/shared-data/src/schemas/todo.ts ts {all|3|4|5-13}{maxHeight: '300px'}
@@ -529,7 +530,7 @@ More on that this afternoon in Mehul's talk about "ReactiveResources & Schema‑
 
 Because resources are just POJOs, you can define types for their various states:
 
-<div class="grid grid-flow-col gap-4 grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
 <MacWindow title="packages/shared-data/src/types/todo.ts" class="max-w-2xl">
 <<< @/packages/shared-data/src/types/todo.ts ts {11-27|11-15|17-21|23-26}{maxHeight: '350px'}
@@ -590,7 +591,7 @@ These components enable you to build robust performant apps with elegant control
 
 # Components with Reactive Magic
 
-<div class="grid grid-flow-col gap-4 grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
 <MacWindow title="apps/emberjs/app/components/todo-app/todo-provider.gts" class="max-w-2xl">
 <<< @/apps/emberjs/app/components/todo-app/todo-provider-request-version.gts ts {14|15-17|23-24|29-36|26-27|18-20}{maxHeight: '360px'}
@@ -654,7 +655,7 @@ Demo error state
 
 The core logic stays the same - only the framework integration changes!
 
-<div class="grid grid-flow-col gap-4 grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
 <MacWindow title="apps/react/app/components/todo-app/todo-provider.tsx" class="w-xl">
 
@@ -709,39 +710,109 @@ title: 'Episode 6: "Data Mutations - Quantum Mechanics"'
 
 ## "Data Mutations - Quantum Mechanics"
 
-<div class="text-6xl mb-8">🔄</div>
+---
 
-_7 minutes_
+# Pessimistic vs. Optimistic
+
+When changing data, you have two choices:
+
+<div class="grid grid-cols-2 gap-4 grid-items-center">
+<v-clicks>
+  <div class="callout-solid">
+    <h3>Pessimistic</h3>
+    <p>Wait for server confirmation before updating UI</p>
+  </div>
+  <div class="callout-solid">
+    <h3>Optimistic</h3>
+    <p>Update UI immediately, then confirm with server</p>
+  </div>
+  <div class="callout-solid">
+    <h3>Both have trade-offs</h3>
+    <p>UX vs. consistency</p>
+  </div>
+  <div class="callout-solid">
+    <h3>WarpDrive supports both</h3>
+    <p>You choose per request</p>
+  </div>
+</v-clicks>
+</div>
+
+<!--
+And our todo app uses both
+-->
 
 ---
 
-# Controlled Mutation with Checkout
+# Pessimistic Mutation
 
+<MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="mb-4" >
+<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {301-307}{maxHeight: '200px'}
+</MacWindow>
+
+<v-clicks>
+
+- Uses a `patchTodo` builder
+- Pass the `Todo` and `attributes` to update
+- When the request resolves, that `Todo` updates all over your app
+- This seems too easy...
+
+</v-clicks>
+
+---
+
+# Pessimistic Mutation
+
+<div class="grid grid-flow-col gap-4 grid-items-center">
+
+<MacWindow title="packages/shared-data/src/builders/todo/update.ts" >
+<<< @/packages/shared-data/src/builders/todo/update.ts gts {11-20|30|31|32-38|40-41}{maxHeight: '300px'}
+</MacWindow>
+
+<v-clicks at=1>
+
+- Specifies the request method
+- Generates the URL
+- Serializes the request body
+- Sets cache options
+
+</v-clicks>
+
+</div>
+
+<!--
+The real magic is in our `patchTodo` builder:
+* Just like our `getAllTodos` builder, it specifies the request method
+* it generates the URL -- now using a resource key to determine the ID to add to the URL
+* It serializes the request body in JSON:API format
+* And it sets cache options
+Adding the 'updateRecord' OpCode and specifying the `ResourceKey` for
+ this todo in the `records` array tells the `DefaultCachePolicy` in our
+ store that when this request succeeds it should automatically patch
+ the returned attributes into any matching resources in any cached
+ documents for requests with the 'query' OpCode that include this
+ record in their results when this request succeeds.
+-->
+
+---
+
+# Controlled Optimistic Mutation with Checkout
+
+<MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="max-w-2xl">
+<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {20|21|28-37|39-44|46-52}{maxHeight: '200px'}
+</MacWindow>
+
+<v-clicks at=1>
+
+- **Request Management** - How we handle requests for data
+- **Cache Management** - How to cache that data
+- **Schema Management** - Schemas for what our data looks like
+- **Reactive State Management** - What sort of reactive objects to create for that data
+
+</v-clicks>
+
+<!--
 WarpDrive handles mutations through a "checkout" system:
-
-```ts {8-17} {lines:true}
-// components/todo-item.gts
-import { Checkout } from '@warp-drive/core/reactive';
-
-export default class TodoItem extends Component {
-  @service declare private readonly store: Store;
-
-  toggleCompleted = async () => {
-    // Check out the todo for editing
-    const editableTodo = await this.args.todo[Checkout]();
-
-    // Make our changes
-    editableTodo.completed = !editableTodo.completed;
-
-    // Save to server using JSON:API format
-    await this.store.request({
-      method: 'PATCH',
-      url: `/api/todo/${editableTodo.id}`,
-      // ... JSON:API payload
-    });
-  };
-}
-```
+-->
 
 ---
 

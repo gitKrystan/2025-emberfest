@@ -9,7 +9,7 @@ import type { ReactiveTodoDocument } from './types';
 import { keyForRequest, keyForSavedResource } from './utils.ts';
 
 /**
- * PATCH /todo/:id
+ * PATCH /api/todo/:id
  *
  * @param todo - The todo to update
  * @param attributes - The attributes to patch
@@ -27,8 +27,8 @@ export function patchTodo(
   });
 
   return withReactiveResponse<Todo>({
-    url,
     method: 'PATCH',
+    url,
     body: JSON.stringify({
       data: {
         type: 'todo',
@@ -37,12 +37,6 @@ export function patchTodo(
       },
     }),
 
-    // Adding the 'updateRecord' OpCode and specifying the `ResourceKey` for
-    // this todo in the `records` array tells the `DefaultCachePolicy` in our
-    // store that when this request succeeds it should automatically patch
-    // the returned attributes into any matching resources in any cached
-    // documents for requests with the 'query' OpCode that include this
-    // record in their results when this request succeeds.
     op: 'updateRecord',
     records: [key],
   });

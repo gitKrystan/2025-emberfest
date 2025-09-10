@@ -12,7 +12,7 @@ import {
   patchCacheTodoCompleted,
   patchTodo,
 } from '@workspace/shared-data/builders';
-import type { EditableTodo } from '@workspace/shared-data/types';
+import type { EditableTodo, Todo } from '@workspace/shared-data/types';
 
 import { Form } from '#/components/design-system/form';
 import { reportError } from '#/helpers/error';
@@ -298,7 +298,7 @@ class TitleForm extends Component<{
     }
   };
 
-  private readonly patchTodoTitle = async (todo: EditableTodo, title: string) => {
+  private readonly patchTodoTitle = async (todo: Todo, title: string) => {
     try {
       await this.store.request(patchTodo(todo, { title }));
     } catch (e) {
