@@ -1,10 +1,10 @@
 .slidev-layout {
   background-color: var(--lcars-black);
-  color: white;
+  color: var(--lcars-light-blue);
 
   h1 + p {
     @apply -mt-2 opacity-50 mb-4;
-    color: var(--lcars-light-blue);
+    color: var(--lcars-magenta);
     opacity: 1;
   }
 
@@ -167,4 +167,66 @@
     @apply text-6xl font-500 leading-20;
     font-family: 'Antonio', 'Avenir Next', sans-serif;
   }
+}
+
+.slidev-layout.default {
+  position: relative;
+  padding-left: 20px;
+}
+
+.slidev-layout.default::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: var(--lcars-orange);
+  border-radius: 0 3px 3px 0;
+}
+
+/* LCARS Callout Styling */
+.callout {
+  background: var(--lcars-black);
+  border: 2px solid var(--lcars-orange);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  position: relative;
+  font-family: 'Antonio', 'Avenir Next', sans-serif;
+  color: var(--lcars-purple);
+  box-shadow: 0 4px 12px rgba(255, 153, 51, 0.2);
+}
+
+.callout::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  height: 8px;
+  background: linear-gradient(
+    to right,
+    var(--lcars-orange) 0%,
+    var(--lcars-orange) 30%,
+    var(--lcars-amber) 30%,
+    var(--lcars-amber) 70%,
+    var(--lcars-magenta) 70%
+  );
+  border-radius: 12px 12px 0 0;
+}
+
+.callout p:first-child {
+  margin-top: 0;
+}
+
+.callout p:last-child {
+  margin-bottom: 0;
+}
+
+.callout strong {
+  color: var(--lcars-light-blue);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }

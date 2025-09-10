@@ -60,7 +60,9 @@ And you might even be expecting me to talk about that library.
 
 <v-click>
 
-Today we're going on a mission to <span class="font-bold">explore strange new patterns</span>, seek out new architectures, and <span class="font-bold">boldly go where our data has never gone before</span>.
+<div class="callout max-w-2xl float-right">
+Today we're going on a mission to <strong>explore strange new patterns</strong>, seek out new architectures, and <strong>boldly go where our data has never gone before</strong>.
+</div class="callout">
 
 </v-click>
 
