@@ -21,7 +21,7 @@ export class FlagStore extends Store<ApiFlag> {
       }),
       asType<ApiFlag>({
         $type: 'flag',
-        id: 'shouldPaginateFlag' as const,
+        id: 'shouldPaginate' as const,
         value: false,
       }),
       asType<ApiFlag>({

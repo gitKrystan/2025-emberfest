@@ -69,7 +69,7 @@ export function updateFlag(
         ? handleShouldErrorFlag(req, id)
         : id === 'initialTodoCount'
           ? handleInitialTodoCountFlag(req, id)
-          : id === 'shouldPaginateFlag'
+          : id === 'shouldPaginate'
             ? handleShouldPaginateFlag(req, id)
             : id === 'latency'
               ? handleLatencyFlag(req, id)
@@ -121,10 +121,7 @@ function handleInitialTodoCountFlag(
   });
 }
 
-function handleShouldPaginateFlag(
-  req: Request,
-  id: 'shouldPaginateFlag',
-): ApiFlag {
+function handleShouldPaginateFlag(req: Request, id: 'shouldPaginate'): ApiFlag {
   const attributes: ShouldPaginateFlagAttributes = validateUpdateRequest(
     'flag',
     id,

@@ -122,7 +122,7 @@ class FlagsContent extends Component<{
 
   @cached
   get shouldPaginateFlag(): ShouldPaginateFlag | null {
-    return this.args.data.find((flag) => flag.id === 'shouldPaginateFlag') ?? null;
+    return this.args.data.find((flag) => flag.id === 'shouldPaginate') ?? null;
   }
 
   checkoutShouldPaginateFlag(flag: ShouldPaginateFlag): Promise<EditableShouldPaginateFlag & ReactiveResource> {

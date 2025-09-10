@@ -31,7 +31,7 @@ export interface EditableTodoCountFlag
 // Should Paginate
 
 interface HasShouldPaginateFlagId {
-  id: 'shouldPaginateFlag';
+  id: 'shouldPaginate';
 }
 
 export interface ShouldPaginateFlagAttributes {

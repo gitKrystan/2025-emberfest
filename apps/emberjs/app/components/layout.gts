@@ -48,7 +48,7 @@ class EnterpriseEdition extends Component<{
 
   @cached
   get shouldPaginate(): boolean {
-    const flag = this.args.data.find((flag) => flag.id === 'shouldPaginateFlag');
+    const flag = this.args.data.find((flag) => flag.id === 'shouldPaginate');
     return flag?.value ?? false;
   }
 }

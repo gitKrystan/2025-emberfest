@@ -81,7 +81,7 @@ export async function getTodos(
       validateQueryParams(req);
 
     // Check if pagination is disabled via flag
-    const shouldPaginateFlag = flagStore.safeFindById('shouldPaginateFlag');
+    const shouldPaginateFlag = flagStore.safeFindById('shouldPaginate');
     const paginationEnabled = shouldPaginateFlag?.value !== false;
 
     if (hasPageParams && paginationEnabled) {
