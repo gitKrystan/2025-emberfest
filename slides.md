@@ -348,6 +348,36 @@ So the Request Manager does exactly what it says on the tin. (click) It manages 
 
 ---
 
+# \{JSON:API\}: The Universal Translator
+
+By default, WarpDrive `Fetch` speaks \{JSON:API\} fluently, giving you:
+
+<v-clicks>
+
+- **Standardized format** for resources, relationships, and errors
+- **Consistent patterns** across all your APIs
+- **Built-in pagination, filtering, and sorting** conventions
+
+</v-clicks>
+
+<v-click>
+
+<div class="callout mt-10 float-right max-w-lg">
+"Universal translator online, Captain. All API communications are now standardized."
+</div>
+
+</v-click>
+
+<v-click>
+
+<div class="mt-4 text-sm text-lcars-blue max-w-xs">
+(But, you can configure WarpDrive to use other formats if you prefer!)
+</div>
+
+</v-click>
+
+---
+
 # Making a Request
 
 <MacWindow title="apps/emberjs/routes/index.js" class="max-w-2xl">
@@ -376,6 +406,8 @@ export default class ActiveTodos extends Route {
 <!--
 The simplest way to make a request is to pass a request object to the store's request method.
 This method delegates the request to the store's RequestManager.
+
+For example, this request will get all todos from our API.
 -->
 
 ---
@@ -384,7 +416,7 @@ This method delegates the request to the store's RequestManager.
 
 <MacWindow title="apps/emberjs/routes/index.js" class="max-w-2xl">
 
-```ts twoslash {2-3|all}{maxHeight: '350px'}
+```ts twoslash {2-3|all}{maxHeight: '380px'}
 type Store = any;
 // ---cut---
 interface RequestInfo extends RequestInit {
@@ -422,89 +454,34 @@ As you can imagine, these options can get quite complex, which is why we support
 
 # Request Builders
 
-Foo
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
----
+<MacWindow title="packages/shared-data/src/builders/todo/query.ts" class="max-w-2xl">
+<<< @/packages/shared-data/src/builders/todo/query.ts ts {9,10,12-13,18|13|15-16}{maxHeight: '300px'}
+</MacWindow>
 
-# JSON:API: The Universal Translator
+<v-clicks at=1>
 
-By default, WarpDrive speaks JSON:API fluently, giving you:
-
-<v-clicks>
-
-- **Standardized format** for resources, relationships, and errors
-- **Consistent patterns** across all your APIs
-- **Built-in pagination, filtering, and sorting** conventions
+- Generates the URL
+- Sets cache options
 
 </v-clicks>
 
-<v-click>
-
-<div class="callout mt-10 float-right max-w-lg">
-"Universal translator online, Captain. All API communications are now standardized."
 </div>
 
-</v-click>
+<!--
+A request builder is just a simple function that returns a RequestInfo object.
 
-<v-click>
+Here's a reusable builder for our 'getAllTodos' request, using warp drive
+request utilities to ensure consistency across our app.
 
-<div class="mt-4 text-sm text-lcars-blue max-w-xs">
-(But, you can configure WarpDrive to use other formats if you prefer!)
-</div>
-
-</v-click>
-
----
-
-# Built-in JSON:API Builders
-
-Why write all that boilerplate? WarpDrive includes built-in JSON:API request builders:
-
-```ts twoslash {1-5|7-12} {lines:true}
-// shared-data-layer/builders/todo.ts
-import {
-  findRecord,
-  findAll,
-  createRecord,
-} from '@warp-drive/json-api/request';
-
-// Much simpler with built-in builders!
-export const getAllTodos = () => findAll('todo');
-export const getTodo = (id: string) => findRecord('todo', id);
-export const createTodo = (attributes: NewTodo) =>
-  createRecord('todo', attributes);
-```
-
-<v-click>
-
-These built-in builders automatically:
-
-- Set correct headers (`application/vnd.api+json`)
-- Handle JSON:API document structure
-- Provide proper TypeScript types
-- Work with any JSON:API compliant backend
-
-</v-click>
-
----
-
-# Recap
-
-**So far we've covered:**
-
-<v-clicks>
-
-- ✅ WarpDrive's universal architecture
-- ✅ Setting up our shared data layer
-- ✅ Understanding the RequestManager
-
-</v-clicks>
-
-<v-click>
-
-**Next up:** Let's define our data structures with schemas!
-
-</v-click>
+(click) It generates the URL, using the resource path plus a configurable namespace
+(click) And it sets cache options
+In this case, Adding the 'query' OpCode and specifying the 'todo' type in
+`cacheOptions` tells the `DefaultCachePolicy` in our store to
+automatically invalidate this request when any request with the
+'createRecord' OpCode + 'todo' in `cacheOptions.type` succeeds.
+-->
 
 ---
 layout: section

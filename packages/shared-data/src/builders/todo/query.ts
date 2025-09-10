@@ -6,10 +6,30 @@ import type Store from '../../stores/index.ts';
 import type { Todo } from '../../types/index.ts';
 import type { ReactiveTodosDocument } from './types.ts';
 
-/**
- * GET /todo
- * (plus pagination params)
- */
+/** GET /api/todo */
+export function getAllTodosSimple(): RequestInfo<ReactiveTodosDocument> {
+  return withReactiveResponse<Todo[]>({
+    method: 'GET',
+    url: buildBaseURL({ resourcePath: 'todo' }),
+
+    op: 'query',
+    cacheOptions: { types: ['todo'] },
+  });
+}
+
+/*
+
+No spoilers
+
+
+
+
+
+
+
+*/
+
+/** GET /api/todo (plus pagination params) */
 export function getAllTodos(page?: number): RequestInfo<ReactiveTodosDocument> {
   const url = buildBaseURL({ resourcePath: 'todo' });
   const queryString = buildQueryParams({
@@ -21,17 +41,13 @@ export function getAllTodos(page?: number): RequestInfo<ReactiveTodosDocument> {
     method: 'GET',
     url: `${url}?${queryString}`,
 
-    // Adding the 'query' OpCode and specifying the 'todo' type in
-    // `cacheOptions` tells the `DefaultCachePolicy` in our store to
-    // automatically invalidate this request when any request with the
-    // 'createRecord' OpCode + 'todo' in `cacheOptions.type` succeeds.
     op: 'query',
     cacheOptions: { types: ['todo'] },
   });
 }
 
 /**
- * GET /todo?filter[completed]=true
+ * GET /api/todo?filter[completed]=true
  * (plus pagination params)
  */
 export function getCompletedTodos(
@@ -54,7 +70,7 @@ export function getCompletedTodos(
 }
 
 /**
- * GET /todo?completed=false
+ * GET /api/todo?completed=false
  */
 export function getActiveTodos(
   page?: number,
