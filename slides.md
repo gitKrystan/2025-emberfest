@@ -46,13 +46,11 @@ You might know quite a bit about **one data library** in particular...
 
 <v-click>
 
-EmberData
+And you might even be expecting me to talk about that library.
 
 </v-click>
 
 <v-click>
-
-And you might even be expecting me to talk about that library.
 
 **But I'm not.**
 
@@ -85,7 +83,6 @@ Before we embark, let me introduce myself - I'm your guide through the WarpDrive
 
 ---
 layout: center
-class: text-center
 ---
 
 <div class="text-6xl mb-12">🚀</div>

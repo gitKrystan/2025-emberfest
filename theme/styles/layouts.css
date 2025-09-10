@@ -48,6 +48,14 @@
   h6:not(.opacity-100) {
     @apply opacity-40;
   }
+
+  ul,
+  ol,
+  li {
+    list-style: none;
+    padding-left: 0;
+    margin-left: 0;
+  }
 }
 
 .slidev-layout.cover,
@@ -171,7 +179,6 @@
 
 .slidev-layout.default {
   position: relative;
-  padding-left: 20px;
 }
 
 .slidev-layout.default::before {
