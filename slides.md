@@ -75,9 +75,9 @@ image: '/images/captain-profile.jpg'
 
 <p>Portland, Oregon</p>
 <p>Answers to "mom"</p>
-<p>Ember veteran since v2</p>
 <p>Staff Engineer at AuditBoard</p>
 <p>EmberData/WarpDrive & Tooling Teams</p>
+<p>Ember veteran since v2</p>
 
 </div>
 
@@ -86,37 +86,26 @@ Before we embark, let me introduce myself - I'm your guide through the WarpDrive
 
  🌧️ **Portland, Oregon** - Where I live among the coffee shops and rain
 - 👩‍👧‍👦 **Mother of two** - I understand the importance of reliable, predictable systems that just work
-- 🔥 **Ember veteran since v2** - Nearly a decade of writing Ember applications
 - 🛡️ **Staff Engineer at AuditBoard** - Building AI-first GRC software for enterprise risk
 - ⚡ **Ember Data & Tooling Teams** - Passionate about making data management both powerful and type-safe
+- 🔥 **Ember veteran since v2** - Nearly a decade of writing Ember applications
 -->
 
 ---
 layout: center
 ---
 
-<div class="text-6xl mb-12">🚀</div>
-
 # The Evolution Continues
 
-<div class="text-2xl mb-8 leading-relaxed max-w-4xl mx-auto">
-I've seen the evolution of data patterns in Ember from the early days, and I'm excited to show you where we're <span class="font-bold">boldly going next</span>.
-</div>
-
-<div class="text-lg italic">
-"Space: the final frontier. These are the voyages of the starship WarpDrive..."
-</div>
+I've seen the evolution of data patterns in Ember from the early days,<br />and I'm excited to show you where we're **boldly going next**.
 
 ---
 layout: section
-class: text-center
 ---
 
 # Episode 1
 
 ## "What is WarpDrive?"
-
-<div class="text-6xl mb-8">🌌</div>
 
 ---
 
@@ -124,30 +113,26 @@ class: text-center
 
 ...the lightweight data framework for ambitious web applications.
 
-<div class="grid grid-cols-2">
+<div class="grid grid-cols-2 gap-4">
 
 <v-clicks>
 
-<div class="p-2 rounded">
-  <div class="text-4xl mb-4">🌌</div>
+<div class="callout-solid">
   <h3>Universal</h3>
   <p>Works with any framework (Ember, React, Vue, Svelte)</p>
 </div>
 
-<div class="p-2 rounded">
-  <div class="text-4xl mb-4">⚡</div>
+<div class="callout-solid">
   <h3>Performant</h3>
   <p>Committed to best-in-class performance</p>
 </div>
 
-<div class="p-2 rounded">
-  <div class="text-4xl mb-4">💚</div>
+<div class="callout-solid">
   <h3>Typed</h3>
   <p>Fully typed, ready to rock</p>
 </div>
 
-<div class="p-2 rounded">
-  <div class="text-4xl mb-4">🚀</div>
+<div class="callout-solid">
   <h3>Scalable</h3>
   <p>From weekend hobby to enterprise</p>
 </div>
@@ -174,47 +159,53 @@ Unlike traditional data libraries, WarpDrive is built around:
 </v-clicks>
 
 ---
-layout: center
----
 
 # The Universal Promise
 
-_"Separate the saucer section!"_
+"Separate the saucer section!"
 
-```
+<div class="grid grid-cols-2 gap-4">
+
+<div class="callout">
+
+```{all}
 📦 shared-data-layer
 ├── 🌌 @warp-drive/core
 ├── 🛸 builders/
-├── 🛸 handlers/
+├── 👋 handlers/
 ├── 📊 schemas/
 └── 💿 store/
 
-🚀 ember-app
+🐹 ember-app
 └── @warp-drive/ember
 
 ⚛️ react-app
 └── @warp-drive/react
 
-📱 vue-app
+👀 vue-app
 └── @warp-drive/vue
+
 ```
+
+</div>
 
 <v-click>
 
-**This isn't just theory** - we can literally share our data layer across multiple applications.
+<div class="callout-solid bg-lcars-magenta text-2xl">
+<strong>This isn't just theory</strong> - we can literally share our data layer across multiple applications.
+</div>
 
 </v-click>
 
+</div>
+
 ---
 layout: section
-class: text-center
 ---
 
 # Episode 2
 
 ## "Engage! - Setting Up Our Mission"
-
-<div class="text-6xl mb-8">🚀</div>
 
 ---
 
@@ -295,7 +286,6 @@ It's built around a simple Todo resource.
 
 ---
 layout: section
-class: text-center
 ---
 
 # Episode 3
@@ -443,7 +433,6 @@ These built-in builders automatically:
 
 ---
 layout: section
-class: text-center
 ---
 
 # Episode 4
@@ -627,7 +616,6 @@ type Todo = Todo; // For existing records
 
 ---
 layout: section
-class: text-center
 ---
 
 # Episode 5
@@ -771,7 +759,6 @@ export default class RequestComponent extends Component {
 
 ---
 layout: section
-class: text-center
 ---
 
 # Episode 6
@@ -835,7 +822,6 @@ export default class TodoItem extends Component {
 
 ---
 layout: section
-class: text-center
 ---
 
 # Episode 7
@@ -902,7 +888,6 @@ By building our data layer in a separate package in the monorepo, we achieve tru
 
 ---
 layout: section
-class: text-center
 ---
 
 # Episode 8
@@ -971,7 +956,6 @@ Now your entire app can use camelCase while your API uses snake_case!
 
 ---
 layout: section
-class: text-center
 ---
 
 # Episode 9
@@ -1026,7 +1010,6 @@ WarpDrive approach:
 
 ---
 layout: section
-class: text-center
 ---
 
 # Episode 10
@@ -1073,7 +1056,6 @@ _3 minutes_
 
 ---
 layout: section
-class: text-center
 ---
 
 # Conclusion
@@ -1139,7 +1121,6 @@ Today we've built a complete TodoMVC application and seen how WarpDrive delivers
 
 ---
 layout: center
-class: text-center
 ---
 
 # Final Thought
@@ -1162,7 +1143,6 @@ And so is your journey with WarpDrive. The data is out there - go boldly and fet
 
 ---
 layout: center
-class: text-center
 ---
 
 # Additional Resources

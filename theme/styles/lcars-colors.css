@@ -28,3 +28,61 @@
     var(--lcars-blue)
   );
 }
+
+/* LCARS Text Color Utilities */
+.text-lcars-orange {
+  color: var(--lcars-orange) !important;
+}
+.text-lcars-amber {
+  color: var(--lcars-amber) !important;
+}
+.text-lcars-red-orange {
+  color: var(--lcars-red-orange) !important;
+}
+.text-lcars-magenta {
+  color: var(--lcars-magenta) !important;
+}
+.text-lcars-purple {
+  color: var(--lcars-purple) !important;
+}
+.text-lcars-blue {
+  color: var(--lcars-blue) !important;
+}
+.text-lcars-light-blue {
+  color: var(--lcars-light-blue) !important;
+}
+.text-lcars-black {
+  color: var(--lcars-black) !important;
+}
+.text-lcars-white {
+  color: var(--lcars-white) !important;
+}
+
+/* LCARS Background Color Utilities */
+.bg-lcars-orange {
+  background-color: var(--lcars-orange) !important;
+}
+.bg-lcars-amber {
+  background-color: var(--lcars-amber) !important;
+}
+.bg-lcars-red-orange {
+  background-color: var(--lcars-red-orange) !important;
+}
+.bg-lcars-magenta {
+  background-color: var(--lcars-magenta) !important;
+}
+.bg-lcars-purple {
+  background-color: var(--lcars-purple) !important;
+}
+.bg-lcars-blue {
+  background-color: var(--lcars-blue) !important;
+}
+.bg-lcars-light-blue {
+  background-color: var(--lcars-light-blue) !important;
+}
+.bg-lcars-black {
+  background-color: var(--lcars-black) !important;
+}
+.bg-lcars-white {
+  background-color: var(--lcars-white) !important;
+}

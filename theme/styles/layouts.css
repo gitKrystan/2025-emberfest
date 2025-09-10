@@ -1,6 +1,7 @@
 .slidev-layout {
   background-color: var(--lcars-black);
   color: var(--lcars-light-blue);
+  position: relative;
 
   h1 + p {
     @apply -mt-2 opacity-50 mb-4;
@@ -18,31 +19,37 @@
     @apply text-4xl mb-4 -ml-[0.05em];
     font-family: 'Antonio', 'Avenir Next', sans-serif;
     color: var(--lcars-orange);
+    font-weight: 900;
   }
 
   h2 {
     @apply text-3xl;
     font-family: 'Antonio', 'Avenir Next', sans-serif;
+    font-weight: 900;
   }
 
   h3 {
     @apply text-2xl;
     font-family: 'Antonio', 'Avenir Next', sans-serif;
+    font-weight: 900;
   }
 
   h4 {
     @apply text-xl;
     font-family: 'Antonio', 'Avenir Next', sans-serif;
+    font-weight: 900;
   }
 
   h5 {
     @apply text-base;
     font-family: 'Antonio', 'Avenir Next', sans-serif;
+    font-weight: 900;
   }
 
   h6 {
     @apply text-sm pt-1 uppercase tracking-widest font-500 -ml-[0.05em];
     font-family: 'Antonio', 'Avenir Next', sans-serif;
+    font-weight: 900;
   }
 
   h6:not(.opacity-100) {
@@ -191,13 +198,107 @@
   border-radius: 0 3px 3px 0;
 }
 
+/* LCARS Center Layout - similar to cover but optimized for centered content */
+.slidev-layout.center {
+  @apply h-full;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0;
+  background: var(--lcars-black);
+  overflow: hidden;
+  text-align: left;
+
+  h1 {
+    @apply text-6xl leading-20;
+    color: var(--lcars-orange);
+    font-family: 'Antonio', 'Avenir Next', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 2;
+    margin-left: 40px;
+    margin-right: 40px;
+  }
+
+  h2 {
+    color: var(--lcars-amber);
+    font-family: 'Antonio', 'Avenir Next', sans-serif;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    position: relative;
+    z-index: 2;
+    margin-left: 40px;
+    margin-right: 40px;
+  }
+
+  p {
+    color: var(--lcars-light-blue);
+    font-family: 'Avenir Next', sans-serif;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    position: relative;
+    z-index: 2;
+    margin-left: 40px;
+    margin-right: 40px;
+  }
+
+  .text-6xl,
+  .text-2xl {
+    position: relative;
+    z-index: 2;
+  }
+}
+
+/* LCARS Border Elements for Center Layout */
+.slidev-layout.center::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(
+    to right,
+    var(--lcars-magenta) 0%,
+    var(--lcars-magenta) 60px,
+    var(--lcars-purple) 60px,
+    var(--lcars-purple) 120px,
+    var(--lcars-blue) 120px
+  );
+  border-radius: 0 0 40px 0;
+}
+
+.slidev-layout.section::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 80px;
+  background: linear-gradient(
+    to left,
+    var(--lcars-orange) 0%,
+    var(--lcars-orange) 100px,
+    var(--lcars-amber) 100px,
+    var(--lcars-amber) 180px,
+    var(--lcars-magenta) 180px
+  );
+  border-radius: 40px 0 0 0;
+}
+
 /* LCARS Callout Styling */
 .callout {
   background: var(--lcars-black);
   border: 2px solid var(--lcars-orange);
   border-radius: 12px;
   padding: 1.5rem;
-  margin: 1.5rem 0;
   position: relative;
   font-family: 'Antonio', 'Avenir Next', sans-serif;
   color: var(--lcars-purple);
@@ -235,4 +336,62 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+}
+
+/* LCARS Solid Callout Styling */
+.callout-solid {
+  border-radius: 12px;
+  padding: 1.5rem;
+  font-family: 'Antonio', 'Avenir Next', sans-serif;
+  color: var(--lcars-black);
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.callout-solid strong {
+  color: var(--lcars-black);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Cycling LCARS Colors for Multiple Callouts */
+.callout-solid:nth-of-type(1),
+.callout-solid:nth-of-type(8n + 1) {
+  background-color: var(--lcars-orange);
+}
+
+.callout-solid:nth-of-type(2),
+.callout-solid:nth-of-type(8n + 2) {
+  background-color: var(--lcars-amber);
+}
+
+.callout-solid:nth-of-type(3),
+.callout-solid:nth-of-type(8n + 3) {
+  background-color: var(--lcars-magenta);
+}
+
+.callout-solid:nth-of-type(4),
+.callout-solid:nth-of-type(8n + 4) {
+  background-color: var(--lcars-purple);
+}
+
+.callout-solid:nth-of-type(5),
+.callout-solid:nth-of-type(8n + 5) {
+  background-color: var(--lcars-blue);
+}
+
+.callout-solid:nth-of-type(6),
+.callout-solid:nth-of-type(8n + 6) {
+  background-color: var(--lcars-light-blue);
+}
+
+.callout-solid:nth-of-type(7),
+.callout-solid:nth-of-type(8n + 7) {
+  background-color: var(--lcars-red-orange);
+}
+
+.callout-solid:nth-of-type(8),
+.callout-solid:nth-of-type(8n) {
+  background-color: var(--lcars-white);
 }
