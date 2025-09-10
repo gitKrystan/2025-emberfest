@@ -590,63 +590,42 @@ These components enable you to build robust performant apps with elegant control
 
 # Components with Reactive Magic
 
-Here's where WarpDrive really shines - reactive control flow:
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
-```gts {4,6-8|10-15|17-23|25-31} {lines:true}
-// components/todo-list.gts
-import { Request } from '@warp-drive/ember';
-import { getAllTodos } from '../requests/todo-requests';
-import TodoItem from './todo-item';
-import LoadingSpinner from './loading-spinner';
+<MacWindow title="apps/emberjs/app/components/todo-app/todo-provider.gts" class="max-w-2xl">
+<<< @/apps/emberjs/app/components/todo-app/todo-provider-request-version.gts ts {14|15-17|23-24|29-36|26-27|18-20}{maxHeight: '360px'}
+</MacWindow>
 
-export default <template>
-  <Request @query={{(getAllTodos)}}>
-    <:loading as |state|>
-      <LoadingSpinner @progress={{state.completedRatio}} />
-      <button {{on "click" state.abort}}>Cancel</button>
-    </:loading>
+<div class="max-w-sm">
 
-    <:error as |error state|>
-      <div class="error">
-        <h3>Something went wrong!</h3>
-        <p>{{error.message}}</p>
-        <button {{on "click" state.retry}}>Try Again</button>
-      </div>
-    </:error>
+<v-clicks at=0>
 
-    <:content as |result|>
-      <ul class="todo-list">
-        {{#each result.data as |todo|}}
-          <TodoItem @todo={{todo}} />
-        {{/each}}
-      </ul>
-    </:content>
-  </Request>
-</template>
-```
-
----
-
-# No More Loading State Juggling
-
-The `Request` component handles:
-
-<v-clicks>
-
-- Loading states with progress
-- Error states with retry
-- Success states with data
-- Automatic re-rendering when data changes
+- `<Request>` component
+- Loading state
+- Error state
+- Success state
+- Autorefresh
+- ...and more!
 
 </v-clicks>
 
-<v-click>
-
-<div class="callout float-right text-green-400">
-"Counselor Troi senses your loading states are perfectly managed."
 </div>
 
-</v-click>
+</div>
+
+<!--
+Here's where WarpDrive really shines: reactive control flow
+
+Here' we're looking at a simple TodoProvider component that fetches all todos.
+
+(click) It uses WarpDrive's Request component to declaratively handle request state.
+(click) On load, it displays a loading spinner.
+(click) On error, it displays an error message with a retry button.
+(click) And on success, it passes the data to the Todos component.
+(click) And! When cached responses for this request are invalidated, the component automatically re-renders with fresh data.
+
+(click) There's even more, and I encourage you to check out the `@warp-drive/ember` readme to learn about it.
+-->
 
 ---
 
@@ -654,31 +633,51 @@ The `Request` component handles:
 
 The core logic stays the same - only the framework integration changes!
 
-<v-clicks>
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
-- `@warp-drive/react` - React hooks for request state
-- `@warp-drive/vue` - Vue composables
-- `@warp-drive/svelte` - Svelte stores
+<MacWindow title="apps/react/app/components/todo-app/todo-provider.tsx" class="w-xl">
 
-</v-clicks>
+```tsx
+import { Request } from '@warp-drive/react';
 
-<v-click>
+import { getAllTodos } from '@workspace/shared-data/builders';
+import type { Todo } from '@workspace/shared-data/types';
 
-```ts {4-9} {lines:true}
-// Under the hood in @warp-drive/ember
-import { getRequestState } from '@warp-drive/core/request';
-
-export default class RequestComponent extends Component {
-  @tracked requestState = null;
-
-  constructor() {
-    super(...arguments);
-    this.requestState = getRequestState(this.args.query);
-  }
+export function TodoProvider() {
+  return (
+    <Request
+      query={getAllTodos()}
+      states={{
+        loading: ({ state }) => <div>React Loading Spinner!</div>,
+        error: ({ state }) => (
+          <div>
+            <h2 class="error-message">Something went wrong.</h2>
+            <p class="error-cta">Please contact TodoMVC support.</p>
+            <p>
+              <button onClick={state.retry}>Or DDOS us!</button>
+            </p>
+          </div>
+        ),
+        content: ({ result }) => <div>React Todo List</div>,
+      }}
+    />
+  );
 }
 ```
 
-</v-click>
+</MacWindow>
+
+<div class="max-w-sm text-xs">
+
+- <logos-ember-tomster /> `@warp-drive/ember` <carbon-thumbs-up />
+- <logos-react /> `@warp-drive/react` <carbon-thumbs-up />
+- <carbon-connection-signal class="text-lcars-magenta" /> `@warp-drive/tc39-proposal-signals` <carbon-thumbs-up />
+- <logos-vue /> `@warp-drive/vue` <span class="text-lcars-magenta">Soon!</span>
+- <logos-svelte-icon /> `@warp-drive/svelte` <span class="text-lcars-magenta">Soon!</span>
+
+</div>
+
+</div>
 
 ---
 layout: section
