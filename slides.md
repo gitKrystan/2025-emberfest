@@ -77,34 +77,6 @@ Today we're going on a mission to **explore strange new patterns**, seek out new
 -->
 
 ---
-layout: default
----
-
-# A Fresh Perspective
-
-You might know quite a bit about **one data library** in particular...
-
-<v-click>
-
-And you might even be expecting me to talk about that library.
-
-</v-click>
-
-<v-click>
-
-**But I'm not.**
-
-</v-click>
-
-<v-click>
-
-<div class="callout max-w-2xl float-right">
-Today we're going on a mission to <strong>explore strange new patterns</strong>, seek out new architectures, and <strong>boldly go where our data has never gone before</strong>.
-</div class="callout">
-
-</v-click>
-
----
 layout: image-right
 image: '/images/captain-profile.jpg'
 ---
