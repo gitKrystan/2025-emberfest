@@ -224,7 +224,7 @@ We'll implement a TodoMVC application step-by-step using:
 
 <v-click>
 
-<div class="mt-8 p-4 rounded">
+<div class="callout mt-8 float-right">
 By the end, you'll see how WarpDrive makes data management feel... <em>logical</em>.
 </div>
 
@@ -246,7 +246,7 @@ By default, WarpDrive speaks JSON:API fluently, giving you:
 
 <v-click>
 
-<div class="mt-8 text-center text-lg italic">
+<div class="callout mt-10 float-right max-w-lg">
 "Universal translator online, Captain. All API communications are now standardized."
 </div>
 
@@ -254,7 +254,7 @@ By default, WarpDrive speaks JSON:API fluently, giving you:
 
 <v-click>
 
-<div class="mt-4 text-sm text-gray-400">
+<div class="mt-4 text-sm text-gray-400 max-w-xs">
 (But, you can configure WarpDrive to use other formats if you prefer!)
 </div>
 
@@ -268,13 +268,15 @@ Let's implement the classic TodoMVC, but with WarpDrive powering our data layer.
 
 <v-click>
 
-```typescript twoslash
+<div class="callout max-w-xs m-auto mt-10">
+```typescript
 interface Todo {
   id: string;
   title: string;
   completed: boolean;
 }
 ```
+</div>
 
 </v-click>
 
@@ -291,8 +293,6 @@ layout: section
 # Episode 3
 
 ## "Request Patterns - Making It So"
-
-<div class="text-6xl mb-8">📡</div>
 
 ---
 
@@ -719,7 +719,7 @@ The `Request` component handles:
 
 <v-click>
 
-<div class="mt-8 text-center text-lg italic text-green-400">
+<div class="callout float-right text-green-400">
 "Counselor Troi senses your loading states are perfectly managed."
 </div>
 
@@ -814,7 +814,7 @@ export default class TodoItem extends Component {
 
 <v-click>
 
-<div class="mt-8 text-center text-lg italic text-green-400">
+<div class="callout float-right text-green-400">
 "Captain, the data has been successfully modified without temporal paradoxes!"
 </div>
 
@@ -872,7 +872,7 @@ import { AppStore } from 'shared-data/store';
 
 <v-click>
 
-<div class="mt-8 text-center text-lg italic text-green-400">
+<div class="callout float-right text-green-400">
 "Separate the saucer section! Both parts of the ship continue to function independently."
 </div>
 
@@ -1002,7 +1002,7 @@ WarpDrive approach:
 
 <v-click>
 
-<div class="mt-8 text-center text-lg italic text-green-400">
+<div class="callout float-right text-green-400">
 "She's giving us all she's got, Captain, and she's still got more in reserve!"
 </div>
 
@@ -1048,7 +1048,7 @@ _3 minutes_
 
 <v-click>
 
-<div class="mt-8 text-center text-lg italic text-green-400">
+<div class="callout float-right text-green-400">
 "Space: the final frontier. These are the voyages of the starship WarpDrive..."
 </div>
 
