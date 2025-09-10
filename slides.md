@@ -629,13 +629,23 @@ Here' we're looking at a simple TodoProvider component that fetches all todos.
 
 ---
 layout: iframe
-url: http://localhost:4200/
-title: 'Live Demo: Basic Request Loading and Error States'
+url: http://localhost:4200/?initialTodoCount=3&latency=500&shouldPaginate=false&shouldError=false
+title: 'Live Demo: Basic Request Loading States'
 ---
 
 <!--
 Demo loading state with network throttling
-Demo error states
+Demo caching on the queries
+-->
+
+---
+layout: iframe
+url: http://localhost:4200/?initialTodoCount=3&latency=500&shouldPaginate=false&shouldError=false
+title: 'Live Demo: Basic Request Errors'
+---
+
+<!--
+Demo error state
 -->
 
 ---

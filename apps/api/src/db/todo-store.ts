@@ -8,11 +8,14 @@ import { Store } from './base-store.ts';
 import { flagStore } from './flag-store.ts';
 
 const sampleTodos: TodoAttributes[] = [
+  { title: 'Demo Loading State', completed: false },
+  { title: 'Make API Less Reliable', completed: false },
+  { title: 'Demo Error State', completed: false },
   { title: 'Learn JSONAPI specification', completed: true },
-  { title: 'Implement Todo API', completed: false },
+  { title: 'Implement Todo API', completed: true },
   { title: 'Write tests', completed: false },
-  { title: 'Add more features', completed: false },
-  { title: 'Optimize performance', completed: false },
+  { title: 'Add more features', completed: true },
+  { title: 'Optimize performance', completed: true },
   { title: 'Deploy to production', completed: false },
   { title: 'Monitor and maintain', completed: false },
   { title: 'Gather user feedback', completed: false },
