@@ -1,0 +1,78 @@
+/* Mac window styling for code snippets */
+.mac-window {
+  background: #1e1e1e;
+  border-radius: 8px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  margin: 1rem 0;
+  border: 1px solid #404040;
+}
+
+.mac-titlebar {
+  background: linear-gradient(to bottom, #3c3c3c, #2c2c2c);
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  border-bottom: 1px solid #1a1a1a;
+  position: relative;
+}
+
+.mac-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.mac-button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 0.5px solid rgba(0, 0, 0, 0.2);
+}
+
+.mac-button.close {
+  background: #ff5f57;
+}
+
+.mac-button.minimize {
+  background: #ffbd2e;
+}
+
+.mac-button.maximize {
+  background: #28ca42;
+}
+
+.mac-title {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #cccccc;
+  font-size: 13px;
+  font-weight: 500;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.mac-content {
+  background: #1e1e1e;
+  overflow: auto;
+}
+
+/* Ensure code blocks within mac window have proper styling */
+.mac-content .shiki {
+  background: transparent !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+}
+
+.mac-content pre {
+  background: transparent !important;
+  margin: 0 !important;
+  padding: 16px !important;
+  border-radius: 0 !important;
+}
+
+/* Override any existing padding/margin on code containers */
+.mac-content > div {
+  margin: 0 !important;
+}
