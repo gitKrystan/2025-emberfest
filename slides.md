@@ -20,7 +20,7 @@ mdc: true
 ## EmberFest 2025
 
 <div class="pt-12">
-  <span class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
+  <span class="px-2 py-1">
     Krystan HuffMenne • Staff Engineer @ AuditBoard
   </span>
 </div>
@@ -37,7 +37,7 @@ I was going to call this talk "WarpDrive for Dummies" but we're not dummies. Som
 -->
 
 ---
-layout: two-cols
+layout: default
 ---
 
 # A Fresh Perspective
@@ -50,10 +50,7 @@ You might know quite a bit about **one data library** in particular...
 
 <v-click>
 
-<div class="text-center my-8">
-  <div class="text-6xl mb-4">📊</div>
-  <div class="text-2xl font-bold text-orange-400">EmberData</div>
-</div>
+EmberData
 
 </v-click>
 
@@ -65,44 +62,28 @@ And you might even be expecting me to talk about that library.
 
 </v-click>
 
-::right::
-
 <v-click>
 
-<div class="mt-8 p-4 bg-blue-900/50 rounded border-l-4 border-blue-400">
-  <div class="text-lg italic text-blue-200">
-    "Space: the final frontier..."
-  </div>
-  <div class="mt-2">
-    Today we're going on a mission to <span class="text-yellow-300 font-bold">explore strange new patterns</span>, seek out new architectures, and <span class="text-yellow-300 font-bold">boldly go where our data has never gone before</span>.
-  </div>
-</div>
+Today we're going on a mission to <span class="font-bold">explore strange new patterns</span>, seek out new architectures, and <span class="font-bold">boldly go where our data has never gone before</span>.
 
 </v-click>
-
-<!--
-In fact, you might know quite a bit about one data library in particular (show EmberData logo) and you might even be expecting me to talk about that library, but I'm not.
-
-Instead, I want us to explore WarpDrive with fresh eyes, like you've never seen a data framework before.
-
-"Space: the final frontier..." - Today we're going on a mission to explore strange new patterns, seek out new architectures, and boldly go where our data has never gone before.
--->
 
 ---
 layout: image-right
 image: '/images/captain-profile.jpg'
-class: px-8
 ---
 
 # About Your Captain for This Mission
-
-Before we embark, let me introduce myself - I'm your guide through the WarpDrive universe:
 
 - 🌧️ **Portland, Oregon** - Where I live among the coffee shops and rain
 - 👩‍👧‍👦 **Mother of two** - I understand the importance of reliable, predictable systems that just work
 - 🔥 **Ember veteran since v2** - Nearly a decade of writing Ember applications
 - 🛡️ **Staff Engineer at AuditBoard** - Building AI-first GRC software for enterprise risk
 - ⚡ **Ember Data & Tooling Teams** - Passionate about making data management both powerful and type-safe
+
+<!--
+Before we embark, let me introduce myself - I'm your guide through the WarpDrive universe...
+-->
 
 ---
 layout: center
@@ -114,10 +95,10 @@ class: text-center
 # The Evolution Continues
 
 <div class="text-2xl mb-8 leading-relaxed max-w-4xl mx-auto">
-I've seen the evolution of data patterns in Ember from the early days, and I'm excited to show you where we're <span class="text-yellow-300 font-bold">boldly going next</span>.
+I've seen the evolution of data patterns in Ember from the early days, and I'm excited to show you where we're <span class="font-bold">boldly going next</span>.
 </div>
 
-<div class="text-lg text-blue-200 italic">
+<div class="text-lg italic">
 "Space: the final frontier. These are the voyages of the starship WarpDrive..."
 </div>
 
@@ -136,33 +117,31 @@ class: text-center
 
 # WarpDrive is...
 
-<div class="text-center text-2xl font-bold mb-8 text-blue-400">
-the lightweight data framework for ambitious web applications
-</div>
+...the lightweight data framework for ambitious web applications.
 
-<div class="grid grid-cols-2 gap-8">
+<div class="grid grid-cols-2">
 
 <v-clicks>
 
-<div class="p-6 bg-gray-800 rounded">
+<div class="p-2 rounded">
   <div class="text-4xl mb-4">🌌</div>
   <h3>Universal</h3>
   <p>Works with any framework (Ember, React, Vue, Svelte)</p>
 </div>
 
-<div class="p-6 bg-gray-800 rounded">
+<div class="p-2 rounded">
   <div class="text-4xl mb-4">⚡</div>
-  <h3>Performance</h3>
+  <h3>Performant</h3>
   <p>Committed to best-in-class performance</p>
 </div>
 
-<div class="p-6 bg-gray-800 rounded">
+<div class="p-2 rounded">
   <div class="text-4xl mb-4">💚</div>
   <h3>Typed</h3>
   <p>Fully typed, ready to rock</p>
 </div>
 
-<div class="p-6 bg-gray-800 rounded">
+<div class="p-2 rounded">
   <div class="text-4xl mb-4">🚀</div>
   <h3>Scalable</h3>
   <p>From weekend hobby to enterprise</p>
@@ -195,35 +174,24 @@ layout: center
 
 # The Universal Promise
 
-<div class="text-center text-sm text-gray-400 mb-4">
-*"Separate the saucer section!"*
-</div>
+_"Separate the saucer section!"_
 
-```mermaid {theme: 'dark', scale: 0.8}
-graph TB
-    subgraph "📦 shared-data-layer"
-        core["🌌 @warp-drive/core"]
-        builders["🛸 builders/"]
-        handlers["🛸 handlers/"]
-        schemas["📊 schemas/"]
-        store["💿 store/"]
-    end
+```
+📦 shared-data-layer
+├── 🌌 @warp-drive/core
+├── 🛸 builders/
+├── 🛸 handlers/
+├── 📊 schemas/
+└── 💿 store/
 
-    subgraph "🚀 ember-app"
-        ember["@warp-drive/ember"]
-    end
+🚀 ember-app
+└── @warp-drive/ember
 
-    subgraph "⚛️ react-app"
-        react["@warp-drive/react"]
-    end
+⚛️ react-app
+└── @warp-drive/react
 
-    subgraph "📱 vue-app"
-        vue["@warp-drive/vue"]
-    end
-
-    core --> ember
-    core --> react
-    core --> vue
+📱 vue-app
+└── @warp-drive/vue
 ```
 
 <v-click>
@@ -243,8 +211,6 @@ class: text-center
 
 <div class="text-6xl mb-8">🚀</div>
 
-_7 minutes_
-
 ---
 
 # The Mission Brief
@@ -262,7 +228,7 @@ We'll implement a TodoMVC application step-by-step using:
 
 <v-click>
 
-<div class="mt-8 p-4 bg-blue-900 rounded">
+<div class="mt-8 p-4 rounded">
 By the end, you'll see how WarpDrive makes data management feel... <em>logical</em>.
 </div>
 
@@ -279,13 +245,12 @@ By default, WarpDrive speaks JSON:API fluently, giving you:
 - **Standardized format** for resources, relationships, and errors
 - **Consistent patterns** across all your APIs
 - **Built-in pagination, filtering, and sorting** conventions
-- **Media type negotiation** with `application/vnd.api+json`
 
 </v-clicks>
 
 <v-click>
 
-<div class="mt-8 text-center text-lg italic text-green-400">
+<div class="mt-8 text-center text-lg italic">
 "Universal translator online, Captain. All API communications are now standardized."
 </div>
 
@@ -317,6 +282,12 @@ interface Todo {
 
 </v-click>
 
+<!--
+TodoMVC is a spec for a simple Todo app, implemented in multiple frameworks to compare approaches.
+
+It's built around a simple Todo resource.
+-->
+
 ---
 layout: section
 class: text-center
@@ -328,15 +299,13 @@ class: text-center
 
 <div class="text-6xl mb-8">📡</div>
 
-_10 minutes_
-
 ---
 
-# The RequestManager - Mission Control
+# The RequestManager
 
 <v-click>
 
-The RequestManager handles all HTTP communication:
+A WarpDrive RequestManager handles all HTTP communication:
 
 </v-click>
 
@@ -355,6 +324,10 @@ Think of it as your ship's communications officer - it manages all external cont
 </div>
 
 </v-click>
+
+<!--
+To make a WarpDrive request,
+-->
 
 ---
 
@@ -835,7 +808,7 @@ export default class TodoItem extends Component {
 - Automatic rollback on errors
 - Optimistic updates that work
 
-</v-click>
+</v-clicks>
 
 <v-click>
 
