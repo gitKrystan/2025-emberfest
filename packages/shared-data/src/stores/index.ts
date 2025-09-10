@@ -32,15 +32,15 @@ export default class AppStore extends Store {
     apiCacheSoftExpires: 1 * 30 * 1000, // 30 seconds
   });
 
+  createCache(capabilities: CacheCapabilitiesManager) {
+    return new JSONAPICache(capabilities);
+  }
+
   createSchemaService() {
     const schema = new SchemaService();
     schema.registerResources([FlagSchema, TodoSchema]);
     registerDerivations(schema);
     return schema;
-  }
-
-  createCache(capabilities: CacheCapabilitiesManager) {
-    return new JSONAPICache(capabilities);
   }
 
   instantiateRecord(key: ResourceKey, createArgs?: Record<string, unknown>) {

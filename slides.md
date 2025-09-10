@@ -80,7 +80,7 @@ Today we're going on a mission to **explore strange new patterns**, seek out new
 layout: two-cols
 ---
 
-# About Your Captain for This Mission
+# Your Captain for This Mission
 
 <div class="callout-solid mr-4 bg-lcars-magenta">
 
@@ -95,7 +95,7 @@ layout: two-cols
 ::right::
 
 <div class="callout">
-<img src="/captain-profile.jpg" alt="TodoMVC UI with Captain Picard's Todo List" class="h-100 w-auto" />
+<img src="/captain-profile.jpg" alt="Krystan and her family backpacking at Mt. Rainier, Washington" class="h-100 w-auto" />
 </div>
 
 <!--
@@ -195,13 +195,13 @@ Unlike traditional data libraries, WarpDrive is built around:
 <div>&nbsp;&nbsp;&nbsp;&nbsp;└── <carbon-types /> types/</div>
 <div class="h-2"></div>
 <div><carbon-folder /> apps/</div>
-<div>├── <carbon-data-base /> api</div>
 <div>├── <span class="text-lcars-orange"><logos-ember-tomster /> emberjs</span></div>
-<div>│&nbsp;&nbsp;&nbsp;└── <span class="text-lcars-magenta">@warp-drive/ember</span></div>
+<div>│&nbsp;&nbsp;&nbsp;└── <span class="text-lcars-magenta"><carbon-rocket /> @warp-drive/ember</span></div>
 <div>├── <span class="text-lcars-cyan"><logos-react /> react</span></div>
-<div>│&nbsp;&nbsp;&nbsp;└── <span class="text-lcars-magenta">@warp-drive/react</span></div>
-<div>└── <span class="text-lcars-green"><logos-vue /> vue</span></div>
-<div>&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="text-lcars-magenta">@warp-drive/vue</span></div>
+<div>│&nbsp;&nbsp;&nbsp;└── <span class="text-lcars-magenta"><carbon-rocket /> @warp-drive/react</span></div>
+<div>├── <span class="text-lcars-green"><logos-vue /> vue</span></div>
+<div>│&nbsp;&nbsp;&nbsp;└── <span class="text-lcars-magenta"><carbon-rocket /> @warp-drive/vue</span></div>
+<div>└── <carbon-data-base /> api</div>
 
 </div>
 
@@ -259,7 +259,7 @@ TodoMVC is a spec for a simple Todo app, implemented<br />in multiple frameworks
 It's built around a simple Todo resource:
 
 <div class="callout max-w-xs mt-10">
-```typescript
+```ts
 interface Todo {
   id: string;
   title: string;
@@ -274,11 +274,155 @@ interface Todo {
 
 # TodoMVC: Our Prime Directive
 
-Every TodoMVC implementation shares the same [core features](https://github.com/tastejs/todomvc/blob/master/app-spec.md) and looks like this:
+Every TodoMVC implementation shares the same [core features](https://github.com/tastejs/todomvc/blob/master/app-spec.md):
 
 <div class="callout">
-<img src="./picard-todos.png" alt="TodoMVC UI with Captain Picard's Todo List" class="border border-gray-700 rounded shadow-lg max-w-lg mx-auto" />
+<img src="./picard-todos.png" alt="TodoMVC UI with Captain Picard's Todo List" class="h-80 w-auto" />
 </div>
+
+---
+layout: section
+---
+
+# Episode 3
+
+## "Request Patterns - Making It So"
+
+---
+
+# The WarpDrive Store
+
+**Like the bridge of our starship** - everything flows through here:
+
+<MacWindow title="packages/shared-data/src/stores/index.ts" class="max-w-2xl">
+<<< @/packages/shared-data/src/stores/index.ts ts {20|21|28-37|39-44|46-52}{maxHeight: '200px'}
+</MacWindow>
+
+<v-clicks at=1>
+
+- **Request Management** - How we handle requests for data
+- **Cache Management** - How to cache that data
+- **Schema Management** - Schemas for what our data looks like
+- **Reactive State Management** - What sort of reactive objects to create for that data
+
+</v-clicks>
+
+---
+
+# The RequestManager
+
+Think of it as your ship's communications officer - it manages all external contact!
+
+<MacWindow title="packages/shared-data/src/stores/index.ts" class="max-w-2xl">
+<<< @/packages/shared-data/src/stores/index.ts ts {21|26|22-27|28|21-28}{maxHeight: '200px'}
+</MacWindow>
+
+<v-clicks at=1>
+
+- **Fetch Handler** - Makes actual network requests (Fetch API + error handling)
+- **Request Pipeline** - Allows custom handlers for data transformation
+- **Cache Integration** - Automatically caches responses
+- **Does What It Says** - On the tin
+
+</v-clicks>
+
+<v-click>
+
+</v-click>
+
+<!--
+One of the most important parts of the store is the "Request Manager"
+
+Think of RequestManager as your ship's communications officer - it manages all external contact!
+
+RequestManager is fully customize-able. You don't even need to use Fetch, though we will. (click)
+
+You can customize it with handlers to transform requests and responses as needed. (click)
+These handlers can choose to call `next()`, similar to middleware patterns in API frameworks.
+
+You can also register a special "CacheHandler" to integrate with WarpDrive's caching system.
+In our case, we're using the default CacheHandler.
+
+So the Request Manager does exactly what it says on the tin. (click) It manages your requests.
+-->
+
+---
+
+# Making a Request
+
+<MacWindow title="apps/emberjs/routes/index.js" class="max-w-2xl">
+
+```js {10-14}{maxHeight: '200px'}
+import Route from '@ember/routing/route';
+import { service } from '@ember/service';
+
+import type Store from '#/services/store';
+
+export default class ActiveTodos extends Route {
+  @service declare private readonly store: Store;
+
+  model() {
+    return this.store.request({
+      method: 'GET',
+      url: '/api/todo',
+      // Additional options like headers, query params, etc.
+    })
+  }
+}
+```
+
+</MacWindow>
+
+<!--
+The simplest way to make a request is to pass a request object to the store's request method.
+This method delegates the request to the store's RequestManager.
+-->
+
+---
+
+# Request Options
+
+<MacWindow title="apps/emberjs/routes/index.js" class="max-w-2xl">
+
+```ts twoslash {2-3|all}{maxHeight: '350px'}
+type Store = any;
+// ---cut---
+interface RequestInfo extends RequestInit {
+  //                          ^^^^^^^^^^^
+  // Standard Fetch API options
+  method: 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT'; // etc
+  url: string;
+
+  // Caching options
+  op?: string;
+  cacheOptions?: {
+    types?: string[];
+    key?: string;
+    reload?: boolean;
+    backgroundReload?: boolean;
+  };
+
+  // Custom handler options
+  options?: Record<string, unknown>;
+
+  // ...
+}
+```
+
+</MacWindow>
+
+<!--
+Requests can take any of the standard Fetch API RequestInit options, plus some extras
+to configure caching and handler behavior.
+
+As you can imagine, these options can get quite complex, which is why we support request builders...
+-->
+
+---
+
+# Request Builders
+
+Foo
 
 ---
 
@@ -311,92 +455,12 @@ By default, WarpDrive speaks JSON:API fluently, giving you:
 </v-click>
 
 ---
-layout: section
----
-
-# Episode 3
-
-## "Request Patterns - Making It So"
-
----
-
-# The RequestManager
-
-Think of it as your ship's communications officer - it manages all external contact!
-
-<MacWindow title="packages/shared-data/src/stores/index.ts" class="max-w-2xl">
-<<< @/packages/shared-data/src/stores/index.ts ts {21|26|22-27|28|21-28}{maxHeight: '200px'}
-</MacWindow>
-
-<v-clicks at=1>
-
-- **Fetch Handler** - Makes actual network requests
-- **Request Pipeline** - Allows custom handlers for data transformation
-- **Cache Integration** - Automatically caches responses
-- **Does What It Says** - On the tin
-
-</v-clicks>
-
-<v-click>
-
-</v-click>
-
-<!--
-To make a WarpDrive request,
--->
-
----
-
-# Request Builders
-
-WarpDrive uses typed request builders in your shared data layer:
-
-```typescript twoslash {1,5-7|9-13|15-25} {lines:true}
-// shared-data-layer/builders/todo.ts
-import { withBrand } from '@warp-drive/core/types/request';
-
-// What is `withBrand`? It adds TypeScript type information to requests
-// so WarpDrive knows what type of data to expect back
-
-export function getAllTodos() {
-  return withBrand<Todo[]>({
-    method: 'GET',
-    url: '/api/todo',
-    headers: {
-      Accept: 'application/vnd.api+json',
-      'Content-Type': 'application/vnd.api+json',
-    },
-  });
-}
-
-export function createTodo(title: string) {
-  return withBrand<Todo>({
-    method: 'POST',
-    url: '/api/todo',
-    headers: {
-      Accept: 'application/vnd.api+json',
-      'Content-Type': 'application/vnd.api+json',
-    },
-    body: JSON.stringify({
-      data: {
-        type: 'todo',
-        attributes: {
-          title,
-          completed: false,
-        },
-      },
-    }),
-  });
-}
-```
-
----
 
 # Built-in JSON:API Builders
 
 Why write all that boilerplate? WarpDrive includes built-in JSON:API request builders:
 
-```typescript twoslash {1-5|7-12} {lines:true}
+```ts twoslash {1-5|7-12} {lines:true}
 // shared-data-layer/builders/todo.ts
 import {
   findRecord,
@@ -460,7 +524,7 @@ _10 minutes_
 
 Instead of models with complex inheritance, WarpDrive uses simple, declarative schemas:
 
-```typescript twoslash {1,4-14} {lines:true}
+```ts twoslash {1,4-14} {lines:true}
 // shared-data-layer/schemas/todo.ts
 import { withDefaults } from '@warp-drive/core/reactive';
 
@@ -499,7 +563,7 @@ Notice that `status` field? It's **derived** - automatically calculated based on
 
 <v-click>
 
-```typescript {6-13}
+```ts {6-13}
 {
   kind: 'derived',
   name: 'status',
@@ -524,66 +588,9 @@ No more manual property updates!
 
 ---
 
-# The WarpDrive Store
-
-The WarpDrive store is your **mission control center** for data management:
-
-<v-clicks>
-
-- **Central hub** for managing all your data resources
-- **Handles fetching** - Smart request management with deduplication
-- **Manages caching** - Efficient memory usage with automatic cleanup
-- **Reactive updates** - Components automatically re-render when data changes
-- **Type-safe** - Full TypeScript support throughout
-
-</v-clicks>
-
-<v-click>
-
-<div class="mt-6 p-4 bg-blue-900 rounded text-center">
-Think of it as the bridge of our starship - everything flows through here!
-</div>
-
-</v-click>
-
----
-
-# Creating a WarpDrive Store
-
-Creating a WarpDrive store starts simple and grows with your needs:
-
-```typescript {1,4-10} {lines:true}
-// shared-data-layer/store/index.ts
-import { Cache, Fetch, Store, RequestManager } from '@warp-drive/core';
-
-export class AppStore extends Store {
-  requestManager = new RequestManager().use([Fetch]);
-
-  createCache(storeWrapper) {
-    return new Cache(storeWrapper);
-  }
-}
-```
-
-<v-click>
-
-The cache automatically handles your data - just register your schemas:
-
-```typescript {5-6}
-import { AppStore } from './app-store';
-import { TodoSchema } from '../schemas/todo';
-
-const store = new AppStore();
-store.registerSchema(TodoSchema);
-```
-
-</v-click>
-
----
-
 # TypeScript Integration
 
-```typescript twoslash {1-8|10-12} {lines:true}
+```ts twoslash {1-8|10-12} {lines:true}
 // Automatically generated types
 interface Todo {
   id: string;
@@ -752,7 +759,7 @@ The core logic stays the same - only the framework integration changes!
 
 <v-click>
 
-```typescript {4-9} {lines:true}
+```ts {4-9} {lines:true}
 // Under the hood in @warp-drive/ember
 import { getRequestState } from '@warp-drive/core/request';
 
@@ -786,7 +793,7 @@ _7 minutes_
 
 WarpDrive handles mutations through a "checkout" system:
 
-```typescript {8-17} {lines:true}
+```ts {8-17} {lines:true}
 // components/todo-item.gts
 import { Checkout } from '@warp-drive/core/reactive';
 
@@ -865,7 +872,7 @@ Here's the real magic - our data layer is completely portable:
 
 # Multiple Apps, One Data Layer
 
-```typescript {1-4|6-8|10-12} {lines:true}
+```ts {1-4|6-8|10-12} {lines:true}
 // ember-app/app.ts
 import { AppStore } from 'shared-data/store';
 export default class App extends Application {
@@ -915,7 +922,7 @@ _8 minutes_
 
 WebSocket message updates:
 
-```typescript {1-10} {lines:true}
+```ts {1-10} {lines:true}
 // Real-time todo updates via WebSocket using JSON:API format
 store.cache.patch({
   op: 'updateRecord',
@@ -938,7 +945,7 @@ store.cache.patch({
 
 Sometimes your API doesn't follow standards. Handlers let you adapt without changing your application code:
 
-```typescript {2-12|14-15} {lines:true}
+```ts {2-12|14-15} {lines:true}
 // shared-data-layer/handlers/snake-case-handler.ts
 const SnakeCaseHandler = {
   request(context, next) {

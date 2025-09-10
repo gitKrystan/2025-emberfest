@@ -30,7 +30,7 @@
   }
 
   h1 {
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     font-size: 2.25rem;
     line-height: 1.4;
     font-family: 'Antonio', 'Avenir Next', sans-serif;
@@ -201,7 +201,7 @@
   overflow: hidden;
 
   h1 {
-    @apply text-6xl leading-20;
+    @apply leading-20;
     color: var(--lcars-orange);
     font-family: 'Antonio', 'Avenir Next', sans-serif;
     font-weight: 700;
@@ -212,6 +212,7 @@
     z-index: 2;
     margin-left: 40px;
     margin-right: 40px;
+    font-size: 3rem;
   }
 
   h2 {
