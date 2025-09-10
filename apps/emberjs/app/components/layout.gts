@@ -1,16 +1,14 @@
 import type { TOC } from '@ember/component/template-only';
-
-import { Attribution } from '#/components/attribution';
-import { Flags } from '#/components/flags';
+import Component from '@glimmer/component';
+import { cached } from '@glimmer/tracking';
 
 import { Request } from '@warp-drive/ember';
 
 import { queryFlags } from '@workspace/shared-data/builders';
-
-import Component from '@glimmer/component';
-import { cached } from '@glimmer/tracking';
-
 import type { ApiFlag } from '@workspace/shared-data/types';
+
+import { Attribution } from '#/components/attribution';
+import { Flags } from '#/components/flags';
 
 interface Signature {
   Blocks: {

@@ -5,6 +5,7 @@ import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 
+import type { Store } from '@workspace/shared-data';
 import {
   deleteTodo,
   patchCacheTodoActivated,
@@ -17,7 +18,6 @@ import { Form } from '#/components/design-system/form';
 import { reportError } from '#/helpers/error';
 import { autofocus } from '#/modifiers/autofocus';
 import type AppState from '#/services/app-state';
-import type Store from '#/services/store';
 
 interface Signature {
   Args: {

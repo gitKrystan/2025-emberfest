@@ -3,6 +3,7 @@ import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { cached } from '@glimmer/tracking';
 
+import type { Store } from '@workspace/shared-data';
 import {
   bulkPatchAllTodosToActive,
   bulkPatchAllTodosToCompleted,
@@ -12,7 +13,6 @@ import type { Todo } from '@workspace/shared-data/types';
 
 import { reportError } from '#/helpers/error';
 import type AppState from '#/services/app-state';
-import type Store from '#/services/store';
 
 export class ToggleAllTodos extends Component<{
   Args: {

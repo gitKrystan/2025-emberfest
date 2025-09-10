@@ -4,6 +4,7 @@ import Component from '@glimmer/component';
 
 import { Request } from '@warp-drive/ember';
 
+import type { Store } from '@workspace/shared-data';
 import {
   bulkDeleteCompletedTodos,
   getCompletedTodosCount,
@@ -13,7 +14,6 @@ import {
 import { HandleError } from '#/components/design-system/error';
 import { reportError } from '#/helpers/error';
 import type AppState from '#/services/app-state';
-import type Store from '#/services/store';
 
 /**
  * Renders a button to clear completed todos if there are any.

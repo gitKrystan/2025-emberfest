@@ -118,6 +118,7 @@ I've seen the evolution of data patterns in Ember from the early days,<br />and 
 
 ---
 layout: section
+title: 'Episode 1: "What is WarpDrive?"'
 ---
 
 # Episode 1
@@ -219,6 +220,7 @@ Unlike traditional data libraries, WarpDrive is built around:
 
 ---
 layout: section
+title: 'Episode 2: "Engage! - Setting Up Our Mission"'
 ---
 
 # Episode 2
@@ -282,6 +284,7 @@ Every TodoMVC implementation shares the same [core features](https://github.com/
 
 ---
 layout: section
+title: 'Episode 3: "Request Patterns - Making It So"'
 ---
 
 # Episode 3
@@ -380,16 +383,16 @@ By default, WarpDrive `Fetch` speaks \{JSON:API\} fluently, giving you:
 
 # Making a Request
 
-<MacWindow title="apps/emberjs/routes/index.js" class="max-w-2xl">
+<MacWindow title="apps/my-app/routes/index.js" class="max-w-2xl">
 
 ```js {10-14}{maxHeight: '200px'}
-import Route from '@ember/routing/route';
-import { service } from '@ember/service';
+import Route from '@my-framework/routing/route';
+import { service } from '@my-framework/service';
 
-import type Store from '#/services/store';
+import type { Store } from '@workspace/shared-data';
 
 export default class ActiveTodos extends Route {
-  @service declare private readonly store: Store;
+  @service declare store: Store;
 
   model() {
     return this.store.request({
@@ -485,15 +488,12 @@ automatically invalidate this request when any request with the
 
 ---
 layout: section
+title: 'Episode 4: "Schemas - The DNA of Your Data"'
 ---
 
 # Episode 4
 
 ## "Schemas - The DNA of Your Data"
-
-<div class="text-6xl mb-8">🧬</div>
-
-_10 minutes_
 
 ---
 
@@ -501,162 +501,90 @@ _10 minutes_
 
 Instead of models with complex inheritance, WarpDrive uses simple, declarative schemas:
 
-```ts twoslash {1,4-14} {lines:true}
-// shared-data-layer/schemas/todo.ts
-import { withDefaults } from '@warp-drive/core/reactive';
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
-export const TodoSchema = withDefaults({
-  type: 'todo', // JSON:API resource type
-  fields: [
-    { kind: 'field', name: 'id', type: 'string' },
-    { kind: 'field', name: 'title', type: 'string' },
-    { kind: 'field', name: 'completed', type: 'boolean' },
-    { kind: 'field', name: 'created', type: 'luxon-date' },
-    {
-      kind: 'derived',
-      name: 'status',
-      type: 'conditional',
-      options: {
-        field: 'completed',
-        whenTrue: 'Complete',
-        whenFalse: 'Active',
-      },
-    },
-  ],
-});
-```
+<MacWindow title="packages/shared-data/src/schemas/todo.ts" class="max-w-2xl">
+<<< @/packages/shared-data/src/schemas/todo.ts ts {all|3|4|5-13}{maxHeight: '300px'}
+</MacWindow>
 
-<v-click>
+<v-clicks at=0>
 
-**What does `withDefaults` do?** It creates a schema with built-in TypeScript types and reactive behaviors. No class inheritance needed!
+- `withDefaults` sets up defaults, like the `id` field
+- `type` defines the resource type
+- `fields` defines the shape of the resource
 
-</v-click>
+</v-clicks>
 
----
-
-# The Magic of Derived Fields
-
-Notice that `status` field? It's **derived** - automatically calculated based on other fields.
-
-<v-click>
-
-```ts {6-13}
-{
-  kind: 'derived',
-  name: 'status',
-  type: 'conditional',
-  options: {
-    field: 'completed',
-    whenTrue: 'Complete',
-    whenFalse: 'Active',
-  },
-}
-```
-
-</v-click>
-
-<v-click>
-
-<div class="mt-6 p-4 bg-green-900 rounded">
-No more manual property updates!
 </div>
 
-</v-click>
+<!--
+Our Todo Schema is very simple, but WarpDrive provides lots of powerful schema features.
+
+More on that this afternoon in Mehul's talk about "ReactiveResources & Schema‑Driven Data Handling"
+-->
 
 ---
 
 # TypeScript Integration
 
-```ts twoslash {1-8|10-12} {lines:true}
-// Automatically generated types
-interface Todo {
-  id: string;
-  title: string;
-  completed: boolean;
-  created: Date;
-  status: 'Complete' | 'Active'; // Derived field!
-}
+Because resources are just POJOs, you can define types for their various states:
 
-// Different states have different requirements
-type NewTodo = Omit<Todo, 'id' | 'created' | 'status'>; // For creating
-type Todo = Todo; // For existing records
-```
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
-<v-click>
+<MacWindow title="packages/shared-data/src/types/todo.ts" class="max-w-2xl">
+<<< @/packages/shared-data/src/types/todo.ts ts {11-27|11-15|17-21|23-26}{maxHeight: '350px'}
+</MacWindow>
 
-<div class="mt-6 text-center text-lg italic text-green-400">
-"Data, are you getting readings on this?" - Yes, and they're perfectly structured!
-</div>
+<div class="max-w-sm">
 
-</v-click>
+<v-clicks at=0>
 
----
-
-# Schema Checkpoint
-
-<v-clicks>
-
-- ✅ Declarative schema definition with `withDefaults`
-- ✅ Derived fields for computed properties
-- ✅ Schema registration with the store
-- ✅ Type-safe resources
+- An attribute type for pessimistic creation
+- A readonly Todo type
+- An editable Todo type
 
 </v-clicks>
 
 <v-click>
 
-**Next up:** Let's see this in action with Ember UI!
+<div class="callout mt-4">
+  "Data, are you getting readings on this?"<br />Yes, and they're <strong>perfectly structured!</strong>
+</div>
 
 </v-click>
 
+</div>
+
+</div>
+
 ---
 layout: section
+title: 'Episode 5: "Reactive UI - Ember Integration"'
 ---
 
 # Episode 5
 
 ## "Reactive UI - Ember Integration"
 
-<div class="text-6xl mb-8">⚛️</div>
-
-_8 minutes_
+<!--
+Note that so far I haven't shown you any Ember code.
+Everything up until now has been framework-agnostic.
+Truly universal.
+-->
 
 ---
 
-# JSON:API Response Format
+# <logos-ember /> + `@warp-drive/ember`
 
-WarpDrive works seamlessly with JSON:API responses:
+- **A Thin Wrapper** - Built on top of `@warp-drive/core` reactive utilities
+- **Provides Ember components** - For request UX with elegant control flow.
+- **Reactive** - Leverages Ember's reactivity system
 
-```json {2-15|16-18} {lines:true}
-// GET /api/todo response
-{
-  "data": [
-    {
-      "type": "todo",
-      "id": "1",
-      "attributes": {
-        "title": "Learn WarpDrive",
-        "completed": false,
-        "created": "2025-01-08T10:00:00Z"
-      },
-      "links": {
-        "self": "/api/todo/1"
-      }
-    }
-  ],
-  "links": {
-    "self": "/api/todo"
-  }
-}
-```
+<!--
+This @warp-drive/ember package provides components built over the core WarpDrive reactive utilities for working with promises and requests.
 
-<v-click>
-
-<div class="mt-6 text-center text-lg italic text-green-400">
-"Make it so!" - And WarpDrive makes it typed.
-</div>
-
-</v-click>
+These components enable you to build robust performant apps with elegant control flow.
+-->
 
 ---
 
@@ -754,6 +682,7 @@ export default class RequestComponent extends Component {
 
 ---
 layout: section
+title: 'Episode 6: "Data Mutations - Quantum Mechanics"'
 ---
 
 # Episode 6
@@ -817,6 +746,7 @@ export default class TodoItem extends Component {
 
 ---
 layout: section
+title: 'Episode 7: "Universal Deployment"'
 ---
 
 # Episode 7
@@ -883,6 +813,7 @@ By building our data layer in a separate package in the monorepo, we achieve tru
 
 ---
 layout: section
+title: 'Episode 8: "Advanced Patterns - Warp 9.8"'
 ---
 
 # Episode 8
@@ -951,6 +882,7 @@ Now your entire app can use camelCase while your API uses snake_case!
 
 ---
 layout: section
+title: 'Episode 9: "Performance - Ludicrous Speed"'
 ---
 
 # Episode 9
@@ -1005,6 +937,7 @@ WarpDrive approach:
 
 ---
 layout: section
+title: 'Episode 10: "The Future - Final Frontier"'
 ---
 
 # Episode 10
@@ -1133,6 +1066,43 @@ And so is your journey with WarpDrive. The data is out there - go boldly and fet
 <v-click>
 
 ## Questions? Let's explore the unknown together!
+
+</v-click>
+
+---
+
+# JSON:API Response Format
+
+WarpDrive works seamlessly with JSON:API responses:
+
+```json {2-15|16-18} {lines:true}
+// GET /api/todo response
+{
+  "data": [
+    {
+      "type": "todo",
+      "id": "1",
+      "attributes": {
+        "title": "Learn WarpDrive",
+        "completed": false,
+        "created": "2025-01-08T10:00:00Z"
+      },
+      "links": {
+        "self": "/api/todo/1"
+      }
+    }
+  ],
+  "links": {
+    "self": "/api/todo"
+  }
+}
+```
+
+<v-click>
+
+<div class="mt-6 text-center text-lg italic text-green-400">
+"Make it so!" - And WarpDrive makes it typed.
+</div>
 
 </v-click>
 

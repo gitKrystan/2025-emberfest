@@ -14,10 +14,14 @@ export interface TodoAttributes {
   completed: boolean;
 }
 
-export interface Todo extends BaseTodo, Readonly<TodoAttributes> {
+export interface Todo extends BaseTodo {
   readonly id: string;
+  readonly title: string;
+  readonly completed: boolean;
 }
 
-export interface EditableTodo extends BaseTodo, TodoAttributes {
+export interface EditableTodo extends BaseTodo {
   id: string;
+  title: string;
+  completed: boolean;
 }

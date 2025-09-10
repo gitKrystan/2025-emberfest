@@ -1,5 +1,7 @@
 /* All Layouts share these styles */
 .slidev-layout {
+  position: absolute;
+  inset: 0;
   padding-left: 3.5rem;
   padding-right: 3.5rem;
   padding-top: 2.5rem;
@@ -192,7 +194,6 @@
 .slidev-layout.cover,
 .slidev-layout.intro {
   @apply h-full;
-  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -248,15 +249,9 @@
   }
 }
 
-/** Default */
-.slidev-layout.default {
-  position: relative;
-}
-
 /* Center */
 .slidev-layout.center {
   @apply h-full;
-  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;

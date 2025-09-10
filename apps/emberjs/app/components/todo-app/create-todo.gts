@@ -3,12 +3,12 @@ import { on } from '@ember/modifier';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 
+import type { Store } from '@workspace/shared-data';
 import { createTodo } from '@workspace/shared-data/builders';
 import type { TodoAttributes } from '@workspace/shared-data/types';
 
 import { reportError } from '#/helpers/error';
 import type AppState from '#/services/app-state';
-import type Store from '#/services/store';
 
 const NameForTitle = 'title';
 type NameForTitle = typeof NameForTitle;

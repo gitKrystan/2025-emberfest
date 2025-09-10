@@ -6,7 +6,6 @@
   border-radius: 12px;
   box-shadow: 0 8px 25px rgba(255, 153, 51, 0.3);
   overflow: hidden;
-  margin: 1rem 0;
   border: 2px solid var(--lcars-blue);
   position: relative;
 }

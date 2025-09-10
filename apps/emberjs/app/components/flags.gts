@@ -6,6 +6,7 @@ import { cached, tracked } from '@glimmer/tracking';
 import { checkout, type ReactiveResource } from '@warp-drive/core/reactive';
 import { Await, Request } from '@warp-drive/ember';
 
+import type { Store } from '@workspace/shared-data';
 import { invalidateAllTodoQueries, queryFlags, updateFlag } from '@workspace/shared-data/builders';
 import type {
   ApiFlag,
@@ -20,7 +21,6 @@ import type {
 import { Button } from '#/components/design-system/button';
 import { HandleError } from '#/components/design-system/error';
 import { LoadingSpinner } from '#/components/design-system/loading';
-import type Store from '#/services/store';
 
 export class Flags extends Component {
   <template>
