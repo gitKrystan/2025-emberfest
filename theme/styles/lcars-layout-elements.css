@@ -4,7 +4,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 90%;
   height: 60px;
   background: linear-gradient(
     to right,
@@ -22,7 +22,7 @@
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 100%;
+  width: 90%;
   height: 80px;
   background: linear-gradient(
     to left,
@@ -40,14 +40,14 @@
   position: absolute;
   bottom: 0;
   right: 0;
-  width: 100%;
+  width: 90%;
   height: 80px;
   background: linear-gradient(
     to left,
-    var(--lcars-orange) 0%,
+    var(--lcars-blue) 0%,
+    var(--lcars-blue) 100px,
     var(--lcars-orange) 100px,
-    var(--lcars-amber) 100px,
-    var(--lcars-amber) 180px,
+    var(--lcars-orange) 180px,
     var(--lcars-magenta) 180px
   );
   border-radius: 40px 0 0 0;
@@ -71,7 +71,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 90%;
   height: 60px;
   background: linear-gradient(
     to right,
@@ -92,6 +92,6 @@
   top: 0;
   bottom: 0;
   width: 6px;
-  background: var(--lcars-accent-gradient);
+  background: var(--lcars-magenta-gradient);
   border-radius: 0 3px 3px 0;
 }

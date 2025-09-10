@@ -77,20 +77,25 @@ Today we're going on a mission to **explore strange new patterns**, seek out new
 -->
 
 ---
-layout: image-right
-image: '/images/captain-profile.jpg'
+layout: two-cols
 ---
 
 # About Your Captain for This Mission
 
-<div class="callout">
+<div class="callout-solid mr-4 bg-lcars-magenta">
 
 <p>Portland, Oregon</p>
-<p>Answers to "mom"</p>
-<p>Staff Engineer at AuditBoard</p>
+<p>Answers to “mom”</p>
+<p>Staff Engineer @ AuditBoard</p>
 <p>EmberData/WarpDrive & Tooling Teams</p>
 <p>Ember veteran since v2</p>
 
+</div>
+
+::right::
+
+<div class="callout">
+<img src="/captain-profile.jpg" alt="TodoMVC UI with Captain Picard's Todo List" class="h-100 w-auto" />
 </div>
 
 <!--
@@ -98,7 +103,7 @@ Before we embark, let me introduce myself - I'm your guide through the WarpDrive
 
  🌧️ **Portland, Oregon** - Where I live among the coffee shops and rain
 - 👩‍👧‍👦 **Mother of two** - I understand the importance of reliable, predictable systems that just work
-- 🛡️ **Staff Engineer at AuditBoard** - Building AI-first GRC software for enterprise risk
+- 🛡️ **Staff Engineer at AuditBoard** - Building enterprise Audit, Risk, and Compliance software
 - ⚡ **Ember Data & Tooling Teams** - Passionate about making data management both powerful and type-safe
 - 🔥 **Ember veteran since v2** - Nearly a decade of writing Ember applications
 -->
@@ -161,12 +166,10 @@ Unlike traditional data libraries, WarpDrive is built around:
 
 <v-clicks>
 
-- **Resource-first architecture** <span class="text-gray-400">instead of model-heavy inheritance patterns</span>
-- **Schema-driven development** <span class="text-gray-400">rather than class-based models with complex lifecycle hooks</span>
-- **Universal framework compatibility** <span class="text-gray-400">vs. framework-specific implementations</span>
-- **Fine-grained reactivity** <span class="text-gray-400">that just works</span>
-- **Schema-driven patterns** <span class="text-gray-400">for consistent data shapes</span>
-- **Universal compatibility** <span class="text-gray-400">for a consistent data layer across multiple applications, independent of the framework(s)</span>
+- **Resource-first architecture** <span class="text-lcars-blue">instead of heavy model inheritance patterns</span>
+- **Schema-driven development** <span class="text-lcars-blue">for consistent, sharable data shapes</span>
+- **Universal compatibility** <span class="text-lcars-blue">vs. framework-specific implementations</span>
+- **Fine-grained reactivity** <span class="text-lcars-blue">that just works</span>
 
 </v-clicks>
 
@@ -178,7 +181,7 @@ Unlike traditional data libraries, WarpDrive is built around:
 
 <div class="grid grid-cols-2 gap-4">
 
-<div class="callout">
+<div class="callout ml-auto">
 
 ```{all}
 📦 shared-data-layer
@@ -227,10 +230,10 @@ We'll implement a TodoMVC application step-by-step using:
 
 <v-clicks>
 
-- **WarpDrive** <span class="text-gray-400">(our starship for data management)</span>
-- **JSON:API** <span class="text-gray-400">(the gold standard for API communication)</span>
-- **TypeScript** <span class="text-gray-400">(because we like our data typed and our code safe)</span>
-- **Modern Ember Polaris** <span class="text-gray-400">(the latest and greatest Ember patterns)</span>
+- **WarpDrive** <span class="text-lcars-blue">(our starship for data management)</span>
+- **JSON:API** <span class="text-lcars-blue">(the gold standard for API communication)</span>
+- **TypeScript** <span class="text-lcars-blue">(because we like our data typed and our code safe)</span>
+- **Modern Ember Polaris** <span class="text-lcars-blue">(the latest and greatest Ember patterns)</span>
 
 </v-clicks>
 
@@ -271,7 +274,7 @@ interface Todo {
 Every TodoMVC implementation shares the same [core features](https://github.com/tastejs/todomvc/blob/master/app-spec.md) and looks like this:
 
 <div class="callout">
-<img src="./public/picard-todos.png" alt="TodoMVC UI with Captain Picard's Todo List" class="border border-gray-700 rounded shadow-lg max-w-lg mx-auto" />
+<img src="./picard-todos.png" alt="TodoMVC UI with Captain Picard's Todo List" class="border border-gray-700 rounded shadow-lg max-w-lg mx-auto" />
 </div>
 
 ---
@@ -298,7 +301,7 @@ By default, WarpDrive speaks JSON:API fluently, giving you:
 
 <v-click>
 
-<div class="mt-4 text-sm text-gray-400 max-w-xs">
+<div class="mt-4 text-sm text-lcars-blue max-w-xs">
 (But, you can configure WarpDrive to use other formats if you prefer!)
 </div>
 
@@ -969,7 +972,7 @@ layout: section
 
 <div class="text-6xl mb-8">⚡</div>
 
-<div class="text-sm text-gray-400">
+<div class="text-sm text-lcars-blue">
 (Spaceballs reference...we're mixing our metaphors here, but it's fine...)
 </div>
 

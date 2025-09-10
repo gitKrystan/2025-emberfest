@@ -6,3 +6,7 @@
 @import './lcars-callout.css';
 @import './lcars-layout-elements.css';
 @import './lcars-mac-window.css';
+
+.ml-auto {
+  margin-left: auto;
+}

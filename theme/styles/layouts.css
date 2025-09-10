@@ -1,10 +1,21 @@
 /* All Layouts share these styles */
 .slidev-layout {
+  padding-left: 3.5rem;
+  padding-right: 3.5rem;
+  padding-top: 2.5rem;
+  padding-bottom: 2.5rem;
+  font-size: 1.1rem;
   background-color: var(--lcars-black);
   color: var(--lcars-light-blue);
   position: relative;
   height: auto;
   min-height: 100%;
+
+  p {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    line-height: 1.5rem;
+  }
 
   h1 + p {
     @apply -mt-2 opacity-50 mb-4;
@@ -19,37 +30,50 @@
   }
 
   h1 {
-    @apply text-4xl mb-4 -ml-[0.05em];
+    margin-bottom: 2rem;
+    font-size: 2.25rem;
+    line-height: 1.4;
     font-family: 'Antonio', 'Avenir Next', sans-serif;
     color: var(--lcars-orange);
     font-weight: 900;
   }
 
   h2 {
-    @apply text-3xl;
+    font-size: 1.875rem;
+    line-height: 2.25rem;
     font-family: 'Antonio', 'Avenir Next', sans-serif;
     font-weight: 900;
   }
 
   h3 {
-    @apply text-2xl;
+    font-size: 1.5rem;
+    line-height: 2rem;
     font-family: 'Antonio', 'Avenir Next', sans-serif;
     font-weight: 900;
   }
 
   h4 {
-    @apply text-xl;
+    font-size: 1.25rem;
+    line-height: 1.75rem;
     font-family: 'Antonio', 'Avenir Next', sans-serif;
     font-weight: 900;
   }
 
   h5 {
     @apply text-base;
+    font-size: 1rem;
+    line-height: 1.5rem;
     font-family: 'Antonio', 'Avenir Next', sans-serif;
     font-weight: 900;
   }
 
   h6 {
+    padding-top: 0.25rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
     @apply text-sm pt-1 uppercase tracking-widest font-500 -ml-[0.05em];
     font-family: 'Antonio', 'Avenir Next', sans-serif;
     font-weight: 900;
@@ -59,11 +83,102 @@
     @apply opacity-40;
   }
 
+  pre,
+  code {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
+  code {
+    font-family:
+      'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      'Liberation Mono', 'Courier New', monospace;
+  }
+
   ul,
   li {
     list-style: none;
     padding-left: 0;
     margin-left: 0;
+  }
+
+  ol {
+    list-style: decimal;
+  }
+
+  blockquote {
+    background: var(--slidev-code-background);
+    color: var(--slidev-code-foreground);
+    border-left-width: 1px;
+    border-color: var(--slidev-theme-primary);
+    border-radius: 0.25rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  blockquote > * {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  tr {
+    border-bottom-width: 1px;
+    border-color: rgb(156 163 175 / 0.2);
+  }
+
+  th {
+    text-align: left;
+    font-weight: 400;
+  }
+
+  a {
+    border-bottom-width: 1px;
+    border-color: currentColor;
+    border-style: dashed;
+  }
+
+  a:hover {
+    border-style: solid;
+    color: var(--slidev-theme-primary) /* var(--slidev-theme-primary) */;
+  }
+
+  td,
+  th {
+    padding: 0.5rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+
+  b,
+  strong {
+    font-weight: 600;
+  }
+
+  kbd {
+    border-width: 1px;
+    border-bottom-width: 2px;
+    border-color: rgb(156 163 175 / 0.2);
+    border-radius: 0.25rem;
+    --un-bg-opacity: 1;
+    background-color: rgb(156 163 175 / var(--un-bg-opacity)) /* #9ca3af */;
+    --un-bg-opacity: 0.05;
+    padding-top: 0.125rem;
+    padding-bottom: 0.125rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-family:
+      'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      'Liberation Mono', 'Courier New', monospace;
   }
 }
 
