@@ -3,6 +3,7 @@ import type { Request, Response } from 'express';
 import { JSONAPI_CONTENT_TYPE } from '@workspace/shared-data/const';
 import type {
   ApiFlag,
+  LatencyFlagAttributes,
   ShouldErrorFlagAttributes,
   ShouldPaginateFlagAttributes,
   TodoCountFlagAttributes,
@@ -70,7 +71,9 @@ export function updateFlag(
           ? handleInitialTodoCountFlag(req, id)
           : id === 'shouldPaginateFlag'
             ? handleShouldPaginateFlag(req, id)
-            : null;
+            : id === 'latency'
+              ? handleLatencyFlag(req, id)
+              : null;
 
     if (!updatedFlag) {
       throw new BadRequestError({ detail: [`Unknown flag id ${id}`] });
@@ -126,6 +129,19 @@ function handleShouldPaginateFlag(
     'flag',
     id,
     booleanFlagUpdateSchema,
+    req.body,
+  );
+
+  return flagStore.update(id, {
+    value: attributes.value,
+  });
+}
+
+function handleLatencyFlag(req: Request, id: 'latency'): ApiFlag {
+  const attributes: LatencyFlagAttributes = validateUpdateRequest(
+    'flag',
+    id,
+    positiveNumberFlagUpdateSchema,
     req.body,
   );
 

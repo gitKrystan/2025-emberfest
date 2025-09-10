@@ -10,9 +10,11 @@ import type { Store } from '@workspace/shared-data';
 import { invalidateAllTodoQueries, queryFlags, updateFlag } from '@workspace/shared-data/builders';
 import type {
   ApiFlag,
+  EditableLatencyFlag,
   EditableShouldErrorFlag,
   EditableShouldPaginateFlag,
   EditableTodoCountFlag,
+  LatencyFlag,
   ShouldErrorFlag,
   ShouldPaginateFlag,
   TodoCountFlag,
@@ -88,6 +90,15 @@ class FlagsContent extends Component<{
         </li>
       {{/if}}
 
+      {{#if this.latencyFlag}}
+        <li>
+          <Await @promise={{this.checkoutLatencyFlag this.latencyFlag}}>
+            <:success as |flag|><UpdateLatencyFlag @flag={{flag}} /></:success>
+            <:error as |error|><HandleError @error={{error}} /></:error>
+          </Await>
+        </li>
+      {{/if}}
+
     </ul>
   </template>
 
@@ -116,6 +127,15 @@ class FlagsContent extends Component<{
 
   checkoutShouldPaginateFlag(flag: ShouldPaginateFlag): Promise<EditableShouldPaginateFlag & ReactiveResource> {
     return checkout<EditableShouldPaginateFlag>(flag);
+  }
+
+  @cached
+  get latencyFlag(): LatencyFlag | null {
+    return this.args.data.find((flag) => flag.id === 'latency') ?? null;
+  }
+
+  checkoutLatencyFlag(flag: LatencyFlag): Promise<EditableLatencyFlag & ReactiveResource> {
+    return checkout<EditableLatencyFlag>(flag);
   }
 }
 
@@ -179,6 +199,28 @@ class UpdateTodoCountFlag extends Component<{
 
   onUpdateSuccess = () => {
     invalidateAllTodoQueries(this.store);
+  };
+}
+
+const LatencyOptions = {
+  fast: 0,
+  slow: 500,
+};
+
+class UpdateLatencyFlag extends Component<{
+  Args: { flag: EditableLatencyFlag & ReactiveResource };
+}> {
+  <template>
+    <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}}>
+      <span class="flag-name">Latency:</span>
+      {{@flag.value}}ms
+    </UpdateFlag>
+  </template>
+
+  @service declare private readonly store: Store;
+
+  toggle = () => {
+    this.args.flag.value = this.args.flag.value === LatencyOptions.fast ? LatencyOptions.slow : LatencyOptions.fast;
   };
 }
 

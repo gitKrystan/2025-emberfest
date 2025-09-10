@@ -68,4 +68,29 @@ export interface EditableShouldErrorFlag
     HasShouldErrorFlagId,
     ShouldErrorFlagAttributes {}
 
-export type ApiFlag = ShouldErrorFlag | TodoCountFlag | ShouldPaginateFlag;
+// Latency
+
+interface HasLatencyFlagId {
+  id: 'latency';
+}
+
+export interface LatencyFlagAttributes {
+  /** Must be positive */
+  value: number;
+}
+
+export interface LatencyFlag
+  extends BaseApiFlag,
+    HasLatencyFlagId,
+    Readonly<LatencyFlagAttributes> {}
+
+export interface EditableLatencyFlag
+  extends BaseApiFlag,
+    HasLatencyFlagId,
+    LatencyFlagAttributes {}
+
+export type ApiFlag =
+  | ShouldErrorFlag
+  | TodoCountFlag
+  | ShouldPaginateFlag
+  | LatencyFlag;

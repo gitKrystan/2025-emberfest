@@ -24,6 +24,11 @@ export class FlagStore extends Store<ApiFlag> {
         id: 'shouldPaginateFlag' as const,
         value: false,
       }),
+      asType<ApiFlag>({
+        $type: 'flag',
+        id: 'latency' as const,
+        value: 0,
+      }),
     ]);
   }
 
