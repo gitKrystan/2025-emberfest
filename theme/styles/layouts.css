@@ -2,6 +2,8 @@
   background-color: var(--lcars-black);
   color: var(--lcars-light-blue);
   position: relative;
+  height: auto;
+  min-height: 100%;
 
   h1 + p {
     @apply -mt-2 opacity-50 mb-4;
@@ -194,7 +196,7 @@
   top: 0;
   bottom: 0;
   width: 6px;
-  background: var(--lcars-orange);
+  background: var(--lcars-accent-gradient);
   border-radius: 0 3px 3px 0;
 }
 

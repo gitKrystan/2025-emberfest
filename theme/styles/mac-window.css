@@ -7,11 +7,12 @@
   box-shadow: 0 8px 25px rgba(255, 153, 51, 0.3);
   overflow: hidden;
   margin: 1rem 0;
-  border: 2px solid var(--lcars-orange);
+  border: 2px solid var(--lcars-blue);
+  position: relative;
 }
 
 .mac-titlebar {
-  background: var(--lcars-purple);
+  background: var(--lcars-blue);
   height: 40px;
   display: flex;
   align-items: center;
@@ -47,7 +48,7 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  color: var(--lcars-amber);
+  color: var(--lcars-white);
   font-size: 13px;
   font-weight: 300;
   letter-spacing: 0.5px;
@@ -56,38 +57,25 @@
 .mac-content {
   background: var(--lcars-black);
   overflow: auto;
-  border: 1px solid var(--lcars-blue);
+  border-top: 1px solid var(--lcars-blue);
 }
 
 /* Ensure code blocks within mac window have proper styling */
-.mac-content .shiki {
-  background: transparent !important;
-  margin: 0 !important;
-  border-radius: 0 !important;
-}
 
 .mac-content pre {
   background: transparent !important;
+  background: transparent !important;
   margin: 0 !important;
   padding: 16px !important;
+  border: none !important;
+  border-color: transparent !important;
   border-radius: 0 !important;
+  border-bottom-radius: 12px !important;
 }
 
 /* Override any existing padding/margin on code containers */
 .mac-content > div {
   margin: 0 !important;
-}
-
-/* LCARS accent elements */
-.mac-window::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 4px;
-  height: 100%;
-  background: var(--lcars-accent-gradient);
-  z-index: 1;
 }
 
 .mac-titlebar::after {

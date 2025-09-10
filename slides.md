@@ -298,35 +298,22 @@ layout: section
 
 # The RequestManager
 
-Our WarpDrive RequestManager...manages our requests:
+Think of it as your ship's communications officer - it manages all external contact!
 
-<div class="mac-window">
-<div class="mac-titlebar">
-<div class="mac-buttons">
-<div class="mac-button close"></div>
-<div class="mac-button minimize"></div>
-<div class="mac-button maximize"></div>
-</div>
-<div class="mac-title">packages/shared-data/src/stores/index.ts</div>
-</div>
-<div class="mac-content">
-<<< @/packages/shared-data/src/stores/index.ts {21|26}{maxHeight:'400px'}
-</div>
-</div>
+<MacWindow title="packages/shared-data/src/stores/index.ts" class="max-w-2xl">
+<<< @/packages/shared-data/src/stores/index.ts ts {21|26|22-27|28|21-28}{maxHeight: '200px'}
+</MacWindow>
 
-<v-clicks>
+<v-clicks at=1>
 
 - **Fetch Handler** - Makes actual network requests
-- **Cache Integration** - Automatically caches responses
 - **Request Pipeline** - Allows custom handlers for data transformation
+- **Cache Integration** - Automatically caches responses
+- **Does What It Says** - On the tin
 
 </v-clicks>
 
 <v-click>
-
-<div class="mt-8 p-4 bg-blue-900 rounded text-center">
-Think of it as your ship's communications officer - it manages all external contact!
-</div>
 
 </v-click>
 
