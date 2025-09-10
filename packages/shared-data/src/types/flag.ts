@@ -7,23 +7,7 @@ export interface BaseApiFlag {
   readonly $type: 'flag';
 }
 
-interface HasShouldErrorFlagId {
-  id: 'shouldError';
-}
-
-export interface ShouldErrorFlagAttributes {
-  value: boolean;
-}
-
-export interface ShouldErrorFlag
-  extends BaseApiFlag,
-    HasShouldErrorFlagId,
-    Readonly<ShouldErrorFlagAttributes> {}
-
-export interface EditableShouldErrorFlag
-  extends BaseApiFlag,
-    HasShouldErrorFlagId,
-    ShouldErrorFlagAttributes {}
+// Initial Todo Count
 
 interface HasTodoCountFlagId {
   id: 'initialTodoCount';
@@ -44,6 +28,8 @@ export interface EditableTodoCountFlag
     HasTodoCountFlagId,
     TodoCountFlagAttributes {}
 
+// Should Paginate
+
 interface HasShouldPaginateFlagId {
   id: 'shouldPaginateFlag';
 }
@@ -61,5 +47,25 @@ export interface EditableShouldPaginateFlag
   extends BaseApiFlag,
     HasShouldPaginateFlagId,
     ShouldPaginateFlagAttributes {}
+
+// Should Error
+
+interface HasShouldErrorFlagId {
+  id: 'shouldError';
+}
+
+export interface ShouldErrorFlagAttributes {
+  value: boolean;
+}
+
+export interface ShouldErrorFlag
+  extends BaseApiFlag,
+    HasShouldErrorFlagId,
+    Readonly<ShouldErrorFlagAttributes> {}
+
+export interface EditableShouldErrorFlag
+  extends BaseApiFlag,
+    HasShouldErrorFlagId,
+    ShouldErrorFlagAttributes {}
 
 export type ApiFlag = ShouldErrorFlag | TodoCountFlag | ShouldPaginateFlag;
