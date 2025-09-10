@@ -1,0 +1,107 @@
+/* LCARS Callout Styling */
+.callout {
+  background: var(--lcars-black);
+  border: 2px solid var(--lcars-orange);
+  border-radius: 12px;
+  padding: 1.5rem;
+  position: relative;
+  font-family: 'Antonio', 'Avenir Next', sans-serif;
+  color: var(--lcars-purple);
+  box-shadow: 0 4px 12px rgba(255, 153, 51, 0.2);
+  width: fit-content;
+
+  p {
+    text-wrap: balance;
+  }
+}
+
+.callout::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  height: 8px;
+  background: linear-gradient(
+    to right,
+    var(--lcars-orange) 0%,
+    var(--lcars-orange) 30%,
+    var(--lcars-amber) 30%,
+    var(--lcars-amber) 70%,
+    var(--lcars-magenta) 70%
+  );
+  border-radius: 12px 12px 0 0;
+}
+
+.callout p:first-child {
+  margin-top: 0;
+}
+
+.callout p:last-child {
+  margin-bottom: 0;
+}
+
+.callout strong {
+  color: var(--lcars-light-blue);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* LCARS Solid Callout Styling */
+.callout-solid {
+  border-radius: 12px;
+  padding: 1.5rem;
+  font-family: 'Antonio', 'Avenir Next', sans-serif;
+  color: var(--lcars-black);
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.callout-solid strong {
+  color: var(--lcars-black);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Cycling LCARS Colors for Multiple Callouts */
+.callout-solid:nth-of-type(1),
+.callout-solid:nth-of-type(8n + 1) {
+  background-color: var(--lcars-orange);
+}
+
+.callout-solid:nth-of-type(2),
+.callout-solid:nth-of-type(8n + 2) {
+  background-color: var(--lcars-amber);
+}
+
+.callout-solid:nth-of-type(3),
+.callout-solid:nth-of-type(8n + 3) {
+  background-color: var(--lcars-magenta);
+}
+
+.callout-solid:nth-of-type(4),
+.callout-solid:nth-of-type(8n + 4) {
+  background-color: var(--lcars-purple);
+}
+
+.callout-solid:nth-of-type(5),
+.callout-solid:nth-of-type(8n + 5) {
+  background-color: var(--lcars-blue);
+}
+
+.callout-solid:nth-of-type(6),
+.callout-solid:nth-of-type(8n + 6) {
+  background-color: var(--lcars-light-blue);
+}
+
+.callout-solid:nth-of-type(7),
+.callout-solid:nth-of-type(8n + 7) {
+  background-color: var(--lcars-red-orange);
+}
+
+.callout-solid:nth-of-type(8),
+.callout-solid:nth-of-type(8n) {
+  background-color: var(--lcars-white);
+}

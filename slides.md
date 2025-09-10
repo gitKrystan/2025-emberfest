@@ -38,11 +38,51 @@ layout: default
 
 # A Fresh Perspective
 
+You might know quite a bit about **one data library** in particular...
+
 <v-click>
+
+And you might even be expecting me to talk about that library.
+
+</v-click>
+
+<v-click>
+
+**But I'm not.**
+
+</v-click>
+
+<v-click>
+
+<div class="callout float-right">
+<p>
+Today we're going on a mission to <strong>explore strange new patterns</strong>, seek out new architectures, and <strong>boldly go where our data has never gone before</strong>.
+</p>
+</div class="callout">
+
+</v-click>
+
+<!--
+# A Fresh Perspective
 
 You might know quite a bit about **one data library** in particular...
 
-</v-click>
+And you might even be expecting me to talk about that library.
+
+**But I'm not.**
+
+Instead, I want you to pretend you've never seen that library before.
+
+Today we're going on a mission to **explore strange new patterns**, seek out new architectures, and **boldly go where our data has never gone before**.
+-->
+
+---
+layout: default
+---
+
+# A Fresh Perspective
+
+You might know quite a bit about **one data library** in particular...
 
 <v-click>
 
@@ -232,6 +272,38 @@ By the end, you'll see how WarpDrive makes data management feel... <em>logical</
 
 ---
 
+# TodoMVC: Our Prime Directive
+
+TodoMVC is a spec for a simple Todo app, implemented<br />in multiple frameworks to compare approaches.
+
+<v-click>
+
+It's built around a simple Todo resource:
+
+<div class="callout max-w-xs mt-10">
+```typescript
+interface Todo {
+  id: string;
+  title: string;
+  completed: boolean;
+}
+```
+</div>
+
+</v-click>
+
+---
+
+# TodoMVC: Our Prime Directive
+
+Every TodoMVC implementation shares the same [core features](https://github.com/tastejs/todomvc/blob/master/app-spec.md) and looks like this:
+
+<div class="callout">
+<img src="./public/picard-todos.png" alt="TodoMVC UI with Captain Picard's Todo List" class="border border-gray-700 rounded shadow-lg max-w-lg mx-auto" />
+</div>
+
+---
+
 # JSON:API: The Universal Translator
 
 By default, WarpDrive speaks JSON:API fluently, giving you:
@@ -259,32 +331,6 @@ By default, WarpDrive speaks JSON:API fluently, giving you:
 </div>
 
 </v-click>
-
----
-
-# TodoMVC: Our Prime Directive
-
-Let's implement the classic TodoMVC, but with WarpDrive powering our data layer.
-
-<v-click>
-
-<div class="callout max-w-xs m-auto mt-10">
-```typescript
-interface Todo {
-  id: string;
-  title: string;
-  completed: boolean;
-}
-```
-</div>
-
-</v-click>
-
-<!--
-TodoMVC is a spec for a simple Todo app, implemented in multiple frameworks to compare approaches.
-
-It's built around a simple Todo resource.
--->
 
 ---
 layout: section
