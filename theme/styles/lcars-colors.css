@@ -1,0 +1,30 @@
+/* LCARS (Library Computer Access/Retrieval System) Color Variables */
+/* Based on Star Trek TNG/DS9/VOY interface design */
+
+:root {
+  /* Primary LCARS Colors */
+  --lcars-orange: #ff9933;
+  --lcars-amber: #ffcc00;
+  --lcars-red-orange: #ff6600;
+
+  /* Secondary LCARS Colors */
+  --lcars-magenta: #cc6699;
+  --lcars-purple: #9966cc;
+
+  /* Accent LCARS Colors */
+  --lcars-blue: #336699;
+  --lcars-light-blue: #9999ff;
+
+  /* Base Colors */
+  --lcars-black: #000000;
+  --lcars-white: #ffffff;
+
+  /* Gradients */
+  --lcars-accent-gradient: linear-gradient(
+    to bottom,
+    var(--lcars-orange),
+    var(--lcars-magenta),
+    var(--lcars-purple),
+    var(--lcars-blue)
+  );
+}

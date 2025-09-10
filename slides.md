@@ -7,7 +7,6 @@ info: |
   This talk explores WarpDrive's schema-driven architecture through building a real application, demonstrating how to boldly go where your data has never gone before with a truly framework-agnostic layer. Learn how WarpDrive's TypeScript-first approach delivers enterprise-grade features while eliminating traditional data management complexity.
 author: Krystan HuffMenne
 keywords: WarpDrive,EmberData,JavaScript,TypeScript,Framework,Data Layer,EmberFest
-class: text-center
 lineNumbers: true
 drawings:
   enabled: true
