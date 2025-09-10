@@ -83,16 +83,22 @@
     @apply opacity-40;
   }
 
+  .code,
   pre,
   code {
     -webkit-user-select: text;
     user-select: text;
   }
 
+  .code,
   code {
     font-family:
       'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
       'Liberation Mono', 'Courier New', monospace;
+  }
+
+  .code {
+    white-space: pre;
   }
 
   ul,

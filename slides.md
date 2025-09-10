@@ -183,24 +183,25 @@ Unlike traditional data libraries, WarpDrive is built around:
 
 <div class="callout ml-auto">
 
-```{all}
-📦 shared-data-layer
-├── 🌌 @warp-drive/core
-├── 🛸 builders/
-├── 👋 handlers/
-├── 📊 schemas/
-└── 💿 store/
+<div class="code font-size-3">
 
-🐹 ember-app
-└── @warp-drive/ember
+<div><carbon-package /> shared-data-layer</div>
+<div>├── <carbon-data-connected /> @warp-drive/core</div>
+<div>├── <carbon-build-tool /> builders/</div>
+<div>├── <carbon-api /> handlers/</div>
+<div>├── <carbon-data-structured /> schemas/</div>
+<div>└── <carbon-data-base /> store/</div>
+<div class="h-2"></div>
+<div><logos-ember-tomster /> ember-app</div>
+<div>└── @warp-drive/ember</div>
+<div class="h-2"></div>
+<div><logos-react /> react-app</div>
+<div>└── @warp-drive/react</div>
+<div class="h-2"></div>
+<div><logos-vue /> vue-app</div>
+<div>└── @warp-drive/vue</div>
 
-⚛️ react-app
-└── @warp-drive/react
-
-👀 vue-app
-└── @warp-drive/vue
-
-```
+</div>
 
 </div>
 

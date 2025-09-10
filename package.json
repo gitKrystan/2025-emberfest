@@ -24,6 +24,7 @@
     "test:apps": "pnpm -r --filter='./apps/*' test"
   },
   "dependencies": {
+    "@iconify-json/logos": "latest",
     "@slidev/cli": "^52.0.0",
     "@slidev/theme-default": "latest",
     "@slidev/theme-seriph": "latest",
