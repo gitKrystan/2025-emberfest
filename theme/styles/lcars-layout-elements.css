@@ -1,0 +1,97 @@
+/* LCARS Border Elements for Cover Layout */
+.slidev-layout.cover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(
+    to right,
+    var(--lcars-orange) 0%,
+    var(--lcars-orange) 80px,
+    var(--lcars-magenta) 80px,
+    var(--lcars-magenta) 160px,
+    var(--lcars-purple) 160px
+  );
+  border-radius: 0 0 40px 0;
+}
+
+.slidev-layout.cover::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 80px;
+  background: linear-gradient(
+    to left,
+    var(--lcars-blue) 0%,
+    var(--lcars-blue) 120px,
+    var(--lcars-magenta) 120px,
+    var(--lcars-magenta) 200px,
+    var(--lcars-orange) 200px
+  );
+  border-radius: 40px 0 0 0;
+}
+
+.slidev-layout.section::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 80px;
+  background: linear-gradient(
+    to left,
+    var(--lcars-orange) 0%,
+    var(--lcars-orange) 100px,
+    var(--lcars-amber) 100px,
+    var(--lcars-amber) 180px,
+    var(--lcars-magenta) 180px
+  );
+  border-radius: 40px 0 0 0;
+}
+
+.slidev-layout.default::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: var(--lcars-accent-gradient);
+  border-radius: 0 3px 3px 0;
+}
+
+/* LCARS Border Elements for Center Layout */
+.slidev-layout.center::before,
+.slidev-layout.statement::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(
+    to right,
+    var(--lcars-magenta) 0%,
+    var(--lcars-magenta) 60px,
+    var(--lcars-purple) 60px,
+    var(--lcars-purple) 120px,
+    var(--lcars-blue) 120px
+  );
+  border-radius: 0 0 40px 0;
+}
+
+.slidev-layout.center::after,
+.slidev-layout.statement::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 6px;
+  background: var(--lcars-accent-gradient);
+  border-radius: 0 3px 3px 0;
+}

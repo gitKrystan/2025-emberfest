@@ -54,7 +54,7 @@ And you might even be expecting me to talk about that library.
 
 <v-click>
 
-<div class="callout float-right">
+<div class="callout float-right max-w-2xl">
 <p>
 Today we're going on a mission to <strong>explore strange new patterns</strong>, seek out new architectures, and <strong>boldly go where our data has never gone before</strong>.
 </p>

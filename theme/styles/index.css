@@ -3,5 +3,6 @@
 
 @import './layouts.css';
 
-@import './callout.css';
-@import './mac-window.css';
+@import './lcars-callout.css';
+@import './lcars-layout-elements.css';
+@import './lcars-mac-window.css';
