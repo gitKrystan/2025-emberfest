@@ -19,14 +19,10 @@ mdc: true
 
 ## EmberFest 2025
 
-<div class="pt-12">
-  <span class="px-2 py-1">
-    Krystan HuffMenne • Staff Engineer @ AuditBoard
-  </span>
-</div>
+Krystan HuffMenne • Staff Engineer @ AuditBoard
 
-<div class="abs-br m-6 flex gap-2">
-  <a href="https://github.com/slidevjs/slidev" target="_blank" alt="GitHub" title="Open in GitHub"
+<div class="abs-br m-6 flex gap-2 z-10">
+  <a href="https://github.com/gitKrystan/2025-emberfest" target="_blank" alt="GitHub" title="Open in GitHub"
     class="text-xl slidev-icon-btn opacity-50 !border-none !hover:text-white">
     <carbon-logo-github />
   </a>
