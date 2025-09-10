@@ -71,14 +71,24 @@ image: '/images/captain-profile.jpg'
 
 # About Your Captain for This Mission
 
-- 🌧️ **Portland, Oregon** - Where I live among the coffee shops and rain
+<div class="callout">
+
+<p>Portland, Oregon</p>
+<p>Answers to "mom"</p>
+<p>Ember veteran since v2</p>
+<p>Staff Engineer at AuditBoard</p>
+<p>EmberData/WarpDrive & Tooling Teams</p>
+
+</div>
+
+<!--
+Before we embark, let me introduce myself - I'm your guide through the WarpDrive universe...
+
+ 🌧️ **Portland, Oregon** - Where I live among the coffee shops and rain
 - 👩‍👧‍👦 **Mother of two** - I understand the importance of reliable, predictable systems that just work
 - 🔥 **Ember veteran since v2** - Nearly a decade of writing Ember applications
 - 🛡️ **Staff Engineer at AuditBoard** - Building AI-first GRC software for enterprise risk
 - ⚡ **Ember Data & Tooling Teams** - Passionate about making data management both powerful and type-safe
-
-<!--
-Before we embark, let me introduce myself - I'm your guide through the WarpDrive universe...
 -->
 
 ---
