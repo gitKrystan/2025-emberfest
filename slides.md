@@ -185,21 +185,23 @@ Unlike traditional data libraries, WarpDrive is built around:
 
 <div class="code font-size-3">
 
-<div><carbon-package /> shared-data-layer</div>
-<div>├── <carbon-data-connected /> @warp-drive/core</div>
-<div>├── <carbon-build-tool /> builders/</div>
-<div>├── <carbon-api /> handlers/</div>
-<div>├── <carbon-data-structured /> schemas/</div>
-<div>└── <carbon-data-base /> store/</div>
+<div><carbon-folder /> packages/</div>
+<div>└── <span class="text-lcars-orange"><carbon-layers /> shared-data-layer</span></div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="text-lcars-magenta"><carbon-rocket /> @warp-drive/core</span></div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;├── <carbon-build-tool /> builders/</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;├── <carbon-api /> handlers/</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;├── <carbon-data-structured /> schemas/</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;├── <carbon-database-messaging /> store/</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;└── <carbon-types /> types/</div>
 <div class="h-2"></div>
-<div><logos-ember-tomster /> ember-app</div>
-<div>└── @warp-drive/ember</div>
-<div class="h-2"></div>
-<div><logos-react /> react-app</div>
-<div>└── @warp-drive/react</div>
-<div class="h-2"></div>
-<div><logos-vue /> vue-app</div>
-<div>└── @warp-drive/vue</div>
+<div><carbon-folder /> apps/</div>
+<div>├── <carbon-data-base /> api</div>
+<div>├── <span class="text-lcars-orange"><logos-ember-tomster /> emberjs</span></div>
+<div>│&nbsp;&nbsp;&nbsp;└── <span class="text-lcars-magenta">@warp-drive/ember</span></div>
+<div>├── <span class="text-lcars-cyan"><logos-react /> react</span></div>
+<div>│&nbsp;&nbsp;&nbsp;└── <span class="text-lcars-magenta">@warp-drive/react</span></div>
+<div>└── <span class="text-lcars-green"><logos-vue /> vue</span></div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;└── <span class="text-lcars-magenta">@warp-drive/vue</span></div>
 
 </div>
 

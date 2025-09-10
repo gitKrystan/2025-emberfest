@@ -14,6 +14,8 @@
   /* Accent LCARS Colors */
   --lcars-blue: #336699;
   --lcars-light-blue: #9999ff;
+  --lcars-cyan: #33ccff;
+  --lcars-green: #33cc66;
 
   /* Base Colors */
   --lcars-black: #000000;
@@ -61,6 +63,12 @@
 }
 .text-lcars-light-blue {
   color: var(--lcars-light-blue) !important;
+}
+.text-lcars-cyan {
+  color: var(--lcars-cyan) !important;
+}
+.text-lcars-green {
+  color: var(--lcars-green) !important;
 }
 .text-lcars-black {
   color: var(--lcars-black) !important;
