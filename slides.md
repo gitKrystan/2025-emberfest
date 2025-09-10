@@ -306,9 +306,18 @@ class: text-center
 
 Our WarpDrive RequestManager...manages our requests:
 
-<div>
-<div>packages/shared-data/src/stores/index.ts</div>
-<<< @/packages/shared-data/src/stores/index.ts {21|26}{maxHeight:'100px'}
+<div class="mac-window">
+<div class="mac-titlebar">
+<div class="mac-buttons">
+<div class="mac-button close"></div>
+<div class="mac-button minimize"></div>
+<div class="mac-button maximize"></div>
+</div>
+<div class="mac-title">packages/shared-data/src/stores/index.ts</div>
+</div>
+<div class="mac-content">
+<<< @/packages/shared-data/src/stores/index.ts {21|26}{maxHeight:'400px'}
+</div>
 </div>
 
 <v-clicks>
