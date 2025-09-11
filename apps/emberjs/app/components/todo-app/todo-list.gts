@@ -53,10 +53,10 @@ export class TodoList extends Component<Signature> {
   }
 
   get todos(): Todo[] {
-    return this.args.todos.slice(0, 99);
+    return this.args.todos.slice(0, 200);
   }
 
   get remaining() {
-    return Math.max(this.args.todos.length - 100, 0);
+    return Math.max(this.args.todos.length - 199, 0);
   }
 }

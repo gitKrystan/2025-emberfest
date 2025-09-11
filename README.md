@@ -13,7 +13,6 @@ Learn more about Slidev at the [documentation](https://sli.dev/).
 # Todo
 
 - Log each request and note when it comes back from cache
-- Disable loading latency for pagination demo
 - Returning to the code after the live demo that you just showed could be helpful
   Like now you see what it’s doing after I showed you — remember how little code that was?
 - What does the schema translate the data into? (ReactiveResource)
