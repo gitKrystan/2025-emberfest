@@ -21,7 +21,7 @@ export const MaybeFooter = <template>
 
     {{! On error, display a toast via HandleError. }}
     <:error as |error|>
-      <HandleError @error={{error}} @toast="Could not get all todos for Footer." />
+      <HandleError @error={{error}} />
     </:error>
 
   </Request>

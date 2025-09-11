@@ -74,8 +74,8 @@ export async function getTodos(
   | Response<ResourceErrorDocument>
 > {
   try {
-    checkShouldError();
     await applyLatencyDelay();
+    checkShouldError();
 
     const { query, filter, hasFilter, hasPageParams } =
       validateQueryParams(req);
@@ -123,8 +123,8 @@ export async function getTodosCount(
   res: Response,
 ): Promise<Response<ResourceCountDocument> | Response<ResourceErrorDocument>> {
   try {
-    checkShouldError();
     await applyLatencyDelay();
+    checkShouldError();
 
     const { filter, hasFilter } = validateQueryParams(req);
 
@@ -149,8 +149,8 @@ export async function getTodo(
   Response<SingleResourceDocument<'todo'>> | Response<ResourceErrorDocument>
 > {
   try {
-    checkShouldError();
     await applyLatencyDelay();
+    checkShouldError();
     const id = validateRequiredParam('todo id', req.params['id']);
     const todo = todoStore.findById(id);
 
@@ -173,8 +173,8 @@ export async function createTodo(
   Response<SingleResourceDocument<'todo'>> | Response<ResourceErrorDocument>
 > {
   try {
-    checkShouldError();
     await applyLatencyDelay();
+    checkShouldError();
     const attributes: TodoAttributes = validateCreateRequest(
       'todo',
       todoCreationSchema,
@@ -207,8 +207,8 @@ export async function patchTodo(
   Response<SingleResourceDocument<'todo'>> | Response<ResourceErrorDocument>
 > {
   try {
-    checkShouldError();
     await applyLatencyDelay();
+    checkShouldError();
     const id = validateRequiredParam('todo id', req.params['id']);
 
     const patchAttributes: Partial<TodoAttributes> = extractTodoPatchAttributes(
@@ -239,8 +239,8 @@ export async function bulkPatchTodos(
   res: Response,
 ): Promise<Response<void> | Response<ResourceErrorDocument>> {
   try {
-    checkShouldError();
     await applyLatencyDelay();
+    checkShouldError();
 
     const requestData = validateWithZod(todoBulkPatchSchema, req.body);
 
@@ -273,8 +273,8 @@ export async function bulkPatchAllTodos(
   res: Response,
 ): Promise<Response<void> | Response<ResourceErrorDocument>> {
   try {
-    checkShouldError();
     await applyLatencyDelay();
+    checkShouldError();
 
     const { filter, hasFilter } = validateQueryParams(req);
     const requestData = validateWithZod(todoBulkPatchAllSchema, req.body);
@@ -315,8 +315,8 @@ export async function deleteTodo(
   res: Response,
 ): Promise<Response<void> | Response<ResourceErrorDocument>> {
   try {
-    checkShouldError();
     await applyLatencyDelay();
+    checkShouldError();
     const id = validateRequiredParam('todo id', req.params['id']);
     todoStore.delete(id);
     return res.status(204).send();
@@ -333,8 +333,8 @@ export async function bulkDeleteTodos(
   res: Response,
 ): Promise<Response<void> | Response<ResourceErrorDocument>> {
   try {
-    checkShouldError();
     await applyLatencyDelay();
+    checkShouldError();
 
     const requestData = validateWithZod(todoBulkDeleteSchema, req.body);
 
@@ -363,8 +363,8 @@ export async function bulkDeleteAllTodos(
   res: Response,
 ): Promise<Response<void> | Response<ResourceErrorDocument>> {
   try {
-    checkShouldError();
     await applyLatencyDelay();
+    checkShouldError();
 
     const { filter, hasFilter } = validateQueryParams(req);
 

@@ -13,9 +13,19 @@ interface HasTodoCountFlagId {
   id: 'initialTodoCount';
 }
 
+export const hardCodedLists = [
+  'sampleTodos',
+  'featureSet',
+  'basicLoadingStates',
+  'basicErrorStates',
+  'pessimisticMutation',
+  'optimisticMutation',
+] as const;
+export type HardCodedList = (typeof hardCodedLists)[number];
+
 export interface TodoCountFlagAttributes {
   /** Must be positive */
-  value: number;
+  value: number | HardCodedList;
 }
 
 export interface TodoCountFlag

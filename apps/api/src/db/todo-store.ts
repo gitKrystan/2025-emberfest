@@ -1,46 +1,82 @@
 import uuid from 'short-uuid';
 
-import type { Todo, TodoAttributes } from '@workspace/shared-data/types';
+import type {
+  HardCodedList,
+  Todo,
+  TodoAttributes,
+} from '@workspace/shared-data/types';
 import { asType } from '@workspace/shared-data/types';
 
 import { InternalServerError } from '../errors.ts';
 import { Store } from './base-store.ts';
 import { flagStore } from './flag-store.ts';
 
-const sampleTodos: TodoAttributes[] = [
-  { title: 'Inspect the Warp Core', completed: true },
-  { title: 'Review Klingon Treaty', completed: false },
-  { title: 'Enjoy Earl Grey Tea', completed: true },
-  { title: 'Starfleet Academy Guest Lecture', completed: true },
-  { title: 'Bridge Officer Performance Reports', completed: false },
-  { title: 'Calibrate Phaser Arrays', completed: false },
-  { title: 'Meet with Romulan Ambassador', completed: false },
-  { title: "Update Captain's Log", completed: true },
-  { title: 'Attend Senior Staff Briefing', completed: true },
-  { title: 'Trade Agreement with Vulcan Council', completed: false },
-  { title: 'Schedule Holodeck Maintenance', completed: false },
-  { title: 'Temporal Prime Directive Guidelines', completed: true },
-  { title: 'Conduct Emergency Drill - Red Alert', completed: false },
-  { title: 'Study Anomalous Readings', completed: false },
-  { title: 'Approve Shore Leave Requests', completed: true },
-  { title: 'Medical Checkup with Dr. McCoy', completed: false },
-  { title: 'Coordinate Engineering Teams', completed: true },
-  { title: 'Review Exploration Mission Parameters', completed: false },
-  { title: 'Contact Starfleet Command', completed: false },
-  { title: 'Chess Match with Commander Spock', completed: true },
-  { title: 'Inspect Shuttle Bay Operations', completed: false },
-];
+const lists: Record<HardCodedList, TodoAttributes[]> = {
+  sampleTodos: [
+    { title: 'Inspect the Warp Core', completed: true },
+    { title: 'Review Klingon Treaty', completed: false },
+    { title: 'Enjoy Earl Grey Tea', completed: false },
+    { title: 'Calibrate Phaser Arrays', completed: false },
+    { title: 'Bridge Officer Performance Reports', completed: false },
+    { title: 'Meet with Romulan Ambassador', completed: false },
+    { title: "Update Captain's Log", completed: true },
+    { title: 'Attend Senior Staff Briefing', completed: true },
+    { title: 'Trade Agreement with Vulcan Council', completed: false },
+    { title: 'Schedule Holodeck Maintenance', completed: false },
+    { title: 'Temporal Prime Directive Guidelines', completed: true },
+    { title: 'Conduct Emergency Drill - Red Alert', completed: false },
+    { title: 'Study Anomalous Readings', completed: false },
+    { title: 'Starfleet Academy Guest Lecture', completed: true },
+    { title: 'Approve Shore Leave Requests', completed: true },
+    { title: 'Medical Checkup with Dr. McCoy', completed: false },
+    { title: 'Coordinate Engineering Teams', completed: true },
+    { title: 'Review Exploration Mission Parameters', completed: false },
+    { title: 'Contact Starfleet Command', completed: false },
+    { title: 'Chess Match with Commander Spock', completed: true },
+    { title: 'Inspect Shuttle Bay Operations', completed: false },
+  ],
+  featureSet: [
+    { title: 'Read All Todos', completed: true },
+    { title: 'Create a Todo', completed: false },
+    { title: 'Read Active Todos', completed: false },
+    { title: 'Read Completed Todos', completed: false },
+    { title: 'Toggle a Todo', completed: false },
+    { title: 'Edit a Todo Title', completed: false },
+    { title: 'Delete a Todo', completed: false },
+    { title: 'Mark All as Completed', completed: false },
+    { title: 'Delete Completed', completed: false },
+  ],
+  basicLoadingStates: [
+    { title: 'Read All Todos (Slowly)', completed: true },
+    { title: 'Read Completed Todos (Slowly)', completed: false },
+    { title: 'Read All Todos (Quickly)', completed: false },
+  ],
+  basicErrorStates: [{ title: "Don't Read All Todos", completed: false }],
+  pessimisticMutation: [
+    { title: 'Rename me', completed: false },
+    { title: 'Read Active Todos', completed: false },
+    { title: 'Make API less reliable', completed: false },
+    { title: 'Try to rename me', completed: false },
+  ],
+  optimisticMutation: [
+    { title: 'Complete me', completed: false },
+    { title: 'Read Active Todos', completed: false },
+    { title: 'Read Completed Todos', completed: false },
+  ],
+} as const;
 
-function seed(count: number): Todo[] {
+function seed(option: number | HardCodedList): Todo[] {
+  const list = typeof option === 'string' ? lists[option] : lists.sampleTodos;
+  const count = typeof option === 'number' ? option : list.length;
   return new Array(count).fill(null).map((_, i) => {
-    const sample = sampleTodos[i % sampleTodos.length];
+    const sample = list[i % list.length];
     if (!sample) {
       throw new Error('this should be impossible');
     }
     return asType<Todo>({
       $type: 'todo',
       id: uuid.generate(),
-      title: i > sampleTodos.length - 1 ? `${sample.title} ${i}` : sample.title,
+      title: i > list.length - 1 ? `${sample.title} ${i}` : sample.title,
       completed: sample.completed,
     });
   });
@@ -57,14 +93,15 @@ export class TodoStore extends Store<Todo> {
   /**
    * Set the initial todo count (called by store manager)
    */
-  reseed(count: number): void {
-    if (count < 0) {
+  reseed(option: number | HardCodedList): void {
+    if (typeof option === 'number' && option < 0) {
       throw new InternalServerError({
         detail: ['Count cannot be less than 0'],
       });
     }
-    this.map = new Map(seed(count).map((item) => [item.id, item]));
-    console.log(`Todo store re-seeded with ${count} initial todos`);
+
+    this.map = new Map(seed(option).map((item) => [item.id, item]));
+    console.log(`Todo store re-seeded with ${option} initial todos`);
   }
 
   /**

@@ -5,12 +5,14 @@ import { checkout, type ReactiveDataDocument } from '@warp-drive/core/reactive';
 
 import type { Store } from '@workspace/shared-data';
 import { queryFlags, updateFlag } from '@workspace/shared-data/builders';
-import type {
-  ApiFlag,
-  EditableLatencyFlag,
-  EditableShouldErrorFlag,
-  EditableShouldPaginateFlag,
-  EditableTodoCountFlag,
+import {
+  type ApiFlag,
+  type EditableLatencyFlag,
+  type EditableShouldErrorFlag,
+  type EditableShouldPaginateFlag,
+  type EditableTodoCountFlag,
+  type HardCodedList,
+  hardCodedLists,
 } from '@workspace/shared-data/types';
 
 /**
@@ -35,13 +37,28 @@ export default class Application extends Route {
     for (const flag of allFlags) {
       const param = params[flag.id];
       switch (flag.id) {
-        case 'initialTodoCount':
+        case 'initialTodoCount': {
+          const value: HardCodedList | number | null = param
+            ? hardCodedLists.includes(param as HardCodedList)
+              ? (param as HardCodedList)
+              : parseInt(param, 10)
+            : null;
+          if (value !== null && value !== flag.value) {
+            const editable = await checkout<EditableTodoCountFlag>(flag);
+            editable.value = value;
+
+            saveFlags.push(
+              this.store
+                .request<ReactiveDataDocument<ApiFlag>>(updateFlag(editable))
+                .then((doc) => doc.content.data)
+            );
+          }
+          break;
+        }
         case 'latency': {
           const value: number | null = param ? parseInt(param, 10) : null;
           if (value !== null && value !== flag.value) {
-            const editable = await checkout<
-              EditableTodoCountFlag | EditableLatencyFlag
-            >(flag);
+            const editable = await checkout<EditableLatencyFlag>(flag);
             editable.value = value;
 
             saveFlags.push(

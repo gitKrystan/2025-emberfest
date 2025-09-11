@@ -25,6 +25,7 @@ import {
 import { handleError } from '../serializers/error.ts';
 import {
   booleanFlagUpdateSchema,
+  initialTodoCountSchema,
   positiveNumberFlagUpdateSchema,
 } from '../validations/flag.ts';
 import {
@@ -108,13 +109,13 @@ function handleInitialTodoCountFlag(
   const attributes: TodoCountFlagAttributes = validateUpdateRequest(
     'flag',
     id,
-    positiveNumberFlagUpdateSchema,
+    initialTodoCountSchema,
     req.body,
   );
 
   // Update the todo store with the new count and re-seed
-  const newCount = attributes.value;
-  todoStore.reseed(newCount);
+  const newValue = attributes.value;
+  todoStore.reseed(newValue);
 
   return flagStore.update(id, {
     value: attributes.value,

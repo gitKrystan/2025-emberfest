@@ -1,3 +1,3 @@
-export type * from './flag';
+export * from './flag.ts';
 export type * from './todo';
 export * from './type.ts';
