@@ -1243,24 +1243,26 @@ When the patch request succeeds, WarpDrive will "commit" the local changes from 
 # Patching State
 
 <MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="mb-4 max-w-2xl">
-<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {186-192|186-192,199-203|194-198}{maxHeight: '300px'}
+<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {186-192,199-203|186-192,199-203|194-198}{maxHeight: '300px'}
 </MacWindow>
 
 <v-clicks at=1>
 
-- Our `patchTodoToggle` method
+- Our `patchTodoToggle` action
 - Patch the cached filter query documents manually
 
 </v-clicks>
 
 <!--
-There's one other interesting bit to our CompletedForm component.
+* There's one other interesting bit to our `patchTodoToggle` action.
 
 Because we've already made requests for completed and active todos, our store has cached documents for both.
 
 But WarpDrive can't predict that just because a Todo's `completed` attribute changed, it should move between those two lists.
 
-So, we have to patch the cached documents manually. *
+* So, we have to patch the cached documents manually.
+
+NOTE that Cache patching is _not a requirement_ of optimistic updates. It's required because we're updating the `completed` attribute used in the query filter.
 -->
 
 ---
@@ -1268,10 +1270,10 @@ So, we have to patch the cached documents manually. *
 # Patching State
 
 <MacWindow title="packages/shared-data/src/builders/todo/update.ts" class="mb-4 max-w-2xl">
-<<< @/packages/shared-data/src/builders/todo/update.ts gts {64-68|75-81|85-90|94}{maxHeight: '300px'}
+<<< @/packages/shared-data/src/builders/todo/update.ts gts {64-68|64-68|75-81|85-90|94}{maxHeight: '300px'}
 </MacWindow>
 
-<v-clicks at=1>
+<v-clicks at=2>
 
 - `cache.patch()` surgically updates cached documents
 - Add to completed list; remove from active list
@@ -1280,14 +1282,11 @@ So, we have to patch the cached documents manually. *
 </v-clicks>
 
 <!--
-I put this logic in utility functions because I use it in multiple places.
-
+* I put this logic in utility functions because I use it in multiple places.
 * It uses the store's `cache.patch()` method to surgically update the cached documents.
 In the case of `patchCacheTodoCompleted` we add the todo to the completed list
 * and remove it from the active list.
-* and we invalidate all queries with the 'todo-count' tag to force a refetch as these requests are inexpensive.
-
-NOTE: We don't need to patch the caches because we're using optimistic updates. This is because we're updating the `completed` attribute used in the filter, which WarpDrive can't predict.
+* We also invalidate all queries with the 'todo-count' tag to force a refetch as these requests are inexpensive.
 -->
 
 ---
@@ -1297,6 +1296,8 @@ layout: center
 # Live Demo: Optimistic Mutation and Cache Patching
 
 <!--
+Let's take a look at this toggle button in action.
+
 - Initial Todo Count: A Few
 - API Reliability: Good
 - API Latency: Slow
@@ -1319,13 +1320,22 @@ Whether you choose pessimistic or optimistic updates:
 
 </v-clicks>
 
-<v-click>
+<v-click at=2>
 
 <div class="callout float-right">
 "Captain, the data has been successfully modified...<br />...without temporal paradoxes!"
 </div>
 
 </v-click>
+
+<!--
+To recap:
+
+Whether you choose pessimistic or optimistic updates:
+
+* Your Original data stays immutable
+* Your Changes are isolated until saved
+-->
 
 ---
 layout: section
