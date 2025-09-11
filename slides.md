@@ -11,7 +11,7 @@ lineNumbers: true
 drawings:
   enabled: true
   persist: false
-transition: fade
+transition: slide-left
 mdc: true
 favicon: ./favicon.png
 ---
@@ -707,7 +707,9 @@ title: 'Episode 5: "Reactive UI - Ember Integration"'
 
 # Episode 5
 
-## "Reactive UI - Ember Integration"
+## "Reactive UI - The Viewscreen"
+
+<h3 class="mt-2">(Ember Integration)</h3>
 
 <!--
 Note that so far I haven't shown you any Ember code.
@@ -719,9 +721,9 @@ Truly universal.
 
 # <logos-ember /> + `@warp-drive/ember`
 
-- **A Thin Wrapper** - Built on top of `@warp-drive/core` reactive utilities
+- **A Thin Wrapper** - Built on top of `@warp-drive/core` reactive utilities.
 - **Provides Ember components** - For request UX with elegant control flow.
-- **Reactive** - Leverages Ember's reactivity system
+- **Reactive** - Leverages Ember's reactivity system for fine-grained updates that JustWork™.
 
 <!--
 This @warp-drive/ember package provides components built over the core WarpDrive reactive utilities for working with promises and requests.
@@ -740,6 +742,8 @@ These components enable you to build robust performant apps with elegant control
 </MacWindow>
 
 <div class="max-w-sm">
+
+- Our `TodoProvider` component
 
 <v-clicks at=0>
 
@@ -771,24 +775,39 @@ Here' we're looking at a simple TodoProvider component that fetches all todos.
 -->
 
 ---
-layout: iframe
-url: http://localhost:4200/?initialTodoCount=3&latency=500&shouldPaginate=false&shouldError=false
-title: 'Live Demo: Basic Request Loading States'
+layout: center
 ---
 
+# Live Demo: Basic Request Loading States
+
 <!--
-Demo loading state with network throttling
-Demo caching on the queries
+- Initial Todo Count: A Few
+- API Reliability: Good
+- API Latency: Slow
+- Mode: Hobbyist
+
+1. Demo loading state with network throttling
+2. Demo caching on the queries
+3. Demo toggle all
+4. Demo "clear completed"
+5. Demo adding a todo
 -->
 
 ---
-layout: iframe
-url: http://localhost:4200/?latency=500&shouldPaginate=false&shouldError=false
-title: 'Live Demo: Basic Request Errors'
+layout: center
 ---
 
+# Live Demo: Basic Request Error States
+
 <!--
-Demo error state
+- Initial Todo Count: A Few
+- (UPDATE) API Reliability: Terrible
+- API Latency: Slow
+- Mode: Hobbyist
+
+1. Demo error state (trying to visit "active")
+
+- (UPDATE) API Reliability: Good
 -->
 
 ---
@@ -888,12 +907,13 @@ And our todo app uses both
 # Pessimistic Mutation
 
 <MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="mb-4" >
-<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {308-314}{maxHeight: '200px'}
+<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {308-314|308-314|310}{maxHeight: '200px'}
 </MacWindow>
 
-<v-clicks>
+<v-clicks at=1>
 
-- Uses a `patchTodo` builder
+- Our `patchTodoTitle` action
+- Uses our `patchTodo` builder
 - Pass the `Todo` and `attributes` to update
 - When the request resolves, that `Todo` updates all over your app
 - This seems too easy...
@@ -907,11 +927,12 @@ And our todo app uses both
 <div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title="packages/shared-data/src/builders/todo/update.ts" >
-<<< @/packages/shared-data/src/builders/todo/update.ts gts {11-20|30|31|32-38|40-41}{maxHeight: '300px'}
+<<< @/packages/shared-data/src/builders/todo/update.ts gts {11-20|11-20|30|31|32-38|40-41}{maxHeight: '300px'}
 </MacWindow>
 
 <v-clicks at=1>
 
+- Our `patchTodo` builder
 - Specifies the request method
 - Generates the URL
 - Serializes the request body
@@ -936,13 +957,19 @@ Adding the 'updateRecord' OpCode and specifying the `ResourceKey` for
 -->
 
 ---
-layout: iframe
-url: http://localhost:4200/?latency=500&shouldPaginate=false&shouldError=false
-title: 'Live Demo: Pessimistic Mutation'
+layout: center
 ---
 
+# Live Demo: Pessimistic Mutation
+
 <!--
-Demo title update + switching tabs to ensure it updated
+- Initial Todo Count: A Few
+- API Reliability: Good
+- API Latency: Slow
+- Mode: Hobbyist
+
+1. Demo title update
+2. Demo switching tabs to ensure it updated
 -->
 
 ---
@@ -950,10 +977,10 @@ Demo title update + switching tabs to ensure it updated
 # Controlled Optimistic Mutation with Checkout
 
 <MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="mb-4 max-w-2xl">
-<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {186-192,199-203}{maxHeight: '350px'}
+<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {186-192|186-192,199-203}{maxHeight: '350px'}
 </MacWindow>
 
-<v-clicks at=1>
+<v-clicks at=2>
 
 - Uses the same `patchTodo` builder
 - This time, we pass an `EditableTodo` plus the `attributes` to update
@@ -969,13 +996,12 @@ CompletedForm uses optimistic mutation to ensure that the completion state is sh
 # Controlled Optimistic Mutation with Checkout
 
 <MacWindow title="apps/emberjs/app/components/todo-app/todo-list.gts" class="mb-4 max-w-2xl">
-<<< @/apps/emberjs/app/components/todo-app/todo-list.gts gts {21|22|21-37}{maxHeight: '350px'}
+<<< @/apps/emberjs/app/components/todo-app/todo-list.gts gts {21|21|22|21-37}{maxHeight: '350px'}
 </MacWindow>
 
+<v-clicks at=1>
+
 - By default, resources are immutable
-
-<v-clicks at=0>
-
 - To get a mutable version, we use `await checkout(todo)`
 
 </v-clicks>
@@ -986,7 +1012,7 @@ WarpDrive handles mutations through a "checkout" system:
 - To get a mutable version, we use `await checkout(todo)`
 - This returns an `EditableTodo` that we can modify freely
 - When we're ready, we pass that `EditableTodo` to our `patchTodo` builder
-- Not that we're using the `@warp-drive/ember` `Await` component here. Similar to the `Request` component, it handles promise states declaratively.
+- Note that we're using the `@warp-drive/ember` `Await` component here. Similar to the `Request` component, it handles promise states declaratively.
 -->
 
 ---
@@ -994,11 +1020,12 @@ WarpDrive handles mutations through a "checkout" system:
 # Patching State
 
 <MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="mb-4 max-w-2xl">
-<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {186-192,199-203|194-198}{maxHeight: '350px'}
+<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {186-192|186-192,199-203|194-198}{maxHeight: '300px'}
 </MacWindow>
 
 <v-clicks at=1>
 
+- Our `patchTodoToggle` method
 - Patch the cached filter query documents manually
 
 </v-clicks>
@@ -1025,7 +1052,7 @@ So, we have to patch the cached documents manually. (click)
 
 - `cache.patch()` surgically updates cached documents
 - Add to completed list; remove from active list
-- Invalidate all queries with the 'todo-count' tag -- forces refetch
+- Invalidate all queries with the `'todo-count'` tag -- forces refetch
 
 </v-clicks>
 
@@ -1041,13 +1068,19 @@ NOTE: We don't need to patch the caches because we're using optimistic updates. 
 -->
 
 ---
-layout: iframe
-url: http://localhost:4200/?latency=500&shouldPaginate=false&shouldError=false
-title: 'Live Demo: Optimistic Mutation and Cache Patching'
+layout: center
 ---
 
+# Live Demo: Optimistic Mutation and Cache Patching
+
 <!--
-Demo completed toggle + switching tabs to ensure it updated
+- Initial Todo Count: A Few
+- API Reliability: Good
+- API Latency: Slow
+- Mode: Hobbyist
+
+1. Demo completed toggle
+2. Demo switching tabs to ensure it updated
 -->
 
 ---
@@ -1066,7 +1099,7 @@ Whether you choose pessimistic or optimistic updates:
 <v-click>
 
 <div class="callout float-right">
-"Captain, the data has been successfully modified without temporal paradoxes!"
+"Captain, the data has been successfully modified...<br />...without temporal paradoxes!"
 </div>
 
 </v-click>
@@ -1102,31 +1135,37 @@ We've even seen some "scale pioneer" users with hundreds of thousands of todos i
 -->
 
 ---
-layout: iframe
-url: http://localhost:4200/?initialTodoCount=100000&latency=500&shouldPaginate=false&shouldError=false
-title: 'Live Demo: Too Many Todos!'
+layout: center
 ---
 
+# Live Demo: Scale Pioneers
+
 <!--
+- (UPDATE) Initial Todo Count: A Lot
+- API Reliability: Good
+- API Latency: Slow
+- Mode: Hobbyist
+
 1. Demo 100k todos without pagination
 
-3. Toggle Pagination on
+- (UPDATE) Mode: Enterprise
 -->
 
 ---
 
-# <span class="text-lcars-blue">Coming Soon Any Day Now For Real This Time I Swear:</span> Paginate
+# <span class="text-lcars-blue">Coming Soon:</span> Paginate
 
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
-<MacWindow title=".../app/components/todo-app/todo-provider.gts" class="max-w-2xl">
-<<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {28|30-35|40-43|55-58|45-53|60-63}{maxHeight: '360px'}
+<MacWindow title=".../app/components/todo-app/todo-provider.gts" class="w-130">
+<<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {28|28|30-35|40-43|55-58|45-53|60-63}{maxHeight: '360px'}
 </MacWindow>
 
-<div class="max-w-sm">
+<div>
 
-<v-clicks at=0>
+<v-clicks at=1>
 
+- Our `TodoProvider` component
 - `<Paginate />` component
 - Loading states - for initial, previous, and next
 - Error state
@@ -1154,20 +1193,19 @@ Here' we're looking at the real TodoProvider component used by our Enterprise Ed
 
 ---
 
-# <span class="text-lcars-blue">Coming Soon Any Day Now For Real This Time I Swear:</span> EachLink
+# <span class="text-lcars-blue">Any Day Now:</span> EachLink
 
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
 <MacWindow title=".../app/components/todo-app/pagination-controls.gts" class="max-w-2xl">
-<<< @/apps/emberjs/app/components/todo-app/pagination-controls.gts ts {114-124|116-118|120-122}{maxHeight: '360px'}
+<<< @/apps/emberjs/app/components/todo-app/pagination-controls.gts ts {114-124|114-124|116-118|120-122}{maxHeight: '360px'}
 </MacWindow>
 
 <div class="max-w-sm">
 
-- `<EachLink />` component
-
 <v-clicks at=0>
 
+- `<EachLink />` component
 - Yields a `<:link>` block for each known page link
 - Yields a `<:placeholder>` block for unknown links
 
@@ -1184,11 +1222,12 @@ Here' we're looking at the real TodoProvider component used by our Enterprise Ed
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
 <MacWindow title="packages/shared-data/src/builders/todo/query.ts" class="max-w-2xl">
-<<< @/packages/shared-data/src/builders/todo/query.ts ts {32-47|35-38}{maxHeight: '380px'}
+<<< @/packages/shared-data/src/builders/todo/query.ts ts {9-24|9-24|11-15,19}{maxHeight: '380px'}
 </MacWindow>
 
 <v-clicks at=1>
 
+- Our `getAllTodos` builder
 - Pagination query params
 
 </v-clicks>
@@ -1203,21 +1242,21 @@ Our actual query builder configures a request for the *initial* page of todos vi
 
 # Paginate Powered by \{JSON:API\}
 
+<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+
 <div class="callout">
 
-```json
+```json {all|all|5-10|11-14}
 {
   "data": [
     /* the first page of Todos */
   ],
-  // Spec-compliant pagination links
   "links": {
     "self": "/api/todo?page[limit]=5&page[offset]=0",
     "first": "/api/todo?page[limit]=5&page[offset]=0",
     "next": "/api/todo?page[limit]=5&page[offset]=5",
     "last": "/api/todo?page[limit]=5&page[offset]=99995"
   },
-  // Non-spec meta required only for EachLink support
   "meta": {
     "currentPage": 1,
     "totalPages": 20000
@@ -1227,22 +1266,31 @@ Our actual query builder configures a request for the *initial* page of todos vi
 
 </div>
 
+<v-clicks at=1>
+
+- Our paginated `/api/todo` response
+- Spec-compliant `links` object
+- Non-spec `meta` required only for `EachLink` support
+
+</v-clicks>
+
+</div>
+
 ---
 
-# <span class="text-lcars-blue">Coming Soon Any Day Now For Real This Time I Swear:</span> Paginate
+# Paginate + EachLink + Page Hints
 
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
 <MacWindow title=".../app/components/todo-app/todo-provider.gts" class="max-w-2xl">
-<<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {30-35|36-37|109-121}{maxHeight: '360px'}
+<<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {30-35|30-35|36-37|109-121}{maxHeight: '360px'}
 </MacWindow>
 
 <div class="max-w-sm">
 
-- `<Paginate />` component
-
 <v-clicks at=0>
 
+- `<Paginate />` component
 - `@pageHints` argument
 - Extracts non-spec pagination meta for use in `EachLink`
 
@@ -1260,12 +1308,25 @@ In our case, the API returns meta that is the exact shape we need, but you can e
 
 # Houston, we have a problem
 
-<v-clicks at=0>
+<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
-- Load only part of the Todo list
-- <carbon-arrow-right /> Risk updating only part of the list
+<v-click>
+<div class="callout-solid mt-8 h-100">
 
-</v-clicks>
+Load only part of the Todo list
+
+</div>
+</v-click>
+
+<v-click>
+<div class="callout-solid mt-8">
+
+<carbon-arrow-right /> Risk updating only part of the list
+
+</div>
+</v-click>
+
+</div>
 
 <!--
 Now that we're paginating our data, we have a problem. (click)

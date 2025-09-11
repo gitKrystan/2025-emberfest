@@ -216,7 +216,7 @@ class UpdateTodoCountFlag extends Component<{
 
 const LatencyOptions = {
   fast: 0,
-  slow: 500,
+  slow: 200,
 };
 
 class UpdateLatencyFlag extends Component<{
