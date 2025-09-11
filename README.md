@@ -12,8 +12,6 @@ Learn more about Slidev at the [documentation](https://sli.dev/).
 
 # Todo
 
-- "REFRESH PAGE BEFORE DEMO"
-- Slow down latency for loading demos
 - Log each request and note when it comes back from cache
 - Disable loading latency for pagination demo
 - Returning to the code after the live demo that you just showed could be helpful

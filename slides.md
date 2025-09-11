@@ -448,6 +448,16 @@ The Ember TodoMVC I forked for today's presentation was created by Miguel, Addy,
 -->
 
 ---
+layout: center
+---
+
+# Live Demo: [TodoMVC Feature Set](http://localhost:4200/?initialTodoCount=3&shouldError=false&shouldPaginate=false&latency=0)
+
+<!--
+Here's a sneak preview of what we're building today.
+-->
+
+---
 layout: section
 title: 'Episode 3: "Request Patterns - Making It So"'
 ---
@@ -954,10 +964,10 @@ These components enable you to build robust and performant apps with elegant con
 layout: center
 ---
 
-# Live Demo: Basic Request Loading and Error States
+# Live Demo: [Basic Request Loading States](http://localhost:4200/?initialTodoCount=3&shouldError=false&shouldPaginate=false&latency=1000)
 
 <!--
-So, let's take a look at our Todo app. It's live demo time. Wish me luck.
+So, let's take a look this in our Todo app.
 
 First, I need to check the configuration.
 Then, we'll demo our requests, showing loading state, caching behavior, and a few other TodoMVC features implemented with WarpDrive and Ember.
@@ -970,7 +980,15 @@ Then, we'll demo our requests, showing loading state, caching behavior, and a fe
 1. Demo loading state with network throttling
 2. Demo caching on the queries
 3. Demo adding a todo
+-->
 
+---
+layout: center
+---
+
+# Live Demo: [Basic Error States](http://localhost:4200/?initialTodoCount=3&shouldError=true&shouldPaginate=false&latency=1000)
+
+<!--
 - Initial Todo Count: A Few
 - (UPDATE) API Reliability: Terrible
 - API Latency: Slow
@@ -1164,10 +1182,12 @@ Adding the 'updateRecord' OpCode and specifying the `ResourceKey` for
 layout: center
 ---
 
-# Live Demo: Pessimistic Mutation
+# Live Demo: [Pessimistic Mutation](http://localhost:4200/?initialTodoCount=3&shouldError=false&shouldPaginate=false&latency=1000)
 
 <!--
 Back to our live demo. Let's update a todo title and see what happens.
+
+REFRESH PAGE BEFORE DEMO
 
 - Initial Todo Count: A Few
 - API Reliability: Good
@@ -1293,7 +1313,7 @@ In the case of `patchCacheTodoCompleted` we add the todo to the completed list
 layout: center
 ---
 
-# Live Demo: Optimistic Mutation and Cache Patching
+# Live Demo: [Optimistic Mutation and Cache Patching](http://localhost:4200/?initialTodoCount=3&shouldError=false&shouldPaginate=false&latency=1000)
 
 <!--
 Let's take a look at this toggle button in action.
@@ -1382,7 +1402,7 @@ We've even seen some "scale pioneer" users with hundreds of thousands of todos i
 layout: center
 ---
 
-# Live Demo: Scale Pioneers
+# Live Demo: [Scale Pioneers](http://localhost:4200/?initialTodoCount=100000&shouldError=false&shouldPaginate=false&latency=0)
 
 <!--
 Our support team sent us this customer app that really exemplifies some performance issues we are seeing.
@@ -1398,6 +1418,19 @@ Let me just switch back to our demo app and load the customer's data to test.
 
 1. Demo 100k todos without pagination
 
+Fortunately, WarpDrive has another trick up it's sleeve:
+Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
+
+- (UPDATE) Mode: Enterprise
+-->
+
+---
+layout: center
+---
+
+# Live Demo: [Enterprise Edition](http://localhost:4200/?initialTodoCount=100000&shouldError=false&shouldPaginate=true&latency=0)
+
+<!--
 Fortunately, WarpDrive has another trick up it's sleeve:
 Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
 
