@@ -2,10 +2,10 @@
 .slidev-layout {
   position: absolute;
   inset: 0;
-  padding-left: 3.5rem;
-  padding-right: 3.5rem;
-  padding-top: 2.5rem;
-  padding-bottom: 2.5rem;
+  padding-left: 2.5rem;
+  padding-right: 2rem;
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
   font-size: 1.1rem;
   background-color: var(--lcars-black);
   color: var(--lcars-light-blue);

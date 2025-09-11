@@ -53,17 +53,9 @@
   padding-left: 12px;
 }
 
-.mac-content {
-  background: var(--lcars-black);
-  overflow: auto;
-  border-top: 1px solid var(--lcars-blue);
-}
-
 /* Ensure code blocks within mac window have proper styling */
-
 .mac-content pre {
-  background: transparent !important;
-  background: transparent !important;
+  background: var(--lcars-black) !important;
   margin: 0 !important;
   padding: 16px !important;
   border: none !important;

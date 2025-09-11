@@ -367,13 +367,15 @@ Today, we’ll implement a TodoMVC application step-by-step using:
 
 # TodoMVC: Our Prime Directive
 
-TodoMVC is a spec for a simple Todo app, implemented<br />in multiple frameworks to compare approaches.
+A spec for a simple Todo app
+
+Implemented in multiple frameworks to compare approaches.
 
 <v-click>
 
-It's built around a simple Todo resource:
+Todo resource:
 
-<div class="callout max-w-xs mt-10">
+<div class="callout max-w-xs mt-8">
 ```ts
 interface Todo {
   id: string;
@@ -403,22 +405,44 @@ and a boolean completed attribute
 
 Every TodoMVC implementation shares the same [core features](https://github.com/tastejs/todomvc/blob/master/app-spec.md):
 
+<div class="grid grid-flow-col gap-4">
+
 <div class="callout">
 <img src="./picard-todos.png" alt="TodoMVC UI with Captain Picard's Todo List" class="h-80 w-auto" />
 </div>
 
-<!--
-Every TodoMVC implementation shares the same core features:
+<div>
+
+<v-clicks >
 
 You can create a Todo
 
-You can read lists of Todos, Active Todos, and Completed Todos
+You can read lists of:<br />All Todos, Active Todos, and Completed Todos
 
 You can update each Todo
 
 You can delete a Todo
 
-And you can bulk toggle and delete todos.
+You can perform bulk actions:<br />toggle and delete
+
+</v-clicks>
+
+</div>
+
+</div>
+
+<!--
+Every TodoMVC implementation shares the same core features:
+
+* You can create a Todo
+
+* You can read lists of All Todos, Active Todos, and Completed Todos
+
+* You can update each Todo
+
+* You can delete a Todo
+
+* And you can bulk toggle and delete todos.
 
 The Ember TodoMVC I forked for today's presentation was created by Miguel, Addy, and Preston, for which I am grateful.
 -->
@@ -442,35 +466,49 @@ Now it's time to "set its data layer to stun" by updating it to use WarpDrive.
 
 # The WarpDrive Store - "The Bridge"
 
+<v-click at=1>
+<p>It's in command.</p>
+</v-click>
+
 <MacWindow title="packages/shared-data/src/stores/index.ts" class="max-w-2xl mb-6">
-<<< @/packages/shared-data/src/stores/index.ts ts {20|20|21|28-37|39-44|46-52}{maxHeight: '200px'}
+<<< @/packages/shared-data/src/stores/index.ts ts {20|20|21|30-37|39-44|46-52}{maxHeight: '200px'}
 </MacWindow>
 
-<v-clicks at=1>
+<v-clicks at=2>
 
-- Everything flows through the store
-- **Request Management** - How we handle requests for data
-- **Cache Management** - How to cache that data
-- **Schema Management** - Schemas for what our data looks like
-- **Reactive State Management** - What sort of reactive objects to create for that data
+- **Manages Requests** - How we handle requests for data
+- **Manages the Cache** - How to cache that data
+- **Manages Schemas** - Schemas for what our data looks like
+- **Manages Reactive State** - What sort of reactive objects to create for that data
 
 </v-clicks>
 
 <!--
-First, in our shared-data package,
+First, in our shared-data package, we are adding a shared WarpDrive "store" implementation.
+
+* You can think of the "store" as the "bridge" of our WarpDrive Starship. Like the bridge, it's in command of everything.
+
+The store is fully customizable and configurable. Our store, however, is basically identical to the one recommended in the WarpDrive guides.
+
+* It handles request management via its RequestManager
+* It handles cache management via a CachePolicy that manages our JSONAPICache
+* It manages our schemas via a schema service
+* And it manages our reactive state by determining what reactive objects to create for our data.
 -->
 
 ---
 
 # The RequestManager - "The Communications Officer"
 
-It manages all external contact:
+<v-click at=1>
+<p>It manages all external contact.</p>
+</v-click>
 
 <MacWindow title="packages/shared-data/src/stores/index.ts" class="max-w-2xl mb-6">
-<<< @/packages/shared-data/src/stores/index.ts ts {21|26|22-27|28|21-28}{maxHeight: '200px'}
+<<< @/packages/shared-data/src/stores/index.ts ts {21|21|26|22-27|28|21-28}{maxHeight: '200px'}
 </MacWindow>
 
-<v-clicks at=1>
+<v-clicks at=2>
 
 - **Fetch Handler** - Makes actual network requests (Fetch API + error handling)
 - **Request Pipeline** - Allows custom handlers for data transformation
@@ -486,24 +524,26 @@ It manages all external contact:
 <!--
 One of the most important parts of the store is the "Request Manager"
 
-Think of RequestManager as your ship's communications officer - it manages all external contact!
+* Think of RequestManager as your ship's communications officer - it manages all external contact!
 
-RequestManager is fully customize-able. You don't even need to use Fetch, though we will. (click)
+RequestManager is also fully customize-able.
 
-You can customize it with handlers to transform requests and responses as needed. (click)
-These handlers can choose to call `next()`, similar to middleware patterns in API frameworks.
+* You don't even need to use Fetch, though we will. Our RequestManager is basically identical to the one recommended in the WarpDrive guides.
 
-You can also register a special "CacheHandler" to integrate with WarpDrive's caching system.
+* You can customize it with handlers to transform requests and responses as needed. These handlers can choose to call `next()`, similar to middleware patterns in API frameworks.
+* You can also register a special "CacheHandler" to integrate with WarpDrive's caching system.
 In our case, we're using the default CacheHandler.
 
-So the Request Manager does exactly what it says on the tin. (click) It manages your requests.
+So the Request Manager does exactly what it says on the tin.
+
+* It manages your requests.
 -->
 
 ---
 
 # \{JSON:API\} - "The Communicator"
 
-By default, _Warp_**Drive** `Fetch` speaks \{JSON:API\} fluently, giving you:
+By default, _Warp_**Drive** speaks \{JSON:API\} fluently, giving you:
 
 <div class="grid grid-flow-col gap-4">
 
@@ -532,15 +572,14 @@ By default, _Warp_**Drive** `Fetch` speaks \{JSON:API\} fluently, giving you:
 <v-clicks>
 
 - **Standardized format** for resources, relationships, and errors
-- **Consistent patterns** across all your APIs
-- **Built-in pagination, filtering, sorting, and sparse fields** conventions
+- **Built-in conventions** for pagination, filtering, sorting, and sparse fields
 
 </v-clicks>
 
 <v-click>
 
 <div class="mt-4 text-sm text-lcars-blue">
-(But, you can configure _Warp_**Drive** to use other formats if you prefer!)
+(But, you can configure <i>Warp</i><strong>Drive</strong> to use other formats if you prefer!)
 </div>
 
 </v-click>
@@ -549,13 +588,22 @@ By default, _Warp_**Drive** `Fetch` speaks \{JSON:API\} fluently, giving you:
 
 </div>
 
+<!--
+If the RequestManager is the "communication officer," think of JSON:API as the communicator.
+
+It's a language that WarpDrive speaks fluently, giving you:
+* A Standardized format for resources, relationships, and errors
+* And Built-in conventions for pagination, filtering, sorting, and sparse fields
+* But, you don't have to use JSON:API if you don't want to. You can configure your WarpDrive store to use another format instead.
+-->
+
 ---
 
 # Making a Request
 
 <MacWindow title="apps/my-app/routes/index.js" class="max-w-2xl">
 
-```js {10-14}{maxHeight: '200px'}
+```js {all}
 import Route from '@my-framework/routing/route';
 import { service } from '@my-framework/service';
 
@@ -577,7 +625,8 @@ export default class ActiveTodos extends Route {
 </MacWindow>
 
 <!--
-The simplest way to make a request is to pass a request object to the store's request method.
+The simplest way to make a request is to pass a request info object to the store's request method.
+
 This method delegates the request to the store's RequestManager.
 
 For example, this request will get all todos from our API.
@@ -585,15 +634,12 @@ For example, this request will get all todos from our API.
 
 ---
 
-# Request Options
+# Request Info
 
 <MacWindow title="warp-drive/warp-drive-packages/core/src/types/request.ts" class="max-w-2xl">
 
-```ts twoslash {2-3|all}{maxHeight: '380px'}
-type Store = any;
-// ---cut---
+```ts {1-4|all}{maxHeight: '380px'}
 interface RequestInfo extends RequestInit {
-  //                          ^^^^^^^^^^^
   // Standard Fetch API options
   method: 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT'; // etc
   url: string;
@@ -617,10 +663,11 @@ interface RequestInfo extends RequestInit {
 </MacWindow>
 
 <!--
-Requests can take any of the standard Fetch API RequestInit options, plus some extras
-to configure caching and handler behavior.
+Requests can take any of the standard Fetch API `RequestInit` options...
 
-As you can imagine, these options can get quite complex, which is why we support request builders...
+* plus some extras to configure caching and handler behavior.
+
+As you can imagine, these options can get quite complex, which is why WarpDrive supports request builders...
 -->
 
 ---
@@ -629,19 +676,21 @@ As you can imagine, these options can get quite complex, which is why we support
 
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
-<MacWindow title="packages/shared-data/src/builders/todo/query.ts" class="w-140">
-<<< @/packages/shared-data/src/builders/todo/simple-query.ts ts {8-9|11|12|14-15}{maxHeight: '300px'}
+<MacWindow title="packages/shared-data/src/builders/todo/query.ts">
+<<< @/packages/shared-data/src/builders/todo/simple-query.ts ts {8-9|8-9|11|12|14-15}{maxHeight: '300px'}
 </MacWindow>
 
 <div>
 
-- Our `getAllTodos` builder
-
 <v-clicks at=1>
 
-- Specifies the request method
-- Generates the URL
-- Sets cache options
+Our `getAllTodos` builder
+
+Specifies the request method
+
+Generates the URL
+
+Sets cache options:<br />`'query'` op, `'todo'` type
 
 </v-clicks>
 
@@ -652,15 +701,51 @@ As you can imagine, these options can get quite complex, which is why we support
 <!--
 A request builder is just a simple function that returns a RequestInfo object.
 
-Here's a reusable builder for our 'getAllTodos' request, using warp drive
+* Here's a reusable builder for our 'getAllTodos' request, using WarpDrive
 request utilities to ensure consistency across our app.
+* It sets the request method to 'GET'.
+* It generates the URL, using the resource path plus a configurable namespace
+* And it sets cache options.
 
-(click) It generates the URL, using the resource path plus a configurable namespace
-(click) And it sets cache options
 In this case, Adding the 'query' OpCode and specifying the 'todo' type in
 `cacheOptions` tells the `DefaultCachePolicy` in our store to
 automatically invalidate this request when any request with the
-'createRecord' OpCode + 'todo' in `cacheOptions.type` succeeds.
+'createRecord' OpCode + 'todo' as one of it's `cacheOptions` types succeeds.
+
+Say *that* five times fast.
+-->
+
+---
+
+# Query Builders - Automatic Cache Invalidation
+
+<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+
+<MacWindow title="packages/shared-data/src/builders/todo/create.ts">
+<<< @/packages/shared-data/src/builders/todo/create.ts ts {8-25|8-25|22-23}{maxHeight: '350px'}
+</MacWindow>
+
+<div>
+
+<v-clicks at=1>
+
+Our `createTodo` builder
+
+Sets cache options:<br />`'createRecord'` op, `'todo'` type
+
+</v-clicks>
+
+</div>
+
+</div>
+
+<!--
+So what that means is,
+
+* when we use this `createTodo` builder to create a new todo...
+* Because it sets the 'createRecord' OpCode and specifies 'todo' in its `cacheOptions` types...
+
+Our query from the previous builder will automatically be invalidated and re-fetched the next time its results are rendered.
 -->
 
 ---
@@ -670,15 +755,14 @@ automatically invalidate this request when any request with the
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
 <MacWindow title="packages/shared-data/src/builders/todo/query.ts" class="w-140">
-<<< @/packages/shared-data/src/builders/todo/simple-query.ts ts {19-20|21-24,28}{maxHeight: '300px'}
+<<< @/packages/shared-data/src/builders/todo/simple-query.ts ts {19-33|19-33|21-24,28}{maxHeight: '300px'}
 </MacWindow>
 
 <div>
 
-- Our `getCompletedTodos` builder
-
 <v-clicks at=1>
 
+- Our `getCompletedTodos` builder
 - `buildQueryParams` util
 
 </v-clicks>
@@ -688,18 +772,22 @@ automatically invalidate this request when any request with the
 </div>
 
 <!--
+One last thing about request builders:
+
 WarpDrive also provides utilities to help with common request patterns.
 
-For example, here is the builder for the request made by our "Completed" filter.
+* For example, here is the builder for the request made by our "Completed" filter.
 
-It looks the same as our `getAllTodos` builder, except it adds a `filter[completed]=true` query parameter to the URL.
+It looks the same as our `getAllTodos` builder...
+
+* except it adds a query parameter to the URL to filter.
 
 This allows us to fetch only the completed todos.
 -->
 
 ---
 layout: section
-title: 'Episode 4: "Schemas - The DNA of Your Data"'
+title: 'Episode 4: "Schemas - The Universal Translator"'
 ---
 
 # Episode 4
