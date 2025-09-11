@@ -14,6 +14,7 @@ drawings:
 transition: slide-left
 mdc: true
 favicon: ./favicon.png
+selectable: true
 ---
 
 # WarpDrive: Set Data to Stun
@@ -34,7 +35,7 @@ I was going to call this talk "WarpDrive for Dummies"...
 
 ...but we're not dummies.
 
-Some of us know quite a lot about data libraries.
+In fact, some of us know **a lot** about data libraries.
 -->
 
 ---
@@ -70,12 +71,12 @@ Today we're going on a mission to <strong>explore strange new patterns</strong>,
 <!--
 You might know quite a bit about **one data library** in particular...
 
-(clickl) And you might even be expecting me to talk about that library.
+* And you might even be expecting me to talk about *that* library.
 
-(click) **But I'm not.**
+* **But I'm not.**
 Instead, I want you to pretend you've never seen that library before.
 
-(click) We're going to explore a new library, with new patterns. We're going to "boldly go where our data has never gone before."
+* We're going to explore a new library, with new patterns. We're going to "boldly go where our data has never gone before."
 -->
 
 ---
@@ -151,15 +152,13 @@ Ember veteran since v2
 </div>
 
 <!--
-Before we embark, let me introduce myself - I'm your guide through the WarpDrive universe...
-
-(These really just talking points to make me more approachable at tonight's AfterParty.)
+Before we embark, let me introduce myself - I'll be your guide through the WarpDrive universe...
 
 * I live in Portland, Oregon. It rains a lot there.
 -  I have two kids, so I understand the importance of reliable, predictable systems that just work
-- I'm a staff-engineer at AuditBoard - building enterprise Audit, Risk, and Compliance software
+- I'm a staff-engineer at AuditBoard - building enterprise software for Audit, Risk, and Compliance
 - I'm a member of the WarpDrive and Ember Tooling Teams. I'm passionate about making data management both powerful and type-safe
-- I've been writing Ember apps for nearly a decade.
+- And I've been writing Ember apps for nearly a decade.
 -->
 
 ---
@@ -168,7 +167,7 @@ layout: center
 
 # The Evolution Continues
 
-I've seen the evolution of data patterns in Ember from the early days,<br />and I'm excited to show you where we're **boldly going next**.
+Where are we **boldly going next**?
 
 <!--
 I've seen the evolution of data patterns in Ember from the early days,
@@ -183,10 +182,10 @@ title: 'Episode 1: "What is WarpDrive?"'
 
 # Episode 1
 
-## "What is WarpDrive?"
+## "Computer, define 'WarpDrive'"
 
 <!--
-So...What even is WarpDrive?
+--drink water--
 -->
 
 ---
@@ -205,13 +204,13 @@ So...What even is WarpDrive?
 </div>
 
 <div class="callout-solid">
-  <h3>Performant</h3>
-  <p>Committed to best-in-class performance</p>
+  <h3>Typed</h3>
+  <p>Fully typed, ready to rock</p>
 </div>
 
 <div class="callout-solid">
-  <h3>Typed</h3>
-  <p>Fully typed, ready to rock</p>
+  <h3>Performant</h3>
+  <p>Committed to best-in-class performance</p>
 </div>
 
 <div class="callout-solid">
@@ -223,11 +222,20 @@ So...What even is WarpDrive?
 
 </div>
 
+<!--
+WarpDrive is the lightweight data framework for ambitious web applications.
+
+* It's Universal and works with any framework
+* It's TypeScript-first
+* It's performant, with built-in caching and fine-grained reactivity
+* And It's scalable, no matter how ambitious your project.
+-->
+
 ---
 
 # "Boldly Go Where No Data Has Gone Before"
 
-Unlike traditional data libraries, WarpDrive is built around:
+Unlike other data libraries, _Warp_**Drive** is built around:
 
 <v-clicks>
 
@@ -237,6 +245,15 @@ Unlike traditional data libraries, WarpDrive is built around:
 - **Fine-grained reactivity** <span class="text-lcars-blue">that just works</span>
 
 </v-clicks>
+
+<!--
+Unlike _other_ data libraries, WarpDrive is built around:
+
+* Resource-first architecture instead of heavy model inheritance patterns
+* Schemas for consistent, sharable data shapes
+* Universal compatibility vs. framework-specific implementations
+* And Fine-grained reactivity that just works
+-->
 
 ---
 
@@ -251,7 +268,7 @@ Unlike traditional data libraries, WarpDrive is built around:
 <div class="code font-size-3">
 
 <div><carbon-folder /> packages/</div>
-<div>└── <span class="text-lcars-amber"><carbon-layers /> shared-data-layer</span></div>
+<div>└── <span class="text-lcars-amber"><carbon-layers /> shared-data</span></div>
 <div>&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="text-lcars-magenta"><carbon-rocket /> @warp-drive/core</span></div>
 <div>&nbsp;&nbsp;&nbsp;&nbsp;├── <carbon-build-tool /> builders/</div>
 <div>&nbsp;&nbsp;&nbsp;&nbsp;├── <carbon-api /> handlers/</div>
@@ -279,13 +296,17 @@ Unlike traditional data libraries, WarpDrive is built around:
 </div>
 
 <!--
+Let's talk about "universal".
+
 By "universal", we mean you can build your data layer in a separate package and share it across multiple frontends, regardless of framework.
 
-This is the actual structure of the monorepo I am presenting today.
+This isn't just theory...
 
-In this monorepo, we have a `shared-data-layer` package that contains all of our WarpDrive configuration, logic, and utilities.
+This is the actual structure of the monorepo I am presenting today:
 
-Under the apps folder, today I will be presenting the emberjs app, but you could just as easily build a React or Vue app that shares this same data layer.
+We have a `shared-data` package that contains all of our WarpDrive configuration, logic, and utilities.
+
+Today I will be presenting the emberjs app, but you could just as easily build a React or Vue app that shares this same data layer.
 
 Even our `api` implementation, written in node, uses types imported from the shared data layer.
 -->
@@ -300,19 +321,21 @@ title: 'Episode 2: "Engage! - Setting Up Our Mission"'
 ## "Engage! - Setting Up Our Mission"
 
 <!--
-And now, let's build something ambitious.
+Let's talk about what we're going to build today.
+
+I promise, it's something ambitious.
 -->
 
 ---
 
 # Our Mission Brief
 
-We'll implement a TodoMVC application step-by-step using:
+We'll implement a TodoMVC application using:
 
 <v-clicks>
 
 - ***Warp*Drive** <span class="text-lcars-blue">(our starship for data management)</span>
-- **\(JSON:API\}** <span class="text-lcars-blue">(the gold standard for API communication)</span>
+- **\{JSON:API\}** <span class="text-lcars-blue">(the gold standard for API communication)</span>
 - **TypeScript** <span class="text-lcars-blue">(because we like our data typed and our code safe)</span>
 - **Modern Ember Polaris** <span class="text-lcars-blue">(the latest and greatest Ember patterns)</span>
 
@@ -320,11 +343,25 @@ We'll implement a TodoMVC application step-by-step using:
 
 <v-click>
 
+<div class="mt-4 text-sm text-lcars-blue">
+(Yes, we're using Vite)
+</div>
+
+</v-click>
+
 <div class="callout mt-8 float-right">
 By the end, you'll see how WarpDrive makes data management feel... <em>logical</em>.
 </div>
 
-</v-click>
+<!--
+Today, we’ll implement a TodoMVC application step-by-step using:
+
+* WarpDrive
+* JSON:API
+* TypeScript
+* Modern Ember Polaris
+* (Yes, we're using Vite)
+-->
 
 ---
 
@@ -348,6 +385,18 @@ interface Todo {
 
 </v-click>
 
+<!--
+TodoMVC is a spec for a simple Todo app, implemented in multiple frameworks to compare approaches.
+
+It’s built around a simple Todo resource:
+
+a string id
+
+a string title attribute
+
+and a boolean completed attribute
+-->
+
 ---
 
 # TodoMVC: Our Prime Directive
@@ -359,7 +408,19 @@ Every TodoMVC implementation shares the same [core features](https://github.com/
 </div>
 
 <!--
-And thanks to Miguel, Addy, and Preston for creating the Ember TodoMVC implementation that I forked for today's presentation.
+Every TodoMVC implementation shares the same core features:
+
+You can create a Todo
+
+You can read lists of Todos, Active Todos, and Completed Todos
+
+You can update each Todo
+
+You can delete a Todo
+
+And you can bulk toggle and delete todos.
+
+The Ember TodoMVC I forked for today's presentation was created by Miguel, Addy, and Preston, for which I am grateful.
 -->
 
 ---
@@ -371,24 +432,33 @@ title: 'Episode 3: "Request Patterns - Making It So"'
 
 ## "Request Patterns - Making It So"
 
+<!--
+We've forked our TodoMVC app.
+
+Now it's time to "set its data layer to stun" by updating it to use WarpDrive.
+-->
+
 ---
 
 # The WarpDrive Store - "The Bridge"
 
-Everything flows through here:
-
 <MacWindow title="packages/shared-data/src/stores/index.ts" class="max-w-2xl mb-6">
-<<< @/packages/shared-data/src/stores/index.ts ts {20|21|28-37|39-44|46-52}{maxHeight: '200px'}
+<<< @/packages/shared-data/src/stores/index.ts ts {20|20|21|28-37|39-44|46-52}{maxHeight: '200px'}
 </MacWindow>
 
 <v-clicks at=1>
 
+- Everything flows through the store
 - **Request Management** - How we handle requests for data
 - **Cache Management** - How to cache that data
 - **Schema Management** - Schemas for what our data looks like
 - **Reactive State Management** - What sort of reactive objects to create for that data
 
 </v-clicks>
+
+<!--
+First, in our shared-data package,
+-->
 
 ---
 
@@ -433,7 +503,7 @@ So the Request Manager does exactly what it says on the tin. (click) It manages 
 
 # \{JSON:API\} - "The Communicator"
 
-By default, WarpDrive `Fetch` speaks \{JSON:API\} fluently, giving you:
+By default, _Warp_**Drive** `Fetch` speaks \{JSON:API\} fluently, giving you:
 
 <div class="grid grid-flow-col gap-4">
 
@@ -470,7 +540,7 @@ By default, WarpDrive `Fetch` speaks \{JSON:API\} fluently, giving you:
 <v-click>
 
 <div class="mt-4 text-sm text-lcars-blue">
-(But, you can configure WarpDrive to use other formats if you prefer!)
+(But, you can configure _Warp_**Drive** to use other formats if you prefer!)
 </div>
 
 </v-click>
@@ -623,6 +693,8 @@ WarpDrive also provides utilities to help with common request patterns.
 For example, here is the builder for the request made by our "Completed" filter.
 
 It looks the same as our `getAllTodos` builder, except it adds a `filter[completed]=true` query parameter to the URL.
+
+This allows us to fetch only the completed todos.
 -->
 
 ---
@@ -638,7 +710,7 @@ title: 'Episode 4: "Schemas - The DNA of Your Data"'
 
 # Schema-Driven Development
 
-Instead of models with complex inheritance, WarpDrive uses simple, declarative schemas:
+Instead of models with complex inheritance, _Warp_**Drive** uses simple, declarative schemas:
 
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
@@ -1117,7 +1189,7 @@ title: 'Episode 7: "Performance - Warp 9.8"'
 
 # Built for Performance
 
-WarpDrive optimizes automatically:
+_Warp_**Drive** optimizes automatically:
 
 <v-clicks>
 
@@ -1485,7 +1557,7 @@ layout: section
 
 # What We've Discovered
 
-WarpDrive is the lightweight data framework for ambitious web applications.
+_Warp_**Drive** is the lightweight data framework for ambitious web applications.
 
 <div class="grid grid-cols-2 gap-4">
 
@@ -1495,13 +1567,13 @@ WarpDrive is the lightweight data framework for ambitious web applications.
 </div>
 
 <div class="callout-solid">
-  <h3>Performant</h3>
-  <p>Committed to best-in-class performance</p>
+  <h3>Typed</h3>
+  <p>Fully typed, ready to rock</p>
 </div>
 
 <div class="callout-solid">
-  <h3>Typed</h3>
-  <p>Fully typed, ready to rock</p>
+  <h3>Performant</h3>
+  <p>Committed to best-in-class performance</p>
 </div>
 
 <div class="callout-solid">
@@ -1515,9 +1587,9 @@ WarpDrive is the lightweight data framework for ambitious web applications.
 
 # Your Mission, Should You Choose to Accept It
 
-1. Try WarpDrive in your next project.
+1. Try _Warp_**Drive** in your next project.
 2. Explore the guides at [docs.warp-drive.io](https://docs.warp-drive.io) and [canary.warp-drive.io](https://canary.warp-drive.io).
-3. Explore this WarpDrive TodoMVC monorepo at [github.com/gitKrystan/2025-emberfest](https://github.com/gitKrystan/2025-emberfest).
+3. Explore this _Warp_**Drive** TodoMVC monorepo at [github.com/gitKrystan/2025-emberfest](https://github.com/gitKrystan/2025-emberfest).
 4. Join the community discussions on Discord ([https://discord.gg/eUPwQzRJ](https://discord.gg/eUPwQzRJ)).
 5. Build something ambitious!
 
