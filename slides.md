@@ -11,8 +11,9 @@ lineNumbers: true
 drawings:
   enabled: true
   persist: false
-transition: slide-left
+transition: fade
 mdc: true
+favicon: ./favicon.png
 ---
 
 # WarpDrive: Set Data to Stun
@@ -29,7 +30,11 @@ Krystan HuffMenne • Staff Engineer @ AuditBoard
 </div>
 
 <!--
-I was going to call this talk "WarpDrive for Dummies" but we're not dummies. Some of us know quite a lot about data libraries.
+I was going to call this talk "WarpDrive for Dummies"...
+
+...but we're not dummies.
+
+Some of us know quite a lot about data libraries.
 -->
 
 ---
@@ -63,18 +68,19 @@ Today we're going on a mission to <strong>explore strange new patterns</strong>,
 </v-click>
 
 <!--
-# A Fresh Perspective
-
 You might know quite a bit about **one data library** in particular...
 
-And you might even be expecting me to talk about that library.
+(clickl) And you might even be expecting me to talk about that library.
 
-**But I'm not.**
-
+(click) **But I'm not.**
 Instead, I want you to pretend you've never seen that library before.
 
-Today we're going on a mission to **explore strange new patterns**, seek out new architectures, and **boldly go where our data has never gone before**.
+(click) We're going to explore a new library, with new patterns. We're going to "boldly go where our data has never gone before."
 -->
+
+---
+
+<img src="/warp-drive-logo-white.svg" alt="WarpDrive logo" class="w-100 m-auto" />
 
 ---
 layout: two-cols
