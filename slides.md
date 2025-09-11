@@ -1308,21 +1308,23 @@ In our case, the API returns meta that is the exact shape we need, but you can e
 
 # Houston, we have a problem
 
-<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+<div class="grid grid-cols-2 gap-4 grid-items-center grid-items-center">
 
 <v-click>
-<div class="callout-solid mt-8 h-100">
-
-Load only part of the Todo list
-
+<div class="callout-solid h-100 bg-lcars-magenta">
+<div class="callout-solid mt-8 bg-lcars-purple">
+Load only part of the Todo list...
+</div>
 </div>
 </v-click>
 
 <v-click>
-<div class="callout-solid mt-8">
+<div class="callout-solid h-100 bg-lcars-magenta">
+<div class="callout-solid mt-8 bg-lcars-purple">
 
 <carbon-arrow-right /> Risk updating only part of the list
 
+</div>
 </div>
 </v-click>
 
