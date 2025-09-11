@@ -427,7 +427,7 @@ By default, WarpDrive `Fetch` speaks \{JSON:API\} fluently, giving you:
 
 - **Standardized format** for resources, relationships, and errors
 - **Consistent patterns** across all your APIs
-- **Built-in pagination, filtering, and sorting** conventions
+- **Built-in pagination, filtering, sorting, and sparse fields** conventions
 
 </v-clicks>
 
@@ -597,7 +597,7 @@ More on that this afternoon in Mehul's talk about "ReactiveResources & Schema‑
 
 # TypeScript Integration
 
-Because resources are just POJOs, you can define types for their various states:
+Because resources are just thin wrappers over POJOs, you can define types for their various states:
 
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
@@ -1182,6 +1182,125 @@ Our actual query builder configures a request for the *initial* page of todos vi
 <!--
 In our case, the API returns meta that is the exact shape we need, but you can extract page-hints however you want.
 -->
+
+---
+
+# Houston, we have a problem
+
+<v-clicks at=0>
+
+- Load only part of the Todo list
+- <carbon-arrow-right /> Risk updating only part of the list
+
+</v-clicks>
+
+<!--
+Now that we're paginating our data, we have a problem. (click)
+
+The TodoMVC spec requires a Toggle button that toggles completion of the full list
+and a  "Clear Completed" button that deletes all completed todos.
+
+If we naively implemented these actions by iterating over the full list of
+todos and sending individual requests, we'd have to load the entire list into
+the client, (click) or risk updating only part of our full Todo list.
+-->
+
+---
+
+# Bulk Actions - Bulk Op Builders
+
+<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+
+<MacWindow title="packages/shared-data/src/builders/todo/bulk.ts" class="w-150">
+<<< @/packages/shared-data/src/builders/todo/bulk.ts ts {154-167|164|158-161,165|163-166|159-161|157}{maxHeight: '360px'}
+</MacWindow>
+
+<div class="max-w-sm">
+
+- `bulkDeleteCompletedTodos` builder
+
+<v-clicks at=0>
+
+- Specifies the request method
+- Generates the URL
+- No body, no cache options
+- Expects empty response
+
+</v-clicks>
+
+</div>
+
+</div>
+
+<!--
+First, let's look at our `bulkDeleteCompletedTodos` builder.
+This builder implementation should look familiar by now.
+
+(click) It specifies the request method
+(click) It generates the URL - this time using a custom bulk "ops.bulk.deleteAll" endpoint
+(click) It has no body, and no cache options. Instead, it passes a filter via the query params to tell the server to delete all completed todos.
+(click) It expects an empty response.
+If the API were to try to serialize all the deleted todos, it could result in a massive payload.
+-->
+
+---
+
+# Bulk Actions - State Invalidation
+
+<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+
+<MacWindow title="packages/shared-data/src/builders/todo/query.ts" class="w-130">
+<<< @/packages/shared-data/src/builders/todo/query.ts ts {94-97}{maxHeight: '200px'}
+</MacWindow>
+
+<div class="max-w-sm">
+
+- Our `invalidateAllTodoQueries` util
+
+<v-clicks>
+
+- `invalidateRequestsForType` method
+
+</v-clicks>
+
+</div>
+
+</div>
+
+<!--
+Since our bulk delete endpoint returns an empty response, there is no way for
+WarpDrive to know which queries to invalidate. And as we saw earlier, we'd
+need to manually handle updating the cached filter queries anyway.
+
+Since the bulk endpoint results in so much change and predicting how that
+would affect cached pages would be very difficult, we simply invalidate all
+queries for the `todo` type so that they will refetch the next time they are
+rendered.
+-->
+
+---
+
+# Bulk Actions - Putting It All Together
+
+<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+
+<MacWindow title=".../app/components/todo-app/clear-completed-todos.gts" class="w-150">
+<<< @/apps/emberjs/app/components/todo-app/clear-completed-todos.gts ts {34|48,51-56,59|52|53}{maxHeight: '360px'}
+</MacWindow>
+
+<div class="max-w-sm">
+
+<v-clicks at=1>
+
+- Our `clearCompleted` action
+- Our `bulkDeleteCompletedTodos` builder
+- Our `invalidateAllTodoQueries` utility
+
+</v-clicks>
+
+</div>
+
+</div>
 
 ---
 layout: section

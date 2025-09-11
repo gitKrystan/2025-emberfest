@@ -46,11 +46,15 @@ class ClearCompleted extends Component<{
   @service declare private readonly appState: AppState;
 
   clearCompleted = async () => {
+    this.appState.onSaveStart();
+
     try {
       await this.store.request(bulkDeleteCompletedTodos());
       invalidateAllTodoQueries(this.store);
     } catch (e) {
       reportError(new Error('Could not clear completed todos', { cause: e }), { toast: true });
     }
+
+    this.appState.onSaveEnd();
   };
 }

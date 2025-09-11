@@ -92,5 +92,23 @@ export function getActiveTodos(
 }
 
 export function invalidateAllTodoQueries(store: Store) {
+  // store.lifetimes === our DefaultCachePolicy instance
   store.lifetimes.invalidateRequestsForType('todo', store);
 }
+
+/*
+
+
+
+
+
+
+
+
+
+
+
+
+
+Comment so that Slidev can scroll invalidateAllTodoQueries to the middle
+*/

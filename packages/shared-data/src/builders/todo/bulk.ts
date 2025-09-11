@@ -119,7 +119,7 @@ export function bulkPatchCacheTodos(
 // DELETE
 
 /**
- * DELETE /todo/ops.bulk.delete
+ * DELETE /api/todo/ops.bulk.delete
  *
  * @param todos - The todos to delete
  */
@@ -152,7 +152,7 @@ export function bulkDeleteTodos(
 }
 
 /**
- * DELETE /todo/ops.bulk.deleteAll?filter[completed]=true
+ * DELETE /api/todo/ops.bulk.deleteAll?filter[completed]=true
  */
 export function bulkDeleteCompletedTodos(): RequestInfo<EmptyResourceDocument> {
   const url = buildBaseURL({ resourcePath: 'todo' });
@@ -165,3 +165,20 @@ export function bulkDeleteCompletedTodos(): RequestInfo<EmptyResourceDocument> {
     url: `${url}/ops.bulk.deleteAll?${queryString}`,
   });
 }
+
+/*
+
+
+
+
+
+
+
+
+
+
+
+
+
+Comment so that Slidev can scroll bulkDeleteCompletedTodos to the middle
+*/
