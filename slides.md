@@ -931,10 +931,10 @@ Whether you choose pessimistic or optimistic updates:
 
 ---
 layout: section
-title: 'Episode 8: "Performance - Warp 9.8"'
+title: 'Episode 7: "Performance - Warp 9.8"'
 ---
 
-# Episode 8
+# Episode 7
 
 ## "Performance - Warp 9.8"
 
@@ -1116,10 +1116,10 @@ In our case, the API returns meta that is the exact shape we need, but you can e
 
 ---
 layout: section
-title: 'Episode 10: "The Future - Final Frontier"'
+title: 'Episode 8: "The Future - Final Frontier?"'
 ---
 
-# Episode 10
+# Episode 8
 
 ## "The Future - Final Frontier?"
 
