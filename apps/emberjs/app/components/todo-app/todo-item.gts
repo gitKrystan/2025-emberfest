@@ -183,7 +183,7 @@ class CompletedForm extends Component<{
     this.args.onSaveEnd();
   };
 
-  private async patchTodoToggle(todo: EditableTodo) {
+  private readonly patchTodoToggle = async (todo: EditableTodo) => {
     const wasCompleted = todo.completed;
     const completed = !wasCompleted;
 
@@ -200,7 +200,7 @@ class CompletedForm extends Component<{
       reportError(new Error('Could not update todo completion state', { cause: e }), { toast: true });
       todo.completed = wasCompleted;
     }
-  }
+  };
 }
 
 /** Provides a button that deletes the Todo using "pessimistic" deletion. */

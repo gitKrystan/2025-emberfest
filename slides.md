@@ -242,7 +242,7 @@ Unlike other data libraries, _Warp_**Drive** is built around:
 - **Resource-first architecture** <span class="text-lcars-blue">instead of heavy model inheritance patterns</span>
 - **Schema-driven development** <span class="text-lcars-blue">for consistent, sharable data shapes</span>
 - **Universal compatibility** <span class="text-lcars-blue">vs. framework-specific implementations</span>
-- **Fine-grained reactivity** <span class="text-lcars-blue">that just works</span>
+- **Fine-grained reactivity** <span class="text-lcars-blue">that JustWorks™</span>
 
 </v-clicks>
 
@@ -794,6 +794,12 @@ title: 'Episode 4: "Schemas - The Universal Translator"'
 
 ## "Schemas - The Universal Translator"
 
+<!--
+Now that we can make a request, let's talk about how WarpDrive translates the returned JSON:API into reactive records that we can use in our UI.
+
+For that, we need schemas.
+-->
+
 ---
 
 # Schema-Driven Development
@@ -817,7 +823,15 @@ Instead of models with complex inheritance, _Warp_**Drive** uses simple, declara
 </div>
 
 <!--
-Our Todo Schema is very simple, but WarpDrive provides lots of powerful schema features.
+Instead of models with complex inheritance, WarpDrive uses simple, declarative schemas.
+
+Our Todo Schema is very simple:
+
+* `withDefaults` sets up defaults, like the `id` field
+* `type` defines the resource type
+* and `fields` defines the shape of the resource. In this case, a simple object with title and completed fields.
+
+WarpDrive actually provides lots of powerful schema features that we're not using here.
 
 More on that this afternoon in Mehul's talk about "ReactiveResources & Schema‑Driven Data Handling"
 -->
@@ -826,38 +840,40 @@ More on that this afternoon in Mehul's talk about "ReactiveResources & Schema‑
 
 # TypeScript Integration
 
-Types for various states:
-
-<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center grid-items-end">
 
 <MacWindow title="packages/shared-data/src/types/todo.ts" class="max-w-2xl">
-<<< @/packages/shared-data/src/types/todo.ts ts {11-27|11-15|17-21|23-27}{maxHeight: '350px'}
+<<< @/packages/shared-data/src/types/todo.ts ts {11-27|11-27|11-15|17-21|23-27}{maxHeight: '380px'}
 </MacWindow>
 
 <div class="max-w-sm">
 
 <v-clicks at=0>
 
-- An attribute type for pessimistic creation
-- A readonly Todo type
-- An editable Todo type
+- Types for various states:
+- `TodoAttributes` type
+- Readonly `Todo` type
+- `EditableTodo` type
 
 </v-clicks>
 
-<v-click>
-
-<div class="callout mt-4">
+<div class="callout">
   "Data, are you getting readings on this?"<br />Yes, and they're <strong>perfectly structured!</strong>
 </div>
-
-</v-click>
 
 </div>
 
 </div>
 
 <!--
-Because resources are just thin wrappers over POJOs, you can define types for their various states...
+Because resources are just thin wrappers over POJOs,
+
+* you can define types for their various states...
+* An attribute type for creation
+* A readonly Todo type
+* An editable Todo type
+
+The only limit is your imagination!
 -->
 
 ---
@@ -873,7 +889,9 @@ title: 'Episode 5: "Reactive UI - Ember Integration"'
 
 <!--
 Note that so far I haven't shown you any Ember code.
+
 Everything up until now has been framework-agnostic.
+
 Truly universal.
 -->
 
@@ -886,9 +904,11 @@ Truly universal.
 - **Reactive** - Leverages Ember's reactivity system for fine-grained updates that JustWork™.
 
 <!--
-This @warp-drive/ember package provides components built over the core WarpDrive reactive utilities for working with promises and requests.
+To integrate WarpDrive with Ember, you need to use the @warp-drive/ember package.
 
-These components enable you to build robust performant apps with elegant control flow.
+This package provides components built over the core WarpDrive reactive utilities for working with promises and requests.
+
+These components enable you to build robust and performant apps with elegant control flow.
 -->
 
 ---
@@ -898,15 +918,14 @@ These components enable you to build robust performant apps with elegant control
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
 <MacWindow title="apps/emberjs/app/components/todo-app/todo-provider.gts" class="max-w-2xl">
-<<< @/apps/emberjs/app/components/todo-app/todo-provider-request-version.gts ts {14|15-17|23-24|29-36|26-27|18-20}{maxHeight: '360px'}
+<<< @/apps/emberjs/app/components/todo-app/todo-provider-request-version.gts ts {14|14|15-17|23-24|29-36|26-27|18-20}{maxHeight: '360px'}
 </MacWindow>
 
 <div class="max-w-sm">
 
-- Our `TodoProvider` component
-
 <v-clicks at=0>
 
+- Our `TodoProvider` component
 - `<Request />` component
 - Loading state
 - Error state
@@ -921,26 +940,28 @@ These components enable you to build robust performant apps with elegant control
 </div>
 
 <!--
-Here's where WarpDrive really shines: reactive control flow
+* Here, we are looking at a simple TodoProvider component that fetches all todos.
+* It uses WarpDrive's Request component to declaratively handle request state.
+* On load, it displays a loading spinner.
+* On error, it displays an error message with a retry button.
+* And on success, it passes the data to the Todos component.
+* And! When cached responses for this request are invalidated, the component automatically re-renders with fresh data.
 
-Here' we're looking at a simple TodoProvider component that fetches all todos.
-
-(click) It uses WarpDrive's Request component to declaratively handle request state.
-(click) On load, it displays a loading spinner.
-(click) On error, it displays an error message with a retry button.
-(click) And on success, it passes the data to the Todos component.
-(click) And! When cached responses for this request are invalidated, the component automatically re-renders with fresh data.
-
-(click) There's even more, and I encourage you to check out the `@warp-drive/ember` readme to learn about it.
+* There's even more, and I encourage you to check out the `@warp-drive/ember` readme to learn about it.
 -->
 
 ---
 layout: center
 ---
 
-# Live Demo: Basic Request Loading States
+# Live Demo: Basic Request Loading and Error States
 
 <!--
+So, let's take a look at our Todo app. It's live demo time. Wish me luck.
+
+First, I need to check the configuration.
+Then, we'll demo our requests, showing loading state, caching behavior, and a few other TodoMVC features implemented with WarpDrive and Ember.
+
 - Initial Todo Count: A Few
 - API Reliability: Good
 - API Latency: Slow
@@ -948,18 +969,8 @@ layout: center
 
 1. Demo loading state with network throttling
 2. Demo caching on the queries
-3. Demo toggle all
-4. Demo "clear completed"
-5. Demo adding a todo
--->
+3. Demo adding a todo
 
----
-layout: center
----
-
-# Live Demo: Basic Request Error States
-
-<!--
 - Initial Todo Count: A Few
 - (UPDATE) API Reliability: Terrible
 - API Latency: Slow
@@ -1022,6 +1033,14 @@ export function TodoProvider() {
 
 </div>
 
+<!--
+We've been working in our Ember app, but I just want to remind you that WarpDrive is a "universal" data framework.
+
+For example, here is the same TodoProvider implemented in React.
+
+Our React library shipped a few weeks ago and we have Vue and Svelte libraries in the works.
+-->
+
 ---
 layout: section
 title: 'Episode 6: "Data Mutations - Quantum Mechanics"'
@@ -1030,6 +1049,12 @@ title: 'Episode 6: "Data Mutations - Quantum Mechanics"'
 # Episode 6
 
 ## "Data Mutations - Quantum Mechanics"
+
+<!--
+We can now create and read Todos. But what about mutations?
+
+Our spec requires being able to update and delete Todos.
+-->
 
 ---
 
@@ -1040,11 +1065,11 @@ When changing data, you have two choices:
 <div class="grid grid-cols-2 gap-4 grid-items-center">
 <v-clicks>
   <div class="callout-solid">
-    <h3>Pessimistic</h3>
+    <h3>Pessimistic Mutation</h3>
     <p>Wait for server confirmation before updating UI</p>
   </div>
   <div class="callout-solid">
-    <h3>Optimistic</h3>
+    <h3>Optimistic Mutation</h3>
     <p>Update UI immediately, then confirm with server</p>
   </div>
   <div class="callout-solid">
@@ -1059,7 +1084,14 @@ When changing data, you have two choices:
 </div>
 
 <!--
-And our todo app uses both
+When changing data, you have two choices:
+
+* Pessimistic Updates - Wait for server success confirmation before updating UI
+* Optimistic Updates - Update UI immediately, then confirm with server. Rollback if the request fails.
+* Both have trade-offs.
+* WarpDrive supports both. The choice is yours.
+
+Our Todo app uses a combination of pessimistic and optimistic mutations.
 -->
 
 ---
@@ -1080,6 +1112,14 @@ And our todo app uses both
 
 </v-clicks>
 
+<!--
+* When updating a Todo's title, we follow a "pessimistic mutation" pattern.
+* We make a patch request with our `patchTodo` builder
+* We pass it the todo item to update and the attributes we want to change
+* When this request finishes, the todo item updates everywhere in our app.
+* This seems almost too easy.
+-->
+
 ---
 
 # Pessimistic Mutation
@@ -1087,7 +1127,7 @@ And our todo app uses both
 <div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title="packages/shared-data/src/builders/todo/update.ts" >
-<<< @/packages/shared-data/src/builders/todo/update.ts gts {11-20|11-20|30|31|32-38|40-41}{maxHeight: '300px'}
+<<< @/packages/shared-data/src/builders/todo/update.ts gts {11-20|11-20|30|21-27,31|32-38|40-41}{maxHeight: '300px'}
 </MacWindow>
 
 <v-clicks at=1>
@@ -1097,23 +1137,27 @@ And our todo app uses both
 - Generates the URL
 - Serializes the request body
 - Sets cache options
+- tl;dr: It will update our Todo queries
 
 </v-clicks>
 
 </div>
 
 <!--
-The real magic is in our `patchTodo` builder:
+* The real magic is in our `patchTodo` builder:
 * Just like our `getAllTodos` builder, it specifies the request method
-* it generates the URL -- now using a resource key to determine the ID to add to the URL
+* it generates the URL -- now using a resource key to determine the ID to include
 * It serializes the request body in JSON:API format
 * And it sets cache options
+
 Adding the 'updateRecord' OpCode and specifying the `ResourceKey` for
  this todo in the `records` array tells the `DefaultCachePolicy` in our
  store that when this request succeeds it should automatically patch
  the returned attributes into any matching resources in any cached
  documents for requests with the 'query' OpCode that include this
  record in their results when this request succeeds.
+
+ * In this case, it will update our queries automatically when this request succeeds.
 -->
 
 ---
@@ -1123,6 +1167,8 @@ layout: center
 # Live Demo: Pessimistic Mutation
 
 <!--
+Back to our live demo. Let's update a todo title and see what happens.
+
 - Initial Todo Count: A Few
 - API Reliability: Good
 - API Latency: Slow
@@ -1137,41 +1183,58 @@ layout: center
 # Controlled Optimistic Mutation with Checkout
 
 <MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="mb-4 max-w-2xl">
-<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {186-192|186-192,199-203}{maxHeight: '350px'}
+<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {45-47|45-47|155-162|186-192,199-203|191-192}{maxHeight: '350px'}
 </MacWindow>
 
-<v-clicks at=2>
+<v-clicks at=4>
 
-- Uses the same `patchTodo` builder
-- This time, we pass an `EditableTodo` plus the `attributes` to update
+- Uses the same `patchTodo` builder, but this time with a mutated `EditableTodo`
 
 </v-clicks>
 
 <!--
-CompletedForm uses optimistic mutation to ensure that the completion state is shown consistently throughout the entire TodoItem component.
+* In addition to being able to update a todo's title, we need a way to mark it as completed.
+
+In this case, we render the completed state in multiple places in the TodoItem component. When a todo is completed, we need to simultaneously display a strikethrough in the title...
+
+* And a check in the checkbox.
+
+Even though these are in completely different components.
+
+* To do this, our `patchTodoToggle` action uses *optimistic* mutation to ensure that the completion state is shown consistently throughout the entire `TodoItem` parent component.
+
+* In this case, we use the same `patchTodo` builder, but we mutate the state of an _editable_ copy of the todo first.
+
+When the patch request succeeds, WarpDrive will "commit" the local changes from the editable todo back to the upstream, immutable todo.
 -->
 
 ---
 
 # Controlled Optimistic Mutation with Checkout
 
-<MacWindow title="apps/emberjs/app/components/todo-app/todo-list.gts" class="mb-4 max-w-2xl">
-<<< @/apps/emberjs/app/components/todo-app/todo-list.gts gts {21|21|22|21-37}{maxHeight: '350px'}
+<div class="grid grid-flow-col gap-4 grid-items-center">
+
+<MacWindow title="apps/emberjs/app/components/todo-app/todo-list.gts" class="w-150">
+<<< @/apps/emberjs/app/components/todo-app/todo-list.gts gts {21|21|22|25-31|22-36}{maxHeight: '380px'}
 </MacWindow>
 
+<div>
 <v-clicks at=1>
 
 - By default, resources are immutable
 - To get a mutable version, we use `await checkout(todo)`
+- Pass the mutable `EditableTodo` to our `<TodoItem />` component
+- `<Await />` component handles promise states declaratively
 
 </v-clicks>
+</div>
+</div>
 
 <!--
-WarpDrive handles mutations through a "checkout" system:
-- Be default, resources are immutable
+- That's right, by default, all resources are immutable
 - To get a mutable version, we use `await checkout(todo)`
 - This returns an `EditableTodo` that we can modify freely
-- When we're ready, we pass that `EditableTodo` to our `patchTodo` builder
+- When we're ready, we pass that `EditableTodo` to our `TodoItem` component, where it eventually makes its way to our `patchTodo` builder
 - Note that we're using the `@warp-drive/ember` `Await` component here. Similar to the `Request` component, it handles promise states declaratively.
 -->
 
@@ -1197,7 +1260,7 @@ Because we've already made requests for completed and active todos, our store ha
 
 But WarpDrive can't predict that just because a Todo's `completed` attribute changed, it should move between those two lists.
 
-So, we have to patch the cached documents manually. (click)
+So, we have to patch the cached documents manually. *
 -->
 
 ---
@@ -1219,10 +1282,10 @@ So, we have to patch the cached documents manually. (click)
 <!--
 I put this logic in utility functions because I use it in multiple places.
 
-(click) It uses the store's `cache.patch()` method to surgically update the cached documents.
+* It uses the store's `cache.patch()` method to surgically update the cached documents.
 In the case of `patchCacheTodoCompleted` we add the todo to the completed list
-(click) and remove it from the active list.
-(click) and we invalidate all queries with the 'todo-count' tag to force a refetch as these requests are inexpensive.
+* and remove it from the active list.
+* and we invalidate all queries with the 'todo-count' tag to force a refetch as these requests are inexpensive.
 
 NOTE: We don't need to patch the caches because we're using optimistic updates. This is because we're updating the `completed` attribute used in the filter, which WarpDrive can't predict.
 -->
@@ -1342,13 +1405,13 @@ layout: center
 <!--
 Here' we're looking at the real TodoProvider component used by our Enterprise Edition Todo App.
 
-(click) It uses WarpDrive's Paginate component to declaratively handle request state.
-(click) On load, it displays a loading spinner.
-(click) On error, it displays an error message with a retry button.
-(click) And on success, it passes the data to the Todos component.
-(click) And! When cached responses for this request are invalidated, the component automatically re-renders with fresh data.
+* It uses WarpDrive's Paginate component to declaratively handle request state.
+* On load, it displays a loading spinner.
+* On error, it displays an error message with a retry button.
+* And on success, it passes the data to the Todos component.
+* And! When cached responses for this request are invalidated, the component automatically re-renders with fresh data.
 
-(click) There's even more, and I encourage you to check out the `@warp-drive/ember` readme to learn about it.
+* There's even more, and I encourage you to check out the `@warp-drive/ember` readme to learn about it.
 -->
 
 ---
@@ -1491,14 +1554,14 @@ Load only part of the Todo list...
 </div>
 
 <!--
-Now that we're paginating our data, we have a problem. (click)
+Now that we're paginating our data, we have a problem. *
 
 The TodoMVC spec requires a Toggle button that toggles completion of the full list
 and a  "Clear Completed" button that deletes all completed todos.
 
 If we naively implemented these actions by iterating over the full list of
 todos and sending individual requests, we'd have to load the entire list into
-the client, (click) or risk updating only part of our full Todo list.
+the client, * or risk updating only part of our full Todo list.
 -->
 
 ---
@@ -1531,10 +1594,10 @@ the client, (click) or risk updating only part of our full Todo list.
 First, let's look at our `bulkDeleteCompletedTodos` builder.
 This builder implementation should look familiar by now.
 
-(click) It specifies the request method
-(click) It generates the URL - this time using a custom bulk "ops.bulk.deleteAll" endpoint
-(click) It has no body, and no cache options. Instead, it passes a filter via the query params to tell the server to delete all completed todos.
-(click) It expects an empty response.
+* It specifies the request method
+* It generates the URL - this time using a custom bulk "ops.bulk.deleteAll" endpoint
+* It has no body, and no cache options. Instead, it passes a filter via the query params to tell the server to delete all completed todos.
+* It expects an empty response.
 If the API were to try to serialize all the deleted todos, it could result in a massive payload.
 -->
 
