@@ -1,0 +1,231 @@
+.logo-slide {
+  .warp-drive-showcase {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(
+      ellipse at center,
+      rgba(51, 102, 153, 0.1) 0%,
+      rgba(0, 0, 0, 0.9) 70%
+    );
+  }
+
+  .lcars-frame {
+    position: relative;
+    width: 80%;
+    max-width: 800px;
+    height: 73%;
+    border: 2px solid var(--lcars-orange);
+    border-radius: 20px;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 153, 51, 0.05) 0%,
+      rgba(204, 102, 153, 0.05) 50%,
+      rgba(153, 102, 204, 0.05) 100%
+    );
+    box-shadow:
+      0 0 20px rgba(255, 153, 51, 0.3),
+      inset 0 0 20px rgba(255, 153, 51, 0.1);
+    animation: frameGlow 3s ease-in-out infinite alternate;
+  }
+
+  .corner-indicator {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--lcars-magenta);
+    animation: cornerPulse 2s ease-in-out infinite alternate;
+  }
+
+  .corner-indicator.top-left {
+    top: -2px;
+    left: -2px;
+    border-right: none;
+    border-bottom: none;
+    border-top-left-radius: 20px;
+  }
+
+  .corner-indicator.top-right {
+    top: -2px;
+    right: -2px;
+    border-left: none;
+    border-bottom: none;
+    border-top-right-radius: 20px;
+  }
+
+  .corner-indicator.bottom-left {
+    bottom: -2px;
+    left: -2px;
+    border-right: none;
+    border-top: none;
+    border-bottom-left-radius: 20px;
+  }
+
+  .corner-indicator.bottom-right {
+    bottom: -2px;
+    right: -2px;
+    border-left: none;
+    border-top: none;
+    border-bottom-right-radius: 20px;
+  }
+
+  .logo-container {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .warp-logo {
+    width: 70%;
+    max-width: 500px;
+    height: auto;
+    z-index: 2;
+    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+    animation: logoFloat 4s ease-in-out infinite;
+  }
+
+  .energy-field {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    border: 1px solid var(--lcars-cyan);
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: energyPulse 3s ease-in-out infinite;
+  }
+
+  .scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--lcars-cyan) 50%,
+      transparent 100%
+    );
+    animation: scanMotion 2.5s linear infinite;
+    z-index: 3;
+  }
+
+  .status-indicators {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-family: 'Antonio', 'Avenir Next', sans-serif;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .status-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    min-width: 150px;
+  }
+
+  .status-text {
+    color: var(--lcars-light-blue);
+    opacity: 0.8;
+  }
+
+  .status-ready {
+    color: var(--lcars-green);
+    animation: statusBlink 2.5s ease-in-out infinite;
+  }
+
+  .status-online {
+    color: var(--lcars-orange);
+    animation: statusBlink 2.6s ease-in-out infinite;
+  }
+
+  .status-active {
+    color: var(--lcars-magenta);
+    animation: statusBlink 2.7s ease-in-out infinite;
+  }
+
+  @keyframes frameGlow {
+    0% {
+      box-shadow:
+        0 0 20px rgba(255, 153, 51, 0.3),
+        inset 0 0 10px rgba(255, 153, 51, 0.1);
+    }
+    100% {
+      box-shadow:
+        0 0 30px rgba(255, 153, 51, 0.5),
+        inset 0 0 20px rgba(255, 153, 51, 0.2);
+    }
+  }
+
+  @keyframes cornerPulse {
+    0% {
+      opacity: 0.6;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes logoFloat {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  @keyframes energyPulse {
+    0% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.3;
+    }
+    50% {
+      transform: translate(-50%, -50%) scale(1.05);
+      opacity: 0.5;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.3;
+    }
+  }
+
+  @keyframes scanMotion {
+    0% {
+      transform: translateY(0);
+    }
+    100% {
+      transform: translateY(400px);
+    }
+  }
+
+  @keyframes statusBlink {
+    0%,
+    70% {
+      opacity: 1;
+    }
+    85% {
+      opacity: 0.3;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+}

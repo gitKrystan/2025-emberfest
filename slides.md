@@ -59,7 +59,7 @@ And you might even be expecting me to talk about that library.
 
 <v-click>
 
-<div class="callout float-right max-w-2xl">
+<div class="callout float-right max-w-xl mt-8">
 <p>
 Today we're going on a mission to <strong>explore strange new patterns</strong>, seek out new architectures, and <strong>boldly go where our data has never gone before</strong>.
 </p>
@@ -80,7 +80,43 @@ Instead, I want you to pretend you've never seen that library before.
 
 ---
 
-<img src="/warp-drive-logo-white.svg" alt="WarpDrive logo" class="w-100 m-auto" />
+<div class="logo-slide">
+
+<div class="warp-drive-showcase">
+  <div class="lcars-frame">
+    <div class="corner-indicator top-left"></div>
+    <div class="corner-indicator top-right"></div>
+    <div class="corner-indicator bottom-left"></div>
+    <div class="corner-indicator bottom-right"></div>
+    <div class="logo-container">
+      <img src="/warp-drive-logo-white.svg" alt="WarpDrive logo" class="warp-logo" />
+      <div class="energy-field"></div>
+      <div class="scan-line"></div>
+    </div>
+    <div class="status-indicators">
+      <div class="status-bar">
+        <span class="status-text">SYSTEM STATUS:</span>
+        <span class="status-ready">READY</span>
+      </div>
+      <div class="status-bar">
+        <span class="status-text">WARP CORE:</span>
+        <span class="status-online">ONLINE</span>
+      </div>
+      <div class="status-bar">
+        <span class="status-text">DATA LAYER:</span>
+        <span class="status-active">STUN</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!--
+Today we're talking about WarpDrive.
+
+Set your data layer to stun.
+-->
 
 ---
 layout: two-cols
