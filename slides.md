@@ -1346,6 +1346,14 @@ title: 'Episode 7: "Performance - Warp 9.8"'
 
 ## "Performance - Warp 9.8"
 
+<!--
+Now it's time to get really ambitious.
+
+It turns out that our Todo MVC MVP has gotten quite popular and we're really raking in the dough.
+
+We've got some big customers. Over 50% of Starfleet command.
+-->
+
 ---
 
 # Built for Performance
@@ -1360,9 +1368,12 @@ _Warp_**Drive** optimizes automatically:
 </v-clicks>
 
 <!--
-WarpDrive provides built-in performance optimizations, like caching and request deduplication.
+Fortunately,
+WarpDrive provides built-in performance optimizations,
+* like caching and request deduplication.
+* and fine-grained reactivity.
 
-But our TodoMVC MVP has gotten so popular that we're starting to hit performance limits.
+But our TodoMVC MVP has gotten so popular that we're still starting to hit performance limits.
 
 We've even seen some "scale pioneer" users with hundreds of thousands of todos in their list.
 -->
@@ -1374,12 +1385,21 @@ layout: center
 # Live Demo: Scale Pioneers
 
 <!--
+Our support team sent us this customer app that really exemplifies some performance issues we are seeing.
+
+It turns out this customer has 100k todos, and they're really having issues.
+
+Let me just switch back to our demo app and load the customer's data to test.
+
 - (UPDATE) Initial Todo Count: A Lot
 - API Reliability: Good
 - API Latency: Slow
 - Mode: Hobbyist
 
 1. Demo 100k todos without pagination
+
+Fortunately, WarpDrive has another trick up it's sleeve:
+Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
 
 - (UPDATE) Mode: Enterprise
 -->
@@ -1413,12 +1433,12 @@ layout: center
 </div>
 
 <!--
-Here' we're looking at the real TodoProvider component used by our Enterprise Edition Todo App.
-
+* Here' we're looking at the real TodoProvider component used by our Enterprise Edition Todo App.
 * It uses WarpDrive's Paginate component to declaratively handle request state.
 * On load, it displays a loading spinner.
 * On error, it displays an error message with a retry button.
-* And on success, it passes the data to the Todos component.
+* And on success, it passes the current page of data to the Todos component.
+* It displays the pagination state via the always block.
 * And! When cached responses for this request are invalidated, the component automatically re-renders with fresh data.
 
 * There's even more, and I encourage you to check out the `@warp-drive/ember` readme to learn about it.
