@@ -251,7 +251,7 @@ Unlike traditional data libraries, WarpDrive is built around:
 <div class="code font-size-3">
 
 <div><carbon-folder /> packages/</div>
-<div>└── <span class="text-lcars-orange"><carbon-layers /> shared-data-layer</span></div>
+<div>└── <span class="text-lcars-amber"><carbon-layers /> shared-data-layer</span></div>
 <div>&nbsp;&nbsp;&nbsp;&nbsp;├── <span class="text-lcars-magenta"><carbon-rocket /> @warp-drive/core</span></div>
 <div>&nbsp;&nbsp;&nbsp;&nbsp;├── <carbon-build-tool /> builders/</div>
 <div>&nbsp;&nbsp;&nbsp;&nbsp;├── <carbon-api /> handlers/</div>
@@ -260,13 +260,13 @@ Unlike traditional data libraries, WarpDrive is built around:
 <div>&nbsp;&nbsp;&nbsp;&nbsp;└── <carbon-types /> types/</div>
 <div class="h-2"></div>
 <div><carbon-folder /> apps/</div>
-<div>├── <span class="text-lcars-orange"><logos-ember-tomster /> emberjs</span></div>
+<div>├── <span class="text-lcars-red-orange"><logos-ember-tomster /> emberjs</span></div>
 <div>│&nbsp;&nbsp;&nbsp;└── <span class="text-lcars-magenta"><carbon-rocket /> @warp-drive/ember</span></div>
 <div>├── <span class="text-lcars-cyan"><logos-react /> react</span></div>
 <div>│&nbsp;&nbsp;&nbsp;└── <span class="text-lcars-magenta"><carbon-rocket /> @warp-drive/react</span></div>
 <div>├── <span class="text-lcars-green"><logos-vue /> vue</span></div>
 <div>│&nbsp;&nbsp;&nbsp;└── <span class="text-lcars-magenta"><carbon-rocket /> @warp-drive/vue</span></div>
-<div>└── <carbon-data-base /> api</div>
+<div>└── <span class="text-lcars-orange"><carbon-db2-database /> api</span></div>
 
 </div>
 
@@ -280,6 +280,14 @@ Unlike traditional data libraries, WarpDrive is built around:
 
 <!--
 By "universal", we mean you can build your data layer in a separate package and share it across multiple frontends, regardless of framework.
+
+This is the actual structure of the monorepo I am presenting today.
+
+In this monorepo, we have a `shared-data-layer` package that contains all of our WarpDrive configuration, logic, and utilities.
+
+Under the apps folder, today I will be presenting the emberjs app, but you could just as easily build a React or Vue app that shares this same data layer.
+
+Even our `api` implementation, written in node, uses types imported from the shared data layer.
 -->
 
 ---
@@ -297,14 +305,14 @@ And now, let's build something ambitious.
 
 ---
 
-# The Mission Brief
+# Our Mission Brief
 
 We'll implement a TodoMVC application step-by-step using:
 
 <v-clicks>
 
-- **WarpDrive** <span class="text-lcars-blue">(our starship for data management)</span>
-- **JSON:API** <span class="text-lcars-blue">(the gold standard for API communication)</span>
+- ***Warp*Drive** <span class="text-lcars-blue">(our starship for data management)</span>
+- **\(JSON:API\}** <span class="text-lcars-blue">(the gold standard for API communication)</span>
 - **TypeScript** <span class="text-lcars-blue">(because we like our data typed and our code safe)</span>
 - **Modern Ember Polaris** <span class="text-lcars-blue">(the latest and greatest Ember patterns)</span>
 
@@ -350,6 +358,10 @@ Every TodoMVC implementation shares the same [core features](https://github.com/
 <img src="./picard-todos.png" alt="TodoMVC UI with Captain Picard's Todo List" class="h-80 w-auto" />
 </div>
 
+<!--
+And thanks to Miguel, Addy, and Preston for creating the Ember TodoMVC implementation that I forked for today's presentation.
+-->
+
 ---
 layout: section
 title: 'Episode 3: "Request Patterns - Making It So"'
@@ -361,9 +373,9 @@ title: 'Episode 3: "Request Patterns - Making It So"'
 
 ---
 
-# The WarpDrive Store
+# The WarpDrive Store - "The Bridge"
 
-**Like the bridge of our starship** - everything flows through here:
+Everything flows through here:
 
 <MacWindow title="packages/shared-data/src/stores/index.ts" class="max-w-2xl mb-6">
 <<< @/packages/shared-data/src/stores/index.ts ts {20|21|28-37|39-44|46-52}{maxHeight: '200px'}
@@ -380,9 +392,9 @@ title: 'Episode 3: "Request Patterns - Making It So"'
 
 ---
 
-# The RequestManager
+# The RequestManager - "The Communications Officer"
 
-Think of it as your ship's communications officer - it manages all external contact!
+It manages all external contact:
 
 <MacWindow title="packages/shared-data/src/stores/index.ts" class="max-w-2xl mb-6">
 <<< @/packages/shared-data/src/stores/index.ts ts {21|26|22-27|28|21-28}{maxHeight: '200px'}
@@ -419,9 +431,33 @@ So the Request Manager does exactly what it says on the tin. (click) It manages 
 
 ---
 
-# \{JSON:API\}: The Universal Translator
+# \{JSON:API\} - "The Communicator"
 
 By default, WarpDrive `Fetch` speaks \{JSON:API\} fluently, giving you:
+
+<div class="grid grid-flow-col gap-4">
+
+<div class="callout">
+
+```json
+{
+  "data": [
+    {
+      "type": "todo",
+      "id": "1",
+      "attributes": {
+        "title": "Learn WarpDrive",
+        "completed": false
+      }
+    }
+    // ...
+  ]
+}
+```
+
+</div>
+
+<div>
 
 <v-clicks>
 
@@ -433,19 +469,15 @@ By default, WarpDrive `Fetch` speaks \{JSON:API\} fluently, giving you:
 
 <v-click>
 
-<div class="callout mt-10 float-right max-w-lg">
-"Universal translator online, Captain. All API communications are now standardized."
-</div>
-
-</v-click>
-
-<v-click>
-
-<div class="mt-4 text-sm text-lcars-blue max-w-xs">
+<div class="mt-4 text-sm text-lcars-blue">
 (But, you can configure WarpDrive to use other formats if you prefer!)
 </div>
 
 </v-click>
+
+</div>
+
+</div>
 
 ---
 
@@ -485,8 +517,7 @@ For example, this request will get all todos from our API.
 
 # Request Options
 
-<MacWindow title="warp-drive/warp-drive-packages/core/src/types
-/request.ts" class="max-w-2xl">
+<MacWindow title="warp-drive/warp-drive-packages/core/src/types/request.ts" class="max-w-2xl">
 
 ```ts twoslash {2-3|all}{maxHeight: '380px'}
 type Store = any;
@@ -528,9 +559,13 @@ As you can imagine, these options can get quite complex, which is why we support
 
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
-<MacWindow title="packages/shared-data/src/builders/todo/query.ts" class="max-w-2xl">
-<<< @/packages/shared-data/src/builders/todo/query.ts ts {9-10|12|13|15-16}{maxHeight: '300px'}
+<MacWindow title="packages/shared-data/src/builders/todo/query.ts" class="w-140">
+<<< @/packages/shared-data/src/builders/todo/simple-query.ts ts {8-9|11|12|14-15}{maxHeight: '300px'}
 </MacWindow>
+
+<div>
+
+- Our `getAllTodos` builder
 
 <v-clicks at=1>
 
@@ -539,6 +574,8 @@ As you can imagine, these options can get quite complex, which is why we support
 - Sets cache options
 
 </v-clicks>
+
+</div>
 
 </div>
 
@@ -557,13 +594,45 @@ automatically invalidate this request when any request with the
 -->
 
 ---
+
+# Request Builders - Query Params
+
+<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+
+<MacWindow title="packages/shared-data/src/builders/todo/query.ts" class="w-140">
+<<< @/packages/shared-data/src/builders/todo/simple-query.ts ts {19-20|21-24,28}{maxHeight: '300px'}
+</MacWindow>
+
+<div>
+
+- Our `getCompletedTodos` builder
+
+<v-clicks at=1>
+
+- `buildQueryParams` util
+
+</v-clicks>
+
+</div>
+
+</div>
+
+<!--
+WarpDrive also provides utilities to help with common request patterns.
+
+For example, here is the builder for the request made by our "Completed" filter.
+
+It looks the same as our `getAllTodos` builder, except it adds a `filter[completed]=true` query parameter to the URL.
+-->
+
+---
 layout: section
 title: 'Episode 4: "Schemas - The DNA of Your Data"'
 ---
 
 # Episode 4
 
-## "Schemas - The DNA of Your Data"
+## "Schemas - The Universal Translator"
 
 ---
 
@@ -573,7 +642,7 @@ Instead of models with complex inheritance, WarpDrive uses simple, declarative s
 
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
-<MacWindow title="packages/shared-data/src/schemas/todo.ts" class="max-w-2xl">
+<MacWindow title="packages/shared-data/src/schemas/todo.ts" class="w-120">
 <<< @/packages/shared-data/src/schemas/todo.ts ts {all|3|4|5-13}{maxHeight: '300px'}
 </MacWindow>
 
@@ -597,12 +666,12 @@ More on that this afternoon in Mehul's talk about "ReactiveResources & Schema‑
 
 # TypeScript Integration
 
-Because resources are just thin wrappers over POJOs, you can define types for their various states:
+Types for various states:
 
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
 <MacWindow title="packages/shared-data/src/types/todo.ts" class="max-w-2xl">
-<<< @/packages/shared-data/src/types/todo.ts ts {11-27|11-15|17-21|23-26}{maxHeight: '350px'}
+<<< @/packages/shared-data/src/types/todo.ts ts {11-27|11-15|17-21|23-27}{maxHeight: '350px'}
 </MacWindow>
 
 <div class="max-w-sm">
@@ -626,6 +695,10 @@ Because resources are just thin wrappers over POJOs, you can define types for th
 </div>
 
 </div>
+
+<!--
+Because resources are just thin wrappers over POJOs, you can define types for their various states...
+-->
 
 ---
 layout: section
@@ -1378,8 +1451,9 @@ WarpDrive is the lightweight data framework for ambitious web applications.
 
 1. Try WarpDrive in your next project.
 2. Explore the guides at [docs.warp-drive.io](https://docs.warp-drive.io) and [canary.warp-drive.io](https://canary.warp-drive.io).
-3. Join the [community discussions on Discord](https://discord.gg/eUPwQzRJ).
-4. Build something ambitious!
+3. Explore this WarpDrive TodoMVC monorepo at [github.com/gitKrystan/2025-emberfest](https://github.com/gitKrystan/2025-emberfest).
+4. Join the [community discussions on Discord](https://discord.gg/eUPwQzRJ).
+5. Build something ambitious!
 
 <h2 class="text-lcars-purple">Questions? Let's explore the unknown together!</h2>
 

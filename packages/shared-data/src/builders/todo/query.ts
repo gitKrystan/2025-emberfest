@@ -6,29 +6,6 @@ import type Store from '../../stores/index.ts';
 import type { Todo } from '../../types/index.ts';
 import type { ReactiveTodosDocument } from './types.ts';
 
-/** GET /api/todo */
-export function getAllTodosSimple(): RequestInfo<ReactiveTodosDocument> {
-  return withReactiveResponse<Todo[]>({
-    method: 'GET',
-    url: buildBaseURL({ resourcePath: 'todo' }),
-
-    op: 'query',
-    cacheOptions: { types: ['todo'] },
-  });
-}
-
-/*
-
-No spoilers
-
-
-
-
-
-
-
-*/
-
 /** GET /api/todo (plus pagination params) */
 export function getAllTodos(page?: number): RequestInfo<ReactiveTodosDocument> {
   const url = buildBaseURL({ resourcePath: 'todo' });
@@ -111,4 +88,9 @@ export function invalidateAllTodoQueries(store: Store) {
 
 
 Comment so that Slidev can scroll invalidateAllTodoQueries to the middle
+
+
+
+
+
 */
