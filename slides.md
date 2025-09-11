@@ -925,7 +925,7 @@ These components enable you to build robust and performant apps with elegant con
 
 <v-clicks at=0>
 
-- Our `TodoProvider` component
+- Our `<TodoProvider />` component
 - `<Request />` component
 - Loading state
 - Error state
@@ -1406,25 +1406,25 @@ Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
 
 ---
 
-# <span class="text-lcars-blue">Coming Soon:</span> Paginate
+# <span class="text-lcars-blue">Coming Soon For Real:</span> Paginate
 
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
 <MacWindow title=".../app/components/todo-app/todo-provider.gts" class="w-130">
-<<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {28|28|30-35|40-43|55-58|45-53|60-63}{maxHeight: '360px'}
+<<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {28|28|30-35|40-43|55-58|60-63|45-53|33-35}{maxHeight: '360px'}
 </MacWindow>
 
 <div>
 
 <v-clicks at=1>
 
-- Our `TodoProvider` component
+- Our `<TodoProvider />` component
 - `<Paginate />` component
 - Loading states - for initial, previous, and next
 - Error state
+- Pagination controls
 - Success state - display all the data, or just one page
-- And pagination controls
-- ...and more!
+- Autorefresh
 
 </v-clicks>
 
@@ -1437,27 +1437,28 @@ Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
 * It uses WarpDrive's Paginate component to declaratively handle request state.
 * On load, it displays a loading spinner.
 * On error, it displays an error message with a retry button.
-* And on success, it passes the current page of data to the Todos component.
 * It displays the pagination state via the always block.
+* And on success, it passes the current page of data to the Todos component.
 * And! When cached responses for this request are invalidated, the component automatically re-renders with fresh data.
-
-* There's even more, and I encourage you to check out the `@warp-drive/ember` readme to learn about it.
 -->
 
 ---
 
-# <span class="text-lcars-blue">Any Day Now:</span> EachLink
+# <span class="text-lcars-blue">Any Day Now I Swear:</span> EachLink
 
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
 <MacWindow title=".../app/components/todo-app/pagination-controls.gts" class="max-w-2xl">
-<<< @/apps/emberjs/app/components/todo-app/pagination-controls.gts ts {114-124|114-124|116-118|120-122}{maxHeight: '360px'}
+<<< @/apps/emberjs/app/components/todo-app/pagination-controls.gts ts {29|29|33-37,41-45|39|122-132|124-126|128-130}{maxHeight: '380px'}
 </MacWindow>
 
 <div class="max-w-sm">
 
-<v-clicks at=0>
+<v-clicks at=1>
 
+- Our `<PaginationControls />` component
+- Previous and next page buttons
+- Render page links
 - `<EachLink />` component
 - Yields a `<:link>` block for each known page link
 - Yields a `<:placeholder>` block for unknown links
@@ -1467,6 +1468,15 @@ Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
 </div>
 
 </div>
+
+<!--
+* Let's talk more about these PaginationControls
+* It displays the previous and next page buttons
+* It displays page links
+* Under the hood, the page links component uses the `<EachLink />` component provided by @warp-drive/ember
+* It yields a `<:link>` block for each known page link
+* And it yields a `<:placeholder>` block for unknown links
+-->
 
 ---
 
@@ -1488,7 +1498,10 @@ Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
 </div>
 
 <!--
-Our actual query builder configures a request for the *initial* page of todos via query params
+Paginate is at it's root a wrapper around the request state for a paginated query builder.
+
+* This is our actual query builder.
+* It looks just like the simple `getAllTodos` builder we showed before, but it configures a request for the *initial* page of todos via query params
 -->
 
 ---
@@ -1529,6 +1542,12 @@ Our actual query builder configures a request for the *initial* page of todos vi
 
 </div>
 
+<!--
+* And this is an example of the paginated response from our API.
+* It provides a spec-compliant `links` object with URLs for the first, next, and last pages. This is how Paginate knows what links to it can load.
+* It also provides a non-spec `meta` object with the current and total page counts. This is only required if you are planning on using the EachLink component.
+-->
+
 ---
 
 # Paginate + EachLink + Page Hints
@@ -1554,7 +1573,9 @@ Our actual query builder configures a request for the *initial* page of todos vi
 </div>
 
 <!--
-In our case, the API returns meta that is the exact shape we need, but you can extract page-hints however you want.
+* Back to our TodoProvider's invocation of the Paginate component.
+* It passes the `@pageHints` argument to extract non-spec pagination meta from the response
+* In our case, the API returns meta that is the exact shape we need, but you can extract page-hints however you want.
 -->
 
 ---

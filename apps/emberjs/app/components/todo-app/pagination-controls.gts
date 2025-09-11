@@ -30,11 +30,19 @@ export class PaginationControls extends Component<Signature> {
   <template>
     {{#if (or @state.loadPrev @state.loadNext)}}
       <div class="pagination-controls">
-        <LoadPreviousButton @prevPage={{@pages.links.prevPageNumber}} @loadPrev={{@state.loadPrev}} />
+        <LoadPreviousButton
+          @prevPage={{@pages.links.prevPageNumber}}
+          {{! On click, load the previous page }}
+          @loadPrev={{@state.loadPrev}}
+        />
 
         <PageLinks @pages={{@pages}} />
 
-        <LoadNextButton @nextPage={{@pages.links.nextPageNumber}} @loadNext={{@state.loadNext}} />
+        <LoadNextButton
+          @nextPage={{@pages.links.nextPageNumber}}
+          {{! On click, load the next page }}
+          @loadNext={{@state.loadNext}}
+        />
 
         {{! HACK @runspired work-around for no "page that isn't the prev or next page is loading" state }}
         {{#if this.isLoading}}
