@@ -126,11 +126,21 @@ layout: two-cols
 
 <div class="callout-solid mr-4 bg-lcars-magenta">
 
-<p>Portland, Oregon</p>
-<p>Answers to “mom”</p>
-<p>Staff Engineer @ AuditBoard</p>
-<p>EmberData/WarpDrive & Tooling Teams</p>
-<p>Ember veteran since v2</p>
+After Party talking points:
+
+<v-clicks>
+
+Portland, Oregon
+
+Answers to “mom”
+
+Staff Engineer @ AuditBoard
+
+EmberData/WarpDrive & Tooling Teams
+
+Ember veteran since v2
+
+</v-clicks>
 
 </div>
 
@@ -143,11 +153,13 @@ layout: two-cols
 <!--
 Before we embark, let me introduce myself - I'm your guide through the WarpDrive universe...
 
- 🌧️ **Portland, Oregon** - Where I live among the coffee shops and rain
-- 👩‍👧‍👦 **Mother of two** - I understand the importance of reliable, predictable systems that just work
-- 🛡️ **Staff Engineer at AuditBoard** - Building enterprise Audit, Risk, and Compliance software
-- ⚡ **Ember Data & Tooling Teams** - Passionate about making data management both powerful and type-safe
-- 🔥 **Ember veteran since v2** - Nearly a decade of writing Ember applications
+(These really just talking points to make me more approachable at tonight's AfterParty.)
+
+* I live in Portland, Oregon. It rains a lot there.
+-  I have two kids, so I understand the importance of reliable, predictable systems that just work
+- I'm a staff-engineer at AuditBoard - building enterprise Audit, Risk, and Compliance software
+- I'm a member of the WarpDrive and Ember Tooling Teams. I'm passionate about making data management both powerful and type-safe
+- I've been writing Ember apps for nearly a decade.
 -->
 
 ---
@@ -158,6 +170,12 @@ layout: center
 
 I've seen the evolution of data patterns in Ember from the early days,<br />and I'm excited to show you where we're **boldly going next**.
 
+<!--
+I've seen the evolution of data patterns in Ember from the early days,
+
+and I'm excited to show you where we're **boldly going next**.
+-->
+
 ---
 layout: section
 title: 'Episode 1: "What is WarpDrive?"'
@@ -166,6 +184,10 @@ title: 'Episode 1: "What is WarpDrive?"'
 # Episode 1
 
 ## "What is WarpDrive?"
+
+<!--
+So...What even is WarpDrive?
+-->
 
 ---
 
@@ -250,15 +272,15 @@ Unlike traditional data libraries, WarpDrive is built around:
 
 </div>
 
-<v-click>
-
 <div class="callout-solid bg-lcars-magenta text-2xl">
 <strong>This isn't just theory</strong> - we can literally share our data layer across multiple applications.
 </div>
 
-</v-click>
-
 </div>
+
+<!--
+By "universal", we mean you can build your data layer in a separate package and share it across multiple frontends, regardless of framework.
+-->
 
 ---
 layout: section
@@ -268,6 +290,10 @@ title: 'Episode 2: "Engage! - Setting Up Our Mission"'
 # Episode 2
 
 ## "Engage! - Setting Up Our Mission"
+
+<!--
+And now, let's build something ambitious.
+-->
 
 ---
 
@@ -339,7 +365,7 @@ title: 'Episode 3: "Request Patterns - Making It So"'
 
 **Like the bridge of our starship** - everything flows through here:
 
-<MacWindow title="packages/shared-data/src/stores/index.ts" class="max-w-2xl">
+<MacWindow title="packages/shared-data/src/stores/index.ts" class="max-w-2xl mb-6">
 <<< @/packages/shared-data/src/stores/index.ts ts {20|21|28-37|39-44|46-52}{maxHeight: '200px'}
 </MacWindow>
 
@@ -358,7 +384,7 @@ title: 'Episode 3: "Request Patterns - Making It So"'
 
 Think of it as your ship's communications officer - it manages all external contact!
 
-<MacWindow title="packages/shared-data/src/stores/index.ts" class="max-w-2xl">
+<MacWindow title="packages/shared-data/src/stores/index.ts" class="max-w-2xl mb-6">
 <<< @/packages/shared-data/src/stores/index.ts ts {21|26|22-27|28|21-28}{maxHeight: '200px'}
 </MacWindow>
 
@@ -459,7 +485,8 @@ For example, this request will get all todos from our API.
 
 # Request Options
 
-<MacWindow title="apps/emberjs/routes/index.js" class="max-w-2xl">
+<MacWindow title="warp-drive/warp-drive-packages/core/src/types
+/request.ts" class="max-w-2xl">
 
 ```ts twoslash {2-3|all}{maxHeight: '380px'}
 type Store = any;
