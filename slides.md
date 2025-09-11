@@ -601,7 +601,7 @@ These components enable you to build robust performant apps with elegant control
 
 <v-clicks at=0>
 
-- `<Request>` component
+- `<Request />` component
 - Loading state
 - Error state
 - Success state
@@ -641,7 +641,7 @@ Demo caching on the queries
 
 ---
 layout: iframe
-url: http://localhost:4200/?initialTodoCount=3&latency=500&shouldPaginate=false&shouldError=false
+url: http://localhost:4200/?latency=500&shouldPaginate=false&shouldError=false
 title: 'Live Demo: Basic Request Errors'
 ---
 
@@ -795,7 +795,7 @@ Adding the 'updateRecord' OpCode and specifying the `ResourceKey` for
 
 ---
 layout: iframe
-url: http://localhost:4200/?initialTodoCount=3&latency=500&shouldPaginate=false&shouldError=false
+url: http://localhost:4200/?latency=500&shouldPaginate=false&shouldError=false
 title: 'Live Demo: Pessimistic Mutation'
 ---
 
@@ -900,7 +900,7 @@ NOTE: We don't need to patch the caches because we're using optimistic updates. 
 
 ---
 layout: iframe
-url: http://localhost:4200/?initialTodoCount=3&latency=500&shouldPaginate=false&shouldError=false
+url: http://localhost:4200/?latency=500&shouldPaginate=false&shouldError=false
 title: 'Live Demo: Optimistic Mutation and Cache Patching'
 ---
 
@@ -912,18 +912,18 @@ Demo completed toggle + switching tabs to ensure it updated
 
 # Immutability Without the Hassle
 
+Whether you choose pessimistic or optimistic updates:
+
 <v-clicks>
 
 - Original data stays immutable
 - Changes are isolated until saved
-- Automatic rollback on errors
-- Optimistic updates that work
 
 </v-clicks>
 
 <v-click>
 
-<div class="callout float-right text-green-400">
+<div class="callout float-right">
 "Captain, the data has been successfully modified without temporal paradoxes!"
 </div>
 
@@ -931,156 +931,12 @@ Demo completed toggle + switching tabs to ensure it updated
 
 ---
 layout: section
-title: 'Episode 7: "Universal Deployment"'
----
-
-# Episode 7
-
-## "Universal Deployment"
-
-<div class="text-6xl mb-8">🌌</div>
-
-_5 minutes_
-
----
-
-# Framework Agnostic Architecture
-
-Here's the real magic - our data layer is completely portable:
-
-```
-📦 packages/shared-data/
-├── schemas/
-│   ├── todo.ts
-│   └── user.ts
-├── requests/
-│   ├── todo-requests.ts
-│   └── user-requests.ts
-└── store/
-    └── app-store.ts
-```
-
----
-
-# Multiple Apps, One Data Layer
-
-```ts {1-4|6-8|10-12} {lines:true}
-// ember-app/app.ts
-import { AppStore } from 'shared-data/store';
-export default class App extends Application {
-  // Ember-specific bindings
-}
-
-// react-app/src/main.tsx
-import { AppStore } from 'shared-data/store';
-// React-specific bindings
-
-// vue-app/src/main.ts
-import { AppStore } from 'shared-data/store';
-// Vue-specific bindings
-```
-
-<v-click>
-
-<div class="callout float-right text-green-400">
-"Separate the saucer section! Both parts of the ship continue to function independently."
-</div>
-
-</v-click>
-
-<v-click>
-
-<div class="mt-4 p-4 bg-blue-900 rounded">
-By building our data layer in a separate package in the monorepo, we achieve true framework independence.
-</div>
-
-</v-click>
-
----
-layout: section
-title: 'Episode 8: "Advanced Patterns - Warp 9.8"'
+title: 'Episode 8: "Performance - Warp 9.8"'
 ---
 
 # Episode 8
 
-## "Advanced Patterns - Warp 9.8"
-
-<div class="text-6xl mb-8">🚀</div>
-
-_8 minutes_
-
----
-
-# Real-time with Surgical Updates
-
-WebSocket message updates:
-
-```ts {1-10} {lines:true}
-// Real-time todo updates via WebSocket using JSON:API format
-store.cache.patch({
-  op: 'updateRecord',
-  record: { type: 'todo', id: '1' },
-  value: {
-    data: {
-      type: 'todo',
-      id: '1',
-      attributes: {
-        completed: true,
-      },
-    },
-  },
-});
-```
-
----
-
-# Custom Request Handlers
-
-Sometimes your API doesn't follow standards. Handlers let you adapt without changing your application code:
-
-```ts {2-12|14-15} {lines:true}
-// shared-data-layer/handlers/snake-case-handler.ts
-const SnakeCaseHandler = {
-  request(context, next) {
-    // Convert request data to snake_case
-    const modifiedRequest = convertKeysToSnakeCase(context.request);
-
-    return next(modifiedRequest).then((result) => {
-      // Convert response back to camelCase
-      return {
-        ...result,
-        content: convertKeysToCamelCase(result.content),
-      };
-    });
-  },
-};
-
-// Register the handler
-store.requestManager.use([SnakeCaseHandler, Fetch]);
-```
-
-<v-click>
-
-Now your entire app can use camelCase while your API uses snake_case!
-
-</v-click>
-
----
-layout: section
-title: 'Episode 9: "Performance - Ludicrous Speed"'
----
-
-# Episode 9
-
-## "Performance - Ludicrous Speed"
-
-<div class="text-6xl mb-8">⚡</div>
-
-<div class="text-sm text-lcars-blue">
-(Spaceballs reference...we're mixing our metaphors here, but it's fine...)
-</div>
-
-_5 minutes_
+## "Performance - Warp 9.8"
 
 ---
 
@@ -1092,33 +948,171 @@ WarpDrive optimizes automatically:
 
 - **Request deduplication** - Same request? Use cached result
 - **Fine-grained reactivity** - Only update what actually changed
-- **Lazy evaluation** - Derived fields computed on demand
-- **Memory efficient** - Immutable data with structural sharing
 
 </v-clicks>
 
+<!--
+WarpDrive provides built-in performance optimizations, like caching and request deduplication.
+
+But our TodoMVC MVP has gotten so popular that we're starting to hit performance limits.
+
+We've even seen some "scale pioneer" users with hundreds of thousands of todos in their list.
+-->
+
+---
+layout: iframe
+url: http://localhost:4200/?initialTodoCount=100000&latency=500&shouldPaginate=false&shouldError=false
+title: 'Live Demo: Too Many Todos!'
 ---
 
-# Bundle Size Comparison
+<!--
+1. Demo 100k todos without pagination
 
-WarpDrive's modular architecture keeps bundles lean:
+3. Toggle Pagination on
+-->
 
-```
-Traditional monolithic data layer: ~45kb+
-WarpDrive approach:
-  @warp-drive/core: ~12kb
-  Framework adapter: ~3kb
-  Your schemas & builders: ~2kb
-  Total: ~17kb (significantly smaller!)
-```
+---
 
-<v-click>
+# <span class="text-lcars-blue">Coming Soon Any Day Now For Real This Time I Swear:</span> Paginate
 
-<div class="callout float-right text-green-400">
-"She's giving us all she's got, Captain, and she's still got more in reserve!"
+<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+
+<MacWindow title=".../app/components/todo-app/todo-provider.gts" class="max-w-2xl">
+<<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {28|30-35|40-43|55-58|45-53|60-63}{maxHeight: '360px'}
+</MacWindow>
+
+<div class="max-w-sm">
+
+<v-clicks at=0>
+
+- `<Paginate />` component
+- Loading states - for initial, previous, and next
+- Error state
+- Success state - display all the data, or just one page
+- And pagination controls
+- ...and more!
+
+</v-clicks>
+
 </div>
 
-</v-click>
+</div>
+
+<!--
+Here' we're looking at the real TodoProvider component used by our Enterprise Edition Todo App.
+
+(click) It uses WarpDrive's Paginate component to declaratively handle request state.
+(click) On load, it displays a loading spinner.
+(click) On error, it displays an error message with a retry button.
+(click) And on success, it passes the data to the Todos component.
+(click) And! When cached responses for this request are invalidated, the component automatically re-renders with fresh data.
+
+(click) There's even more, and I encourage you to check out the `@warp-drive/ember` readme to learn about it.
+-->
+
+---
+
+# <span class="text-lcars-blue">Coming Soon Any Day Now For Real This Time I Swear:</span> EachLink
+
+<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+
+<MacWindow title=".../app/components/todo-app/pagination-controls.gts" class="max-w-2xl">
+<<< @/apps/emberjs/app/components/todo-app/pagination-controls.gts ts {114-124|116-118|120-122}{maxHeight: '360px'}
+</MacWindow>
+
+<div class="max-w-sm">
+
+- `<EachLink />` component
+
+<v-clicks at=0>
+
+- Yields a `<:link>` block for each known page link
+- Yields a `<:placeholder>` block for unknown links
+
+</v-clicks>
+
+</div>
+
+</div>
+
+---
+
+# Paginated Query Builder
+
+<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+
+<MacWindow title="packages/shared-data/src/builders/todo/query.ts" class="max-w-2xl">
+<<< @/packages/shared-data/src/builders/todo/query.ts ts {32-47|35-38}{maxHeight: '380px'}
+</MacWindow>
+
+<v-clicks at=1>
+
+- Pagination query params
+
+</v-clicks>
+
+</div>
+
+<!--
+Our actual query builder configures a request for the *initial* page of todos via query params
+-->
+
+---
+
+# Paginate Powered by \{JSON:API\}
+
+<div class="callout">
+
+```json
+{
+  "data": [
+    /* the first page of Todos */
+  ],
+  // Spec-compliant pagination links
+  "links": {
+    "self": "/api/todo?page[limit]=5&page[offset]=0",
+    "first": "/api/todo?page[limit]=5&page[offset]=0",
+    "next": "/api/todo?page[limit]=5&page[offset]=5",
+    "last": "/api/todo?page[limit]=5&page[offset]=99995"
+  },
+  // Non-spec meta required only for EachLink support
+  "meta": {
+    "currentPage": 1,
+    "totalPages": 20000
+  }
+}
+```
+
+</div>
+
+---
+
+# <span class="text-lcars-blue">Coming Soon Any Day Now For Real This Time I Swear:</span> Paginate
+
+<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+
+<MacWindow title=".../app/components/todo-app/todo-provider.gts" class="max-w-2xl">
+<<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {30-35|36-37|109-121}{maxHeight: '360px'}
+</MacWindow>
+
+<div class="max-w-sm">
+
+- `<Paginate />` component
+
+<v-clicks at=0>
+
+- `@pageHints` argument
+- Extracts non-spec pagination meta for use in `EachLink`
+
+</v-clicks>
+
+</div>
+
+</div>
+
+<!--
+In our case, the API returns meta that is the exact shape we need, but you can extract page-hints however you want.
+-->
 
 ---
 layout: section
@@ -1127,45 +1121,28 @@ title: 'Episode 10: "The Future - Final Frontier"'
 
 # Episode 10
 
-## "The Future - Final Frontier"
-
-<div class="text-6xl mb-8">🔭</div>
-
-_3 minutes_
+## "The Future - Final Frontier?"
 
 ---
 
-# What's Next for WarpDrive
+<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
-<v-clicks>
+<div class="callout-solid bg-lcars-purple h-84 fit-content">
 
-- **Edge computing** integration
-- **Offline-first** capabilities
-- **AI-powered** caching strategies
-- **Multi-platform** expansion (React Native, Electron, etc.)
+<h3><a href="https://canary.warp-drive.io/" class="text-lcars-black">canary.warp-drive.io</a></h3>
 
-</v-clicks>
-
----
-
-# Community & Ecosystem
-
-<v-clicks>
-
-- **Open source** and MIT licensed
-- **Framework integrations** actively maintained
-- **Growing community** of contributors
-- **Comprehensive documentation** at docs.warp-drive.io
-
-</v-clicks>
-
-<v-click>
-
-<div class="callout float-right text-green-400">
-"Space: the final frontier. These are the voyages of the starship WarpDrive..."
 </div>
 
-</v-click>
+<div class="callout">
+<img src="/the-manual.png" alt="Canary Docs QR Code" class="h-70 w-auto" />
+</div>
+
+</div>
+
+<!--
+WarpDrive is under active development, with new features and improvements coming regularly.
+Check on the latest at the Canary docs site.
+-->
 
 ---
 layout: section
@@ -1175,47 +1152,35 @@ layout: section
 
 ## "Live Long and Prosper"
 
-<div class="text-6xl mb-8">🖖</div>
-
-_2 minutes_
+<div class="text-6xl mt-8">🖖</div>
 
 ---
 
 # What We've Discovered
 
-Today we've built a complete TodoMVC application and seen how WarpDrive delivers:
+WarpDrive is the lightweight data framework for ambitious web applications.
 
-<v-clicks>
+<div class="grid grid-cols-2 gap-4">
 
-- ✅ **Universal compatibility** - One data layer, any framework
-- ✅ **Type safety** - Schema-driven TypeScript integration
-- ✅ **Performance** - Fine-grained reactivity and smart caching
-- ✅ **Developer experience** - Declarative patterns that eliminate boilerplate
-- ✅ **Reactive patterns** - Request component handles all loading states
-- ✅ **JSON:API compliance** - Standards-based API communication
-- ✅ **Advanced features** - Real-time updates, custom handlers, relationships
+<div class="callout-solid">
+  <h3>Universal</h3>
+  <p>Works with any framework (Ember, React, Vue, Svelte)</p>
+</div>
 
-</v-clicks>
+<div class="callout-solid">
+  <h3>Performant</h3>
+  <p>Committed to best-in-class performance</p>
+</div>
 
----
+<div class="callout-solid">
+  <h3>Typed</h3>
+  <p>Fully typed, ready to rock</p>
+</div>
 
-# Our Journey Recap
-
-<div class="grid grid-cols-2 gap-4 text-sm">
-
-<v-clicks>
-
-<div>🚀 **Episode 1-2**: Introduced WarpDrive and set up our universal architecture</div>
-<div>🌐 **Episode 3**: Built request patterns with RequestManager</div>
-<div>📊 **Episode 4**: Defined schemas with TypeScript for resources</div>
-<div>⚡ **Episode 5**: Created reactive UI with Ember integration</div>
-<div>🔄 **Episode 6**: Handled mutations with the checkout system</div>
-<div>🌌 **Episode 7**: Demonstrated universal deployment</div>
-<div>🚀 **Episode 8**: Explored advanced patterns and real-time updates</div>
-<div>⚡ **Episode 9**: Analyzed performance benefits</div>
-<div>🔭 **Episode 10**: Looked toward the future</div>
-
-</v-clicks>
+<div class="callout-solid">
+  <h3>Scalable</h3>
+  <p>From weekend hobby to enterprise</p>
+</div>
 
 </div>
 
@@ -1223,116 +1188,30 @@ Today we've built a complete TodoMVC application and seen how WarpDrive delivers
 
 # Your Mission, Should You Choose to Accept It
 
-<v-clicks>
-
-1. Try WarpDrive in your next project: `npx warp-drive`
-2. Explore the guides at **docs.warp-drive.io**
-3. Join the community discussions
+1. Try WarpDrive in your next project.
+2. Explore the guides at [docs.warp-drive.io](https://docs.warp-drive.io) and [canary.warp-drive.io](https://canary.warp-drive.io).
+3. Join the [community discussions on Discord](https://discord.gg/eUPwQzRJ).
 4. Build something ambitious!
 
-</v-clicks>
+<h2 class="text-lcars-purple">Questions? Let's explore the unknown together!</h2>
 
----
-layout: center
----
+<div class="grid grid-flow-col gap-4 grid-items-center grid-items-end mt-8">
 
-# Final Thought
-
-<div class="text-2xl mb-8 italic text-green-400">
-"The human adventure is just beginning..."
-</div>
-
-<v-click>
-
-And so is your journey with WarpDrive. The data is out there - go boldly and fetch it efficiently.
-
-</v-click>
-
-<v-click>
-
-## Questions? Let's explore the unknown together!
-
-</v-click>
-
----
-
-# JSON:API Response Format
-
-WarpDrive works seamlessly with JSON:API responses:
-
-```json {2-15|16-18} {lines:true}
-// GET /api/todo response
-{
-  "data": [
-    {
-      "type": "todo",
-      "id": "1",
-      "attributes": {
-        "title": "Learn WarpDrive",
-        "completed": false,
-        "created": "2025-01-08T10:00:00Z"
-      },
-      "links": {
-        "self": "/api/todo/1"
-      }
-    }
-  ],
-  "links": {
-    "self": "/api/todo"
-  }
-}
-```
-
-<v-click>
-
-<div class="mt-6 text-center text-lg italic text-green-400">
-"Make it so!" - And WarpDrive makes it typed.
-</div>
-
-</v-click>
-
----
-layout: center
----
-
-# Additional Resources
-
-<div class="grid grid-cols-2 gap-8">
-
-<v-clicks>
-
-<div>
-  <h3>📚 Documentation</h3>
-  <p>docs.warp-drive.io</p>
-</div>
-
-<div>
-  <h3>💬 Community</h3>
-  <p>discord.gg/emberjs</p>
-</div>
-
-<div>
-  <h3>📝 Blog Posts</h3>
-  <p>runspired.com for deep dives</p>
-</div>
-
-<div>
-  <h3>🧪 Live Demo</h3>
-  <p>TodoMVC repository on GitHub</p>
-</div>
-
-</v-clicks>
+<div class="text-lcars-blue font-size-xs mt-30 max-w-md">
+Special Thanks:<br />
+AuditBoard, Chris Thoburn, Julia Donaldson, Natasha Wolfe<br />
+(and my husband for watching the kids)
 
 </div>
 
-<style>
-h1, h2, h3 {
-  background-color: #2B90B6;
-  background-image: linear-gradient(45deg, #4EC5D4 10%, #146b8c 20%);
-  background-size: 100%;
-  -webkit-background-clip: text;
-  -moz-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -moz-text-fill-color: transparent;
-}
-</style>
+<div class="callout max-w-md">
+
+The <strong>human adventure</strong> is just beginning...
+
+And so is <strong>your journey with WarpDrive</strong>
+
+The data is out there - <strong>go boldly and fetch it efficiently</strong>
+
+</div>
+
+</div>

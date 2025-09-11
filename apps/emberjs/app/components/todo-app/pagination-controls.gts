@@ -113,13 +113,13 @@ const PageLinks = <template>
   <div class="pagination-link-buttons">
     <EachLink @pages={{@pages}}>
 
-      <:placeholder as |link|>
-        <PlaceholderLink @placeholder={{link}} />
-      </:placeholder>
-
       <:link as |link|>
         <RealLink @link={{link}} @pages={{@pages}} />
       </:link>
+
+      <:placeholder as |link|>
+        <PlaceholderLink @placeholder={{link}} />
+      </:placeholder>
 
     </EachLink>
   </div>

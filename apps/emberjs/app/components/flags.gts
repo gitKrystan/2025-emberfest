@@ -72,15 +72,6 @@ class FlagsContent extends Component<{
         </li>
       {{/if}}
 
-      {{#if this.shouldPaginateFlag}}
-        <li>
-          <Await @promise={{this.checkoutShouldPaginateFlag this.shouldPaginateFlag}}>
-            <:success as |flag|><UpdateShouldPaginateFlag @flag={{flag}} /></:success>
-            <:error as |error|><HandleError @error={{error}} /></:error>
-          </Await>
-        </li>
-      {{/if}}
-
       {{#if this.shouldErrorFlag}}
         <li>
           <Await @promise={{this.checkoutShouldErrorFlag this.shouldErrorFlag}}>
@@ -94,6 +85,15 @@ class FlagsContent extends Component<{
         <li>
           <Await @promise={{this.checkoutLatencyFlag this.latencyFlag}}>
             <:success as |flag|><UpdateLatencyFlag @flag={{flag}} /></:success>
+            <:error as |error|><HandleError @error={{error}} /></:error>
+          </Await>
+        </li>
+      {{/if}}
+
+      {{#if this.shouldPaginateFlag}}
+        <li>
+          <Await @promise={{this.checkoutShouldPaginateFlag this.shouldPaginateFlag}}>
+            <:success as |flag|><UpdateShouldPaginateFlag @flag={{flag}} /></:success>
             <:error as |error|><HandleError @error={{error}} /></:error>
           </Await>
         </li>
@@ -144,14 +144,18 @@ class UpdateShouldErrorFlag extends Component<{
 }> {
   <template>
     <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}}>
-      <span class="flag-name">Should Error:</span>
-      {{@flag.value}}
+      <span class="flag-name">API Reliability:</span>
+      {{this.label}}
     </UpdateFlag>
   </template>
 
   toggle = () => {
     this.args.flag.value = !this.args.flag.value;
   };
+
+  get label() {
+    return this.args.flag.value ? 'Terrible' : 'Good';
+  }
 }
 
 class UpdateShouldPaginateFlag extends Component<{
@@ -159,8 +163,8 @@ class UpdateShouldPaginateFlag extends Component<{
 }> {
   <template>
     <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}} @onUpdateSuccess={{this.onUpdateSuccess}}>
-      <span class="flag-name">Should Paginate:</span>
-      {{@flag.value}}
+      <span class="flag-name">Mode:</span>
+      {{this.label}}
     </UpdateFlag>
   </template>
 
@@ -173,6 +177,10 @@ class UpdateShouldPaginateFlag extends Component<{
   onUpdateSuccess = () => {
     invalidateAllTodoQueries(this.store);
   };
+
+  get label() {
+    return this.args.flag.value ? 'Enterprise' : 'Hobbyist';
+  }
 }
 
 const TodoCountOptions = {
@@ -186,7 +194,7 @@ class UpdateTodoCountFlag extends Component<{
   <template>
     <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}} @onUpdateSuccess={{this.onUpdateSuccess}}>
       <span class="flag-name">Initial Todo Count:</span>
-      {{@flag.value}}
+      {{this.label}}
     </UpdateFlag>
   </template>
 
@@ -200,6 +208,10 @@ class UpdateTodoCountFlag extends Component<{
   onUpdateSuccess = () => {
     invalidateAllTodoQueries(this.store);
   };
+
+  get label() {
+    return this.args.flag.value > 100 ? 'A Lot' : 'A Few';
+  }
 }
 
 const LatencyOptions = {
@@ -212,8 +224,8 @@ class UpdateLatencyFlag extends Component<{
 }> {
   <template>
     <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}}>
-      <span class="flag-name">Latency:</span>
-      {{@flag.value}}ms
+      <span class="flag-name">API Latency:</span>
+      {{this.label}}
     </UpdateFlag>
   </template>
 
@@ -222,6 +234,10 @@ class UpdateLatencyFlag extends Component<{
   toggle = () => {
     this.args.flag.value = this.args.flag.value === LatencyOptions.fast ? LatencyOptions.slow : LatencyOptions.fast;
   };
+
+  get label() {
+    return this.args.flag.value === LatencyOptions.fast ? 'Fast' : 'Slow';
+  }
 }
 
 class UpdateFlag extends Component<{

@@ -27,10 +27,22 @@ interface Signature {
 
 export class TodoProvider extends Component<Signature> {
   <template>
-    <Paginate @request={{@todoFuture}} @autorefresh={{true}} @autorefreshBehavior="refresh" @pageHints={{pageHints}}>
+    <Paginate
+      {{! Future of a `getAllTodos` request passed from the route }}
+      @request={{@todoFuture}}
+      {{! Refresh settings }}
+      @autorefresh={{true}}
+      @autorefreshBehavior="refresh"
+      {{! Pagination hints }}
+      @pageHints={{pageHints}}
+    >
 
+      {{! While loading, display a spinner }}
+      <:loading><LoadingSpinner /></:loading>
       <:prev><LoadingSpinner /></:prev>
+      <:next><LoadingSpinner /></:next>
 
+      {{! On success, display the active page's todos }}
       <:content as |pages state|>
         {{#if pages.activePageData}}
           <ActivePage @pages={{pages}} @state={{state}} @activePageData={{pages.activePageData}}>
@@ -40,13 +52,15 @@ export class TodoProvider extends Component<Signature> {
         {{/if}}
       </:content>
 
-      <:loading><LoadingSpinner /></:loading>
+      {{! Handle errors }}
+      <:error as |error|>
+        {{this.appState.onUnrecoverableError error}}
+      </:error>
 
-      <:next><LoadingSpinner /></:next>
-
-      <:error as |error|>{{this.appState.onUnrecoverableError error}}</:error>
-
-      <:always as |pages state|><PaginationControls @pages={{pages}} @state={{state}} /></:always>
+      {{! Always show pagination controls }}
+      <:always as |pages state|>
+        <PaginationControls @pages={{pages}} @state={{state}} />
+      </:always>
 
     </Paginate>
   </template>
@@ -92,17 +106,25 @@ class ActivePage extends Component<{
   }
 }
 
-function pageHints(doc: ReactiveTodosDocument): { currentPage: number; totalPages: number } {
-  assert('cannot generate page hints without meta', doc.meta);
-  const hint = { currentPage: 0, totalPages: 0 };
+interface PageHints {
+  currentPage: number;
+  totalPages: number;
+}
 
-  assert('cannot generate page hints without meta.currentPage', doc.meta.currentPage);
-  assert('cannot generate page hints; meta.currentPage is not a number', typeof doc.meta.currentPage === 'number');
-  hint.currentPage = doc.meta.currentPage;
+function pageHints(doc: ReactiveTodosDocument): PageHints {
+  assertsHasPageHints(doc.meta);
 
-  assert('cannot generate page hints without meta.totalPages', doc.meta.totalPages);
-  assert('cannot generate page hints; meta.totalPages is not a number', typeof doc.meta.totalPages === 'number');
-  hint.totalPages = doc.meta.totalPages;
+  return {
+    currentPage: doc.meta.currentPage,
+    totalPages: doc.meta.totalPages,
+  };
+}
 
-  return hint;
+function assertsHasPageHints(value: unknown): asserts value is PageHints {
+  assert('cannot generate page hints without meta object', typeof value === 'object' && value !== null);
+  assert('cannot generate page hints without meta.currentPage', 'currentPage' in value);
+  assert('cannot generate page hints; meta.currentPage is not a number', typeof value.currentPage === 'number');
+
+  assert('cannot generate page hints without meta.totalPages', 'totalPages' in value);
+  assert('cannot generate page hints; meta.totalPages is not a number', typeof value.totalPages === 'number');
 }

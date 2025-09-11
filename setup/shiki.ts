@@ -9,6 +9,6 @@ export default defineShikiSetup(() => {
     transformers: [
       // ...
     ],
-    langs: ['glimmer-ts', 'ts', 'json', 'tsx'],
+    langs: ['glimmer-ts', 'ts', 'json', 'tsx', 'md'],
   };
 });
