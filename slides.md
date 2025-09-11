@@ -1348,15 +1348,14 @@ the client, (click) or risk updating only part of our full Todo list.
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
 <MacWindow title="packages/shared-data/src/builders/todo/bulk.ts" class="w-150">
-<<< @/packages/shared-data/src/builders/todo/bulk.ts ts {154-167|164|158-161,165|163-166|159-161|157}{maxHeight: '360px'}
+<<< @/packages/shared-data/src/builders/todo/bulk.ts ts {154-167|154-167|164|158-161,165|163-166|163}{maxHeight: '360px'}
 </MacWindow>
 
 <div class="max-w-sm">
 
-- `bulkDeleteCompletedTodos` builder
-
 <v-clicks at=0>
 
+- Our `bulkDeleteCompletedTodos` builder
 - Specifies the request method
 - Generates the URL
 - No body, no cache options
@@ -1386,15 +1385,14 @@ If the API were to try to serialize all the deleted todos, it could result in a 
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
 <MacWindow title="packages/shared-data/src/builders/todo/query.ts" class="w-130">
-<<< @/packages/shared-data/src/builders/todo/query.ts ts {94-97}{maxHeight: '200px'}
+<<< @/packages/shared-data/src/builders/todo/query.ts ts {71-74|71-74}{maxHeight: '200px'}
 </MacWindow>
 
 <div class="max-w-sm">
 
-- Our `invalidateAllTodoQueries` util
-
 <v-clicks>
 
+- Our `invalidateAllTodoQueries` util
 - `invalidateRequestsForType` method
 
 </v-clicks>
@@ -1421,7 +1419,7 @@ rendered.
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
 <MacWindow title=".../app/components/todo-app/clear-completed-todos.gts" class="w-150">
-<<< @/apps/emberjs/app/components/todo-app/clear-completed-todos.gts ts {34|48,51-56,59|52|53}{maxHeight: '360px'}
+<<< @/apps/emberjs/app/components/todo-app/clear-completed-todos.gts ts {48,51-56,59|48,51-56,59|52|53}{maxHeight: '360px'}
 </MacWindow>
 
 <div class="max-w-sm">
@@ -1446,6 +1444,11 @@ title: 'Episode 8: "The Future - Final Frontier?"'
 # Episode 8
 
 ## "The Future - Final Frontier?"
+
+<!--
+Have we reached the Final Frontier?
+Probably not.
+-->
 
 ---
 
@@ -1515,7 +1518,7 @@ WarpDrive is the lightweight data framework for ambitious web applications.
 1. Try WarpDrive in your next project.
 2. Explore the guides at [docs.warp-drive.io](https://docs.warp-drive.io) and [canary.warp-drive.io](https://canary.warp-drive.io).
 3. Explore this WarpDrive TodoMVC monorepo at [github.com/gitKrystan/2025-emberfest](https://github.com/gitKrystan/2025-emberfest).
-4. Join the [community discussions on Discord](https://discord.gg/eUPwQzRJ).
+4. Join the community discussions on Discord ([https://discord.gg/eUPwQzRJ](https://discord.gg/eUPwQzRJ)).
 5. Build something ambitious!
 
 <h2 class="text-lcars-purple">Questions? Let's explore the unknown together!</h2>
