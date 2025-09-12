@@ -718,9 +718,9 @@ request utilities to ensure consistency across our app.
 * And it sets cache options.
 
 In this case, Adding the 'query' OpCode and specifying the 'todo' type in
-`cacheOptions` tells the `DefaultCachePolicy` in our store to
-automatically invalidate this request when any request with the
-'createRecord' OpCode + 'todo' as one of it's `cacheOptions` types succeeds.
+`cacheOptions` tells the cache to automatically invalidate this request
+when any request with the 'createRecord' OpCode + 'todo' as one of it's
+`cacheOptions` types succeeds.
 
 Say *that* five times fast.
 -->
@@ -1238,12 +1238,10 @@ Our Todo app uses a combination of pessimistic and optimistic mutations.
 * It serializes the request body in JSON:API format
 * And it sets cache options
 
-Adding the 'updateRecord' OpCode and specifying the `ResourceKey` for
- this todo in the `records` array tells the `DefaultCachePolicy` in our
- store that when this request succeeds it should automatically patch
- the returned attributes into any matching resources in any cached
- documents for requests with the 'query' OpCode that include this
- record in their results when this request succeeds.
+Specifying the `ResourceKey` for this todo in the `records` array tells the
+store that when this request succeeds it should automatically patch the
+returned attributes into the immutable resource. Thus, the reactive resource
+will update everywhere in your app.
 
  * In this case, it will update our queries automatically when this request succeeds.
 -->
@@ -1294,7 +1292,7 @@ Here's the `patchTodo` builder again.
 
 ---
 
-# Controlled Optimistic Mutation with Checkout
+# Locally Optimistic Mutation with Checkout
 
 <MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="mb-4 max-w-2xl">
 <<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {45-47|45-47|155-162|186-192,199-203|191-192}{maxHeight: '350px'}
@@ -1317,14 +1315,14 @@ Even though these are in completely different components.
 
 * To do this, our `patchTodoToggle` action uses *optimistic* mutation to ensure that the completion state is shown consistently throughout the entire `TodoItem` parent component.
 
-* In this case, we use the same `patchTodo` builder, but we mutate the state of an _editable_ copy of the todo first.
+* In this case, we use the same `patchTodo` builder, but we mutate the state of an _editable_ copy of the todo first. We call this "locally optimistic mutation."
 
 When the patch request succeeds, WarpDrive will "commit" the local changes from the editable todo back to the upstream, immutable todo.
 -->
 
 ---
 
-# Controlled Optimistic Mutation with Checkout
+# Locally Optimistic Mutation with Checkout
 
 <div class="grid grid-flow-col gap-4 grid-items-center">
 
@@ -1384,7 +1382,7 @@ NOTE that Cache patching is _not a requirement_ of optimistic updates. It's requ
 # Patching State
 
 <MacWindow title="packages/shared-data/src/builders/todo/update.ts" class="mb-4 max-w-2xl">
-<<< @/packages/shared-data/src/builders/todo/update.ts gts {64-68|64-68|75-81|85-90|94}{maxHeight: '300px'}
+<<< @/packages/shared-data/src/builders/todo/update.ts gts {64-68|64-68|75-81|85-90}{maxHeight: '300px'}
 </MacWindow>
 
 <v-clicks at=2>
@@ -1400,7 +1398,9 @@ NOTE that Cache patching is _not a requirement_ of optimistic updates. It's requ
 * It uses the store's `cache.patch()` method to surgically update the cached documents.
 In the case of `patchCacheTodoCompleted` we add the todo to the completed list
 * and remove it from the active list.
-* We also invalidate all queries with the 'todo-count' tag to force a refetch as these requests are inexpensive.
+
+This allows our UI to update instantly without waiting for the server response,
+one of several tools WarpDrive provides to help with the challenges of Eventual Consistency.
 -->
 
 ---

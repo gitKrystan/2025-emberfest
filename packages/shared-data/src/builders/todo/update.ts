@@ -19,12 +19,7 @@ export function patchTodo(
   attributes: Partial<TodoAttributes>,
 ): RequestInfo<ReactiveTodoDocument> {
   const key = keyForSavedResource(todo);
-
-  const url = buildBaseURL({
-    op: 'updateRecord',
-    resourcePath: 'todo',
-    identifier: key,
-  });
+  const url = buildBaseURL({ resourcePath: `todo/${key.id}` });
 
   return withReactiveResponse<Todo>({
     method: 'PATCH',
@@ -37,7 +32,6 @@ export function patchTodo(
       },
     }),
 
-    op: 'updateRecord',
     records: [key],
   });
 }
