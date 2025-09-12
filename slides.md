@@ -588,10 +588,6 @@ By default, _Warp_**Drive** speaks \{JSON:API\} fluently, giving you:
 
 <v-click>
 
-<div class="mt-4 text-sm text-lcars-blue">
-(But, you can configure <i>Warp</i><strong>Drive</strong> to use other formats if you prefer!)
-</div>
-
 </v-click>
 
 </div>
@@ -604,7 +600,6 @@ If the RequestManager is the "communication officer," think of JSON:API as the c
 It's a language that WarpDrive speaks fluently, giving you:
 * A Standardized format for resources, relationships, and errors
 * And Built-in conventions for pagination, filtering, sorting, and sparse fields
-* But, you don't have to use JSON:API if you don't want to. You can configure your WarpDrive store to use another format instead.
 -->
 
 ---
@@ -1685,7 +1680,7 @@ Paginate is at it's root a wrapper around the request state for a paginated quer
 
 ---
 
-# Paginate Powered by \{JSON:API\}
+# Paginated API Response
 
 <div class="grid grid-flow-col gap-4 grid-items-center">
 
@@ -1714,8 +1709,8 @@ Paginate is at it's root a wrapper around the request state for a paginated quer
 <v-clicks at=1>
 
 - Our paginated `/api/todo` response
-- Spec-compliant `links` object
-- Non-spec `meta` required only for `EachLink` support
+- Returns a `links` object
+- Returns a `meta` - required only for `EachLink` support
 
 </v-clicks>
 
@@ -1723,8 +1718,8 @@ Paginate is at it's root a wrapper around the request state for a paginated quer
 
 <!--
 * And this is an example of the paginated response from our API.
-* It provides a spec-compliant `links` object with URLs for the first, next, and last pages. This is how Paginate knows what links to it can load.
-* It also provides a non-spec `meta` object with the current and total page counts. This is only required if you are planning on using the EachLink component.
+* It provides a `links` object with URLs for the first, next, and last pages. This is how Paginate knows what links to it can load.
+* It also provides a `meta` object with the current and total page counts. This is only required if you are planning on using the EachLink component.
 -->
 
 ---
@@ -1743,7 +1738,7 @@ Paginate is at it's root a wrapper around the request state for a paginated quer
 
 - `<Paginate />` component
 - `@pageHints` argument
-- Extracts non-spec pagination meta for use in `EachLink`
+- Extracts pagination meta for use in `EachLink`
 
 </v-clicks>
 
@@ -1753,7 +1748,7 @@ Paginate is at it's root a wrapper around the request state for a paginated quer
 
 <!--
 * Back to our TodoProvider's invocation of the Paginate component.
-* It passes the `@pageHints` argument to extract non-spec pagination meta from the response
+* It passes the `@pageHints` argument to extract pagination meta from the response
 * In our case, the API returns meta that is the exact shape we need, but you can extract page-hints however you want.
 -->
 
