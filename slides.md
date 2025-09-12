@@ -1728,56 +1728,48 @@ Paginate is at it's root a wrapper around the request state for a paginated quer
 
 # Pagination: Putting it all together
 
-<div class="grid grid-flow-col gap-4 grid-items-center">
-
 <div class="callout">
 <img src="./enterprise-edition.png" alt="TodoMVC UI (Enterprise Edition) with Captain Picard's Paginated Todo List" class="h-90 w-auto" />
 </div>
 
-<div>
-
-<v-clicks>
-
-- Our `<PaginationControls />` component invoking:<br />`<EachLink />`, `@state.loadPrev`, and `@state.loadNext`
-- Our `getAllTodos` paginated query builder
-- A `JSON:API` compliant paginated response + custom `meta` from our API
-- A `pageHints` extractor function
-
-</v-clicks>
-
-</div>
-
-</div>
-
 <!--
 To recap, our pagination implementation required:
-
-* Our TodoProvider component invoking Paginate
-* Our PaginationControls component invoking EachLink, and the load previous and load next features
-* Our getAllTodos paginated query builder
-* A JSON:API compliant paginated response + custom meta from our API
-* And a pageHints extractor function
 -->
 
 ---
 
 <MacWindow title=".../app/components/todo-app/todo-provider.gts">
-<<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {28-51|28-51|30,32,34,36,39,41,43,45,47}{maxHeight: '460px',lines:false}
+<<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {28-51|28-51|30,32,34,36,39,41,43,45,47|91-103}{maxHeight: '460px',lines:false}
 </MacWindow>
 
 <!--
 * Our TodoProvider component invoking Paginate
 * The important bits highlighted
+* And our pageHints extractor function
 -->
 
 ---
 
 <MacWindow title=".../app/components/todo-app/pagination-controls.gts" class="w-2xl">
-<<< @/apps/emberjs/app/components/todo-app/pagination-controls.gts ts {32-50|32-50|33-37,41-45}{maxHeight: '380px'}
+<<< @/apps/emberjs/app/components/todo-app/pagination-controls.gts ts {30-42|30-42|33,35,37|50-60|52-58}{maxHeight: '380px'}
 </MacWindow>
 
 <!--
 * Our PaginationControls component
+* The important bits highlighted
+* Our PageLinks component
+* Invoking EachLink
+-->
+
+---
+
+<MacWindow title="packages/shared-data/src/builders/todo/query.ts" class="max-w-2xl">
+<<< @/packages/shared-data/src/builders/todo/query.ts ts {9-24|9-24|11-23}{maxHeight: '380px'}
+</MacWindow>
+
+<!--
+* And a paginated query function
+* The important bits highlighted
 -->
 
 ---
