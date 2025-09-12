@@ -684,7 +684,7 @@ As you can imagine, these options can get quite complex, which is why WarpDrive 
 
 # Request Builders
 
-<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title="packages/shared-data/src/builders/todo/query.ts">
 <<< @/packages/shared-data/src/builders/todo/simple-query.ts ts {8-9|8-9|11|12|14-15}{maxHeight: '300px'}
@@ -729,7 +729,7 @@ Say *that* five times fast.
 
 # Query Builders - Automatic Cache Invalidation
 
-<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title="packages/shared-data/src/builders/todo/create.ts">
 <<< @/packages/shared-data/src/builders/todo/create.ts ts {8-25|8-25|22-23}{maxHeight: '350px'}
@@ -762,7 +762,7 @@ Our query from the previous builder will automatically be invalidated and re-fet
 
 # Request Builders - Query Params
 
-<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title="packages/shared-data/src/builders/todo/query.ts" class="w-140">
 <<< @/packages/shared-data/src/builders/todo/simple-query.ts ts {19-33|19-33|21-24,28}{maxHeight: '300px'}
@@ -816,7 +816,7 @@ For that, we need schemas.
 
 Instead of models with complex inheritance, _Warp_**Drive** uses simple, declarative schemas:
 
-<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title="packages/shared-data/src/schemas/todo.ts" class="w-120">
 <<< @/packages/shared-data/src/schemas/todo.ts ts {all|3|4|5-13}{maxHeight: '300px'}
@@ -925,7 +925,7 @@ These components enable you to build robust and performant apps with elegant con
 
 # Components with Reactive Magic
 
-<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title="apps/emberjs/app/components/todo-app/todo-provider.gts" class="max-w-2xl">
 <<< @/apps/emberjs/app/components/todo-app/todo-provider-request-version.gts ts {14|14|15-17|23-24|29-36|26-27|18-20}{maxHeight: '360px'}
@@ -1017,7 +1017,7 @@ Here's the full code for our TodoProvider component again, for reference.
 
 The core logic stays the same - only the framework integration changes!
 
-<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title="apps/react/app/components/todo-app/todo-provider.tsx" class="w-xl">
 
@@ -1506,7 +1506,7 @@ Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
 
 ---
 
-<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title=".../app/components/todo-app/todo-provider.gts" class="w-130">
 <<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {28|28|30-35|40-43|55-58|60-63|45-53|33-35|30,32,34-35,37,41-43,46-53,56-58,61-63,65|61-63}{maxHeight: '480px'}
@@ -1551,11 +1551,21 @@ Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
 <img src="./enterprise-edition.png" alt="TodoMVC UI (Enterprise Edition) with Captain Picard's Paginated Todo List" class="h-90 w-auto" />
 </div>
 
+<v-click>
+
+<Arrow x1="600" y1="424" x2="450" y2="424" />
+
+</v-click>
+
+<!--
+* PaginationControls renders this bit.
+-->
+
 ---
 
 # <span class="text-lcars-blue">Any Day Now I Swear:</span> EachLink
 
-<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title=".../app/components/todo-app/pagination-controls.gts" class="max-w-2xl">
 <<< @/apps/emberjs/app/components/todo-app/pagination-controls.gts ts {29|29|33-37,41-45|39|122-132|124-126|128-130}{maxHeight: '380px'}
@@ -1591,7 +1601,7 @@ Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
 
 # Paginated Query Builder
 
-<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title="packages/shared-data/src/builders/todo/query.ts" class="max-w-2xl">
 <<< @/packages/shared-data/src/builders/todo/query.ts ts {9-24|9-24|11-15,19}{maxHeight: '380px'}
@@ -1617,7 +1627,7 @@ Paginate is at it's root a wrapper around the request state for a paginated quer
 
 # Paginate Powered by \{JSON:API\}
 
-<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
 <div class="callout">
 
@@ -1661,7 +1671,7 @@ Paginate is at it's root a wrapper around the request state for a paginated quer
 
 # Paginate + EachLink + Page Hints
 
-<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title=".../app/components/todo-app/todo-provider.gts" class="max-w-2xl">
 <<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {30-35|30-35|36-37|109-121}{maxHeight: '360px'}
@@ -1691,6 +1701,14 @@ Paginate is at it's root a wrapper around the request state for a paginated quer
 
 # Pagination: Putting it all together
 
+<div class="grid grid-flow-col gap-4 grid-items-center">
+
+<div class="callout">
+<img src="./enterprise-edition.png" alt="TodoMVC UI (Enterprise Edition) with Captain Picard's Paginated Todo List" class="h-90 w-auto" />
+</div>
+
+<div>
+
 <v-clicks>
 
 - Our `<TodoProvider />` component invoking:<br />`<Paginate />`
@@ -1701,55 +1719,79 @@ Paginate is at it's root a wrapper around the request state for a paginated quer
 
 </v-clicks>
 
+</div>
+
+</div>
+
 <!--
-I can't fit it all on the screen. But to recap, our pagination implementation required:
+To recap, our pagination implementation required:
+
+* Our <TodoProvider /> component invoking: <Paginate />
+* Our <PaginationControls /> component invoking: <EachLink />, @state.loadPrev, and @state.loadNext
+* Our getAllTodos paginated query builder
+* A JSON:API compliant paginated response + custom meta from our API
+* And a pageHints extractor function
 -->
 
 ---
 
 # Houston, we have a problem
 
-<div class="grid grid-cols-2 gap-4 grid-items-center grid-items-center">
+<div class="grid grid-cols-2 gap-4 grid-items-center">
 
 <v-click>
+<div class="relative">
 <div class="callout-solid h-100 bg-lcars-magenta">
-<div class="callout-solid mt-8 bg-lcars-purple">
+</div>
+
+<div class="callout-solid bg-lcars-amber absolute left-0 right-0 top-42">
 Load only part of the Todo list...
 </div>
 </div>
 </v-click>
 
+<div class="relative">
 <v-click>
+
 <div class="callout-solid h-100 bg-lcars-magenta">
-<div class="callout-solid mt-8 bg-lcars-purple">
 
-<carbon-arrow-right /> Risk updating only part of the list
+Load the entire Todo list just to perform bulk operations...
 
-</div>
 </div>
 </v-click>
+
+<v-click>
+<div class="callout-solid bg-lcars-orange absolute left-0 right-0 top-42">
+Or risk updating only part of the list.
+</div>
+</v-click>
+</div>
 
 </div>
 
 <!--
-Now that we're paginating our data, we have a problem. *
+* Now that we're paginating our data, we have a problem.
 
 The TodoMVC spec requires a Toggle button that toggles completion of the full list
 and a  "Clear Completed" button that deletes all completed todos.
 
 If we naively implemented these actions by iterating over the full list of
-todos and sending individual requests, we'd have to load the entire list into
-the client, * or risk updating only part of our full Todo list.
+todos and sending individual requests,
+
+* we'd have to load the entire list into
+the client,
+
+* or risk updating only part of our full Todo list.
 -->
 
 ---
 
 # Bulk Actions - Bulk Op Builders
 
-<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title="packages/shared-data/src/builders/todo/bulk.ts" class="w-150">
-<<< @/packages/shared-data/src/builders/todo/bulk.ts ts {154-167|154-167|164|158-161,165|163-166|163}{maxHeight: '360px'}
+<<< @/packages/shared-data/src/builders/todo/bulk.ts ts {154-167|154-167|164|165|163-166|159-161|163}{maxHeight: '360px'}
 </MacWindow>
 
 <div class="max-w-sm">
@@ -1760,6 +1802,7 @@ the client, * or risk updating only part of our full Todo list.
 - Specifies the request method
 - Generates the URL
 - No body, no cache options
+- Query params filter
 - Expects empty response
 
 </v-clicks>
@@ -1769,12 +1812,15 @@ the client, * or risk updating only part of our full Todo list.
 </div>
 
 <!--
-First, let's look at our `bulkDeleteCompletedTodos` builder.
+In our case, the implementations for "toggle all" and "clear completed" are very similar, so we're only going to deep dive on "clear completed".
+
+* First, let's look at our `bulkDelete` builder.
 This builder implementation should look familiar by now.
 
 * It specifies the request method
 * It generates the URL - this time using a custom bulk "ops.bulk.deleteAll" endpoint
-* It has no body, and no cache options. Instead, it passes a filter via the query params to tell the server to delete all completed todos.
+* It has no body, and no cache options.
+* Instead, it passes a filter via the query params to tell the server to delete all completed todos.
 * It expects an empty response.
 If the API were to try to serialize all the deleted todos, it could result in a massive payload.
 -->
@@ -1783,7 +1829,7 @@ If the API were to try to serialize all the deleted todos, it could result in a 
 
 # Bulk Actions - State Invalidation
 
-<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title="packages/shared-data/src/builders/todo/query.ts" class="w-130">
 <<< @/packages/shared-data/src/builders/todo/query.ts ts {71-74|71-74}{maxHeight: '200px'}
@@ -1803,11 +1849,10 @@ If the API were to try to serialize all the deleted todos, it could result in a 
 </div>
 
 <!--
-Since our bulk delete endpoint returns an empty response, there is no way for
-WarpDrive to know which queries to invalidate. And as we saw earlier, we'd
-need to manually handle updating the cached filter queries anyway.
+* Since our bulk delete endpoint returns an empty response, there is no way for
+WarpDrive to know which queries to invalidate.
 
-Since the bulk endpoint results in so much change and predicting how that
+* Since the bulk endpoint results in so much change and predicting how that
 would affect cached pages would be very difficult, we simply invalidate all
 queries for the `todo` type so that they will refetch the next time they are
 rendered.
@@ -1820,17 +1865,14 @@ layout: center
 # Live Demo: [Bulk Actions](http://localhost:4200/?initialTodoCount=bulkActions&shouldError=false&shouldPaginate=true&latency=50)
 
 <!--
-Fortunately, WarpDrive has another trick up it's sleeve:
-Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
-
-- (UPDATE) Mode: Enterprise
+Let's take a look at our bulk actions...in action.
 -->
 
 ---
 
 # Bulk Actions - Putting It All Together
 
-<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title=".../app/components/todo-app/clear-completed-todos.gts" class="w-150">
 <<< @/apps/emberjs/app/components/todo-app/clear-completed-todos.gts ts {48,51-56,59|48,51-56,59|52|53}{maxHeight: '360px'}
@@ -1849,6 +1891,12 @@ Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
 </div>
 
 </div>
+
+<!--
+* And here's the `clearCompleted` action that weaves our bulk complete functionality together. It's super simple.
+* Just make a request for the bulk delete.
+* Then invalidate all the Todo queries so they will re-fetch.
+-->
 
 ---
 
@@ -1886,13 +1934,14 @@ title: 'Episode 8: "The Future - Final Frontier?"'
 ## "The Future - Final Frontier?"
 
 <!--
-Have we reached the Final Frontier?
-Probably not.
+Now that we've gone warp 9.8, have we reached the Final Frontier?
+
+Probably not. There's always warp 10.
 -->
 
 ---
 
-<div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center">
 
 <div class="callout-solid bg-lcars-purple h-84 fit-content">
 
@@ -1907,7 +1956,8 @@ Probably not.
 </div>
 
 <!--
-WarpDrive is under active development, with new features and improvements coming regularly.
+To get there, the WarpDrive project is under active development, with new features and improvements coming regularly.
+
 Check on the latest at the Canary docs site.
 -->
 
@@ -1920,6 +1970,10 @@ layout: section
 ## "Live Long and Prosper"
 
 <div class="text-6xl mt-8">🖖</div>
+
+<!--
+We hope that with this momentum on our project, we will be able to live long...and prosper.
+-->
 
 ---
 
@@ -1951,17 +2005,36 @@ _Warp_**Drive** is the lightweight data framework for ambitious web applications
 
 </div>
 
+<!--
+So what have we discovered on our journey?
+
+We've discovered that WarpDrive is the lightweight data framework for ambitious web applications.
+Universal...Typed...Performant...and Scalable.
+
+Have we boldly gone where are data has never gone before?
+
+I hope so!
+-->
+
 ---
 
 # Your Mission, Should You Choose to Accept It
 
-1. Try _Warp_**Drive** in your next project.
+<v-clicks>
+
+1. Try _Warp_**Drive** in your next project, regardless of framework.
 2. Explore the guides at [docs.warp-drive.io](https://docs.warp-drive.io) and [canary.warp-drive.io](https://canary.warp-drive.io).
 3. Explore this _Warp_**Drive** TodoMVC monorepo at [github.com/gitKrystan/2025-emberfest](https://github.com/gitKrystan/2025-emberfest).
 4. Join the community discussions on Discord ([https://discord.gg/eUPwQzRJ](https://discord.gg/eUPwQzRJ)).
 5. Build something ambitious!
 
+</v-clicks>
+
+<v-click>
+
 <h2 class="text-lcars-purple">Questions? Let's explore the unknown together!</h2>
+
+</v-click>
 
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-end mt-8">
 
@@ -1983,3 +2056,15 @@ The data is out there - <strong>go boldly and fetch it efficiently</strong>
 </div>
 
 </div>
+
+<!--
+Your Mission, Should You Choose to Accept It:
+* Try WarpDrive in your next project, regardless of framework.
+* Explore our guides at warp-drive.io
+* Explore this WarpDrive TodoMVC monorepo on GitHub.
+* Join the WarpDrive community on Discord.
+* Build something ambitious!
+* And if you have any questions, Let's explore the unknown together!
+
+THANK YOU!
+-->

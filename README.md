@@ -13,8 +13,6 @@ Learn more about Slidev at the [documentation](https://sli.dev/).
 # Todo
 
 - Log each request and note when it comes back from cache
-- Returning to the code after the live demo that you just showed could be helpful
-  Like now you see what it’s doing after I showed you — remember how little code that was?
 - What does the schema translate the data into? (ReactiveResource)
   Request builder —> schema —> reactive resource would be a good mental model to drive home, at least for me
 - A great point in the talk to drive home how flexible WarpDrive is
