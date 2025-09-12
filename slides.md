@@ -1464,7 +1464,7 @@ title: 'Episode 7: "Performance — Warp 9.8"'
 <!--
 Now it's time to get really ambitious.
 
-It turns out that our Todo MVC MVP has gotten quite popular and we're really raking in the dough.
+It turns out that our Todo MVC **MVP** has gotten quite popular and we're really raking in the dough.
 
 We've got some big customers. Over 50% of Starfleet command.
 -->
@@ -1502,7 +1502,7 @@ layout: center
 <!--
 Our support team sent us this customer app that really exemplifies some performance issues we are seeing.
 
-It turns out this customer has a million todos, and they're really having issues.
+It turns out this customer has a **million** todos, and they're really having issues.
 
 Let's see what they're running into.
 
@@ -1523,8 +1523,13 @@ layout: center
 # Live Demo: [Enterprise Edition](http://localhost:4200/?initialTodoCount=1000000&shouldError=false&shouldPaginate=true&latency=50)
 
 <!--
+Honestly, that was faster than I expected for a million records, but it's still not a great user experience.
+
 Fortunately, WarpDrive has another trick up it's sleeve:
-Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
+
+Built in pagination utilities.
+
+That's right. It's time to activate the "ENTERPRISE EDITION."
 
 - (UPDATE) Mode: Enterprise
 -->
