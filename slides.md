@@ -1026,6 +1026,8 @@ So, let's take a look this in our Todo app.
 
 First, we'll check out our loading states.
 
+To make the loading states super obvious, I've set my API to impulse speed (500ms of latency per request.)
+
 - Initial Todo Count: A Few
 - API Reliability: Good
 - API Latency: Slow
@@ -1530,14 +1532,16 @@ We've even seen some "scale pioneer" users with hundreds of thousands of todos i
 layout: center
 ---
 
-# Live Demo: [Scale Pioneers](http://localhost:4200/?initialTodoCount=100000&shouldError=false&shouldPaginate=false&latency=50)
+# Live Demo: [Scale Pioneers](http://localhost:4200/?initialTodoCount=1000000&shouldError=false&shouldPaginate=false&latency=50)
 
 <!--
 Our support team sent us this customer app that really exemplifies some performance issues we are seeing.
 
-It turns out this customer has 100k todos, and they're really having issues.
+It turns out this customer has a million todos, and they're really having issues.
 
-Let me just switch back to our demo app and load the customer's data to test.
+Let's see what they're running into.
+
+(Note: I turned the API latency to 50ms for this request.)
 
 - (UPDATE) Initial Todo Count: A Lot
 - API Reliability: Good
@@ -1551,7 +1555,7 @@ Let me just switch back to our demo app and load the customer's data to test.
 layout: center
 ---
 
-# Live Demo: [Enterprise Edition](http://localhost:4200/?initialTodoCount=100000&shouldError=false&shouldPaginate=true&latency=50)
+# Live Demo: [Enterprise Edition](http://localhost:4200/?initialTodoCount=1000000&shouldError=false&shouldPaginate=true&latency=50)
 
 <!--
 Fortunately, WarpDrive has another trick up it's sleeve:
@@ -1918,7 +1922,7 @@ rendered.
 layout: center
 ---
 
-# Live Demo: [Bulk Actions](http://localhost:4200/?initialTodoCount=bulkActions&shouldError=false&shouldPaginate=true&latency=50)
+# Live Demo: [Bulk Actions](http://localhost:4200/?initialTodoCount=bulkActions&shouldError=false&shouldPaginate=true&latency=300)
 
 <!--
 Let's take a look at our bulk actions...in action.
@@ -2067,7 +2071,7 @@ So what have we discovered on our journey?
 We've discovered that WarpDrive is the lightweight data framework for ambitious web applications.
 Universal...Typed...Performant...and Scalable.
 
-Have we boldly gone where are data has never gone before?
+Have we boldly gone where our data has never gone before?
 
 I hope so!
 -->
