@@ -44,7 +44,6 @@ export class PaginationControls extends Component<Signature> {
           @loadNext={{@state.loadNext}}
         />
 
-        {{! HACK @runspired work-around for no "page that isn't the prev or next page is loading" state }}
         {{#if this.isLoading}}
           <LoadingSpinner />
         {{/if}}
@@ -52,6 +51,7 @@ export class PaginationControls extends Component<Signature> {
     {{/if}}
   </template>
 
+  // TODO @runspired work-around for no "page that isn't the prev or next page is loading" state
   get isLoading() {
     return this.args.pages.pages.some((p) => p.isLoading);
   }

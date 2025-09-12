@@ -1609,8 +1609,8 @@ When we look at the entire invocation together, you can see that it's not much m
 
 <div class="grid grid-flow-col gap-4 grid-items-center">
 
-<MacWindow title=".../app/components/todo-app/pagination-controls.gts" class="max-w-2xl">
-<<< @/apps/emberjs/app/components/todo-app/pagination-controls.gts ts {29|29|33-37,41-45|39|122-132|124-126|128-130}{maxHeight: '380px'}
+<MacWindow title=".../app/components/todo-app/pagination-controls.gts" class="w-2xl">
+<<< @/apps/emberjs/app/components/todo-app/pagination-controls.gts ts {32-50|32-50|33-37,41-45|39|122-132|124-126|128-130}{maxHeight: '380px'}
 </MacWindow>
 
 <div class="max-w-sm">
@@ -1713,23 +1713,15 @@ Paginate is at it's root a wrapper around the request state for a paginated quer
 
 # Paginate + EachLink + Page Hints
 
-<div class="grid grid-flow-col gap-4 grid-items-center">
-
-<MacWindow title=".../app/components/todo-app/todo-provider.gts" class="max-w-2xl">
-<<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {30-35|30-35|36-37|109-121}{maxHeight: '360px'}
+<MacWindow title=".../app/components/todo-app/todo-provider.gts">
+<<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {30|30|91-103}{maxHeight: '360px'}
 </MacWindow>
 
-<div class="max-w-sm">
-
-<v-clicks at=0>
+<div class="callout absolute right-0 bottom-0 callout-normal-text w-80">
 
 - `<Paginate />` component
 - `@pageHints` argument
 - Extracts pagination meta for use in `EachLink`
-
-</v-clicks>
-
-</div>
 
 </div>
 
@@ -1768,11 +1760,22 @@ Paginate is at it's root a wrapper around the request state for a paginated quer
 <!--
 To recap, our pagination implementation required:
 
-* Our <TodoProvider /> component invoking: <Paginate />
-* Our <PaginationControls /> component invoking: <EachLink />, @state.loadPrev, and @state.loadNext
+* Our TodoProvider component invoking Paginate
+* Our PaginationControls component invoking EachLink, and the load previous and load next features
 * Our getAllTodos paginated query builder
 * A JSON:API compliant paginated response + custom meta from our API
 * And a pageHints extractor function
+-->
+
+---
+
+<MacWindow title=".../app/components/todo-app/todo-provider.gts">
+<<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {28-51|28-51|30,32,34,36,39,41,43,45,47}{maxHeight: '460px',lines:false}
+</MacWindow>
+
+<!--
+* Our TodoProvider component invoking Paginate
+* The important bits highlighted
 -->
 
 ---
