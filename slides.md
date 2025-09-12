@@ -1809,7 +1809,7 @@ Or risk updating only part of the list.
 </div>
 
 <!--
-* Now that we're paginating our data, we have a problem.
+* Unfortunately, paginating our data has introduced a new problem.
 
 The TodoMVC spec requires a Toggle button that toggles completion of the full list
 and a  "Clear Completed" button that deletes all completed todos.
@@ -2011,7 +2011,7 @@ layout: section
 <div class="text-6xl mt-8">🖖</div>
 
 <!--
-We hope that with this momentum on our project, we will be able to live long...and prosper.
+We hope that with this momentum, we will be able to live long...and prosper as a project.
 -->
 
 ---
