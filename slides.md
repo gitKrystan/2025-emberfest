@@ -922,7 +922,7 @@ The only limit is your imagination!
 
 <v-click>
 <div class="callout-solid speech-bubble-left bg-lcars-orange mr-auto w-100">
-<strong>Store:</strong> "Instantiate <code>ReactiveResource...Engage!"
+<strong>Store:</strong> "Instantiate ReactiveResource...Engage!"
 </div>
 </v-click>
 
