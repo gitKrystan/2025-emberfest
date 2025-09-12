@@ -1544,15 +1544,15 @@ That's right. It's time to activate the "ENTERPRISE EDITION."
 
 <div>
 
-<v-click at=2>
+<div v-click.hide=3>
 
-<div class="callout absolute right-0 bottom-0">
+<div class="callout absolute right-0 bottom-0 callout-normal-text w-80">
 
 `<Paginate />` component<br /><span class="text-lcars-blue">(coming soon for real)</span>
 
 Loading and error states
 
-Success state — display all loaded data or just current page
+Success state<br /><span class="text-lcars-blue">(display all loaded data or just current page)</span>
 
 Pagination controls
 
@@ -1560,7 +1560,7 @@ Autorefresh
 
 </div>
 
-</v-click>
+</div>
 
 </div>
 

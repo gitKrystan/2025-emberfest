@@ -5,14 +5,17 @@
   border-radius: 12px;
   padding: 1.5rem;
   position: relative;
-  font-family: 'Antonio', 'Avenir Next', sans-serif;
-  color: var(--lcars-purple);
   box-shadow: 0 4px 12px rgba(255, 153, 51, 0.2);
   width: fit-content;
 
   p {
     text-wrap: balance;
   }
+}
+
+.callout:not(.callout-normal-text) {
+  font-family: 'Antonio', 'Avenir Next', sans-serif;
+  color: var(--lcars-purple);
 }
 
 .callout::before {
