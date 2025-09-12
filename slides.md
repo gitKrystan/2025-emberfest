@@ -1489,11 +1489,6 @@ Let me just switch back to our demo app and load the customer's data to test.
 - Mode: Hobbyist
 
 1. Demo 100k todos without pagination
-
-Fortunately, WarpDrive has another trick up it's sleeve:
-Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
-
-- (UPDATE) Mode: Enterprise
 -->
 
 ---
@@ -1547,6 +1542,14 @@ Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
 * When we look at the entire invocation together, you can see that it's not much more complex than our original Request-based TodoProvider.
 * Let's zoom in on these PaginationControls rendered in the always block
 -->
+
+---
+
+# Pagination Controls
+
+<div class="callout">
+<img src="./enterprise-edition.png" alt="TodoMVC UI (Enterprise Edition) with Captain Picard's Paginated Todo List" class="h-90 w-auto" />
+</div>
 
 ---
 
