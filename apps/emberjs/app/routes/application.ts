@@ -31,7 +31,6 @@ export default class Application extends Route {
     shouldError: 'true' | 'false';
     latency: string | undefined;
   }) {
-    console.log(params);
     const allFlags = (await this.store.request(queryFlags())).content.data;
     const saveFlags: Promise<ApiFlag>[] = [];
     for (const flag of allFlags) {

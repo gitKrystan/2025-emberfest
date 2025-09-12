@@ -35,7 +35,6 @@ export class PaginationState<T, E = unknown> {
       loadPage: (url: string) => Promise<void>;
     } | null
   ) {
-    console.log('new pagination state');
     this.pagesCache = new Map<string, PageState<T, E>>();
     this.initialPage = new PageState<T, E>(this, { self: request });
     this.activePage = this.initialPage;
