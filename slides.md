@@ -805,7 +805,7 @@ title: 'Episode 4: "Schemas - The Universal Translator"'
 ## "Schemas - The Universal Translator"
 
 <!--
-Now that we can make a request, let's talk about how WarpDrive translates the returned JSON:API into reactive records that we can use in our UI.
+Now that we can make a request, let's talk about how WarpDrive translates the returned JSON:API into reactive resources that we can use in our UI.
 
 For that, we need schemas.
 -->
@@ -844,6 +844,39 @@ Our Todo Schema is very simple:
 WarpDrive actually provides lots of powerful schema features that we're not using here.
 
 More on that this afternoon in Mehul's talk about "ReactiveResources & Schema‑Driven Data Handling"
+-->
+
+---
+
+<div class="callout-solid bg-lcars-orange mr-auto w-100">
+<strong>Store:</strong> "Request Manager, fetch all Todos. Make it so."
+</div>
+
+<div class="callout-solid bg-lcars-amber m-auto w-100">
+<strong>Request Manager:</strong><br />"Roger that, Captain. Sending request to the API."
+</div>
+
+<div class="callout-solid bg-lcars-purple ml-auto w-140">
+<strong>Server:</strong> "{JSON:API}$%^$@&$%#&!@*&^%$%%$##@$%^$@&$%#&!@*
+#@!#&^%%$$@@!!@#$%^&*&%%$##@$%^$@&$%#&!@*&^%$#@
+!@*&^%$#@!#&^%%$$@@!!@#$%^&*&%%$##@$%^$%^{/JSON:API}"
+</div>
+
+<div class="callout-solid bg-lcars-orange mr-auto w-100">
+<strong>Store:</strong> "Schema Service, we've received a subspace communication. Can you make sense of this?"
+</div>
+
+<div class="callout-solid bg-lcars-magenta m-auto w-100">
+<strong>Schema Service:</strong> Yes, Captain. Translating now. Here's your array of Todo resources, ready to active!"
+</div>
+
+<div class="callout-solid bg-lcars-orange mr-auto w-100">
+<strong>Store:</strong> "Instantiate Record...Engage!"
+</div>
+
+<!--
+So, to recap:
+Here are the main
 -->
 
 ---
