@@ -105,3 +105,86 @@
 .callout-solid:nth-of-type(8n) {
   background-color: var(--lcars-white);
 }
+
+/* Speech Bubbles */
+
+/* Speech Bubble Styles */
+.speech-bubble-left {
+  position: relative;
+  font-family: inherit; /* Use regular body text */
+  font-weight: normal;
+  font-size: 1rem;
+  padding: 0.8rem;
+}
+
+.speech-bubble-left strong {
+  font-family: 'Antonio', sans-serif; /* Keep Antonio for bold parts */
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.speech-bubble-left::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -15px;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-right: 15px solid var(--callout-bg, #333);
+}
+
+.speech-bubble-right {
+  position: relative;
+  font-family: inherit; /* Use regular body text */
+  font-weight: normal;
+  font-size: 1rem;
+  padding: 0.8rem;
+}
+
+.speech-bubble-right strong {
+  font-family: 'Antonio', sans-serif; /* Keep Antonio for bold parts */
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.speech-bubble-right::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -15px;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-left: 15px solid var(--callout-bg, #333);
+}
+
+/* Color-specific arrows for different speakers */
+.speech-bubble-left.bg-lcars-orange::before {
+  border-right-color: var(--lcars-orange);
+}
+
+.speech-bubble-left.bg-lcars-amber::before {
+  border-right-color: var(--lcars-amber);
+}
+
+.speech-bubble-left.bg-lcars-magenta::before {
+  border-right-color: var(--lcars-magenta);
+}
+
+.speech-bubble-right.bg-lcars-purple::before {
+  border-left-color: var(--lcars-purple);
+}
+
+/* Ensure proper spacing to accommodate arrows */
+.speech-bubble-left {
+  margin-left: 20px;
+}
+
+.speech-bubble-right {
+  margin-right: 20px;
+}

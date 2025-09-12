@@ -848,39 +848,6 @@ More on that this afternoon in Mehul's talk about "ReactiveResources & Schema‑
 
 ---
 
-<div class="callout-solid bg-lcars-orange mr-auto w-100">
-<strong>Store:</strong> "Request Manager, fetch all Todos. Make it so."
-</div>
-
-<div class="callout-solid bg-lcars-amber m-auto w-100">
-<strong>Request Manager:</strong><br />"Roger that, Captain. Sending request to the API."
-</div>
-
-<div class="callout-solid bg-lcars-purple ml-auto w-140">
-<strong>Server:</strong> "{JSON:API}$%^$@&$%#&!@*&^%$%%$##@$%^$@&$%#&!@*
-#@!#&^%%$$@@!!@#$%^&*&%%$##@$%^$@&$%#&!@*&^%$#@
-!@*&^%$#@!#&^%%$$@@!!@#$%^&*&%%$##@$%^$%^{/JSON:API}"
-</div>
-
-<div class="callout-solid bg-lcars-orange mr-auto w-100">
-<strong>Store:</strong> "Schema Service, we've received a subspace communication. Can you make sense of this?"
-</div>
-
-<div class="callout-solid bg-lcars-magenta m-auto w-100">
-<strong>Schema Service:</strong> Yes, Captain. Translating now. Here's your array of Todo resources, ready to active!"
-</div>
-
-<div class="callout-solid bg-lcars-orange mr-auto w-100">
-<strong>Store:</strong> "Instantiate Record...Engage!"
-</div>
-
-<!--
-So, to recap:
-Here are the main
--->
-
----
-
 # TypeScript Integration
 
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-end">
@@ -920,6 +887,57 @@ The only limit is your imagination!
 -->
 
 ---
+
+<v-click>
+<div class="callout-solid speech-bubble-left bg-lcars-orange mr-auto w-100">
+<strong>Store:</strong> "Request Manager, fetch all Todos. Make it so."
+</div>
+</v-click>
+
+<v-click>
+<div class="callout-solid speech-bubble-left bg-lcars-amber m-auto w-100">
+<strong>Request Manager:</strong><br />"Roger that, Captain. Sending request to the API."
+</div>
+</v-click>
+
+<v-click>
+<div class="callout-solid speech-bubble-right bg-lcars-purple ml-auto w-140">
+<strong>Server:</strong><br />
+"{JSON:API}$%^$@&$%#&!@*&^%$%%$##@$%^$@&$%#&!@*&!@*!
+!@*&^%$#@!#&^%%$$@@!!@#$%^&*&%%$##@$%^$%^{/JSON:API}"
+</div>
+</v-click>
+
+<v-click>
+<div class="callout-solid speech-bubble-left bg-lcars-orange mr-auto w-100">
+<strong>Store:</strong> "Schema Service, we've received a subspace communication. Can you make sense of this?"
+</div>
+</v-click>
+
+<v-click>
+<div class="callout-solid speech-bubble-left bg-lcars-magenta m-auto w-100">
+<strong>Schema Service:</strong> Yes, Captain. Translating now. Here's your array of Todo resources, ready to active!"
+</div>
+</v-click>
+
+<v-click>
+<div class="callout-solid speech-bubble-left bg-lcars-orange mr-auto w-100">
+<strong>Store:</strong> "Instantiate <code>ReactiveResource...Engage!"
+</div>
+</v-click>
+
+<!--
+So, to recap, here are the main components of our WarpDrive data layer, and how they interact when making a request:
+
+* The store initiates a request via `store.request()`, which delegates to the RequestManager.
+* The RequestManager makes the actual network request to our API via its fetch handler.
+* The API responds with JSON:API data.
+* The store's asks the SchemaService how to understand the data.
+* The SchemaService translates the data into a format the store understands via it's schema.
+* And the reactive resource is instantiated and ready to use.
+-->
+
+---
 layout: section
 title: 'Episode 5: "Reactive UI - Ember Integration"'
 ---
@@ -942,16 +960,20 @@ Truly universal.
 
 # <logos-ember /> + `@warp-drive/ember`
 
-- **A Thin Wrapper** - Built on top of `@warp-drive/core` reactive utilities.
+<v-clicks>
+
 - **Provides Ember components** - For request UX with elegant control flow.
+- **A Thin Wrapper** - Built on top of `@warp-drive/core` reactive utilities.
 - **Reactive** - Leverages Ember's reactivity system for fine-grained updates that JustWork™.
+
+</v-clicks>
 
 <!--
 To integrate WarpDrive with Ember, you need to use the @warp-drive/ember package.
 
-This package provides components built over the core WarpDrive reactive utilities for working with promises and requests.
-
-These components enable you to build robust and performant apps with elegant control flow.
+* This package provides Ember components for working with promises and requests.
+* These components are thin wrappers built over the core universal WarpDrive reactive utilities.
+* These components enable you to build robust and performant apps with elegant control flow.
 -->
 
 ---
@@ -1002,8 +1024,7 @@ layout: center
 <!--
 So, let's take a look this in our Todo app.
 
-First, I need to check the configuration.
-Then, we'll demo our requests, showing loading state, caching behavior, and a few other TodoMVC features implemented with WarpDrive and Ember.
+First, we'll check out our loading states.
 
 - Initial Todo Count: A Few
 - API Reliability: Good
@@ -1022,6 +1043,8 @@ layout: center
 # Live Demo: [Basic Error States](http://localhost:4200/?initialTodoCount=basicErrorStates&shouldError=true&shouldPaginate=false&latency=1000)
 
 <!--
+And now, we'll check out the error states.
+
 - Initial Todo Count: A Few
 - (UPDATE) API Reliability: Terrible
 - API Latency: Slow
