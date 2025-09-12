@@ -20,6 +20,7 @@ export const hardCodedLists = [
   'basicErrorStates',
   'pessimisticMutation',
   'optimisticMutation',
+  'bulkActions',
 ] as const;
 export type HardCodedList = (typeof hardCodedLists)[number];
 

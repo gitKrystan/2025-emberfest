@@ -1001,6 +1001,18 @@ layout: center
 
 ---
 
+<MacWindow title="apps/emberjs/app/components/todo-app/todo-provider.gts">
+<<< @/apps/emberjs/app/components/todo-app/todo-provider-request-version.gts ts {15-38|15,17,19-21,24,27,30-36,38}{maxHeight: '480px'}
+</MacWindow>
+
+<!--
+Here's the full code for our TodoProvider component again, for reference.
+
+* We were able to implement all of those loading, error, and success states with just a few lines of code.
+-->
+
+---
+
 # Universal Framework Support
 
 The core logic stays the same - only the framework integration changes!
@@ -1200,6 +1212,30 @@ REFRESH PAGE BEFORE DEMO
 
 ---
 
+<MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="mb-4" >
+<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {308-314|310}{maxHeight: '200px'}
+</MacWindow>
+
+<!--
+Here's the full code for our `patchTodoTitle` action again, for reference.
+
+* And the most important bit.
+-->
+
+---
+
+<MacWindow title="packages/shared-data/src/builders/todo/update.ts" >
+<<< @/packages/shared-data/src/builders/todo/update.ts gts {17-43|21-42}{maxHeight: '480px'}
+</MacWindow>
+
+<!--
+Here's the `patchTodo` builder again.
+
+* And the most important bit highlighted.
+-->
+
+---
+
 # Controlled Optimistic Mutation with Checkout
 
 <MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="mb-4 max-w-2xl">
@@ -1329,6 +1365,42 @@ Let's take a look at this toggle button in action.
 
 ---
 
+<MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="mb-4" >
+<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {186-203|191-198}{maxHeight: '480px'}
+</MacWindow>
+
+<!--
+Here's the full code for our `patchTodoToggle` action again, for reference.
+
+* And the most important bit.
+-->
+
+---
+
+<MacWindow title="packages/shared-data/src/builders/todo/update.ts" >
+<<< @/packages/shared-data/src/builders/todo/update.ts gts {17-43|21-42}{maxHeight: '480px'}
+</MacWindow>
+
+<!--
+Here's the `patchTodo` builder again.
+
+* And the most important bit highlighted.
+-->
+
+---
+
+<MacWindow title="packages/shared-data/src/builders/todo/update.ts">
+<<< @/packages/shared-data/src/builders/todo/update.ts gts {64-96|69-95}{maxHeight: '480px'}
+</MacWindow>
+
+<!--
+Here's our patch utility again.
+
+* And the most important bit highlighted.
+-->
+
+---
+
 # Immutability Without the Hassle
 
 Whether you choose pessimistic or optimistic updates:
@@ -1439,12 +1511,10 @@ Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
 
 ---
 
-# <span class="text-lcars-blue">Coming Soon For Real:</span> Paginate
-
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-center">
 
 <MacWindow title=".../app/components/todo-app/todo-provider.gts" class="w-130">
-<<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {28|28|30-35|40-43|55-58|60-63|45-53|33-35}{maxHeight: '360px'}
+<<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {28|28|30-35|40-43|55-58|60-63|45-53|33-35|30,32,34-35,37,41-43,46-53,56-58,61-63,65|61-63}{maxHeight: '480px'}
 </MacWindow>
 
 <div>
@@ -1452,12 +1522,13 @@ Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
 <v-clicks at=1>
 
 - Our `<TodoProvider />` component
-- `<Paginate />` component
+- `<Paginate />` component <span class="text-lcars-blue">(coming soon for real)</span>
 - Loading states - for initial, previous, and next
 - Error state
 - Pagination controls
 - Success state - display all the data, or just one page
 - Autorefresh
+- All together now!
 
 </v-clicks>
 
@@ -1469,10 +1540,12 @@ Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
 * Here' we're looking at the real TodoProvider component used by our Enterprise Edition Todo App.
 * It uses WarpDrive's Paginate component to declaratively handle request state.
 * On load, it displays a loading spinner.
-* On error, it displays an error message with a retry button.
+* On error, it displays an error message
 * It displays the pagination state via the always block.
 * And on success, it passes the current page of data to the Todos component.
 * And! When cached responses for this request are invalidated, the component automatically re-renders with fresh data.
+* When we look at the entire invocation together, you can see that it's not much more complex than our original Request-based TodoProvider.
+* Let's zoom in on these PaginationControls rendered in the always block
 -->
 
 ---
@@ -1503,7 +1576,7 @@ Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
 </div>
 
 <!--
-* Let's talk more about these PaginationControls
+* Here's our PaginationControls implementation.
 * It displays the previous and next page buttons
 * It displays page links
 * Under the hood, the page links component uses the `<EachLink />` component provided by @warp-drive/ember
@@ -1609,6 +1682,24 @@ Paginate is at it's root a wrapper around the request state for a paginated quer
 * Back to our TodoProvider's invocation of the Paginate component.
 * It passes the `@pageHints` argument to extract non-spec pagination meta from the response
 * In our case, the API returns meta that is the exact shape we need, but you can extract page-hints however you want.
+-->
+
+---
+
+# Pagination: Putting it all together
+
+<v-clicks>
+
+- Our `<TodoProvider />` component invoking:<br />`<Paginate />`
+- Our `<PaginationControls />` component invoking:<br />`<EachLink />`, `@state.loadPrev`, and `@state.loadNext`
+- Our `getAllTodos` paginated query builder
+- A `JSON:API` compliant paginated response + custom `meta` from our API
+- A `pageHints` extractor function
+
+</v-clicks>
+
+<!--
+I can't fit it all on the screen. But to recap, our pagination implementation required:
 -->
 
 ---
@@ -1720,6 +1811,19 @@ rendered.
 -->
 
 ---
+layout: center
+---
+
+# Live Demo: [Bulk Actions](http://localhost:4200/?initialTodoCount=bulkActions&shouldError=false&shouldPaginate=true&latency=50)
+
+<!--
+Fortunately, WarpDrive has another trick up it's sleeve:
+Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
+
+- (UPDATE) Mode: Enterprise
+-->
+
+---
 
 # Bulk Actions - Putting It All Together
 
@@ -1742,6 +1846,32 @@ rendered.
 </div>
 
 </div>
+
+---
+
+<MacWindow title="packages/shared-data/src/builders/todo/bulk.ts">
+<<< @/packages/shared-data/src/builders/todo/bulk.ts ts {154-167|158-166}{maxHeight: '360px'}
+</MacWindow>
+
+<!--
+And here's another look at that builder
+
+* With the important bits highlighted
+-->
+
+---
+
+<MacWindow title="packages/shared-data/src/builders/todo/query.ts">
+<<< @/packages/shared-data/src/builders/todo/query.ts ts {71-74|73}{maxHeight: '360px'}
+</MacWindow>
+
+<!--
+And our invalidation utility again
+
+* With the important bits highlighted
+
+Once again, we have built another ambitious feature with just a few lines of code.
+-->
 
 ---
 layout: section
