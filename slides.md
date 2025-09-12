@@ -1607,36 +1607,29 @@ When we look at the entire invocation together, you can see that it's not much m
 
 # <span class="text-lcars-blue">Any Day Now I Swear:</span> EachLink
 
-<div class="grid grid-flow-col gap-4 grid-items-center">
-
-<MacWindow title=".../app/components/todo-app/pagination-controls.gts" class="w-2xl">
-<<< @/apps/emberjs/app/components/todo-app/pagination-controls.gts ts {32-50|32-50|33-37,41-45|39|122-132|124-126|128-130}{maxHeight: '380px'}
+<MacWindow title=".../app/components/todo-app/pagination-controls.gts">
+<<< @/apps/emberjs/app/components/todo-app/pagination-controls.gts ts {30-42|30-42|33-37|52-58}{maxHeight: '200px',lines:false}
 </MacWindow>
 
-<div class="max-w-sm">
+<v-clicks at=2>
 
-<v-clicks at=1>
+<div class="callout absolute right-0 bottom-0 callout-normal-text w-120 pb-3">
 
-- Our `<PaginationControls />` component
-- Previous and next page buttons
-- Render page links
+- Previous and next page buttons + page links
 - `<EachLink />` component
 - Yields a `<:link>` block for each known page link
 - Yields a `<:placeholder>` block for unknown links
 
+</div>
+
 </v-clicks>
-
-</div>
-
-</div>
 
 <!--
 * Here's our PaginationControls implementation.
-* It displays the previous and next page buttons
-* It displays page links
+* It displays the previous and next page buttons using the "load previous" and "load next" features plus page links
 * Under the hood, the page links component uses the `<EachLink />` component provided by @warp-drive/ember
-* It yields a `<:link>` block for each known page link
-* And it yields a `<:placeholder>` block for unknown links
+
+It yields a `<:link>` block for each known page link and a `<:placeholder>` block for unknown links
 -->
 
 ---
@@ -1745,7 +1738,6 @@ Paginate is at it's root a wrapper around the request state for a paginated quer
 
 <v-clicks>
 
-- Our `<TodoProvider />` component invoking:<br />`<Paginate />`
 - Our `<PaginationControls />` component invoking:<br />`<EachLink />`, `@state.loadPrev`, and `@state.loadNext`
 - Our `getAllTodos` paginated query builder
 - A `JSON:API` compliant paginated response + custom `meta` from our API
@@ -1776,6 +1768,16 @@ To recap, our pagination implementation required:
 <!--
 * Our TodoProvider component invoking Paginate
 * The important bits highlighted
+-->
+
+---
+
+<MacWindow title=".../app/components/todo-app/pagination-controls.gts" class="w-2xl">
+<<< @/apps/emberjs/app/components/todo-app/pagination-controls.gts ts {32-50|32-50|33-37,41-45}{maxHeight: '380px'}
+</MacWindow>
+
+<!--
+* Our PaginationControls component
 -->
 
 ---

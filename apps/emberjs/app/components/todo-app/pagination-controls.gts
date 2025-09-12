@@ -30,23 +30,13 @@ export class PaginationControls extends Component<Signature> {
   <template>
     {{#if (or @state.loadPrev @state.loadNext)}}
       <div class="pagination-controls">
-        <LoadPreviousButton
-          @prevPage={{@pages.links.prevPageNumber}}
-          {{! On click, load the previous page }}
-          @loadPrev={{@state.loadPrev}}
-        />
+        <LoadPreviousButton @prevPage={{@pages.links.prevPageNumber}} @loadPrev={{@state.loadPrev}} />
 
         <PageLinks @pages={{@pages}} />
 
-        <LoadNextButton
-          @nextPage={{@pages.links.nextPageNumber}}
-          {{! On click, load the next page }}
-          @loadNext={{@state.loadNext}}
-        />
+        <LoadNextButton @nextPage={{@pages.links.nextPageNumber}} @loadNext={{@state.loadNext}} />
 
-        {{#if this.isLoading}}
-          <LoadingSpinner />
-        {{/if}}
+        {{#if this.isLoading}}<LoadingSpinner />{{/if}}
       </div>
     {{/if}}
   </template>
@@ -56,6 +46,18 @@ export class PaginationControls extends Component<Signature> {
     return this.args.pages.pages.some((p) => p.isLoading);
   }
 }
+
+const PageLinks = <template>
+  <div class="pagination-link-buttons">
+    <EachLink @pages={{@pages}}>
+
+      <:link as |link|><RealLink @link={{link}} @pages={{@pages}} /></:link>
+
+      <:placeholder as |link|><PlaceholderLink @placeholder={{link}} /></:placeholder>
+
+    </EachLink>
+  </div>
+</template> satisfies TOC<{ Args: { pages: PaginationState<Todo> } }>;
 
 class LoadPreviousButton extends Component<{
   Args: {
@@ -116,26 +118,6 @@ class LoadNextButton extends Component<{
     await loadNext();
   };
 }
-
-const PageLinks = <template>
-  <div class="pagination-link-buttons">
-    <EachLink @pages={{@pages}}>
-
-      <:link as |link|>
-        <RealLink @link={{link}} @pages={{@pages}} />
-      </:link>
-
-      <:placeholder as |link|>
-        <PlaceholderLink @placeholder={{link}} />
-      </:placeholder>
-
-    </EachLink>
-  </div>
-</template> satisfies TOC<{
-  Args: {
-    pages: PaginationState<Todo>;
-  };
-}>;
 
 const PlaceholderLink = <template>
   <span class="pagination-button pagination-placeholder-button">⋯</span>
