@@ -87,7 +87,6 @@ layout: default
 
 <div class="warp-drive-showcase">
   <div v-click class="lcars-frame">
-    <div class="star-layer-2"></div>
     <div class="logo-container">
       <img src="/warp-drive-logo-white.svg" alt="WarpDrive logo" class="warp-logo" />
       <div class="scan-line"></div>
