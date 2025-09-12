@@ -12,14 +12,45 @@
     justify-content: center;
   }
 
+  .warp-logo {
+    transition:
+      opacity 2s ease-in,
+      transform 3s ease-in;
+  }
+
   .lcars-frame.slidev-vclick-hidden {
     opacity: 1 !important;
+
+    &::before {
+      animation: subtleTwinkle 8s ease-in-out infinite;
+    }
+
+    .status-data.status-active {
+      display: none;
+    }
+
+    .warp-logo {
+      opacity: 0;
+      transform: scale(0);
+    }
   }
 
   .lcars-frame.slidev-vclick-current {
-    &::before,
-    .star-layer-2 {
-      animation: warpStreaks 1s ease-out infinite;
+    &::before {
+      animation: warpStreaks 2s ease-out forwards;
+    }
+
+    .status-data.status-active {
+      display: visible;
+    }
+
+    .status-data.status-ready {
+      display: none;
+    }
+
+    .warp-logo {
+      opacity: 1;
+      transform: scale(1);
     }
   }
 
@@ -534,7 +565,7 @@
         transparent 60%
       );
     background-size:
-      10px 10px,
+      5px 5px,
       3px 3px,
       5px 5px,
       3px 3px,
@@ -630,7 +661,7 @@
       1px 1px,
       2px 2px;
     background-position:
-      50% 50%,
+      52% 48%,
       10% 60%,
       12% 80%,
       14% 95%,
@@ -712,7 +743,6 @@
       98% 15%,
       99% 45%;
     background-repeat: no-repeat;
-    /* animation: warpStreaks 1s ease-out infinite; */
     z-index: 0;
   }
 
@@ -773,18 +803,13 @@
   }
 
   .status-ready {
-    color: var(--lcars-green);
+    color: var(--lcars-magenta);
     animation: statusBlink 2.5s ease-in-out infinite;
   }
 
   .status-active {
     color: var(--lcars-amber);
     animation: statusBlink 2.6s ease-in-out infinite;
-  }
-
-  .status-online {
-    color: var(--lcars-magenta);
-    animation: statusBlink 2.7s ease-in-out infinite;
   }
 
   @keyframes frameGlow {
@@ -847,9 +872,51 @@
       filter: blur(3px);
     }
     100% {
-      transform: scale(15);
+      transform: scale(25);
       opacity: 0;
       filter: blur(6px);
+    }
+  }
+
+  @keyframes subtleTwinkle {
+    0% {
+      opacity: 0.3;
+      filter: brightness(1) hue-rotate(0deg);
+    }
+    12.5% {
+      opacity: 0.9;
+      filter: brightness(1.1) hue-rotate(-5deg);
+      transform: scale(0.99);
+    }
+    25% {
+      opacity: 0.88;
+      filter: brightness(1.05) hue-rotate(3deg);
+    }
+    37.5% {
+      opacity: 0.92;
+      filter: brightness(1.15) hue-rotate(-2deg);
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.87;
+      filter: brightness(1.02) hue-rotate(7deg);
+    }
+    62.5% {
+      opacity: 0.93;
+      filter: brightness(1.12) hue-rotate(-4deg);
+    }
+    75% {
+      opacity: 0.89;
+      filter: brightness(1.08) hue-rotate(2deg);
+    }
+    87.5% {
+      opacity: 0.91;
+      filter: brightness(1.06) hue-rotate(-1deg);
+    }
+    100% {
+      opacity: 0.3;
+      filter: brightness(1) hue-rotate(0deg);
+      transform: scale(1);
     }
   }
 }

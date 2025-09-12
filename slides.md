@@ -30,55 +30,6 @@ Krystan HuffMenne • Staff Engineer @ AuditBoard
   </a>
 </div>
 
-<!--
-I was going to call this talk "WarpDrive for Dummies"...
-
-...but we're not dummies.
-
-In fact, some of us know **a lot** about data libraries.
--->
-
----
-layout: default
----
-
-# A Fresh Perspective
-
-You might know quite a bit about **one data library** in particular...
-
-<v-click>
-
-And you might even be expecting me to talk about that library.
-
-</v-click>
-
-<v-click>
-
-**But I'm not.**
-
-</v-click>
-
-<v-click>
-
-<div class="callout float-right max-w-xl mt-8">
-<p>
-Today we're going on a mission to <strong>explore strange new patterns</strong>, seek out new architectures, and <strong>boldly go where our data has never gone before</strong>.
-</p>
-</div class="callout">
-
-</v-click>
-
-<!--
-You might know quite a bit about **one data library** in particular...
-
-* And you might even be expecting me to talk about *that* library.
-
-* **But I'm not.**
-Instead, I want you to pretend you've never seen that library before.
-
-* We're going to explore a new library, with new patterns. We're going to "boldly go where our data has never gone before."
--->
-
 ---
 layout: default
 ---
@@ -87,9 +38,9 @@ layout: default
 
 <div class="warp-drive-showcase">
   <div v-click class="lcars-frame">
+    <div class="scan-line"></div>
     <div class="logo-container">
       <img src="/warp-drive-logo-white.svg" alt="WarpDrive logo" class="warp-logo" />
-      <div class="scan-line"></div>
     </div>
     <div class="status-indicators">
       <div class="status-bar">
@@ -98,11 +49,12 @@ layout: default
       </div>
       <div class="status-bar">
         <span class="status-text">WARP CORE:</span>
-        <span class="status-online">ONLINE</span>
+        <span class="status-ready">ONLINE</span>
       </div>
       <div class="status-bar">
         <span class="status-text">DATA LAYER:</span>
-        <span class="status-active">STUN</span>
+        <span class="status-data status-ready">ONLINE</span>
+        <span class="status-data status-active">STUN</span>
       </div>
     </div>
   </div>
@@ -110,12 +62,24 @@ layout: default
 
 </div>
 
-<v-click>
-pew pew
-</v-click>
-
 <!--
-Today we're talking about WarpDrive.
+I was going to call this talk "WarpDrive for Dummies"...
+
+...but we're not dummies.
+
+In fact, some of us know **a lot** about data libraries.
+
+You might know quite a bit about **one data library** in particular...
+
+And you might even be expecting me to talk about *that* library.
+
+**But I'm not.**
+
+Instead, I want you to pretend you've never seen that library before.
+
+We're going to explore a new library, with new patterns. We're going to "boldly go where our data has never gone before."
+
+* Today we're talking about WarpDrive.
 
 Set your data layer to stun.
 -->
@@ -130,11 +94,15 @@ layout: two-cols
 
 After Party talking points:
 
-<v-clicks>
+<v-click>
 
 Portland, Oregon
 
 Answers to “mom”
+
+</v-click>
+
+<v-clicks>
 
 Staff Engineer @ AuditBoard
 
@@ -149,16 +117,15 @@ Ember veteran since v2
 ::right::
 
 <div class="callout">
-<img src="/captain-profile.jpg" alt="Krystan and her family backpacking at Mt. Rainier, Washington" class="h-100 w-auto" />
+<img src="/captain-profile.jpg" alt="Krystan and her family backpacking at Mt. Rainier, Washington" class="h-110 w-auto" />
 </div>
 
 <!--
-Before we embark, let me introduce myself - I'll be your guide through the WarpDrive universe...
+Before we embark, let me introduce myself — I'll be your guide through the WarpDrive universe...
 
-* I live in Portland, Oregon. It rains a lot there.
 -  I have two kids, so I understand the importance of reliable, predictable systems that just work
-- I'm a staff-engineer at AuditBoard - building enterprise software for Audit, Risk, and Compliance
-- I'm a member of the WarpDrive and Ember Tooling Teams. I'm passionate about making data management both powerful and type-safe
+- I'm a staff-engineer at AuditBoard — building enterprise software for Audit, Risk, and Compliance
+- I'm a member of the WarpDrive and Ember Tooling Teams.
 - And I've been writing Ember apps for nearly a decade.
 -->
 
@@ -234,7 +201,7 @@ WarpDrive is the lightweight data framework for ambitious web applications.
 
 ---
 
-# "Boldly Go Where No Data Has Gone Before"
+# "Boldly Go Where Your Data Has Gone Before"
 
 Unlike other data libraries, _Warp_**Drive** is built around:
 
@@ -258,15 +225,13 @@ Unlike _other_ data libraries, WarpDrive is built around:
 
 ---
 
-# The Universal Promise
+# The Universal Promise — "Separate the Saucer Section!"
 
-"Separate the saucer section!"
-
-<div class="grid grid-cols-2 gap-4">
+<div class="grid grid-flow-col gap-4">
 
 <div class="callout ml-auto">
 
-<div class="code font-size-3">
+<div class="code font-size-4">
 
 <div><carbon-folder /> packages/</div>
 <div>└── <span class="text-lcars-amber"><carbon-layers /> shared-data</span></div>
@@ -291,7 +256,7 @@ Unlike _other_ data libraries, WarpDrive is built around:
 </div>
 
 <div class="callout-solid bg-lcars-magenta text-2xl">
-<strong>This isn't just theory</strong> - we can literally share our data layer across multiple applications.
+<strong>This isn't just theory</strong> — we can literally share our data layer across multiple applications.
 </div>
 
 </div>
@@ -314,12 +279,12 @@ Even our `api` implementation, written in node, uses types imported from the sha
 
 ---
 layout: section
-title: 'Episode 2: "Engage! - Setting Up Our Mission"'
+title: 'Episode 2: "Engage! — Setting Up Our Mission"'
 ---
 
 # Episode 2
 
-## "Engage! - Setting Up Our Mission"
+## "Engage! — Setting Up Our Mission"
 
 <!--
 Let's talk about what we're going to build today.
@@ -329,9 +294,89 @@ I promise, it's something ambitious.
 
 ---
 
+# TodoMVC: Our Prime Directive
+
+[A spec for a simple Todo app](https://github.com/tastejs/todomvc/blob/master/app-spec.md)
+
+Implemented in multiple frameworks to compare approaches.
+
+<div class="grid grid-flow-col gap-4">
+
+<div class="callout">
+<img src="./picard-todos.png" alt="TodoMVC UI with Captain Picard's Todo List" class="h-80 w-auto" />
+</div>
+
+<div>
+
+As a user I can...
+
+...create a Todo.
+
+...read lists of:<br /><span class="ml-4">All Todos, Active Todos, and Completed Todos.</span>
+
+...update each Todo.
+
+...delete a Todo.
+
+...perform bulk actions:<br /><span class="ml-4">toggle and delete.</span>
+
+</div>
+
+</div>
+
+<!--
+TodoMVC is a spec for a simple Todo app, implemented in multiple frameworks to compare approaches.
+
+Ember's TodoMVC implementation was created by Miguel, Addy, and Preston, for which I am grateful.
+-->
+
+---
+
+# TodoMVC: Our Prime Directive
+
+<div class="grid grid-flow-col gap-4 grid-items-center">
+
+<div>
+Todo resource:
+
+<div class="callout max-w-xs mt-8">
+```ts
+interface Todo {
+  id: string;
+  title: string;
+  completed: boolean;
+}
+```
+</div>
+</div>
+
+<div>
+
+a string id
+
+a string title attribute
+
+a boolean completed attribute
+
+</div>
+
+</div>
+
+<!--
+It’s built around a simple Todo resource:
+
+a string id
+
+a string title attribute
+
+and a boolean completed attribute
+-->
+
+---
+
 # Our Mission Brief
 
-We'll implement a TodoMVC application using:
+We'll re-implement the Ember TodoMVC application using:
 
 <v-clicks>
 
@@ -355,97 +400,15 @@ By the end, you'll see how WarpDrive makes data management feel... <em>logical</
 </div>
 
 <!--
-Today, we’ll implement a TodoMVC application step-by-step using:
+Today, we’ll re-implement the TodoMVC application using:
 
 * WarpDrive
 * JSON:API
 * TypeScript
 * Modern Ember Polaris
 * (Yes, we're using Vite)
--->
 
----
-
-# TodoMVC: Our Prime Directive
-
-A spec for a simple Todo app
-
-Implemented in multiple frameworks to compare approaches.
-
-<v-click>
-
-Todo resource:
-
-<div class="callout max-w-xs mt-8">
-```ts
-interface Todo {
-  id: string;
-  title: string;
-  completed: boolean;
-}
-```
-</div>
-
-</v-click>
-
-<!--
-TodoMVC is a spec for a simple Todo app, implemented in multiple frameworks to compare approaches.
-
-It’s built around a simple Todo resource:
-
-a string id
-
-a string title attribute
-
-and a boolean completed attribute
--->
-
----
-
-# TodoMVC: Our Prime Directive
-
-Every TodoMVC implementation shares the same [core features](https://github.com/tastejs/todomvc/blob/master/app-spec.md):
-
-<div class="grid grid-flow-col gap-4">
-
-<div class="callout">
-<img src="./picard-todos.png" alt="TodoMVC UI with Captain Picard's Todo List" class="h-80 w-auto" />
-</div>
-
-<div>
-
-<v-clicks >
-
-You can create a Todo
-
-You can read lists of:<br />All Todos, Active Todos, and Completed Todos
-
-You can update each Todo
-
-You can delete a Todo
-
-You can perform bulk actions:<br />toggle and delete
-
-</v-clicks>
-
-</div>
-
-</div>
-
-<!--
-Every TodoMVC implementation shares the same core features:
-
-* You can create a Todo
-
-* You can read lists of All Todos, Active Todos, and Completed Todos
-
-* You can update each Todo
-
-* You can delete a Todo
-
-* And you can bulk toggle and delete todos.
-
-The Ember TodoMVC I forked for today's presentation was created by Miguel, Addy, and Preston, for which I am grateful.
+By the end, you'll see how WarpDrive makes data management feel... logical.
 -->
 
 ---
@@ -455,42 +418,42 @@ layout: center
 # Live Demo: [TodoMVC Feature Set](http://localhost:4200/?initialTodoCount=featureSet&shouldError=false&shouldPaginate=false&latency=0)
 
 <!--
-Here's a sneak preview of what we're building today.
+Here's a sneak peek of the feature set.
 -->
 
 ---
 layout: section
-title: 'Episode 3: "Request Patterns - Making It So"'
+title: 'Episode 3: "Request Patterns — Making It So"'
 ---
 
 # Episode 3
 
-## "Request Patterns - Making It So"
+## "Request Patterns — Making It So"
 
 <!--
-We've forked our TodoMVC app.
+We've forked the TodoMVC app.
 
 Now it's time to "set its data layer to stun" by updating it to use WarpDrive.
 -->
 
 ---
 
-# The WarpDrive Store - "The Bridge"
+# The WarpDrive Store — "The Bridge"
 
 <v-click at=1>
 <p>It's in command.</p>
 </v-click>
 
 <MacWindow title="packages/shared-data/src/stores/index.ts" class="max-w-2xl mb-6">
-<<< @/packages/shared-data/src/stores/index.ts ts {20|20|21|30-37|39-44|46-52}{maxHeight: '200px'}
+<<< @/packages/shared-data/src/stores/index.ts ts {20|20|21|28-37|39-44|46-52}{maxHeight: '200px'}
 </MacWindow>
 
 <v-clicks at=2>
 
-- **Manages Requests** - How we handle requests for data
-- **Manages the Cache** - How to cache that data
-- **Manages Schemas** - Schemas for what our data looks like
-- **Manages Reactive State** - What sort of reactive objects to create for that data
+- **Manages Requests** — How we handle requests for data
+- **Manages the Cache** — How to cache that data
+- **Manages Schemas** — Schemas for what our data looks like
+- **Manages Reactive State** — What sort of reactive objects to create for that data
 
 </v-clicks>
 
@@ -499,17 +462,17 @@ First, in our shared-data package, we are adding a shared WarpDrive "store" impl
 
 * You can think of the "store" as the "bridge" of our WarpDrive Starship. Like the bridge, it's in command of everything.
 
-The store is fully customizable and configurable. Our store, however, is basically identical to the one recommended in the WarpDrive guides.
+The store is fully customizable and configurable but with sensible defaults, which we're using here:
 
 * It handles request management via its RequestManager
-* It handles cache management via a CachePolicy that manages our JSONAPICache
+* It handles cache management via the CacheHandler, CachePolicy, and JSONAPICache
 * It manages our schemas via a schema service
 * And it manages our reactive state by determining what reactive objects to create for our data.
 -->
 
 ---
 
-# The RequestManager - "The Communications Officer"
+# The RequestManager — "The Communications Officer"
 
 <v-click at=1>
 <p>It manages all external contact.</p>
@@ -521,10 +484,9 @@ The store is fully customizable and configurable. Our store, however, is basical
 
 <v-clicks at=2>
 
-- **Fetch Handler** - Makes actual network requests (Fetch API + error handling)
-- **Request Pipeline** - Allows custom handlers for data transformation
-- **Cache Integration** - Automatically caches responses
-- **Does What It Says** - On the tin
+- **Fetch Handler** — Makes actual network requests (Fetch API + error handling)
+- **Request Pipeline** — Allows custom handlers for data transformation
+- **Cache Integration** — Automatically caches responses
 
 </v-clicks>
 
@@ -535,24 +497,18 @@ The store is fully customizable and configurable. Our store, however, is basical
 <!--
 One of the most important parts of the store is the "Request Manager"
 
-* Think of RequestManager as your ship's communications officer - it manages all external contact!
+* Think of RequestManager as your ship's communications officer — it manages all external contact!
 
-RequestManager is also fully customize-able.
+RequestManager is also fully customize-able with sensible defaults.
 
-* You don't even need to use Fetch, though we will. Our RequestManager is basically identical to the one recommended in the WarpDrive guides.
-
-* You can customize it with handlers to transform requests and responses as needed. These handlers can choose to call `next()`, similar to middleware patterns in API frameworks.
-* You can also register a special "CacheHandler" to integrate with WarpDrive's caching system.
-In our case, we're using the default CacheHandler.
-
-So the Request Manager does exactly what it says on the tin.
-
-* It manages your requests.
+* You don't even need to use Fetch, though we will.
+* You can add handlers to transform requests and responses as needed. These handlers can choose to call `next()`, similar to middleware patterns in API frameworks.
+* You should also register a special "CacheHandler" to integrate with WarpDrive's caching system.
 -->
 
 ---
 
-# \{JSON:API\} - "The Communicator"
+# \{JSON:API\} — "The Communicator"
 
 By default, _Warp_**Drive** speaks \{JSON:API\} fluently, giving you:
 
@@ -723,7 +679,7 @@ Say *that* five times fast.
 
 ---
 
-# Query Builders - Automatic Cache Invalidation
+# Query Builders — Automatic Cache Invalidation
 
 <div class="grid grid-flow-col gap-4 grid-items-center">
 
@@ -756,7 +712,7 @@ Our query from the previous builder will automatically be invalidated and re-fet
 
 ---
 
-# Request Builders - Query Params
+# Request Builders — Query Params
 
 <div class="grid grid-flow-col gap-4 grid-items-center">
 
@@ -793,12 +749,12 @@ This allows us to fetch only the completed todos.
 
 ---
 layout: section
-title: 'Episode 4: "Schemas - The Universal Translator"'
+title: 'Episode 4: "Schemas — The Universal Translator"'
 ---
 
 # Episode 4
 
-## "Schemas - The Universal Translator"
+## "Schemas — The Universal Translator"
 
 <!--
 Now that we can make a request, let's talk about how WarpDrive translates the returned JSON:API into reactive resources that we can use in our UI.
@@ -935,12 +891,12 @@ So, to recap, here are the main components of our WarpDrive data layer, and how 
 
 ---
 layout: section
-title: 'Episode 5: "Reactive UI - Ember Integration"'
+title: 'Episode 5: "Reactive UI — Ember Integration"'
 ---
 
 # Episode 5
 
-## "Reactive UI - The Viewscreen"
+## "Reactive UI — The Viewscreen"
 
 <h3 class="mt-2">(Ember Integration)</h3>
 
@@ -958,9 +914,9 @@ Truly universal.
 
 <v-clicks>
 
-- **Provides Ember components** - For request UX with elegant control flow.
-- **A Thin Wrapper** - Built on top of `@warp-drive/core` reactive utilities.
-- **Reactive** - Leverages Ember's reactivity system for fine-grained updates that JustWork™.
+- **Provides Ember components** — For request UX with elegant control flow.
+- **A Thin Wrapper** — Built on top of `@warp-drive/core` reactive utilities.
+- **Reactive** — Leverages Ember's reactivity system for fine-grained updates that JustWork™.
 
 </v-clicks>
 
@@ -1069,7 +1025,7 @@ Here's the full code for our TodoProvider component again, for reference.
 
 # Universal Framework Support
 
-The core logic stays the same - only the framework integration changes!
+The core logic stays the same — only the framework integration changes!
 
 <div class="grid grid-flow-col gap-4 grid-items-center">
 
@@ -1127,12 +1083,12 @@ Our React library shipped a few weeks ago and we have Vue and Svelte libraries i
 
 ---
 layout: section
-title: 'Episode 6: "Data Mutations - Quantum Mechanics"'
+title: 'Episode 6: "Data Mutations — Quantum Mechanics"'
 ---
 
 # Episode 6
 
-## "Data Mutations - Quantum Mechanics"
+## "Data Mutations — Quantum Mechanics"
 
 <!--
 We can now create and read Todos. But what about mutations?
@@ -1170,8 +1126,8 @@ When changing data, you have two choices:
 <!--
 When changing data, you have two choices:
 
-* Pessimistic Updates - Wait for server success confirmation before updating UI
-* Optimistic Updates - Update UI immediately, then confirm with server. Rollback if the request fails.
+* Pessimistic Updates — Wait for server success confirmation before updating UI
+* Optimistic Updates — Update UI immediately, then confirm with server. Rollback if the request fails.
 * Both have trade-offs.
 * WarpDrive supports both. The choice is yours.
 
@@ -1485,12 +1441,12 @@ Whether you choose pessimistic or optimistic updates:
 
 ---
 layout: section
-title: 'Episode 7: "Performance - Warp 9.8"'
+title: 'Episode 7: "Performance — Warp 9.8"'
 ---
 
 # Episode 7
 
-## "Performance - Warp 9.8"
+## "Performance — Warp 9.8"
 
 <!--
 Now it's time to get really ambitious.
@@ -1508,8 +1464,8 @@ _Warp_**Drive** optimizes automatically:
 
 <v-clicks>
 
-- **Request deduplication** - Same request? Use cached result
-- **Fine-grained reactivity** - Only update what actually changed
+- **Request deduplication** — Same request? Use cached result
+- **Fine-grained reactivity** — Only update what actually changed
 
 </v-clicks>
 
@@ -1574,10 +1530,10 @@ Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
 
 - Our `<TodoProvider />` component
 - `<Paginate />` component <span class="text-lcars-blue">(coming soon for real)</span>
-- Loading states - for initial, previous, and next
+- Loading states — for initial, previous, and next
 - Error state
 - Pagination controls
-- Success state - display all the data, or just one page
+- Success state — display all the data, or just one page
 - Autorefresh
 - All together now!
 
@@ -1711,7 +1667,7 @@ Paginate is at it's root a wrapper around the request state for a paginated quer
 
 - Our paginated `/api/todo` response
 - Returns a `links` object
-- Returns a `meta` - required only for `EachLink` support
+- Returns a `meta` — required only for `EachLink` support
 
 </v-clicks>
 
@@ -1842,7 +1798,7 @@ the client,
 
 ---
 
-# Bulk Actions - Bulk Op Builders
+# Bulk Actions — Bulk Op Builders
 
 <div class="grid grid-flow-col gap-4 grid-items-center">
 
@@ -1874,7 +1830,7 @@ In our case, the implementations for "toggle all" and "clear completed" are very
 This builder implementation should look familiar by now.
 
 * It specifies the request method
-* It generates the URL - this time using a custom bulk "ops.bulk.deleteAll" endpoint
+* It generates the URL — this time using a custom bulk "ops.bulk.deleteAll" endpoint
 * It has no body, and no cache options.
 * Instead, it passes a filter via the query params to tell the server to delete all completed todos.
 * It expects an empty response.
@@ -1883,7 +1839,7 @@ If the API were to try to serialize all the deleted todos, it could result in a 
 
 ---
 
-# Bulk Actions - State Invalidation
+# Bulk Actions — State Invalidation
 
 <div class="grid grid-flow-col gap-4 grid-items-center">
 
@@ -1926,7 +1882,7 @@ Let's take a look at our bulk actions...in action.
 
 ---
 
-# Bulk Actions - Putting It All Together
+# Bulk Actions — Putting It All Together
 
 <div class="grid grid-flow-col gap-4 grid-items-center">
 
@@ -1982,12 +1938,12 @@ Once again, we have built another ambitious feature with just a few lines of cod
 
 ---
 layout: section
-title: 'Episode 8: "The Future - Final Frontier?"'
+title: 'Episode 8: "The Future — Final Frontier?"'
 ---
 
 # Episode 8
 
-## "The Future - Final Frontier?"
+## "The Future — Final Frontier?"
 
 <!--
 Now that we've gone warp 9.8, have we reached the Final Frontier?
@@ -2107,7 +2063,7 @@ The <strong>human adventure</strong> is just beginning...
 
 And so is <strong>your journey with WarpDrive</strong>
 
-The data is out there - <strong>go boldly and fetch it efficiently</strong>
+The data is out there — <strong>go boldly and fetch it efficiently</strong>
 
 </div>
 
