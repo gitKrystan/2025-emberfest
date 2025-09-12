@@ -1156,7 +1156,7 @@ Our Todo app uses a combination of pessimistic and optimistic mutations.
 <div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title="packages/shared-data/src/builders/todo/update.ts" >
-<<< @/packages/shared-data/src/builders/todo/update.ts gts {11-20|11-20|25|21-22,26|27-33|21,35}{maxHeight: '360px'}
+<<< @/packages/shared-data/src/builders/todo/update.ts gts {11-20|11-20|25|21-22,26|27-33|21,35|17-37}{maxHeight: '380px'}
 </MacWindow>
 
 <v-clicks at=1>
@@ -1206,12 +1206,12 @@ REFRESH PAGE BEFORE DEMO
 
 ---
 
-<MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="mb-4" >
-<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {308-314|310}{maxHeight: '200px'}
+<MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" >
+<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {308-314|308-314|310}{maxHeight: '200px'}
 </MacWindow>
 
 <!--
-Here's the full code for our `patchTodoTitle` action again, for reference.
+* Here's the full code for our `patchTodoTitle` action again, for reference.
 
 * And the most important bit.
 -->
@@ -1219,11 +1219,11 @@ Here's the full code for our `patchTodoTitle` action again, for reference.
 ---
 
 <MacWindow title="packages/shared-data/src/builders/todo/update.ts" >
-<<< @/packages/shared-data/src/builders/todo/update.ts gts {17-43|21-42}{maxHeight: '460px'}
+<<< @/packages/shared-data/src/builders/todo/update.ts gts {17-37|17-37|21-36}{maxHeight: '460px'}
 </MacWindow>
 
 <!--
-Here's the `patchTodo` builder again.
+* Here's the `patchTodo` builder again.
 
 * And the most important bit highlighted.
 -->
@@ -1232,8 +1232,10 @@ Here's the `patchTodo` builder again.
 
 # Locally Optimistic Mutation with Checkout
 
-<MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="mb-4 max-w-2xl">
-<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {45-47|45-47|155-162|186-192,199-203|191-192}{maxHeight: '350px'}
+<div class="grid grid-flow-col gap-4 grid-items-center">
+
+<MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="w-2xl">
+<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {45-47|45-47|155-162|186-192,199-203|191-192}{maxHeight: '380px'}
 </MacWindow>
 
 <v-clicks at=4>
@@ -1242,12 +1244,14 @@ Here's the `patchTodo` builder again.
 
 </v-clicks>
 
+</div>
+
 <!--
 * In addition to being able to update a todo's title, we need a way to mark it as completed.
 
-In this case, we render the completed state in multiple places in the TodoItem component. When a todo is completed, we need to simultaneously display a strikethrough in the title...
+In this case, we render the completed state in multiple places in the TodoItem component. When a todo is completed, we need to simultaneously display a strikethrough in the title via the "completed" class...
 
-* And a check in the checkbox.
+* And a check in the checkbox input.
 
 Even though these are in completely different components.
 
@@ -1282,9 +1286,8 @@ When the patch request succeeds, WarpDrive will "commit" the local changes from 
 
 <!--
 - That's right, by default, all resources are immutable
-- To get a mutable version, we use `await checkout(todo)`
-- This returns an `EditableTodo` that we can modify freely
-- When we're ready, we pass that `EditableTodo` to our `TodoItem` component, where it eventually makes its way to our `patchTodo` builder
+- To get a mutable version, we use `await checkout`
+- This returns an `EditableTodo` that we can modify freely. We pass that `EditableTodo` to our `TodoItem` component, where it eventually makes its way to our `patchTodoToggle` action.
 - Note that we're using the `@warp-drive/ember` `Await` component here. Similar to the `Request` component, it handles promise states declaratively.
 -->
 
@@ -1292,8 +1295,10 @@ When the patch request succeeds, WarpDrive will "commit" the local changes from 
 
 # Patching State
 
-<MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="mb-4 max-w-2xl">
-<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {186-192,199-203|186-192,199-203|194-198}{maxHeight: '300px'}
+<div class="grid grid-flow-col gap-4 grid-items-center">
+
+<MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="w-2xl">
+<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {186-192,199-203|186-192,199-203|194-198}{maxHeight: '380px'}
 </MacWindow>
 
 <v-clicks at=1>
@@ -1303,6 +1308,8 @@ When the patch request succeeds, WarpDrive will "commit" the local changes from 
 
 </v-clicks>
 
+</div>
+
 <!--
 * There's one other interesting bit to our `patchTodoToggle` action.
 
@@ -1310,31 +1317,42 @@ Because we've already made requests for completed and active todos, our store ha
 
 But WarpDrive can't predict that just because a Todo's `completed` attribute changed, it should move between those two lists.
 
-* So, we have to patch the cached documents manually.
+We could just invalidate the queries manually, similar to how we did in the `createTodo` case.
 
-NOTE that Cache patching is _not a requirement_ of optimistic updates. It's required because we're updating the `completed` attribute used in the query filter.
+* But it's more performant and more fun...nay, more **ambitious**, to cache the patch manually.
+
+NOTE that this manual step is _not a requirement_ of optimistic updates. It's required because we're updating the `completed` attribute used in the query filter.
 -->
 
 ---
 
 # Patching State
 
-<MacWindow title="packages/shared-data/src/builders/todo/update.ts" class="mb-4 max-w-2xl">
-<<< @/packages/shared-data/src/builders/todo/update.ts gts {64-68|64-68|75-81|85-90}{maxHeight: '300px'}
+<div class="grid grid-flow-col gap-4 grid-items-center">
+
+<MacWindow title="packages/shared-data/src/builders/todo/update.ts" class="w-2xl">
+<<< @/packages/shared-data/src/builders/todo/update.ts gts {58-62|58-62|63-64,67-76|63,65,77-85}{maxHeight: '380px'}
 </MacWindow>
+
+<div>
 
 <v-clicks at=2>
 
 - `cache.patch()` surgically updates cached documents
 - Add to completed list; remove from active list
-- Invalidate all queries with the `'todo-count'` tag -- forces refetch
 
 </v-clicks>
+
+</div>
+
+</div>
 
 <!--
 * I put this logic in utility functions because I use it in multiple places.
 * It uses the store's `cache.patch()` method to surgically update the cached documents.
-In the case of `patchCacheTodoCompleted` we add the todo to the completed list
+
+In the case of `patchCacheTodoCompleted` we add the todo to the top of the completed list.
+
 * and remove it from the active list.
 
 This allows our UI to update instantly without waiting for the server response,
@@ -1361,12 +1379,12 @@ Let's take a look at this toggle button in action.
 
 ---
 
-<MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="mb-4" >
-<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {186-203|191-198}{maxHeight: '460px'}
+<MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" >
+<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {186-203|186-203|191-198}{maxHeight: '460px'}
 </MacWindow>
 
 <!--
-Here's the full code for our `patchTodoToggle` action again, for reference.
+* Here's the full code for our `patchTodoToggle` action again, for reference.
 
 * And the most important bit.
 -->
@@ -1374,11 +1392,11 @@ Here's the full code for our `patchTodoToggle` action again, for reference.
 ---
 
 <MacWindow title="packages/shared-data/src/builders/todo/update.ts" >
-<<< @/packages/shared-data/src/builders/todo/update.ts gts {17-43|21-42}{maxHeight: '460px'}
+<<< @/packages/shared-data/src/builders/todo/update.ts gts {17-37|17-37|21-36}{maxHeight: '460px'}
 </MacWindow>
 
 <!--
-Here's the `patchTodo` builder again.
+* Here's the `patchTodo` builder again.
 
 * And the most important bit highlighted.
 -->
@@ -1386,11 +1404,11 @@ Here's the `patchTodo` builder again.
 ---
 
 <MacWindow title="packages/shared-data/src/builders/todo/update.ts">
-<<< @/packages/shared-data/src/builders/todo/update.ts gts {64-96|69-95}{maxHeight: '460px'}
+<<< @/packages/shared-data/src/builders/todo/update.ts gts {58-90|58-90|63-85}{maxHeight: '460px'}
 </MacWindow>
 
 <!--
-Here's our patch utility again.
+* Here's our patch utility again.
 
 * And the most important bit highlighted.
 -->
@@ -1399,7 +1417,7 @@ Here's our patch utility again.
 
 # Immutability Without the Hassle
 
-Whether you choose pessimistic or optimistic updates:
+Whether you choose"pessimistic" or "locally optimistic" updates:
 
 <v-clicks>
 
@@ -1416,6 +1434,14 @@ Whether you choose pessimistic or optimistic updates:
 
 </v-click>
 
+<v-click>
+
+<div class="mt-4 text-sm text-lcars-blue">
+("Fully optimistic" also available)
+</div>
+
+</v-click>
+
 <!--
 To recap:
 
@@ -1423,6 +1449,7 @@ Whether you choose pessimistic or optimistic updates:
 
 * Your Original data stays immutable
 * Your Changes are isolated until saved
+* And if you really liked that "fully optimistic" behavior of _other_ data library, you can opt into that behavior also
 -->
 
 ---
