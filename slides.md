@@ -835,7 +835,7 @@ The only limit is your imagination!
 ---
 
 <v-click>
-<div class="callout-solid speech-bubble-left bg-lcars-orange mr-auto w-100">
+<div class="callout-solid speech-bubble-left bg-lcars-orange ml-auto w-100">
 <strong>Store:</strong> "Request Manager, fetch all Todos. Make it so."
 </div>
 </v-click>
@@ -847,7 +847,7 @@ The only limit is your imagination!
 </v-click>
 
 <v-click>
-<div class="callout-solid speech-bubble-right bg-lcars-purple ml-auto w-140">
+<div class="callout-solid speech-bubble-right bg-lcars-purple mr-auto w-140">
 <strong>Server:</strong><br />
 "{JSON:API}$%^$@&$%#&!@*&^%$%%$##@$%^$@&$%#&!@*&!@*!
 !@*&^%$#@!#&^%%$$@@!!@#$%^&*&%%$##@$%^$%^{/JSON:API}"
@@ -855,7 +855,7 @@ The only limit is your imagination!
 </v-click>
 
 <v-click>
-<div class="callout-solid speech-bubble-left bg-lcars-orange mr-auto w-100">
+<div class="callout-solid speech-bubble-left bg-lcars-orange ml-auto w-100">
 <strong>Store:</strong> "Schema Service, we've received a subspace communication. Can you make sense of this?"
 </div>
 </v-click>
@@ -867,7 +867,7 @@ The only limit is your imagination!
 </v-click>
 
 <v-click>
-<div class="callout-solid speech-bubble-left bg-lcars-orange mr-auto w-100">
+<div class="callout-solid speech-bubble-left bg-lcars-orange ml-auto w-100">
 <strong>Store:</strong> "Instantiate ReactiveResource...Engage!"
 </div>
 </v-click>
