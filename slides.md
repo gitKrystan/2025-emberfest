@@ -1115,7 +1115,7 @@ When changing data, you have two choices:
 <!--
 When changing data, you have two choices:
 
-* Pessimistic Updates — Wait for server success confirmation before updating UI
+* Pessimistic Updates — Wait for server success before updating UI
 * Optimistic Updates — Update UI immediately, then confirm with server. Rollback if the request fails.
 * Both have trade-offs.
 * WarpDrive supports both. The choice is yours.
@@ -1156,7 +1156,7 @@ Our Todo app uses a combination of pessimistic and optimistic mutations.
 <div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title="packages/shared-data/src/builders/todo/update.ts" >
-<<< @/packages/shared-data/src/builders/todo/update.ts gts {11-20|11-20|30|21-27,31|32-38|40-41}{maxHeight: '300px'}
+<<< @/packages/shared-data/src/builders/todo/update.ts gts {11-20|11-20|25|21-22,26|27-33|21,35}{maxHeight: '360px'}
 </MacWindow>
 
 <v-clicks at=1>
@@ -1166,7 +1166,7 @@ Our Todo app uses a combination of pessimistic and optimistic mutations.
 - Generates the URL
 - Serializes the request body
 - Sets cache options
-- tl;dr: It will update our Todo queries
+- tl;dr: It will update our Todos
 
 </v-clicks>
 
@@ -1178,13 +1178,10 @@ Our Todo app uses a combination of pessimistic and optimistic mutations.
 * it generates the URL -- now using a resource key to determine the ID to include
 * It serializes the request body in JSON:API format
 * And it sets cache options
-
-Specifying the `ResourceKey` for this todo in the `records` array tells the
+* Specifying the `ResourceKey` for this todo in the `records` array tells the
 store that when this request succeeds it should automatically patch the
 returned attributes into the immutable resource. Thus, the reactive resource
 will update everywhere in your app.
-
- * In this case, it will update our queries automatically when this request succeeds.
 -->
 
 ---
