@@ -12,6 +12,17 @@
     justify-content: center;
   }
 
+  .lcars-frame.slidev-vclick-hidden {
+    opacity: 1 !important;
+  }
+
+  .lcars-frame.slidev-vclick-current {
+    &::before,
+    .star-layer-2 {
+      animation: warpStreaks 1s ease-out infinite;
+    }
+  }
+
   .lcars-frame {
     position: relative;
     width: 80%;
@@ -22,7 +33,6 @@
     overflow: hidden;
   }
 
-  /* Stars */
   .lcars-frame::before {
     content: '';
     position: absolute;
@@ -30,7 +40,10 @@
     left: 0;
     bottom: 0;
     right: 0;
-    border-radius: 18px;
+  }
+
+  /* Stars */
+  .lcars-frame::before {
     pointer-events: none;
     transform-origin: 50% 50%;
     background-image:
@@ -699,7 +712,7 @@
       98% 15%,
       99% 45%;
     background-repeat: no-repeat;
-    /* animation: warpStreaks 5s ease-out infinite; */
+    /* animation: warpStreaks 1s ease-out infinite; */
     z-index: 0;
   }
 
@@ -834,7 +847,7 @@
       filter: blur(3px);
     }
     100% {
-      transform: scale(25);
+      transform: scale(15);
       opacity: 0;
       filter: blur(6px);
     }
