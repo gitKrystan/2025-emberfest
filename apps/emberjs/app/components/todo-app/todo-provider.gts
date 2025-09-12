@@ -27,22 +27,10 @@ interface Signature {
 
 export class TodoProvider extends Component<Signature> {
   <template>
-    <Paginate
-      {{! Future of a `getAllTodos` request passed from the route }}
-      @request={{@todoFuture}}
-      {{! Refresh settings }}
-      @autorefresh={{true}}
-      @autorefreshBehavior="refresh"
-      {{! Pagination hints }}
-      @pageHints={{pageHints}}
-    >
+    <Paginate @request={{@todoFuture}} @autorefresh={{true}} @autorefreshBehavior="refresh" @pageHints={{pageHints}}>
 
-      {{! While loading, display a spinner }}
       <:loading><LoadingSpinner /></:loading>
-      <:prev><LoadingSpinner /></:prev>
-      <:next><LoadingSpinner /></:next>
 
-      {{! On success, display the active page's todos }}
       <:content as |pages state|>
         {{#if pages.activePageData}}
           <ActivePage @pages={{pages}} @state={{state}} @activePageData={{pages.activePageData}}>
@@ -52,15 +40,9 @@ export class TodoProvider extends Component<Signature> {
         {{/if}}
       </:content>
 
-      {{! Handle errors }}
-      <:error as |error|>
-        {{this.appState.onUnrecoverableError error}}
-      </:error>
+      <:error as |error|>{{this.appState.onUnrecoverableError error}}</:error>
 
-      {{! Always show pagination controls }}
-      <:always as |pages state|>
-        <PaginationControls @pages={{pages}} @state={{state}} />
-      </:always>
+      <:always as |pages state|><PaginationControls @pages={{pages}} @state={{state}} /></:always>
 
     </Paginate>
   </template>

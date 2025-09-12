@@ -1538,24 +1538,29 @@ That's right. It's time to activate the "ENTERPRISE EDITION."
 
 <div class="grid grid-flow-col gap-4 grid-items-center">
 
-<MacWindow title=".../app/components/todo-app/todo-provider.gts" class="w-130">
-<<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {28|28|30-35|40-43|55-58|60-63|45-53|33-35|30,32,34-35,37,41-43,46-53,56-58,61-63,65|61-63}{maxHeight: '460px'}
+<MacWindow title=".../app/components/todo-app/todo-provider.gts">
+<<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {28-51|28-51|30-47|45}{maxHeight: '460px',lines:false}
 </MacWindow>
 
 <div>
 
-<v-clicks at=1>
+<v-click at=2>
 
-- Our `<TodoProvider />` component
-- `<Paginate />` component <span class="text-lcars-blue">(coming soon for real)</span>
-- Loading states — for initial, previous, and next
-- Error state
-- Pagination controls
-- Success state — display all the data, or just one page
-- Autorefresh
-- All together now!
+<div class="callout absolute right-0 bottom-0">
 
-</v-clicks>
+`<Paginate />` component<br /><span class="text-lcars-blue">(coming soon for real)</span>
+
+Loading and error states
+
+Success state — display all loaded data or just current page
+
+Pagination controls
+
+Autorefresh
+
+</div>
+
+</v-click>
 
 </div>
 
@@ -1563,13 +1568,20 @@ That's right. It's time to activate the "ENTERPRISE EDITION."
 
 <!--
 * Here' we're looking at the real TodoProvider component used by our Enterprise Edition Todo App.
-* It uses WarpDrive's Paginate component to declaratively handle request state.
-* On load, it displays a loading spinner.
-* On error, it displays an error message
-* It displays the pagination state via the always block.
-* And on success, it passes the current page of data to the Todos component.
-* And! When cached responses for this request are invalidated, the component automatically re-renders with fresh data.
-* When we look at the entire invocation together, you can see that it's not much more complex than our original Request-based TodoProvider.
+* It uses WarpDrive's Paginate component.
+
+Just like the Request component, Paginate declaratively handles request state, including, loading, error, and success states.
+
+And when cached responses for your requests are invalidated, the component automatically re-renders with fresh data.
+
+* In addition
+
+On success, you can choose to display all loaded data or just the current page. In our case we're only displaying the current page.
+
+You can also choose to display the pagination state via the always block.
+
+When we look at the entire invocation together, you can see that it's not much more complex than our original Request-based TodoProvider.
+
 * Let's zoom in on these PaginationControls rendered in the always block
 -->
 
