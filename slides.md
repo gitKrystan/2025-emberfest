@@ -565,7 +565,7 @@ It's a language that WarpDrive speaks fluently, giving you:
 
 <MacWindow title="apps/my-app/routes/index.js" class="max-w-2xl">
 
-```js {all}
+```js {all|11-12}
 import Route from '@my-framework/routing/route';
 import { service } from '@my-framework/service';
 
@@ -591,7 +591,7 @@ The simplest way to make a request is to pass a request info object to the store
 
 This method delegates the request to the store's RequestManager.
 
-For example, this request will get all todos from our API.
+* For example, this request will get all todos from our API.
 -->
 
 ---
@@ -629,7 +629,9 @@ Requests can take any of the standard Fetch API `RequestInit` options...
 
 * plus some extras to configure caching and handler behavior.
 
-As you can imagine, these options can get quite complex, which is why WarpDrive supports request builders...
+As you can imagine, these options can get quite complex and for consistency across our app, we might want to reuse them.
+
+This is why WarpDrive supports request builders...
 -->
 
 ---
@@ -667,14 +669,7 @@ A request builder is just a simple function that returns a RequestInfo object.
 request utilities to ensure consistency across our app.
 * It sets the request method to 'GET'.
 * It generates the URL, using the resource path plus a configurable namespace
-* And it sets cache options.
-
-In this case, Adding the 'query' OpCode and specifying the 'todo' type in
-`cacheOptions` tells the cache to automatically invalidate this request
-when any request with the 'createRecord' OpCode + 'todo' as one of it's
-`cacheOptions` types succeeds.
-
-Say *that* five times fast.
+* And it sets cache options. In this case an "op-code" of "query" and an array of "types" including the string "todo".
 -->
 
 ---
@@ -702,7 +697,7 @@ Sets cache options:<br />`'createRecord'` op, `'todo'` type
 </div>
 
 <!--
-So what that means is,
+The cache options that we added to our `getAllTodos` query builder mean that:
 
 * when we use this `createTodo` builder to create a new todo...
 * Because it sets the 'createRecord' OpCode and specifies 'todo' in its `cacheOptions` types...
@@ -712,12 +707,12 @@ Our query from the previous builder will automatically be invalidated and re-fet
 
 ---
 
-# Request Builders — Query Params
+# Request Builders — Utilities
 
 <div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title="packages/shared-data/src/builders/todo/query.ts" class="w-140">
-<<< @/packages/shared-data/src/builders/todo/simple-query.ts ts {19-33|19-33|21-24,28}{maxHeight: '300px'}
+<<< @/packages/shared-data/src/builders/todo/simple-query.ts ts {19-33|19-33|21|21-24,28}{maxHeight: '300px'}
 </MacWindow>
 
 <div>
@@ -734,14 +729,12 @@ Our query from the previous builder will automatically be invalidated and re-fet
 </div>
 
 <!--
-One last thing about request builders:
-
-WarpDrive also provides utilities to help with common request patterns.
+WarpDrive provides convenient utilities to help with common request patterns.
 
 * For example, here is the builder for the request made by our "Completed" filter.
 
 It looks the same as our `getAllTodos` builder...
-
+* using the same `buildBaseURL` utility, for example
 * except it adds a query parameter to the URL to filter.
 
 This allows us to fetch only the completed todos.
@@ -757,7 +750,7 @@ title: 'Episode 4: "Schemas — The Universal Translator"'
 ## "Schemas — The Universal Translator"
 
 <!--
-Now that we can make a request, let's talk about how WarpDrive translates the returned JSON:API into reactive resources that we can use in our UI.
+Now that we can make a request, let's talk about how WarpDrive translates the returned JSON:API into **reactive resources** that we can use in our UI.
 
 For that, we need schemas.
 -->
@@ -771,7 +764,7 @@ Instead of models with complex inheritance, _Warp_**Drive** uses simple, declara
 <div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title="packages/shared-data/src/schemas/todo.ts" class="w-120">
-<<< @/packages/shared-data/src/schemas/todo.ts ts {all|3|4|5-13}{maxHeight: '300px'}
+<<< @/packages/shared-data/src/schemas/todo.ts ts {all|3|4|5-14}{maxHeight: '300px'}
 </MacWindow>
 
 <v-clicks at=0>
@@ -779,6 +772,7 @@ Instead of models with complex inheritance, _Warp_**Drive** uses simple, declara
 - `withDefaults` sets up defaults, like the `id` field
 - `type` defines the resource type
 - `fields` defines the shape of the resource
+- Check out Mehul's talk about "ReactiveResources & Schema‑Driven Data Handling"
 
 </v-clicks>
 
@@ -795,7 +789,7 @@ Our Todo Schema is very simple:
 
 WarpDrive actually provides lots of powerful schema features that we're not using here.
 
-More on that this afternoon in Mehul's talk about "ReactiveResources & Schema‑Driven Data Handling"
+* More on that later in Mehul's talk about "ReactiveResources & Schema‑Driven Data Handling"
 -->
 
 ---
