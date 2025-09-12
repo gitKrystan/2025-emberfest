@@ -80,6 +80,8 @@ Instead, I want you to pretend you've never seen that library before.
 -->
 
 ---
+layout: default
+---
 
 <div class="logo-slide">
 
@@ -112,6 +114,10 @@ Instead, I want you to pretend you've never seen that library before.
 </div>
 
 </div>
+
+<v-click>
+pew pew
+</v-click>
 
 <!--
 Today we're talking about WarpDrive.
