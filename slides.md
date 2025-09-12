@@ -87,10 +87,6 @@ layout: default
 
 <div class="warp-drive-showcase">
   <div class="lcars-frame">
-    <div class="corner-indicator top-left"></div>
-    <div class="corner-indicator top-right"></div>
-    <div class="corner-indicator bottom-left"></div>
-    <div class="corner-indicator bottom-right"></div>
     <div class="logo-container">
       <img src="/warp-drive-logo-white.svg" alt="WarpDrive logo" class="warp-logo" />
       <div class="energy-field"></div>
