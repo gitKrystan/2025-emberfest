@@ -89,7 +89,6 @@ layout: default
   <div class="lcars-frame">
     <div class="logo-container">
       <img src="/warp-drive-logo-white.svg" alt="WarpDrive logo" class="warp-logo" />
-      <div class="energy-field"></div>
       <div class="scan-line"></div>
     </div>
     <div class="status-indicators">
