@@ -924,19 +924,16 @@ To integrate WarpDrive with Ember, you need to use the @warp-drive/ember package
 
 ---
 
-# Components with Reactive Magic
-
 <div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title="apps/emberjs/app/components/todo-app/todo-provider.gts" class="max-w-2xl">
-<<< @/apps/emberjs/app/components/todo-app/todo-provider-request-version.gts ts {14|14|15-17|23-24|29-36|26-27|18-20}{maxHeight: '360px'}
+<<< @/apps/emberjs/app/components/todo-app/todo-provider-request-version.gts ts {14-27|14-27}{maxHeight: '460px',lines: false}
 </MacWindow>
 
 <div class="max-w-sm">
 
-<v-clicks at=0>
+<v-click at=1>
 
-- Our `<TodoProvider />` component
 - `<Request />` component
 - Loading state
 - Error state
@@ -944,7 +941,7 @@ To integrate WarpDrive with Ember, you need to use the @warp-drive/ember package
 - Autorefresh
 - ...and more!
 
-</v-clicks>
+</v-click>
 
 </div>
 
@@ -952,13 +949,12 @@ To integrate WarpDrive with Ember, you need to use the @warp-drive/ember package
 
 <!--
 * Here, we are looking at a simple TodoProvider component that fetches all todos.
-* It uses WarpDrive's Request component to declaratively handle request state.
-* On load, it displays a loading spinner.
-* On error, it displays an error message with a retry button.
-* And on success, it passes the data to the Todos component.
-* And! When cached responses for this request are invalidated, the component automatically re-renders with fresh data.
 
-* There's even more, and I encourage you to check out the `@warp-drive/ember` readme to learn about it.
+It uses WarpDrive's Request component to declaratively handle request state, including, loading, error, and success states.
+
+When cached responses for this request are invalidated, the component automatically re-renders with fresh data.
+
+There's even more, and I encourage you to check out the `@warp-drive/ember` readme to learn about it.
 -->
 
 ---
@@ -1006,7 +1002,7 @@ And now, we'll check out the error states.
 ---
 
 <MacWindow title="apps/emberjs/app/components/todo-app/todo-provider.gts">
-<<< @/apps/emberjs/app/components/todo-app/todo-provider-request-version.gts ts {15-38|15,17,19-21,24,27,30-36,38}{maxHeight: '480px'}
+<<< @/apps/emberjs/app/components/todo-app/todo-provider-request-version.gts ts {14-27|14-27}{maxHeight: '460px'}
 </MacWindow>
 
 <!--
@@ -1023,9 +1019,9 @@ The core logic stays the same — only the framework integration changes!
 
 <div class="grid grid-flow-col gap-4 grid-items-center">
 
-<MacWindow title="apps/react/app/components/todo-app/todo-provider.tsx" class="w-xl">
+<MacWindow title="apps/react/app/components/todo-app/todo-provider.tsx" class="w-136">
 
-```tsx
+```tsx {lines:false}
 import { Request } from '@warp-drive/react';
 
 import { getAllTodos } from '@workspace/shared-data/builders';
@@ -1037,16 +1033,15 @@ export function TodoProvider() {
       query={getAllTodos()}
       states={{
         loading: ({ state }) => <div>React Loading Spinner!</div>,
+        content: ({ result }) => <div>React Todo List</div>,
         error: ({ state }) => (
           <div>
-            <h2 class="error-message">Something went wrong.</h2>
-            <p class="error-cta">Please contact TodoMVC support.</p>
+            <h2 class="error-message">Please contact TodoMVC support.</h2>
             <p>
               <button onClick={state.retry}>Or DDOS us!</button>
             </p>
           </div>
         ),
-        content: ({ result }) => <div>React Todo List</div>,
       }}
     />
   );
@@ -1055,7 +1050,7 @@ export function TodoProvider() {
 
 </MacWindow>
 
-<div class="max-w-sm text-xs">
+<div class="font-size-4">
 
 - <logos-ember-tomster /> `@warp-drive/ember` <carbon-thumbs-up />
 - <logos-react /> `@warp-drive/react` <carbon-thumbs-up />
@@ -1227,7 +1222,7 @@ Here's the full code for our `patchTodoTitle` action again, for reference.
 ---
 
 <MacWindow title="packages/shared-data/src/builders/todo/update.ts" >
-<<< @/packages/shared-data/src/builders/todo/update.ts gts {17-43|21-42}{maxHeight: '480px'}
+<<< @/packages/shared-data/src/builders/todo/update.ts gts {17-43|21-42}{maxHeight: '460px'}
 </MacWindow>
 
 <!--
@@ -1370,7 +1365,7 @@ Let's take a look at this toggle button in action.
 ---
 
 <MacWindow title="apps/emberjs/app/components/todo-app/todo-item.gts" class="mb-4" >
-<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {186-203|191-198}{maxHeight: '480px'}
+<<< @/apps/emberjs/app/components/todo-app/todo-item.gts gts {186-203|191-198}{maxHeight: '460px'}
 </MacWindow>
 
 <!--
@@ -1382,7 +1377,7 @@ Here's the full code for our `patchTodoToggle` action again, for reference.
 ---
 
 <MacWindow title="packages/shared-data/src/builders/todo/update.ts" >
-<<< @/packages/shared-data/src/builders/todo/update.ts gts {17-43|21-42}{maxHeight: '480px'}
+<<< @/packages/shared-data/src/builders/todo/update.ts gts {17-43|21-42}{maxHeight: '460px'}
 </MacWindow>
 
 <!--
@@ -1394,7 +1389,7 @@ Here's the `patchTodo` builder again.
 ---
 
 <MacWindow title="packages/shared-data/src/builders/todo/update.ts">
-<<< @/packages/shared-data/src/builders/todo/update.ts gts {64-96|69-95}{maxHeight: '480px'}
+<<< @/packages/shared-data/src/builders/todo/update.ts gts {64-96|69-95}{maxHeight: '460px'}
 </MacWindow>
 
 <!--
@@ -1515,7 +1510,7 @@ Built in pagination utilities. It's time to activate the "ENTERPRISE EDITION."
 <div class="grid grid-flow-col gap-4 grid-items-center">
 
 <MacWindow title=".../app/components/todo-app/todo-provider.gts" class="w-130">
-<<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {28|28|30-35|40-43|55-58|60-63|45-53|33-35|30,32,34-35,37,41-43,46-53,56-58,61-63,65|61-63}{maxHeight: '480px'}
+<<< @/apps/emberjs/app/components/todo-app/todo-provider.gts ts {28|28|30-35|40-43|55-58|60-63|45-53|33-35|30,32,34-35,37,41-43,46-53,56-58,61-63,65|61-63}{maxHeight: '460px'}
 </MacWindow>
 
 <div>
