@@ -53,15 +53,18 @@ const lists: Record<HardCodedList, TodoAttributes[]> = {
   ],
   basicErrorStates: [{ title: "Don't Read All Todos", completed: false }],
   pessimisticMutation: [
+    { title: 'Read Active Todos (load cache)', completed: false },
     { title: 'Rename me', completed: false },
-    { title: 'Read Active Todos', completed: false },
+    { title: 'Read Active Todos (from cache)', completed: false },
     { title: 'Make API less reliable', completed: false },
     { title: 'Try to rename me', completed: false },
   ],
   optimisticMutation: [
+    { title: 'Read Active Todos (load cache)', completed: false },
+    { title: 'Read Completed Todos (load cache)', completed: false },
     { title: 'Complete me', completed: false },
-    { title: 'Read Active Todos', completed: false },
-    { title: 'Read Completed Todos', completed: false },
+    { title: 'Read Active Todos (from cache)', completed: false },
+    { title: 'Read Completed Todos (from cache)', completed: false },
   ],
   bulkActions: [
     { title: 'Clear Completed Todos', completed: false },

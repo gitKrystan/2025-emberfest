@@ -1000,9 +1000,6 @@ And now, we'll check out the error states.
 1. Demo error state (trying to visit "active")
 
 - (UPDATE) API Reliability: Good
-
-
-TODO: IMPROVE THIS DEMO
 -->
 
 ---
@@ -1523,8 +1520,6 @@ Let's see what they're running into.
 - Mode: Hobbyist
 
 1. Demo 100k todos without pagination
-
-TODO: (Fix latency: slow)
 -->
 
 ---
@@ -1917,8 +1912,8 @@ layout: center
 <!--
 Let's take a look at our bulk actions...in action.
 
-
-TODO: Fix bug.
+FIXME: @runspired
+DON'T SHOW CACHED PAGES! (BUG ALERT)
 -->
 
 ---
