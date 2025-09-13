@@ -203,7 +203,7 @@ WarpDrive is the lightweight data framework for ambitious web applications.
 
 # "Boldly Go Where Your Data Has Gone Before"
 
-Unlike other data libraries, _Warp_**Drive** is built around:
+Unlike _other_ data libraries, _Warp_**Drive** is built around:
 
 <v-clicks>
 
@@ -272,7 +272,7 @@ This is the actual structure of the monorepo I am presenting today:
 
 We have a `shared-data` package that contains all of our WarpDrive configuration, logic, and utilities.
 
-Today I will be presenting the emberjs app, but you could just as easily build a React or Vue app that shares this same data layer.
+Today I will be presenting the ember app, but you could just as easily build a React or Vue app that shares this same data layer.
 
 Even our `api` implementation, written in node, uses types imported from the shared data layer.
 -->
@@ -415,7 +415,7 @@ By the end, you'll see how WarpDrive makes data management feel... logical.
 layout: center
 ---
 
-# Live Demo: [TodoMVC Feature Set](http://localhost:4200/?initialTodoCount=featureSet&shouldError=false&shouldPaginate=false&latency=0)
+# Live Demo: [TodoMVC Feature Set](http://localhost:4200/?initialTodoCount=featureSet&shouldError=false&shouldPaginate=false&latency=0&showLog=false)
 
 <!--
 Here's a sneak peek of the feature set.
@@ -503,7 +503,8 @@ RequestManager is also fully customize-able with sensible defaults.
 
 * You don't even need to use Fetch, though we will.
 * You can add handlers to transform requests and responses as needed. These handlers can choose to call `next()`, similar to middleware patterns in API frameworks.
-* You should also register a special "CacheHandler" to integrate with WarpDrive's caching system.
+* You should also register the special "CacheHandler" to integrate with WarpDrive's caching system.
+* Putting it all together, this is our Request Manager!
 -->
 
 ---
@@ -670,6 +671,8 @@ request utilities to ensure consistency across our app.
 * It sets the request method to 'GET'.
 * It generates the URL, using the resource path plus a configurable namespace
 * And it sets cache options. In this case an "op-code" of "query" and an array of "types" including the string "todo".
+
+Wait, what does that mean?
 -->
 
 ---
@@ -961,7 +964,7 @@ There's even more, and I encourage you to check out the `@warp-drive/ember` read
 layout: center
 ---
 
-# Live Demo: [Basic Request Loading States](http://localhost:4200/?initialTodoCount=basicLoadingStates&shouldError=false&shouldPaginate=false&latency=1000)
+# Live Demo: [Basic Request Loading States](http://localhost:4200/?initialTodoCount=basicLoadingStates&shouldError=false&shouldPaginate=false&latency=1000&showLog=true)
 
 <!--
 So, let's take a look this in our Todo app.
@@ -984,7 +987,7 @@ To make the loading states super obvious, I've set my API to impulse speed (500m
 layout: center
 ---
 
-# Live Demo: [Basic Error States](http://localhost:4200/?initialTodoCount=basicErrorStates&shouldError=true&shouldPaginate=false&latency=1000)
+# Live Demo: [Basic Error States](http://localhost:4200/?initialTodoCount=basicErrorStates&shouldError=true&shouldPaginate=false&latency=1000&showLog=false)
 
 <!--
 And now, we'll check out the error states.
@@ -997,6 +1000,9 @@ And now, we'll check out the error states.
 1. Demo error state (trying to visit "active")
 
 - (UPDATE) API Reliability: Good
+
+
+TODO: IMPROVE THIS DEMO
 -->
 
 ---
@@ -1175,20 +1181,21 @@ Our Todo app uses a combination of pessimistic and optimistic mutations.
 <!--
 * The real magic is in our `patchTodo` builder:
 * Just like our `getAllTodos` builder, it specifies the request method
-* it generates the URL -- now using a resource key to determine the ID to include
+* it generates the URL
 * It serializes the request body in JSON:API format
 * And it sets cache options
 * Specifying the `ResourceKey` for this todo in the `records` array tells the
 store that when this request succeeds it should automatically patch the
 returned attributes into the immutable resource. Thus, the reactive resource
 will update everywhere in your app.
+* Viewing it all together!
 -->
 
 ---
 layout: center
 ---
 
-# Live Demo: [Pessimistic Mutation](http://localhost:4200/?initialTodoCount=pessimisticMutation&shouldError=false&shouldPaginate=false&latency=1000)
+# Live Demo: [Pessimistic Mutation](http://localhost:4200/?initialTodoCount=pessimisticMutation&shouldError=false&shouldPaginate=false&latency=1000&showLog=true)
 
 <!--
 Back to our live demo. Let's update a todo title and see what happens.
@@ -1202,6 +1209,8 @@ REFRESH PAGE BEFORE DEMO
 
 1. Demo title update
 2. Demo switching tabs to ensure it updated
+
+IMPROVE THIS DEMO. Load active before rename.
 -->
 
 ---
@@ -1259,7 +1268,7 @@ Even though these are in completely different components.
 
 * In this case, we use the same `patchTodo` builder, but we mutate the state of an _editable_ copy of the todo first. We call this "locally optimistic mutation."
 
-When the patch request succeeds, WarpDrive will "commit" the local changes from the editable todo back to the upstream, immutable todo.
+When the patch request succeeds, WarpDrive will "commit" the local changes from the editable todo back to the upstream, immutable todo, updating it everywhere in your app.
 -->
 
 ---
@@ -1363,7 +1372,7 @@ one of several tools WarpDrive provides to help with the challenges of Eventual 
 layout: center
 ---
 
-# Live Demo: [Optimistic Mutation and Cache Patching](http://localhost:4200/?initialTodoCount=optimisticMutation&shouldError=false&shouldPaginate=false&latency=1000)
+# Live Demo: [Optimistic Mutation and Cache Patching](http://localhost:4200/?initialTodoCount=optimisticMutation&shouldError=false&shouldPaginate=false&latency=1000&showLog=true)
 
 <!--
 Let's take a look at this toggle button in action.
@@ -1497,7 +1506,7 @@ We've even seen some "scale pioneer" users with hundreds of thousands of todos i
 layout: center
 ---
 
-# Live Demo: [Scale Pioneers](http://localhost:4200/?initialTodoCount=1000000&shouldError=false&shouldPaginate=false&latency=50)
+# Live Demo: [Scale Pioneers](http://localhost:4200/?initialTodoCount=1000000&shouldError=false&shouldPaginate=false&latency=50&showLog=true)
 
 <!--
 Our support team sent us this customer app that really exemplifies some performance issues we are seeing.
@@ -1514,13 +1523,15 @@ Let's see what they're running into.
 - Mode: Hobbyist
 
 1. Demo 100k todos without pagination
+
+TODO: (Fix latency: slow)
 -->
 
 ---
 layout: center
 ---
 
-# Live Demo: [Enterprise Edition](http://localhost:4200/?initialTodoCount=1000000&shouldError=false&shouldPaginate=true&latency=50)
+# Live Demo: [Enterprise Edition](http://localhost:4200/?initialTodoCount=1000000&shouldError=false&shouldPaginate=true&latency=50&showLog=false)
 
 <!--
 Honestly, that was faster than I expected for a million records, but it's still not a great user experience.
@@ -1570,11 +1581,11 @@ Autorefresh
 * Here' we're looking at the real TodoProvider component used by our Enterprise Edition Todo App.
 * It uses WarpDrive's Paginate component.
 
-Just like the Request component, Paginate declaratively handles request state, including, loading, error, and success states.
+Just like the Request component, Paginate declaratively handles request states including loading, error, and success states.
 
 And when cached responses for your requests are invalidated, the component automatically re-renders with fresh data.
 
-* In addition
+In addition
 
 On success, you can choose to display all loaded data or just the current page. In our case we're only displaying the current page.
 
@@ -1901,10 +1912,13 @@ rendered.
 layout: center
 ---
 
-# Live Demo: [Bulk Actions](http://localhost:4200/?initialTodoCount=bulkActions&shouldError=false&shouldPaginate=true&latency=300)
+# Live Demo: [Bulk Actions](http://localhost:4200/?initialTodoCount=bulkActions&shouldError=false&shouldPaginate=true&latency=300&showLog=true)
 
 <!--
 Let's take a look at our bulk actions...in action.
+
+
+TODO: Fix bug.
 -->
 
 ---

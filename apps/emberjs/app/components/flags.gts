@@ -24,8 +24,9 @@ import { Button } from '#/components/design-system/button';
 import { HandleError } from '#/components/design-system/error';
 import { LoadingSpinner } from '#/components/design-system/loading';
 import { CaptainsLog } from '#/components/captains-log';
+import type RouterService from '@ember/routing/router-service';
 
-export class Flags extends Component {
+export class Flags extends Component<{ Args: { showLog: boolean } }> {
   <template>
     <div class="flags-container">
 
@@ -62,7 +63,9 @@ class FlagsContent extends Component<{
   Args: { data: ApiFlag[] };
 }> {
   <template>
-    <CaptainsLog @showPages={{this.shouldPaginateFlag.value}} />
+    {{#if this.showLog}}
+      <CaptainsLog @showPages={{this.shouldPaginateFlag.value}} />
+    {{/if}}
 
     <ul class="filters">
       {{#if this.initialTodoCountFlag}}
@@ -103,6 +106,26 @@ class FlagsContent extends Component<{
 
     </ul>
   </template>
+
+  @service declare router: RouterService;
+
+  /*
+    ['initialTodoCount', 'featureSet']
+    ['shouldError', 'false']
+    ['shouldPaginate', 'false']
+    ['latency', '0']
+    ['showLogs', 'false']
+  */
+  @cached
+  get urlParams(): URLSearchParams {
+    return this.router.currentURL ? new URLSearchParams(this.router.currentURL) : new URLSearchParams();
+  }
+
+  @cached
+  get showLog() {
+    const param = this.urlParams.get('showLog');
+    return param ? this.urlParams.get('showLog') === 'true' : true;
+  }
 
   @cached
   get initialTodoCountFlag(): TodoCountFlag | null {
@@ -145,14 +168,20 @@ class UpdateShouldErrorFlag extends Component<{
   Args: { flag: EditableShouldErrorFlag & ReactiveResource };
 }> {
   <template>
-    <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}}>
+    <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}} @onUpdateSuccess={{this.onUpdateSuccess}}>
       <span class="flag-name">API Reliability:</span>
       {{this.label}}
     </UpdateFlag>
   </template>
 
+  @service declare router: RouterService;
+
   toggle = () => {
     this.args.flag.value = !this.args.flag.value;
+  };
+
+  onUpdateSuccess = (value: EditableShouldErrorFlag['value']) => {
+    this.router.transitionTo({ queryParams: { shouldError: value } });
   };
 
   get label() {
@@ -171,13 +200,15 @@ class UpdateShouldPaginateFlag extends Component<{
   </template>
 
   @service declare private readonly store: Store;
+  @service declare router: RouterService;
 
   toggle = () => {
     this.args.flag.value = !this.args.flag.value;
   };
 
-  onUpdateSuccess = () => {
+  onUpdateSuccess = (value: EditableShouldPaginateFlag['value']) => {
     invalidateAllTodoQueries(this.store);
+    this.router.transitionTo({ queryParams: { shouldPaginate: value } });
   };
 
   get label() {
@@ -187,7 +218,7 @@ class UpdateShouldPaginateFlag extends Component<{
 
 const TodoCountOptions = {
   small: 3,
-  large: 100_000,
+  large: 1_000_000,
 };
 
 class UpdateTodoCountFlag extends Component<{
@@ -195,58 +226,57 @@ class UpdateTodoCountFlag extends Component<{
 }> {
   <template>
     <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}} @onUpdateSuccess={{this.onUpdateSuccess}}>
-      <span class="flag-name">Initial Todo Count:</span>
-      {{this.label}}
+      <span class="flag-name">Initial Todo List:</span>
+      {{@flag.value}}
     </UpdateFlag>
   </template>
 
   @service declare private readonly store: Store;
+  @service declare router: RouterService;
 
   toggle = () => {
     this.args.flag.value =
       this.args.flag.value === TodoCountOptions.small ? TodoCountOptions.large : TodoCountOptions.small;
   };
 
-  onUpdateSuccess = () => {
+  onUpdateSuccess = (value: EditableTodoCountFlag['value']) => {
     invalidateAllTodoQueries(this.store);
+    this.router.transitionTo({ queryParams: { initialTodoCount: value } });
   };
-
-  get label() {
-    return typeof this.args.flag.value === 'number' ? (this.args.flag.value > 100 ? 'A Lot' : 'A Few') : 'Some';
-  }
 }
 
 const LatencyOptions = {
   fast: 0,
-  slow: 200,
+  slow: 1000,
 };
 
 class UpdateLatencyFlag extends Component<{
   Args: { flag: EditableLatencyFlag & ReactiveResource };
 }> {
   <template>
-    <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}}>
+    <UpdateFlag @flag={{@flag}} @toggle={{this.toggle}} @onUpdateSuccess={{this.onUpdateSuccess}}>
       <span class="flag-name">API Latency:</span>
-      {{this.label}}
+      {{@flag.value}}ms
     </UpdateFlag>
   </template>
 
   @service declare private readonly store: Store;
+  @service declare router: RouterService;
 
   toggle = () => {
     this.args.flag.value = this.args.flag.value === LatencyOptions.fast ? LatencyOptions.slow : LatencyOptions.fast;
   };
 
-  get label() {
-    return this.args.flag.value === LatencyOptions.fast ? 'Fast' : 'Slow';
-  }
+  onUpdateSuccess = (value: EditableLatencyFlag['value']) => {
+    this.router.transitionTo({ queryParams: { latency: value } });
+  };
 }
 
-class UpdateFlag extends Component<{
+class UpdateFlag<Flag extends ApiFlag & ReactiveResource> extends Component<{
   Args: {
-    flag: ApiFlag & ReactiveResource;
+    flag: Flag;
     toggle: () => void;
-    onUpdateSuccess?: () => void;
+    onUpdateSuccess: (value: Flag['value']) => void;
   };
   Blocks: { default: [] };
 }> {
@@ -268,7 +298,7 @@ class UpdateFlag extends Component<{
 
   onUpdateSuccess = () => {
     this.store.lifetimes.invalidateRequestsForType('flag', this.store);
-    this.args.onUpdateSuccess?.();
+    this.args.onUpdateSuccess(this.args.flag.value);
   };
 
   @tracked didUpdate = false;

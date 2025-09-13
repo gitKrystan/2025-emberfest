@@ -6,5 +6,6 @@ export default class ApplicationController extends Controller {
     'shouldPaginate',
     'shouldError',
     'latency',
+    'showLog',
   ];
 }
