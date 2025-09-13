@@ -2082,25 +2082,26 @@ _Warp_**Drive** is the lightweight data framework for ambitious web applications
 </div>
 
 <!--
-So what have we discovered on our journey?
-
-We've discovered that WarpDrive is the lightweight data framework for ambitious web applications.
-Universal...Typed...Performant...and Scalable.
+Today, we've discovered that WarpDrive is the lightweight data framework for ambitious web applications.
 
 Have we boldly gone where our data has never gone before?
 
-I hope so!
+I think so!
 -->
 
 ---
 
 # Your Mission, Should You Choose to Accept It
 
+<div class="mission">
+
 1. Try _Warp_**Drive** in your next project, regardless of framework.
 2. Explore the guides at [docs.warp-drive.io](https://docs.warp-drive.io) and [canary.warp-drive.io](https://canary.warp-drive.io).
 3. Explore this _Warp_**Drive** TodoMVC monorepo at [github.com/gitKrystan/2025-emberfest](https://github.com/gitKrystan/2025-emberfest).
-4. Join the community discussions on Discord ([https://discord.gg/eUPwQzRJ](https://discord.gg/eUPwQzRJ)).
+4. Join the community discussions on Discord: [https://discord.gg/eUPwQzRJ](https://discord.gg/eUPwQzRJ).
 5. Build something ambitious!
+
+</div>
 
 <h2 class="text-lcars-purple">Questions? Let's explore the unknown together!</h2>
 

@@ -11,3 +11,9 @@
 .ml-auto {
   margin-left: auto;
 }
+
+.mission {
+  a {
+    color: var(--lcars-magenta);
+  }
+}
