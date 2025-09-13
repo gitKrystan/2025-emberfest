@@ -25,13 +25,13 @@ longer fresh and should be refetched.
 
 */
 
-export class CaptainsLog extends Component {
+export class CaptainsLog extends Component<{ Args: { showPages: boolean } }> {
   <template>
     <section class="captains-log">
       <h2>Captain's Log</h2>
       <ul>
         {{#each-in this.captainsLog.log as |lid entry|}}
-          <Entry @lid={{lid}} @entry={{entry}} />
+          <Entry @lid={{lid}} @entry={{entry}} @showPages={{@showPages}} />
         {{/each-in}}
       </ul>
     </section>
@@ -40,15 +40,20 @@ export class CaptainsLog extends Component {
   @service declare captainsLog: CaptainsLogService;
 }
 
-class Entry extends Component<{ Args: { lid: string; entry: EntryState } }> {
+class Entry extends Component<{ Args: { lid: string; entry: EntryState; showPages: boolean } }> {
   <template>
     <li class="entry">
-      <strong>{{this.pathName}}</strong>
-      {{#if this.page}}- Page: {{this.page}}{{/if}}
-      -
-      {{@entry.latestTransition.type}}
-      -
-      {{@entry.loadCount}}
+      <span class="path-name"><strong>{{this.pathName}}</strong></span>
+
+      <span class="filter">{{#if this.filter}}{{this.filter}}{{/if}}</span>
+
+      {{#if @showPages}}
+        <span class="page">{{#if this.page}}<strong>Page:</strong> {{this.page}}{{/if}}</span>
+      {{/if}}
+
+      <span class="load-count"><strong>Fetches:</strong> {{@entry.loadCount}}</span>
+
+      <span class="state"><strong>State:</strong> {{@entry.latestTransition.type}}</span>
     </li>
   </template>
 
@@ -68,18 +73,35 @@ class Entry extends Component<{ Args: { lid: string; entry: EntryState } }> {
     return ret;
   }
 
-  get page(): number | null {
+  @cached
+  get params(): URLSearchParams | null {
     const params = this.parts[1];
     if (!params) {
       return null;
     }
-    const urlParams = new URLSearchParams(params);
-    const offset = urlParams.get('page[offset]');
+    return new URLSearchParams(params);
+  }
+
+  get page(): number | null {
+    const params = this.params;
+    if (!params) {
+      return null;
+    }
+    const offset = params.get('page[offset]');
     if (!offset) {
       return null;
     }
     const asNumber = parseInt(offset, 10);
     // limit === 10, so convert to page number
     return Math.floor(asNumber / 10) + 1;
+  }
+
+  get filter(): string | null {
+    const params = this.params;
+    if (!params) {
+      return null;
+    }
+    const param = params.get('filter[completed]');
+    return param === 'true' ? '(completed)' : param === 'false' ? '(active)' : null;
   }
 }

@@ -23,6 +23,7 @@ import type {
 import { Button } from '#/components/design-system/button';
 import { HandleError } from '#/components/design-system/error';
 import { LoadingSpinner } from '#/components/design-system/loading';
+import { CaptainsLog } from '#/components/captains-log';
 
 export class Flags extends Component {
   <template>
@@ -50,7 +51,7 @@ export class Flags extends Component {
     </div>
   </template>
 
-  @tracked isOpen = false;
+  @tracked isOpen = true;
 
   toggleFlags = () => {
     this.isOpen = !this.isOpen;
@@ -61,8 +62,9 @@ class FlagsContent extends Component<{
   Args: { data: ApiFlag[] };
 }> {
   <template>
-    <ul class="filters">
+    <CaptainsLog @showPages={{this.shouldPaginateFlag.value}} />
 
+    <ul class="filters">
       {{#if this.initialTodoCountFlag}}
         <li>
           <Await @promise={{this.checkoutInitialTodoCountFlag this.initialTodoCountFlag}}>
@@ -210,7 +212,7 @@ class UpdateTodoCountFlag extends Component<{
   };
 
   get label() {
-    return this.args.flag.value > 100 ? 'A Lot' : 'A Few';
+    return typeof this.args.flag.value === 'number' ? (this.args.flag.value > 100 ? 'A Lot' : 'A Few') : 'Some';
   }
 }
 
