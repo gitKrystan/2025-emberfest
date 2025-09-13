@@ -15,11 +15,18 @@ import {
   hardCodedLists,
 } from '@workspace/shared-data/types';
 
+import type CaptainsLog from '#/services/captains-log';
+
 /**
  * Handles app boot and general app one-time setup things.
  */
 export default class Application extends Route {
   @service declare private readonly store: Store;
+  @service declare private readonly captainsLog: CaptainsLog;
+
+  activate() {
+    this.captainsLog.setup();
+  }
 
   /**
    * NOTE: It would be better to have a bulk update endpoint.

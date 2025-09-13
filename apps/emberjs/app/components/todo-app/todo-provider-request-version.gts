@@ -9,7 +9,7 @@ import type { Todo } from '@workspace/shared-data/types';
 import { HandleError } from '#/components/design-system/error';
 import { LoadingSpinner } from '#/components/design-system/loading';
 
-import { Button } from '../design-system/button.gts';
+import { Button } from '../design-system/button';
 
 export const TodoProvider = <template>
   <Request @query={{(getAllTodos)}} @autorefresh={{true}} @autorefreshBehavior="refresh">

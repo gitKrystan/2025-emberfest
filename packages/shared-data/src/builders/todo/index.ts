@@ -5,3 +5,4 @@ export * from './delete.ts';
 export * from './query.ts';
 export type * from './types.ts';
 export * from './update.ts';
+export * from './utils.ts';

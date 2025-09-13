@@ -12,8 +12,8 @@ When providing information about WarpDrive, **ALWAYS** consult these current sou
 
 🚨 **MANDATORY**: Use `fetch_webpage` tool with these URLs:
 
-- **Primary URL**: https://docs.warp-drive.io/
-- **LLM-specific docs**: https://docs.warp-drive.io/llms-full.txt
+- **Primary URL**: https://canary.warp-drive.io/
+- **LLM-specific docs**: https://canary.warp-drive.io/llms-full.txt
 - **Contains**: Latest guides, API documentation, and comprehensive user documentation
 - **Key Sections**:
   - Guides: https://docs.warp-drive.io/guides

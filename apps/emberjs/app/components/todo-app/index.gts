@@ -7,9 +7,9 @@ import type { ReactiveTodosDocument } from '@workspace/shared-data/builders';
 
 import { ClearCompletedTodos } from '#/components/todo-app/clear-completed-todos';
 import { CreateTodo } from '#/components/todo-app/create-todo';
-import { MaybeFooter } from '#/components/todo-app/footer.gts';
+import { MaybeFooter } from '#/components/todo-app/footer';
 import { Nav } from '#/components/todo-app/nav';
-import { TodoAppState } from '#/components/todo-app/state.gts';
+import { TodoAppState } from '#/components/todo-app/state';
 import { TodoCount } from '#/components/todo-app/todo-count';
 import { TodoList } from '#/components/todo-app/todo-list';
 import { TodoProvider } from '#/components/todo-app/todo-provider';

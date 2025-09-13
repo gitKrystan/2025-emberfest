@@ -9,6 +9,7 @@ import type { ApiFlag } from '@workspace/shared-data/types';
 
 import { Attribution } from '#/components/attribution';
 import { Flags } from '#/components/flags';
+import CaptainsLog from '#/components/captains-log';
 
 interface Signature {
   Blocks: {
@@ -35,6 +36,8 @@ export const Layout = <template>
   </main>
 
   <footer class="info"><Attribution /></footer>
+
+  <CaptainsLog />
 </template> satisfies TOC<Signature>;
 
 class EnterpriseEdition extends Component<{
