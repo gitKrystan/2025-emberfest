@@ -1,6 +1,8 @@
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import CaptainsLogService from '#/services/captains-log.ts';
+import CaptainsLogService, { EntryState } from '#/services/captains-log.ts';
+import { cached } from '@glimmer/tracking';
+import { assert } from '@ember/debug';
 
 /*
 
@@ -21,26 +23,63 @@ data content.
 happens when cache invalidation logic determines that cached data is no
 longer fresh and should be refetched.
 
-
 */
 
-export default class CaptainsLog extends Component {
+export class CaptainsLog extends Component {
   <template>
     <section class="captains-log">
       <h2>Captain's Log</h2>
       <ul>
         {{#each-in this.captainsLog.log as |lid entry|}}
-          <li class="entry">
-            {{lid}}
-            -
-            {{entry.latestOp}}
-            -
-            {{entry.loadCount}}
-          </li>
+          <Entry @lid={{lid}} @entry={{entry}} />
         {{/each-in}}
       </ul>
     </section>
   </template>
 
   @service declare captainsLog: CaptainsLogService;
+}
+
+class Entry extends Component<{ Args: { lid: string; entry: EntryState } }> {
+  <template>
+    <li class="entry">
+      <strong>{{this.pathName}}</strong>
+      {{#if this.page}}- Page: {{this.page}}{{/if}}
+      -
+      {{@entry.latestTransition.type}}
+      -
+      {{@entry.loadCount}}
+    </li>
+  </template>
+
+  @cached
+  get decoded() {
+    return decodeURIComponent(this.args.lid);
+  }
+
+  @cached
+  get parts(): string[] {
+    return this.decoded.split('?');
+  }
+
+  get pathName(): string {
+    const ret = this.parts[0];
+    assert('Path name must be defined', ret);
+    return ret;
+  }
+
+  get page(): number | null {
+    const params = this.parts[1];
+    if (!params) {
+      return null;
+    }
+    const urlParams = new URLSearchParams(params);
+    const offset = urlParams.get('page[offset]');
+    if (!offset) {
+      return null;
+    }
+    const asNumber = parseInt(offset, 10);
+    // limit === 10, so convert to page number
+    return Math.floor(asNumber / 10) + 1;
+  }
 }

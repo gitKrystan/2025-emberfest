@@ -20,12 +20,11 @@ export function getBaseUrl(req: Request): string {
  * Get the URL for a resource
  */
 export function getResourceUrl<T extends string>(
-  req: Request,
+  _req: Request,
   type: T,
   record: ExistingRecord<T>,
 ): string {
-  const baseUrl = getBaseUrl(req);
-  return `${baseUrl}/api/${type}/${record.id}`;
+  return `/api/${type}/${record.id}`;
 }
 
 /**
@@ -33,8 +32,7 @@ export function getResourceUrl<T extends string>(
  * This is used for the `self` link in top-level links objects
  */
 export function getRequestUrl(req: Request): string {
-  const baseUrl = getBaseUrl(req);
-  return `${baseUrl}${req.originalUrl}`;
+  return req.originalUrl;
 }
 
 /**
@@ -80,7 +78,7 @@ export function buildPaginationLinks<T>(
   // First page
   url.searchParams.set('page[limit]', limit.toString());
   url.searchParams.set('page[offset]', '0');
-  links.first = url.toString();
+  links.first = `${url.pathname}${url.search}`;
 
   const maxOffset = (paginatedResult.totalPages - 1) * limit;
 
@@ -90,20 +88,20 @@ export function buildPaginationLinks<T>(
     maxOffset,
   );
   url.searchParams.set('page[offset]', lastOffset.toString());
-  links.last = url.toString();
+  links.last = `${url.pathname}${url.search}`;
 
   // Previous page
   if (offset > 0) {
     const prevOffset = Math.min(Math.max(0, offset - limit), maxOffset);
     url.searchParams.set('page[offset]', prevOffset.toString());
-    links.prev = url.toString();
+    links.prev = `${url.pathname}${url.search}`;
   }
 
   // Next page
   if (offset + limit < total) {
     const nextOffset = Math.min(offset + limit, maxOffset);
     url.searchParams.set('page[offset]', nextOffset.toString());
-    links.next = url.toString();
+    links.next = `${url.pathname}${url.search}`;
   }
 
   return links;

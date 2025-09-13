@@ -78,8 +78,6 @@ export class PaginationSubscription<T, E> {
       this._args.request.lid
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     ).request;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    console.log(requestInfo.op, requestInfo.cacheOptions);
     return requestInfo as RequestInfo<ReactiveDataDocument<T[]>>;
   }
 

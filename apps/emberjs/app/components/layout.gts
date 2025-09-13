@@ -9,7 +9,7 @@ import type { ApiFlag } from '@workspace/shared-data/types';
 
 import { Attribution } from '#/components/attribution';
 import { Flags } from '#/components/flags';
-import CaptainsLog from '#/components/captains-log';
+import { CaptainsLog } from '#/components/captains-log';
 
 interface Signature {
   Blocks: {

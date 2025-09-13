@@ -36,7 +36,7 @@ const JSONAPI_VERSION = {
  *     }
  *   },
  *   "links": {
- *     "self": "http://example.com/api/todo/1"
+ *     "self": "/api/todo/1"
  *   },
  *   "jsonapi": {
  *     "version": "1.1"
@@ -74,13 +74,13 @@ export function serializeSingleResourceDocument<T extends string>(
  *         "completed": false
  *       },
  *       "links": {
- *         "self": "http://example.com/api/todo/1"
+ *         "self": "/api/todo/1"
  *       }
  *     }
  *     // ... more items
  *   ],
  *   "links": {
- *     "self": "http://example.com/api/todo"
+ *     "self": "/api/todo"
  *   },
  *   "jsonapi": {
  *     "version": "1.1"
@@ -117,16 +117,16 @@ export function serializeCollectionResourceDocument<T extends string>(
  *         "completed": false
  *       },
  *       "links": {
- *         "self": "http://example.com/api/todo/1"
+ *         "self": "/api/todo/1"
  *       }
  *     }
  *     // ... up to X more items
  *   ],
  *   "links": {
- *     "self": "http://example.com/api/todo",
- *     "first": "http://example.com/api/todo?page[limit]=25&page[offset]=0",
- *     "next": "http://example.com/api/todo?page[limit]=25&page[offset]=25",
- *     "last": "http://example.com/api/todo?page[limit]=25&page[offset]=75"
+ *     "self": "/api/todo",
+ *     "first": "/api/todo?page[limit]=25&page[offset]=0",
+ *     "next": "/api/todo?page[limit]=25&page[offset]=25",
+ *     "last": "/api/todo?page[limit]=25&page[offset]=75"
  *   },
  *   "meta": {
  *     "currentPage": 1,
