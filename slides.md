@@ -2007,7 +2007,7 @@ Once again, we have built another ambitious feature with just a few lines of cod
 </div>
 
 <!--
-And one more look at our UI
+And putting everything together, here is our full Enterprise Edition Todo App again, with all the WarpDrive components highlighted.
 -->
 
 ---
@@ -2041,23 +2041,13 @@ Probably not. There's always warp 10.
 
 </div>
 
+<div class="text-6xl mt-8">🖖</div>
+
 <!--
 To get there, the WarpDrive project is under active development, with new features and improvements coming regularly.
 
 Check on the latest at the Canary docs site.
--->
 
----
-layout: section
----
-
-# Conclusion
-
-## "Live Long and Prosper"
-
-<div class="text-6xl mt-8">🖖</div>
-
-<!--
 We hope that with this momentum, we will be able to live long...and prosper as a project.
 -->
 
@@ -2106,21 +2096,13 @@ I hope so!
 
 # Your Mission, Should You Choose to Accept It
 
-<v-clicks>
-
 1. Try _Warp_**Drive** in your next project, regardless of framework.
 2. Explore the guides at [docs.warp-drive.io](https://docs.warp-drive.io) and [canary.warp-drive.io](https://canary.warp-drive.io).
 3. Explore this _Warp_**Drive** TodoMVC monorepo at [github.com/gitKrystan/2025-emberfest](https://github.com/gitKrystan/2025-emberfest).
 4. Join the community discussions on Discord ([https://discord.gg/eUPwQzRJ](https://discord.gg/eUPwQzRJ)).
 5. Build something ambitious!
 
-</v-clicks>
-
-<v-click>
-
 <h2 class="text-lcars-purple">Questions? Let's explore the unknown together!</h2>
-
-</v-click>
 
 <div class="grid grid-flow-col gap-4 grid-items-center grid-items-end mt-8">
 
@@ -2145,12 +2127,12 @@ The data is out there — <strong>go boldly and fetch it efficiently</strong>
 
 <!--
 Your Mission, Should You Choose to Accept It:
-* Try WarpDrive in your next project, regardless of framework.
-* Explore our guides at warp-drive.io
-* Explore this WarpDrive TodoMVC monorepo on GitHub.
-* Join the WarpDrive community on Discord.
-* Build something ambitious!
-* And if you have any questions, Let's explore the unknown together!
+Try WarpDrive in your next project, regardless of framework.
+Explore our guides at warp-drive.io
+Explore this WarpDrive TodoMVC monorepo on GitHub.
+Join the WarpDrive community on Discord.
+Build something ambitious!
+And if you have any questions, Let's explore the unknown together!
 
 THANK YOU!
 -->
