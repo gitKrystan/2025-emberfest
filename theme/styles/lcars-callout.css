@@ -109,6 +109,44 @@
   background-color: var(--lcars-white);
 }
 
+/* Boxes */
+
+.callout-box {
+  border-radius: 12px;
+  padding: 1.5rem;
+  font-weight: 500;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 3px solid var(--lcars-purple);
+  padding: 0.5rem;
+  color: black;
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.callout-box.key {
+  background-color: transparent;
+  margin-bottom: 1rem;
+}
+
+.callout-box-paginate {
+  border-color: var(--lcars-orange);
+  color: var(--lcars-orange);
+}
+
+.callout-box-request {
+  border-color: var(--lcars-magenta);
+  color: var(--lcars-magenta);
+}
+
+.callout-box-await {
+  border-color: var(--lcars-light-blue);
+  color: var(--lcars-light-blue);
+}
+
+.callout-box-each-link {
+  border-color: var(--lcars-amber);
+  color: var(--lcars-amber);
+}
+
 /* Speech Bubbles */
 
 /* Speech Bubble Styles */

@@ -1973,6 +1973,44 @@ Once again, we have built another ambitious feature with just a few lines of cod
 -->
 
 ---
+
+<div class="grid grid-flow-col gap-4 grid-items-center w-210 mx-auto">
+
+<div>
+<img src="./overview.png" alt="TodoMVC UI with Paginated Todo List and all Paginate, Request, EachLink, and Await components highlighted" class="h-120 w-auto ml-auto" />
+
+<!-- Paginate -->
+<div class="callout-box callout-box-paginate absolute" style="inset: 149px 464px 169px 136px;"></div>
+<!-- Links -->
+<div class="callout-box callout-box-each-link absolute" style="inset: 355px 540px 173px 228px;"></div>
+<!-- Footer -->
+<div class="callout-box callout-box-request absolute" style="inset: 381px 466px 138px 136px;"></div>
+<!-- Count -->
+<div class="callout-box callout-box-request absolute" style="inset: 384px 757px 141px 141px;"></div>
+<!-- Filters -->
+<div class="callout-box callout-box-request absolute" style="inset: 384px 579px 141px 246px;"></div>
+<!-- Clear Completed -->
+<div class="callout-box callout-box-request absolute" style="inset: 384px 470px 141px 419px"></div>
+<!-- TodoItem -->
+<div class="callout-box callout-box-await absolute" style="inset: 188px 469px 315px 141px"></div>
+
+</div>
+
+<div class="w-xs">
+<div class="callout-box callout-box-paginate key w-full">Paginate</div>
+<div class="callout-box callout-box-each-link key w-full">EachLink</div>
+<div class="callout-box callout-box-request key w-full">Request</div>
+<div class="callout-box callout-box-await key w-full">Await</div>
+
+</div>
+
+</div>
+
+<!--
+And one more look at our UI
+-->
+
+---
 layout: section
 title: 'Episode 8: "The Future — Final Frontier?"'
 ---

@@ -10,8 +10,8 @@ import type { ReactiveTodosDocument } from './types.ts';
 export function getAllTodos(page?: number): RequestInfo<ReactiveTodosDocument> {
   const url = buildBaseURL({ resourcePath: 'todo' });
   const queryString = buildQueryParams({
-    'page[limit]': 10,
-    'page[offset]': typeof page === 'number' ? (page - 1) * 10 : 0,
+    'page[limit]': 5,
+    'page[offset]': typeof page === 'number' ? (page - 1) * 5 : 0,
   });
 
   return withReactiveResponse<Todo[]>({
