@@ -26,7 +26,7 @@ import { LoadingSpinner } from '#/components/design-system/loading';
 import { CaptainsLog } from '#/components/captains-log';
 import type RouterService from '@ember/routing/router-service';
 
-export class Flags extends Component<{ Args: { showLog: boolean } }> {
+export class Flags extends Component {
   <template>
     <div class="flags-container">
 
@@ -64,7 +64,7 @@ class FlagsContent extends Component<{
 }> {
   <template>
     {{#if this.showLog}}
-      <CaptainsLog @showPages={{this.shouldPaginateFlag.value}} />
+      <CaptainsLog @showPages={{this.showPages}} />
     {{/if}}
 
     <ul class="filters">
@@ -161,6 +161,10 @@ class FlagsContent extends Component<{
 
   checkoutLatencyFlag(flag: LatencyFlag): Promise<EditableLatencyFlag & ReactiveResource> {
     return checkout<EditableLatencyFlag>(flag);
+  }
+
+  get showPages() {
+    return this.shouldPaginateFlag?.value ?? false;
   }
 }
 
