@@ -22,7 +22,7 @@
   "slidev": {
     "defaults": {
       "fonts": {
-        "mono": "Fira Code",
+        "mono": "Fira Mono",
         "sans": "Avenir Next,Nunito Sans",
         "local": "Avenir Next"
       }

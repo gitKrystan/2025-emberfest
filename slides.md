@@ -215,11 +215,11 @@ Unlike _other_ data libraries, _Warp_**Drive** is built around:
 </v-clicks>
 
 <!--
-Unlike _other_ data libraries, WarpDrive is built around:
+Unlike _other_ data libraries you might have used, WarpDrive is built around:
 
-* Resource-first architecture instead of heavy model inheritance patterns
-* Schemas for consistent, sharable data shapes
-* Universal compatibility vs. framework-specific implementations
+* Resource-first architecture
+* Schemas
+* Universal compatibility
 * And Fine-grained reactivity that just works
 -->
 
@@ -287,7 +287,7 @@ title: 'Episode 2: "Engage! — Setting Up Our Mission"'
 ## "Engage! — Setting Up Our Mission"
 
 <!--
-Let's talk about what we're going to build today.
+So, what are we building today?
 
 I promise, it's something ambitious.
 -->
@@ -367,9 +367,9 @@ It’s built around a simple Todo resource:
 
 a string id
 
-a string title attribute
+a title attribute
 
-and a boolean completed attribute
+and a completed attribute
 -->
 
 ---
@@ -400,7 +400,7 @@ By the end, you'll see how WarpDrive makes data management feel... <em>logical</
 </div>
 
 <!--
-Today, we’ll re-implement the TodoMVC application using:
+Today, we’ll migrate the TodoMVC application to using:
 
 * WarpDrive
 * JSON:API
@@ -458,15 +458,15 @@ Now it's time to "set its data layer to stun" by updating it to use WarpDrive.
 </v-clicks>
 
 <!--
-First, in our shared-data package, we are adding a shared WarpDrive "store" implementation.
+* First, in our shared-data package, we are adding a shared WarpDrive "store" implementation.
 
-* You can think of the "store" as the "bridge" of our WarpDrive Starship. Like the bridge, it's in command of everything.
+You can think of the "store" as the "bridge" of our WarpDrive Starship. Like the bridge, it's in command of everything.
 
 The store is fully customizable and configurable but with sensible defaults, which we're using here:
 
 * It handles request management via its RequestManager
-* It handles cache management via the CacheHandler, CachePolicy, and JSONAPICache
-* It manages our schemas via a schema service
+* It handles cache management
+* It manages our schemas
 * And it manages our reactive state by determining what reactive objects to create for our data.
 -->
 
@@ -495,15 +495,15 @@ The store is fully customizable and configurable but with sensible defaults, whi
 </v-click>
 
 <!--
-One of the most important parts of the store is the "Request Manager"
+* One of the most important parts of the store is the "Request Manager"
 
-* Think of RequestManager as your ship's communications officer — it manages all external contact!
+Think of RequestManager as your ship's communications officer — it manages all external contact!
 
 RequestManager is also fully customize-able with sensible defaults.
 
 * You don't even need to use Fetch, though we will.
 * You can add handlers to transform requests and responses as needed. These handlers can choose to call `next()`, similar to middleware patterns in API frameworks.
-* You should also register the special "CacheHandler" to integrate with WarpDrive's caching system.
+* You **should** also register the special "CacheHandler" to integrate with WarpDrive's caching system.
 * Putting it all together, this is our Request Manager!
 -->
 
@@ -700,9 +700,7 @@ Sets cache options:<br />`'createRecord'` op, `'todo'` type
 </div>
 
 <!--
-The cache options that we added to our `getAllTodos` query builder mean that:
-
-* when we use this `createTodo` builder to create a new todo...
+* The cache options that we added to our `getAllTodos` query builder mean that when we use this `createTodo` builder to create a new todo...
 * Because it sets the 'createRecord' OpCode and specifies 'todo' in its `cacheOptions` types...
 
 Our query from the previous builder will automatically be invalidated and re-fetched the next time its results are rendered.
@@ -732,9 +730,9 @@ Our query from the previous builder will automatically be invalidated and re-fet
 </div>
 
 <!--
-WarpDrive provides convenient utilities to help with common request patterns.
+* WarpDrive provides convenient utilities to help with common request patterns.
 
-* For example, here is the builder for the request made by our "Completed" filter.
+For example, here is the builder for the request made by our "Completed" filter.
 
 It looks the same as our `getAllTodos` builder...
 * using the same `buildBaseURL` utility, for example
@@ -825,9 +823,7 @@ WarpDrive actually provides lots of powerful schema features that we're not usin
 </div>
 
 <!--
-Because resources are just thin wrappers over POJOs,
-
-* you can define types for their various states...
+* Because resources are just thin wrappers over POJOs you can define types for their various states...
 * An attribute type for creation
 * A readonly Todo type
 * An editable Todo type
@@ -971,16 +967,7 @@ So, let's take a look this in our Todo app.
 
 First, we'll check out our loading states.
 
-To make the loading states super obvious, I've set my API to impulse speed (500ms of latency per request.)
-
-- Initial Todo Count: A Few
-- API Reliability: Good
-- API Latency: Slow
-- Mode: Hobbyist
-
-1. Demo loading state with network throttling
-2. Demo caching on the queries
-3. Demo adding a todo
+**To make the loading states super obvious, I've set my API to impulse speed (500ms of latency per request.)**
 -->
 
 ---
@@ -991,15 +978,6 @@ layout: center
 
 <!--
 And now, we'll check out the error states.
-
-- Initial Todo Count: A Few
-- (UPDATE) API Reliability: Terrible
-- API Latency: Slow
-- Mode: Hobbyist
-
-1. Demo error state (trying to visit "active")
-
-- (UPDATE) API Reliability: Good
 -->
 
 ---
@@ -1118,8 +1096,8 @@ When changing data, you have two choices:
 <!--
 When changing data, you have two choices:
 
-* Pessimistic Updates — Wait for server success before updating UI
-* Optimistic Updates — Update UI immediately, then confirm with server. Rollback if the request fails.
+* Pessimistic Mutation — Wait for server success before updating the UI.
+* Optimistic Mutation — Update the UI immediately, then confirm with the server. Rollback if the request fails.
 * Both have trade-offs.
 * WarpDrive supports both. The choice is yours.
 
@@ -1181,10 +1159,12 @@ Our Todo app uses a combination of pessimistic and optimistic mutations.
 * it generates the URL
 * It serializes the request body in JSON:API format
 * And it sets cache options
-* Specifying the `ResourceKey` for this todo in the `records` array tells the
+
+(SCROLL UP) Specifying the `ResourceKey` for this todo in the `records` array tells the
 store that when this request succeeds it should automatically patch the
 returned attributes into the immutable resource. Thus, the reactive resource
 will update everywhere in your app.
+
 * Viewing it all together!
 -->
 
@@ -1196,18 +1176,6 @@ layout: center
 
 <!--
 Back to our live demo. Let's update a todo title and see what happens.
-
-REFRESH PAGE BEFORE DEMO
-
-- Initial Todo Count: A Few
-- API Reliability: Good
-- API Latency: Slow
-- Mode: Hobbyist
-
-1. Demo title update
-2. Demo switching tabs to ensure it updated
-
-IMPROVE THIS DEMO. Load active before rename.
 -->
 
 ---

@@ -48,12 +48,14 @@ const lists: Record<HardCodedList, TodoAttributes[]> = {
   ],
   basicLoadingStates: [
     { title: 'Read All Todos (Slowly)', completed: true },
+    { title: "Introduce Captain's Log", completed: false },
     { title: 'Read Completed Todos (Slowly)', completed: false },
     { title: 'Read All Todos (Quickly)', completed: false },
   ],
   basicErrorStates: [{ title: "Don't Read All Todos", completed: false }],
   pessimisticMutation: [
     { title: 'Read Active Todos (load cache)', completed: false },
+    { title: 'Go back to All Todos List', completed: false },
     { title: 'Rename me', completed: false },
     { title: 'Read Active Todos (from cache)', completed: false },
     { title: 'Make API less reliable', completed: false },
