@@ -117,7 +117,7 @@ Ember veteran since v2
 ::right::
 
 <div class="callout">
-<img src="/captain-profile.jpg" alt="Krystan and her family backpacking at Mt. Rainier, Washington" class="h-110 w-auto" />
+<img src="/ember-babies.jpg" alt="Krystan's kids on the first day of school. Kindergartner is wearing an Ember backpack" class="h-110 w-auto" />
 </div>
 
 <!--
