@@ -2,9 +2,8 @@ import { assert } from '@ember/debug';
 import { registerDestructor } from '@ember/destroyable';
 import Service from '@ember/service';
 import { service } from '@ember/service';
-import { tracked } from '@glimmer/tracking';
-import { runTask } from 'ember-lifeline';
-import { TrackedMap } from 'tracked-built-ins';
+import { cached } from '@glimmer/tracking';
+import { TrackedArray, TrackedMap } from 'tracked-built-ins';
 
 import type {
   DocumentCacheOperation,
@@ -135,10 +134,25 @@ function classifyTransition(
 
 export class EntryState {
   lid: string;
-  @tracked latestOp: DocumentCacheOperation | null = null;
-  @tracked latestTransition: Transition | null = null;
+  transitions = new TrackedArray<Transition>([]);
 
-  @tracked loadCount = 0;
+  @cached
+  get latestTransition(): Transition | null {
+    return this.transitions.at(-1) ?? null;
+  }
+
+  get latestOp(): DocumentCacheOperation | null {
+    return this.latestTransition ? this.latestTransition.toOp : null;
+  }
+
+  get loadCount(): number {
+    return this.transitions.reduce((count, t) => {
+      if (t.type === 'loading' || t.type === 'refreshing') {
+        return count + 1;
+      }
+      return count;
+    }, 0);
+  }
 
   constructor(lid: string, currentOp: DocumentCacheOperation) {
     this.lid = lid;
@@ -163,21 +177,11 @@ export class EntryState {
       assert('Expected latestTransition to be defined', this.latestTransition);
       return this.latestTransition;
     }
-    runTask(
-      this,
-      () => {
-        this.latestTransition = transition;
-        this.latestOp = toOp;
 
-        if (transition.type === 'loading' || transition.type === 'refreshing') {
-          this.loadCount++;
-        }
+    this.transitions.push(transition);
 
-        console.log(
-          `[${Date.now()}] Transition ${this.lid}: ${transition.fromOp} → ${transition.toOp} (${transition.type})`
-        );
-      },
-      0
+    console.log(
+      `[${Date.now()}] Transition ${this.lid}: ${transition.fromOp} → ${transition.toOp} (${transition.type})`
     );
 
     return transition;
