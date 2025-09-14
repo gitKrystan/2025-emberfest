@@ -3,9 +3,9 @@ import { registerDestructor } from '@ember/destroyable';
 import Service from '@ember/service';
 import { service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
+import { runTask } from 'ember-lifeline';
 import { TrackedMap } from 'tracked-built-ins';
 
-import type { RequestCacheRequestState } from '@warp-drive/core/store/-private';
 import type {
   DocumentCacheOperation,
   DocumentOperationCallback,
@@ -29,10 +29,6 @@ export default class CaptainsLog extends Service {
       this.log.delete(cacheKey.lid);
     }
 
-    this.store.getRequestStateService();
-
-    // .subscribeForRe(cacheKey, this.requestSubscription);
-
     const existingState = this.log.get(cacheKey.lid);
     if (existingState) {
       // Transition to new operation
@@ -44,10 +40,6 @@ export default class CaptainsLog extends Service {
         new EntryState(cacheKey.lid, notificationType)
       );
     }
-  };
-
-  requestSubscription = (requestState: RequestCacheRequestState) => {
-    console.log('Request state change:', requestState);
   };
 
   setup() {
@@ -171,15 +163,21 @@ export class EntryState {
       assert('Expected latestTransition to be defined', this.latestTransition);
       return this.latestTransition;
     }
-    this.latestTransition = transition;
-    this.latestOp = toOp;
+    runTask(
+      this,
+      () => {
+        this.latestTransition = transition;
+        this.latestOp = toOp;
 
-    if (transition.type === 'loading' || transition.type === 'refreshing') {
-      this.loadCount++;
-    }
+        if (transition.type === 'loading' || transition.type === 'refreshing') {
+          this.loadCount++;
+        }
 
-    console.log(
-      `[${Date.now()}] Transition ${this.lid}: ${transition.fromOp} → ${transition.toOp} (${transition.type})`
+        console.log(
+          `[${Date.now()}] Transition ${this.lid}: ${transition.fromOp} → ${transition.toOp} (${transition.type})`
+        );
+      },
+      0
     );
 
     return transition;

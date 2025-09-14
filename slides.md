@@ -1496,19 +1496,19 @@ WarpDrive provides built-in performance optimizations,
 
 But our TodoMVC MVP has gotten so popular that we're still starting to hit performance limits.
 
-We've even seen some "scale pioneer" users with hundreds of thousands of todos in their list.
+We've even seen some "scale pioneer" users with thousands of todos in their list.
 -->
 
 ---
 layout: center
 ---
 
-# Live Demo: [Scale Pioneers](http://localhost:4200/?initialTodoCount=1000000&shouldError=false&shouldPaginate=false&latency=50&showLog=true)
+# Live Demo: [Scale Pioneers](http://localhost:4200/?initialTodoCount=5000000&shouldError=false&shouldPaginate=false&latency=50&showLog=true)
 
 <!--
 Our support team sent us this customer app that really exemplifies some performance issues we are seeing.
 
-It turns out this customer has a **million** todos, and they're really having issues.
+It turns out this customer has five hundred thousands todos, and they're really having issues.
 
 Let's see what they're running into.
 
@@ -1526,11 +1526,9 @@ Let's see what they're running into.
 layout: center
 ---
 
-# Live Demo: [Enterprise Edition](http://localhost:4200/?initialTodoCount=1000000&shouldError=false&shouldPaginate=true&latency=50&showLog=false)
+# Live Demo: [Enterprise Edition](http://localhost:4200/?initialTodoCount=500000&shouldError=false&shouldPaginate=true&latency=50&showLog=false)
 
 <!--
-Honestly, that was faster than I expected for a million records, but it's still not a great user experience.
-
 Fortunately, WarpDrive has another trick up it's sleeve:
 
 Built in pagination utilities.
