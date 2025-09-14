@@ -31,9 +31,9 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.8.9",
-    "@warp-drive/core": "5.8.0-alpha.14",
-    "@warp-drive/json-api": "5.8.0-alpha.14",
-    "@warp-drive/utilities": "5.8.0-alpha.14",
+    "@warp-drive/core": "5.8.0-alpha.11",
+    "@warp-drive/json-api": "5.8.0-alpha.11",
+    "@warp-drive/utilities": "5.8.0-alpha.11",
     "decorator-transforms": "^2.2.2"
   },
   "devDependencies": {

@@ -222,7 +222,7 @@ class UpdateShouldPaginateFlag extends Component<{
 
 const TodoCountOptions = {
   small: 3,
-  large: 500_000,
+  large: 1_000_000,
 };
 
 class UpdateTodoCountFlag extends Component<{
