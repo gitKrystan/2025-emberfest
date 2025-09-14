@@ -25,7 +25,6 @@ export class PaginationState<T, E = unknown> {
   declare activePage: PageState<T, E>;
   declare private readonly pagesCache: Map<string, PageState<T, E>>;
 
-  // TODO: Make reactive?
   declare readonly links: PaginationLinks<T, E> | null;
 
   constructor(
@@ -53,40 +52,36 @@ export class PaginationState<T, E = unknown> {
     this.pagesCache.set(url, pageState);
   }
 
-  // TODO: Should be `activePage`?
+  // This is used by loading block, therefore only refers to the initial page
   @memoized
   get isLoading(): boolean {
     return this.initialPage.isLoading;
   }
 
-  // TODO: Should be `activePage`?
+  // This is used by loading block, therefore only refers to the initial page
   @memoized
   get loadingState(): RequestLoadingState | null {
     return this.initialPage.requestState?.loadingState ?? null;
   }
 
-  // TODO: Should be `activePage`?
   @memoized
   get isSuccess(): boolean {
-    return this.initialPage.isSuccess;
+    return this.activePage.isSuccess;
   }
 
-  // TODO: Should be `activePage`?
   @memoized
   get isCancelled(): boolean {
-    return this.initialPage.isCancelled;
+    return this.activePage.isCancelled;
   }
 
-  // TODO: Should be `activePage`?
   @memoized
   get isError(): boolean {
-    return this.initialPage.isError;
+    return this.activePage.isError;
   }
 
-  // TODO: Should be `activePage`?
   @memoized
   get reason(): StructuredErrorDocument<E> | null {
-    return this.initialPage.reason;
+    return this.activePage.reason;
   }
 
   @memoized
@@ -129,6 +124,7 @@ export class PaginationState<T, E = unknown> {
     return pages;
   }
 
+  // TODO: Not sure if this is complete. Doesn't seem to always include the first page
   @memoized
   get pages(): PageState<T, E>[] {
     return [...this.prevPages, this.activePage, ...this.nextPages];
@@ -170,7 +166,6 @@ export class PaginationState<T, E = unknown> {
     return this.activePage.prev?.request ?? null;
   }
 
-  // TODO: Seems weird
   @memoized
   get nextRequest(): Future<ReactiveDataDocument<T[]>> | null {
     return this.activePage.next?.request ?? null;
@@ -203,7 +198,6 @@ export class PaginationState<T, E = unknown> {
   };
 }
 
-defineSignal(PaginationState.prototype, 'initialPage', undefined);
 defineSignal(PaginationState.prototype, 'activePage', undefined);
 
 interface LinkSupport<T> {

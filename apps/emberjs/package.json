@@ -12,7 +12,6 @@
     "test": "tests"
   },
   "scripts": {
-    "demo": "NODE_ENV=production pnpm start -m production",
     "build": "vite build",
     "format": "prettier . --cache --write",
     "lint": "concurrently \"pnpm:lint:*(!fix)\" --names \"lint:\" --prefixColors auto",
@@ -25,7 +24,8 @@
     "lint:js": "pnpm lint:types && eslint . --cache",
     "lint:js:fix": "pnpm lint:types && eslint . --fix",
     "lint:types": "glint",
-    "start": "vite",
+    "start": "NODE_ENV=production vite -m production",
+    "dev": "vite",
     "test": "vite build --mode development && testem ci"
   },
   "imports": {

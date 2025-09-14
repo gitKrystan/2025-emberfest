@@ -38,13 +38,7 @@ export class PageState<T, E> {
   declare requestState:
     | RequestState<ReactiveDataDocument<T[]>, StructuredErrorDocument<E>>
     | undefined;
-  declare _selfLink: string | null;
-  get selfLink(): string | null {
-    return this._selfLink;
-  }
-  set selfLink(selfLink: string | null) {
-    this._selfLink = selfLink;
-  }
+  selfLink: string | null = null;
   declare private readonly _prevLink: string | null;
   declare private readonly _nextLink: string | null;
 
@@ -140,6 +134,4 @@ export class PageState<T, E> {
 
 defineSignal(PageState.prototype, 'requestState', undefined);
 defineSignal(PageState.prototype, 'request', undefined);
-defineSignal(PageState.prototype, 'state', undefined);
-defineSignal(PageState.prototype, 'self', undefined);
 defineSignal(PageState.prototype, 'selfLink', undefined);

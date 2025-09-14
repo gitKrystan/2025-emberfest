@@ -451,6 +451,7 @@ export class Paginate<T, E> extends Component<PaginateSignature<T, E>> {
         {{yield (notNull this.subscription.paginationState.reason) this.subscription.errorFeatures to="error"}}
 
       {{else if this.subscription.paginationState.isSuccess}}
+        {{log "SUCCESS"}}
         {{yield this.subscription.paginationState this.subscription.contentFeatures to="content"}}
 
       {{else if (not this.subscription.paginationState.isCancelled)}}

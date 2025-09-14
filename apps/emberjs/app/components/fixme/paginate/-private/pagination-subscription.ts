@@ -56,8 +56,6 @@ export class PaginationSubscription<T, E> {
   /** @internal */
   declare private readonly isDestroyed: boolean;
   /** @internal */
-  declare private readonly _subscribedTo: object | null;
-  /** @internal */
   declare private readonly _args: SubscriptionArgs<
     ReactiveDataDocument<T[]>,
     E

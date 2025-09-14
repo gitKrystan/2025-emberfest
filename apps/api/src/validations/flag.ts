@@ -14,5 +14,5 @@ export const positiveNumberFlagUpdateSchema = z.object({
 });
 
 export const initialTodoCountSchema = z.object({
-  value: z.enum(hardCodedLists).or(z.number().gte(0)),
+  value: z.enum(hardCodedLists).or(z.number().gte(0).max(1000000)),
 });

@@ -1341,14 +1341,6 @@ layout: center
 
 <!--
 Let's take a look at this toggle button in action.
-
-- Initial Todo Count: A Few
-- API Reliability: Good
-- API Latency: Slow
-- Mode: Hobbyist
-
-1. Demo completed toggle
-2. Demo switching tabs to ensure it updated
 -->
 
 ---
@@ -1471,30 +1463,25 @@ We've even seen some "scale pioneer" users with thousands of todos in their list
 layout: center
 ---
 
-# Live Demo: [Scale Pioneers](http://localhost:4200/?initialTodoCount=5000000&shouldError=false&shouldPaginate=false&latency=50&showLog=true)
+# Live Demo: [Scale Pioneers](http://localhost:4200/?initialTodoCount=1000000&shouldError=false&shouldPaginate=false&latency=50&showLog=true)
 
 <!--
+(SHIFT + RIGHT CLICK TO OPEN IN NEW TAB WHILE TALKING)
+
 Our support team sent us this customer app that really exemplifies some performance issues we are seeing.
 
-It turns out this customer has five hundred thousands todos, and they're really having issues.
+It turns out this customer has a million todos, and they're really having issues.
 
 Let's see what they're running into.
 
 (Note: I turned the API latency to 50ms for this request.)
-
-- (UPDATE) Initial Todo Count: A Lot
-- API Reliability: Good
-- API Latency: Slow
-- Mode: Hobbyist
-
-1. Demo 100k todos without pagination
 -->
 
 ---
 layout: center
 ---
 
-# Live Demo: [Enterprise Edition](http://localhost:4200/?initialTodoCount=500000&shouldError=false&shouldPaginate=true&latency=50&showLog=false)
+# Live Demo: [Enterprise Edition](http://localhost:4200/?initialTodoCount=1000000&shouldError=false&shouldPaginate=true&latency=50&showLog=false)
 
 <!--
 Fortunately, WarpDrive has another trick up it's sleeve:
@@ -1502,8 +1489,6 @@ Fortunately, WarpDrive has another trick up it's sleeve:
 Built in pagination utilities.
 
 That's right. It's time to activate the "ENTERPRISE EDITION."
-
-- (UPDATE) Mode: Enterprise
 -->
 
 ---
