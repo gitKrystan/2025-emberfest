@@ -1,8 +1,10 @@
+import { assert } from '@ember/debug';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
-import CaptainsLogService, { EntryState } from '#/services/captains-log.ts';
 import { cached } from '@glimmer/tracking';
-import { assert } from '@ember/debug';
+
+import type { EntryState } from '#/services/captains-log.ts';
+import type CaptainsLogService from '#/services/captains-log.ts';
 
 /*
 
@@ -68,14 +70,14 @@ class Entry extends Component<{ Args: { lid: string; entry: EntryState; showPage
   }
 
   get pathName(): string {
-    const ret = this.parts[0];
-    assert('Path name must be defined', ret);
-    return ret;
+    const [pathName] = this.parts;
+    assert('Path name must be defined', pathName);
+    return pathName;
   }
 
   @cached
   get params(): URLSearchParams | null {
-    const params = this.parts[1];
+    const [_pathName, params] = this.parts;
     if (!params) {
       return null;
     }
@@ -83,7 +85,7 @@ class Entry extends Component<{ Args: { lid: string; entry: EntryState; showPage
   }
 
   get page(): number | null {
-    const params = this.params;
+    const { params } = this;
     if (!params) {
       return null;
     }
@@ -97,7 +99,7 @@ class Entry extends Component<{ Args: { lid: string; entry: EntryState; showPage
   }
 
   get filter(): string | null {
-    const params = this.params;
+    const { params } = this;
     if (!params) {
       return null;
     }

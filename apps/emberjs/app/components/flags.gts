@@ -1,4 +1,5 @@
 import { on } from '@ember/modifier';
+import type RouterService from '@ember/routing/router-service';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 import { cached, tracked } from '@glimmer/tracking';
@@ -20,11 +21,10 @@ import type {
   TodoCountFlag,
 } from '@workspace/shared-data/types';
 
+import { CaptainsLog } from '#/components/captains-log';
 import { Button } from '#/components/design-system/button';
 import { HandleError } from '#/components/design-system/error';
 import { LoadingSpinner } from '#/components/design-system/loading';
-import { CaptainsLog } from '#/components/captains-log';
-import type RouterService from '@ember/routing/router-service';
 
 export class Flags extends Component {
   <template>
