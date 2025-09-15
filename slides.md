@@ -195,7 +195,7 @@ WarpDrive is the lightweight data framework for ambitious web applications.
 
 * It's Universal and works with any framework
 * It's TypeScript-first
-* It's performant, with built-in caching and fine-grained reactivity
+* It's performant
 * And It's scalable, no matter how ambitious your project.
 -->
 
