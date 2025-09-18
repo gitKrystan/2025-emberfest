@@ -973,6 +973,8 @@ So, let's take a look this in our Todo app.
 First, we'll check out our loading states.
 
 **To make the loading states super obvious, I've set my API to impulse speed (500ms of latency per request.)**
+
+I've also implemented a Captain's Log feature so that you can see the current state of each request made and how many times it has been fetched.
 -->
 
 ---
@@ -1468,14 +1470,14 @@ We've even seen some "scale pioneer" users with thousands of todos in their list
 layout: center
 ---
 
-# Live Demo: [Scale Pioneers](http://localhost:4200/?initialTodoCount=100000&shouldError=false&shouldPaginate=false&latency=50&showLog=true)
+# Live Demo: [Scale Pioneers](http://localhost:4200/?initialTodoCount=500000&shouldError=false&shouldPaginate=false&latency=50&showLog=true)
 
 <!--
 (SHIFT + RIGHT CLICK TO OPEN IN NEW TAB WHILE TALKING)
 
 Our support team sent us this customer app that really exemplifies some performance issues we are seeing.
 
-It turns out this customer has one hundred thousand todos, and they're really having issues.
+It turns out this customer has five hundred thousand todos, and they're really having issues.
 
 Let's see what they're running into.
 
@@ -1486,7 +1488,7 @@ Let's see what they're running into.
 layout: center
 ---
 
-# Live Demo: [Enterprise Edition](http://localhost:4200/?initialTodoCount=100000&shouldError=false&shouldPaginate=true&latency=50&showLog=false)
+# Live Demo: [Enterprise Edition](http://localhost:4200/?initialTodoCount=500000&shouldError=false&shouldPaginate=true&latency=50&showLog=false)
 
 <!--
 Fortunately, WarpDrive has another trick up it's sleeve:
@@ -1684,7 +1686,9 @@ Paginate is at it's root a wrapper around the request state for a paginated quer
 
 <!--
 * Back to our TodoProvider's invocation of the Paginate component.
-* It passes the `@pageHints` argument to extract pagination meta from the response
+
+It passes the `@pageHints` argument to extract pagination meta from the response
+
 * In our case, the API returns meta that is the exact shape we need, but you can extract page-hints however you want.
 -->
 
@@ -1912,8 +1916,6 @@ DON'T SHOW CACHED PAGES! (BUG ALERT)
 
 <!--
 And here's another look at that builder
-
-* With the important bits highlighted
 -->
 
 ---
