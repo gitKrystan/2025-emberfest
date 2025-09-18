@@ -73,11 +73,11 @@ In fact, some of us know **a lot** about data libraries.
 
 You might know quite a bit about **one data library** in particular...
 
-And you might even be expecting me to talk about *that* library.
+**But I want you to pretend you _are_ a dummy today.**
 
-**But I'm not.**
+I want you to pretend you've never seen that library before.
 
-Instead, I want you to pretend you've never seen that library before.
+Join me on this journey with an open mind.
 
 We're going to explore a new library, with new patterns. We're going to "boldly go where our data has never gone before."
 
@@ -127,7 +127,7 @@ Before we embark, let me introduce myself — I'll be your guide through the War
 
 -  I have two kids, so I understand the importance of reliable, predictable systems that just work
 
-- I'm a staff-engineer at AuditBoard — building enterprise software for Audit, Risk, and Compliance
+- I'm a staff-engineer at AuditBoard — trusted by over 50% of the Fortune 500 (remember that statistic for later).
 
 - I'm a member of the WarpDrive and Ember Tooling Teams.
 
@@ -305,7 +305,7 @@ I promise, it's something ambitious.
 
 Implemented in multiple frameworks to compare approaches.
 
-<div class="grid grid-flow-col gap-4">
+<div class="grid grid-flow-col gap-4 w-200">
 
 <div class="callout">
 <img src="./picard-todos.png" alt="TodoMVC UI with Captain Picard's Todo List" class="h-80 w-auto" />
@@ -339,7 +339,7 @@ Ember's TodoMVC implementation was created by Miguel, Addy, and Preston, for whi
 
 # TodoMVC: Our Prime Directive
 
-<div class="grid grid-flow-col gap-4 grid-items-center">
+<div class="grid grid-flow-col gap-4 grid-items-center w-140">
 
 <div>
 Todo resource:
@@ -368,13 +368,15 @@ a boolean completed attribute
 </div>
 
 <!--
-It’s built around a simple Todo resource:
+It’s built around a simple Todo resource with:
 
 a string id
 
-a title attribute
+and title and completed attributes.
 
-and a completed attribute
+You might be thinking "a todo app is not really all that ambitious."
+
+Bear with me, because we will get there.
 -->
 
 ---
@@ -473,6 +475,41 @@ The store is fully customizable and configurable but with sensible defaults, whi
 * It handles cache management
 * It manages our schemas
 * And it manages our reactive state by determining what reactive objects to create for our data.
+
+Note that with the `useRecommendedStore` utility, you don't even to write most of what I've shown here. It just works.
+-->
+
+---
+
+# The WarpDrive Store — "The Bridge...Abridged"
+
+<MacWindow title="packages/shared-data/src/stores/index.ts" class="max-w-2xl mb-6">
+
+```ts
+import { useRecommendedStore } from '@warp-drive/core';
+import { JSONAPICache } from '@warp-drive/json-api';
+
+import { ApiHandler, useApiHandler } from '../handlers/api.ts';
+import { FlagSchema } from '../schemas/flag.ts';
+import { TodoSchema } from '../schemas/todo.ts';
+
+export default useRecommendedStore({
+  // RequestManager config
+  handlers: [
+    // Use `APIHandler` if `useApiHandler` returns true
+    new Gate(ApiHandler, useApiHandler),
+    // APIHandler calls `next()` to pass the request to `fetch`
+    // Fetch handler is included last by default
+  ],
+  cache: JSONAPICache, // Cache config
+  schemas: [FlagSchema, TodoSchema], // SchemaService config
+});
+```
+
+</MacWindow>
+
+<!--
+And with the `useRecommendedStore` utility, you don't even to write most of what I've just shown.
 -->
 
 ---
@@ -518,9 +555,9 @@ RequestManager is also fully customize-able with sensible defaults.
 
 By default, _Warp_**Drive** speaks \{JSON:API\} fluently, giving you:
 
-<div class="grid grid-flow-col gap-4">
+<div class="grid grid-flow-col gap-4 w-150 grid-items-center">
 
-<div class="callout">
+<div class="callout h-80">
 
 ```json
 {
@@ -544,14 +581,13 @@ By default, _Warp_**Drive** speaks \{JSON:API\} fluently, giving you:
 
 <v-clicks>
 
-- **Standardized format** for resources, relationships, and errors
-- **Built-in conventions** for pagination, filtering, sorting, and sparse fields
+**Standardized format** for:<br />resources,<br />relationships,<br />errors
+
+**Built-in conventions** for:<br />pagination,<br />filtering,<br />sorting,<br />sparse fields
+
+**WarpDrive supports**:<br />all<br />of<br />the<br />above
 
 </v-clicks>
-
-<v-click>
-
-</v-click>
 
 </div>
 
@@ -563,6 +599,7 @@ If the RequestManager is the "communication officer," think of JSON:API as the c
 It's a language that WarpDrive speaks fluently, giving you:
 * A Standardized format for resources, relationships, and errors
 * And Built-in conventions for pagination, filtering, sorting, and sparse fields
+* WarpDrive supports all of these conventions out of the box.
 -->
 
 ---
@@ -828,7 +865,7 @@ WarpDrive actually provides lots of powerful schema features that we're not usin
 </div>
 
 <!--
-* Because resources are just thin wrappers over POJOs you can define types for their various states...
+* Resource types are specified by the related request, so you can define types for their various states...
 * An attribute type for creation
 * A readonly Todo type
 * An editable Todo type
@@ -2070,7 +2107,8 @@ I think so!
 <div class="text-lcars-blue font-size-xs mt-30 max-w-md">
 Special Thanks:<br />
 AuditBoard, Chris Thoburn, Julia Donaldson, Natasha Wolfe<br />
-(and my husband for watching the kids)
+My mom, who's seen this talk four times and understood it all<br />
+(and my husband for watching the kids every day for the last month)
 
 </div>
 
