@@ -5,7 +5,6 @@ import { service } from '@ember/service';
 import { cached } from '@glimmer/tracking';
 import { TrackedArray, TrackedMap } from 'tracked-built-ins';
 
-import type { RequestCacheRequestState } from '@warp-drive/core/store/-private';
 import type {
   DocumentCacheOperation,
   DocumentOperationCallback,
