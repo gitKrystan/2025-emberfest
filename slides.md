@@ -1293,7 +1293,7 @@ But WarpDrive can't predict that just because a Todo's `completed` attribute cha
 
 We could just invalidate the queries manually, similar to how we did in the `createTodo` case.
 
-* But it's more performant and more fun...nay, more **ambitious**, to cache the patch manually.
+* But it's more performant and more fun...nay, more **ambitious**, to patch the cache manually.
 
 NOTE that this manual step is _not a requirement_ of optimistic updates. It's required because we're updating the `completed` attribute used in the query filter.
 -->
@@ -1463,14 +1463,14 @@ We've even seen some "scale pioneer" users with thousands of todos in their list
 layout: center
 ---
 
-# Live Demo: [Scale Pioneers](http://localhost:4200/?initialTodoCount=1000000&shouldError=false&shouldPaginate=false&latency=50&showLog=true)
+# Live Demo: [Scale Pioneers](http://localhost:4200/?initialTodoCount=100000&shouldError=false&shouldPaginate=false&latency=50&showLog=true)
 
 <!--
 (SHIFT + RIGHT CLICK TO OPEN IN NEW TAB WHILE TALKING)
 
 Our support team sent us this customer app that really exemplifies some performance issues we are seeing.
 
-It turns out this customer has a million todos, and they're really having issues.
+It turns out this customer has one hundred thousand todos, and they're really having issues.
 
 Let's see what they're running into.
 
@@ -1481,7 +1481,7 @@ Let's see what they're running into.
 layout: center
 ---
 
-# Live Demo: [Enterprise Edition](http://localhost:4200/?initialTodoCount=1000000&shouldError=false&shouldPaginate=true&latency=50&showLog=false)
+# Live Demo: [Enterprise Edition](http://localhost:4200/?initialTodoCount=100000&shouldError=false&shouldPaginate=true&latency=50&showLog=false)
 
 <!--
 Fortunately, WarpDrive has another trick up it's sleeve:
@@ -1858,7 +1858,7 @@ rendered.
 layout: center
 ---
 
-# Live Demo: [Bulk Actions](http://localhost:4200/?initialTodoCount=bulkActions&shouldError=false&shouldPaginate=true&latency=300&showLog=true)
+# Live Demo: [Bulk Actions](http://localhost:4200/?initialTodoCount=bulkActions&shouldError=false&shouldPaginate=true&latency=50&showLog=true)
 
 <!--
 Let's take a look at our bulk actions...in action.
@@ -2079,11 +2079,17 @@ The data is out there — <strong>go boldly and fetch it efficiently</strong>
 
 <!--
 Your Mission, Should You Choose to Accept It:
+
 Try WarpDrive in your next project, regardless of framework.
+
 Explore our guides at warp-drive.io
+
 Explore this WarpDrive TodoMVC monorepo on GitHub.
+
 Join the WarpDrive community on Discord.
+
 Build something ambitious!
+
 And if you have any questions, Let's explore the unknown together!
 
 THANK YOU!
