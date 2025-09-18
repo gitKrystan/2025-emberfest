@@ -63,6 +63,8 @@ layout: default
 </div>
 
 <!--
+There have already been a few WarpDrive talks this EmberFest, and they've stolen my thunder a bit on the dramatic opening speech, but let me have my moment.
+
 I was going to call this talk "WarpDrive for Dummies"...
 
 ...but we're not dummies.
@@ -124,8 +126,11 @@ Ember veteran since v2
 Before we embark, let me introduce myself — I'll be your guide through the WarpDrive universe...
 
 -  I have two kids, so I understand the importance of reliable, predictable systems that just work
+
 - I'm a staff-engineer at AuditBoard — building enterprise software for Audit, Risk, and Compliance
+
 - I'm a member of the WarpDrive and Ember Tooling Teams.
+
 - And I've been writing Ember apps for nearly a decade.
 -->
 
@@ -1531,7 +1536,9 @@ Just like the Request component, Paginate declaratively handles request states i
 
 And when cached responses for your requests are invalidated, the component automatically re-renders with fresh data.
 
-In addition
+In this case, we're passing in a future of a request kicked off in the route.
+
+In addition:
 
 On success, you can choose to display all loaded data or just the current page. In our case we're only displaying the current page.
 

@@ -9,6 +9,7 @@
   "scripts": {
     "build": "slidev build",
     "dev": "slidev --open",
+    "start": "pnpm dev",
     "export": "slidev export",
     "build:apps": "pnpm -r --filter='./apps/*' build",
     "dev:apps": "pnpm -r --filter='./apps/*' dev",
