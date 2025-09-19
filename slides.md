@@ -30,6 +30,10 @@ Krystan HuffMenne • Staff Engineer @ AuditBoard
   </a>
 </div>
 
+<!--
+HEYO
+-->
+
 ---
 layout: default
 ---
@@ -125,7 +129,7 @@ Ember veteran since v2
 <!--
 Before we embark, let me introduce myself — I'll be your guide through the WarpDrive universe...
 
--  I have two kids, so I understand the importance of reliable, predictable systems that just work
+-  I'm from Portland. It rains there like it rains here...usually. Today we have sun. I hope it doesn't make my slides too difficult to read. I have two kids, so I understand the importance of reliable, predictable systems that just work...unlike this weather.
 
 - I'm a staff-engineer at AuditBoard — trusted by over 50% of the Fortune 500 (remember that statistic for later).
 
@@ -2005,6 +2009,8 @@ Once again, we have built another ambitious feature with just a few lines of cod
 
 <!--
 And putting everything together, here is our full Enterprise Edition Todo App again, with all the WarpDrive components highlighted.
+
+It turns out that much of what we do in frontend ends up being management of reactive state, so your entire app ends up being powered by WarpDrive.
 -->
 
 ---
