@@ -62,6 +62,18 @@ PNPM and Node (versions managed by [Volta](https://volta.sh/)).
 
 The Ember app will be available at [http://localhost:4200](http://localhost:4200)
 
+### To view [Slidev](https://github.com/slidevjs/slidev) show
+
+To start the slide show:
+
+1. All of the above
+2. `pnpm start` in the root folder
+3. Visit <http://localhost:3030>
+
+Edit the [slides.md](./slides.md) to see the changes.
+
+Learn more about Slidev at the [documentation](https://sli.dev/).
+
 ### Demo Features
 
 The application includes several demo modes accessible via URL parameters:
@@ -71,14 +83,14 @@ The application includes several demo modes accessible via URL parameters:
 - **Error Handling**: `http://localhost:4200?initialTodoCount=basicErrorStates&shouldError=true&shouldPaginate=false&latency=1000&showLog=false`
 - **Pessimistic Mutation**: `http://localhost:4200?initialTodoCount=pessimisticMutation&shouldError=false&shouldPaginate=false&latency=1000&showLog=true`
 - **Optimistic Mutation**: `http://localhost:4200?initialTodoCount=optimisticMutation&shouldError=false&shouldPaginate=false&latency=1000&showLog=true`
-- **Scale Pioneers (500k todos)**: `http://localhost:4200?initialTodoCount=500000&shouldError=false&shouldPaginate=false&latency=50&showLog=true`
+- **Scale Pioneers (500k todos, no pagination)**: `http://localhost:4200?initialTodoCount=500000&shouldError=false&shouldPaginate=false&latency=50&showLog=true`
 - **Enterprise Edition (500k + pagination)**: `http://localhost:4200?initialTodoCount=500000&shouldError=false&shouldPaginate=true&latency=50&showLog=false`
 - **Bulk Actions**: `http://localhost:4200?initialTodoCount=bulkActions&shouldError=false&shouldPaginate=true&latency=50&showLog=true`
 
 Parameters:
 
 - `initialTodoCount`: Number of initial todos or preset values:
-  - `featureSet` - Complete feature demonstration
+  - `featureSet` - Basic feature demonstration
   - `basicLoadingStates` - Focus on loading states
   - `basicErrorStates` - Focus on error handling
   - `pessimisticMutation` - Demonstrate pessimistic update patterns
@@ -90,17 +102,24 @@ Parameters:
 - `latency`: Artificial API delay in milliseconds (e.g., `0`, `50`, `1000`)
 - `showLog`: Display the Captain's Log for request tracking (`true`/`false`)
 
-## To view [Slidev](https://github.com/slidevjs/slidev) show
+### Captain's Log
 
-To start the slide show:
+The Captain's Log is a special (HACKY) debugging feature that provides real-time visibility into WarpDrive's request lifecycle and cache operations. When enabled (`showLog=true`), it displays a live feed of Todo `DocumentCacheOperations` happening in your application.
 
-1. All of the above
-2. `pnpm start` in the root folder
-3. Visit <http://localhost:3030>
+#### Features
 
-Edit the [slides.md](./slides.md) to see the changes.
+- **Live Request Tracking** - See every request as it's made, with unique identifiers
+- **Cache Operation Monitoring** - Track document lifecycle events (`added`, `updated`, `removed`, `invalidated`, `state`)
+- **Load Count Tracking** - See how many times each resource has been loaded
 
-Learn more about Slidev at the [documentation](https://sli.dev/).
+#### Implementation
+
+The Captain's Log is implemented as an Ember service (`apps/emberjs/app/services/captains-log.ts`) that:
+
+1. Subscribes to WarpDrive's notification system
+2. Tracks document cache operations in a `TrackedMap`
+3. Maintains state transition history for each document
+4. Provides a reactive UI component for displaying the log
 
 ## Project Structure Deep Dive
 
