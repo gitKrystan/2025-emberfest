@@ -69,14 +69,26 @@ The application includes several demo modes accessible via URL parameters:
 - **Basic Feature Set Demo**: `http://localhost:4200?initialTodoCount=featureSet&shouldError=false&shouldPaginate=false&latency=0&showLog=false`
 - **Loading States**: `http://localhost:4200?initialTodoCount=basicLoadingStates&shouldError=false&shouldPaginate=false&latency=1000&showLog=true`
 - **Error Handling**: `http://localhost:4200?initialTodoCount=basicErrorStates&shouldError=true&shouldPaginate=false&latency=1000&showLog=false`
+- **Pessimistic Mutation**: `http://localhost:4200?initialTodoCount=pessimisticMutation&shouldError=false&shouldPaginate=false&latency=1000&showLog=true`
+- **Optimistic Mutation**: `http://localhost:4200?initialTodoCount=optimisticMutation&shouldError=false&shouldPaginate=false&latency=1000&showLog=true`
+- **Scale Pioneers (500k todos)**: `http://localhost:4200?initialTodoCount=500000&shouldError=false&shouldPaginate=false&latency=50&showLog=true`
+- **Enterprise Edition (500k + pagination)**: `http://localhost:4200?initialTodoCount=500000&shouldError=false&shouldPaginate=true&latency=50&showLog=false`
+- **Bulk Actions**: `http://localhost:4200?initialTodoCount=bulkActions&shouldError=false&shouldPaginate=true&latency=50&showLog=true`
 
 Parameters:
 
-- `initialTodoCount`: Number of initial todos or preset (`featureSet`, `basicLoadingStates`, `basicErrorStates`)
-- `shouldError`: Simulate API errors for demonstration
-- `shouldPaginate`: Enable pagination features ("Enterprise Mode")
-- `latency`: Artificial API delay in milliseconds
-- `showLog`: Display the Captain's Log for request tracking
+- `initialTodoCount`: Number of initial todos or preset values:
+  - `featureSet` - Complete feature demonstration
+  - `basicLoadingStates` - Focus on loading states
+  - `basicErrorStates` - Focus on error handling
+  - `pessimisticMutation` - Demonstrate pessimistic update patterns
+  - `optimisticMutation` - Demonstrate optimistic update patterns
+  - `bulkActions` - Demonstrate bulk operations
+  - `500000` - Large dataset for performance testing (I do not recommend going bigger than this)
+- `shouldError`: Simulate API errors for demonstration (`true`/`false`)
+- `shouldPaginate`: Enable pagination features - "Enterprise Mode" (`true`/`false`)
+- `latency`: Artificial API delay in milliseconds (e.g., `0`, `50`, `1000`)
+- `showLog`: Display the Captain's Log for request tracking (`true`/`false`)
 
 ## To view [Slidev](https://github.com/slidevjs/slidev) show
 
