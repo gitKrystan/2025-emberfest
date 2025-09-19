@@ -81,7 +81,7 @@ Join me on this journey with an open mind.
 
 We're going to explore a new library, with new patterns. We're going to "boldly go where our data has never gone before."
 
-* Today we're talking about WarpDrive.
+* Buckle up, because today we're talking about WarpDrive.
 
 Set your data layer to stun.
 -->
@@ -2107,8 +2107,8 @@ I think so!
 <div class="text-lcars-blue font-size-xs mt-30 max-w-md">
 Special Thanks:<br />
 AuditBoard, Chris Thoburn, Julia Donaldson, Natasha Wolfe<br />
-My mom, who's seen this talk four times and understood it all<br />
-(and my husband for watching the kids every day for the last month)
+My mom, who's seen this talk four times<br />
+(and my husband for being super-dad the last month while I prepared it)
 
 </div>
 
