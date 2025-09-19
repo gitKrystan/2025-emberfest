@@ -78,14 +78,16 @@ Learn more about Slidev at the [documentation](https://sli.dev/).
 
 The application includes several demo modes accessible via URL parameters:
 
-- **Basic Feature Set Demo**: `http://localhost:4200?initialTodoCount=featureSet&shouldError=false&shouldPaginate=false&latency=0&showLog=false`
-- **Loading States**: `http://localhost:4200?initialTodoCount=basicLoadingStates&shouldError=false&shouldPaginate=false&latency=1000&showLog=true`
-- **Error Handling**: `http://localhost:4200?initialTodoCount=basicErrorStates&shouldError=true&shouldPaginate=false&latency=1000&showLog=false`
-- **Pessimistic Mutation**: `http://localhost:4200?initialTodoCount=pessimisticMutation&shouldError=false&shouldPaginate=false&latency=1000&showLog=true`
-- **Optimistic Mutation**: `http://localhost:4200?initialTodoCount=optimisticMutation&shouldError=false&shouldPaginate=false&latency=1000&showLog=true`
-- **Scale Pioneers (500k todos, no pagination)**: `http://localhost:4200?initialTodoCount=500000&shouldError=false&shouldPaginate=false&latency=50&showLog=true`
-- **Enterprise Edition (500k + pagination)**: `http://localhost:4200?initialTodoCount=500000&shouldError=false&shouldPaginate=true&latency=50&showLog=false`
-- **Bulk Actions**: `http://localhost:4200?initialTodoCount=bulkActions&shouldError=false&shouldPaginate=true&latency=50&showLog=true`
+| Demo Mode                                      | URL Example                                                                                                      | Notes                    |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------ |
+| **Basic Feature Set Demo**                     | http://localhost:4200?initialTodoCount=featureSet&shouldError=false&shouldPaginate=false&latency=0&              | showLog=false            |
+| **Loading States**                             | http://localhost:4200?initialTodoCount=basicLoadingStates&shouldError=false&shouldPaginate=false&latency=1000&   | showLog=true             |
+| **Error Handling**                             | http://localhost:4200?initialTodoCount=basicErrorStates&shouldError=true&shouldPaginate=false&latency=1000&      | showLog=false            |
+| **Pessimistic Mutation**                       | http://localhost:4200?initialTodoCount=pessimisticMutation&shouldError=false&shouldPaginate=false&latency=1000&  | showLog=true             |
+| **Optimistic Mutation**                        | http://localhost:4200?initialTodoCount=optimisticMutation&shouldError=false&shouldPaginate=false&latency=1000&   | showLog=true             |
+| **Scale Pioneers (500k todos, no pagination)** | http://localhost:4200?initialTodoCount=500000&shouldError=false&shouldPaginate=false&                            | latency=50&showLog=true  |
+| **Enterprise Edition (500k + pagination)**     | http://localhost:4200?initialTodoCount=500000&shouldError=false&shouldPaginate=true&                             | latency=50&showLog=false |
+| **Bulk Actions**                               | http://localhost:4200?initialTodoCount=bulkActions&shouldError=false&shouldPaginate=true&latency=50&showLog=true |
 
 Parameters:
 
