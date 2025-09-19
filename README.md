@@ -162,7 +162,7 @@ JSON:API compliant backend built with:
 
 - [ ] Search code for `TODO:` and `fixme`, and fix those issues
 - [ ] Upstream to WarpDrive repo
-- [ ] - [ ] Implement `LocalStorage` handler and upstream the ember app to the TodoMVC repo
+- [ ] Implement `LocalStorage` handler and upstream the ember app to the TodoMVC repo
 
 ### Framework Implementations
 
