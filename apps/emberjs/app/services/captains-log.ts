@@ -5,10 +5,8 @@ import { service } from '@ember/service';
 import { cached } from '@glimmer/tracking';
 import { TrackedArray, TrackedMap } from 'tracked-built-ins';
 
-import type {
-  DocumentCacheOperation,
-  DocumentOperationCallback,
-} from '@warp-drive/core/store/-private/managers/notification-manager';
+import type { DocumentCacheOperation } from '@warp-drive/core';
+import type { RequestKey } from '@warp-drive/core/types/identifier';
 
 import type { Store } from '@workspace/shared-data';
 
@@ -17,7 +15,10 @@ export default class CaptainsLog extends Service {
 
   log = new TrackedMap<string, EntryState>();
 
-  docOpCallback: DocumentOperationCallback = (cacheKey, notificationType) => {
+  docOpCallback = (
+    cacheKey: RequestKey,
+    notificationType: DocumentCacheOperation
+  ): void => {
     if (!cacheKey.lid.startsWith('/api/todo')) {
       console.log('UNHANDLED', cacheKey.lid, notificationType);
       return;

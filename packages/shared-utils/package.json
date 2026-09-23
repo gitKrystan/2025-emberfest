@@ -31,9 +31,9 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.8.9",
-    "@warp-drive/core": "5.8.0-alpha.11",
-    "@warp-drive/json-api": "5.8.0-alpha.11",
-    "@warp-drive/utilities": "5.8.0-alpha.11",
+    "@warp-drive/core": "5.10.0-alpha.9",
+    "@warp-drive/json-api": "5.10.0-alpha.9",
+    "@warp-drive/utilities": "5.10.0-alpha.9",
     "decorator-transforms": "^2.2.2"
   },
   "devDependencies": {
@@ -48,7 +48,7 @@
     "@embroider/addon-dev": "^8.1.0",
     "@embroider/compat": "^4.1.0",
     "@embroider/core": "^4.1.0",
-    "@embroider/macros": "^1.18.0",
+    "@embroider/macros": "^1.21.1",
     "@embroider/vite": "^1.1.5",
     "@eslint/js": "^9.17.0",
     "@glimmer/component": "^2.0.0",

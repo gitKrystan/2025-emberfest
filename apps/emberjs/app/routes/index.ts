@@ -18,6 +18,10 @@ import {
 export default class AllTodos extends Route {
   @service declare private readonly store: Store;
 
+  queryParams = {
+    page: { refreshModel: true },
+  };
+
   model(params: { page: number }): {
     todos: Future<ReactiveTodosDocument>;
     counts: Future<ResourceCountDocument>[];

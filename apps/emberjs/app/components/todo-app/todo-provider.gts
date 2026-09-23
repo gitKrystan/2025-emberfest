@@ -1,17 +1,14 @@
-import { assert } from '@ember/debug';
 import { service } from '@ember/service';
 import Component from '@glimmer/component';
 
-import type { ReactiveDataDocument } from '@warp-drive/core/reactive';
 import type { Future } from '@warp-drive/core/request';
+import type { PagedPaginationContentFeatures, PagedPaginationState } from '@warp-drive/ember/experiments';
+import { Paginate } from '@warp-drive/ember/experiments';
 
 import type { ReactiveTodosDocument } from '@workspace/shared-data/builders';
 import type { Todo } from '@workspace/shared-data/types';
 
 import { LoadingSpinner } from '#/components/design-system/loading';
-import { Paginate } from '#/components/fixme/paginate';
-import type { PaginationState } from '#/components/fixme/paginate/-private/pagination-state';
-import type { ContentFeatures } from '#/components/fixme/paginate/-private/pagination-subscription';
 import { PaginationControls } from '#/components/todo-app/pagination-controls';
 import type AppState from '#/services/app-state';
 
@@ -27,22 +24,22 @@ interface Signature {
 
 export class TodoProvider extends Component<Signature> {
   <template>
-    <Paginate @request={{@todoFuture}} @autorefresh={{true}} @autorefreshBehavior="refresh" @pageHints={{pageHints}}>
+    <Paginate @request={{@todoFuture}} @autorefresh={{true}} @autorefreshBehavior="refresh">
 
       <:loading><LoadingSpinner /></:loading>
 
       <:content as |pages state|>
-        {{#if pages.activePageData}}
-          <ActivePage @pages={{pages}} @state={{state}} @activePageData={{pages.activePageData}}>
+        {{#if pages.activePage.data}}
+          <ActivePage @pages={{pages}} @state={{state}} @activePageData={{pages.activePage.data}}>
             <:toggle as |list|>{{yield list to="toggle"}}</:toggle>
             <:list as |list|>{{yield list to="list"}}</:list>
           </ActivePage>
         {{/if}}
+
+        <PaginationControls @pages={{pages}} @state={{state}} />
       </:content>
 
       <:error as |error|>{{this.appState.onUnrecoverableError error}}</:error>
-
-      <:always as |pages state|><PaginationControls @pages={{pages}} @state={{state}} /></:always>
 
     </Paginate>
   </template>
@@ -52,8 +49,8 @@ export class TodoProvider extends Component<Signature> {
 
 class ActivePage extends Component<{
   Args: {
-    pages: PaginationState<Todo>;
-    state: ContentFeatures<ReactiveDataDocument<Todo[]>>;
+    pages: PagedPaginationState<ReactiveTodosDocument>;
+    state: PagedPaginationContentFeatures<ReactiveTodosDocument>;
     activePageData: Todo[];
   };
   Blocks: {
@@ -84,29 +81,6 @@ class ActivePage extends Component<{
   }
 
   get showToggle() {
-    return !this.args.pages.pages.some((p) => p.isLoading) && this.appState.canToggle;
+    return !this.args.pages.activePage?.isLoading && this.appState.canToggle;
   }
-}
-
-interface PageHints {
-  currentPage: number;
-  totalPages: number;
-}
-
-function pageHints(doc: ReactiveTodosDocument): PageHints {
-  assertsHasPageHints(doc.meta);
-
-  return {
-    currentPage: doc.meta.currentPage,
-    totalPages: doc.meta.totalPages,
-  };
-}
-
-function assertsHasPageHints(value: unknown): asserts value is PageHints {
-  assert('cannot generate page hints without meta object', typeof value === 'object' && value !== null);
-  assert('cannot generate page hints without meta.currentPage', 'currentPage' in value);
-  assert('cannot generate page hints; meta.currentPage is not a number', typeof value.currentPage === 'number');
-
-  assert('cannot generate page hints without meta.totalPages', 'totalPages' in value);
-  assert('cannot generate page hints; meta.totalPages is not a number', typeof value.totalPages === 'number');
 }
